@@ -1,0 +1,3206 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>נטע · פרוטוטייפ</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#141613;--s1:#1C1F1B;--s2:#242822;--line:#33382F;--line-2:#454B40;
+  --tx:#EDEFE9;--tx-2:#9BA396;--tx-3:#6B7266;
+  --leaf:#7FC088;--leaf-2:#5FA36A;--leaf-soft:#A8CBAC;--leaf-bg:#1B2A1D;--leaf-line:#2A4530;
+  --sun:#D9B25F;--sun-bg:#2A2318;--sun-line:#3D3520;
+  --rose:#D99BA6;--rose-bg:#2A1F22;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse 70% 55% at 50% 20%,#1A1D18,#0C0D0B 65%);
+  color:var(--tx);display:flex;flex-direction:column;align-items:center;padding:10px 10px 24px;
+  min-height:100vh;-webkit-font-smoothing:antialiased}
+.wrap{width:100%;max-width:390px;display:flex;flex-direction:column;align-items:center}
+.devlabel{font-size:9.5px;letter-spacing:.1em;color:var(--tx-3);margin:18px 0 8px;text-transform:uppercase}
+.nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;width:100%}
+.nav button{flex:0 0 auto;font-family:inherit;font-size:11px;padding:7px 12px;border-radius:8px;
+  border:1px solid var(--line);background:transparent;color:var(--tx-3);cursor:pointer;transition:.15s}
+.nav button.on{background:var(--s2);color:var(--tx);border-color:var(--line-2)}
+
+.device{position:relative;width:min(390px,94vw);aspect-ratio:390/844;height:auto;background:var(--bg);
+  border-radius:46px;border:9px solid #060704;box-shadow:0 40px 70px -25px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.03) inset;
+  display:flex;flex-direction:column;overflow:hidden}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:118px;height:24px;
+  background:#060704;border-radius:0 0 15px 15px;z-index:30}
+.statusbar{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;
+  padding:13px 26px 2px;font-size:13.5px;font-weight:600;color:var(--tx);font-variant-numeric:tabular-nums}
+.statusbar .si{display:flex;align-items:center;gap:5px;opacity:.9}
+.statusbar .si svg{display:block}
+.stage{display:flex;flex-direction:column;flex:1;overflow-y:auto;padding:8px 18px 14px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.sticky-sum{position:sticky;top:-8px;z-index:5;margin:8px -18px 10px;padding:7px 18px;background:var(--bg);
+  border-bottom:1px solid var(--line);font-size:12.5px;font-weight:500;color:var(--leaf);text-align:center}
+.stage::-webkit-scrollbar{display:none}
+.home-indicator{flex-shrink:0;display:flex;justify-content:center;padding:8px 0 9px;background:var(--bg)}
+.home-indicator span{width:130px;height:5px;border-radius:3px;background:var(--tx-3);opacity:.55}
+.screen{display:none;animation:f .2s ease}
+.screen.on{display:block;flex:1 0 auto}
+@keyframes f{from{opacity:0}to{opacity:1}}
+
+h1{font-size:20px;font-weight:500;letter-spacing:-.02em}
+h2{font-size:16px;font-weight:500;line-height:1.4}
+.sub{font-size:12.5px;color:var(--tx-2);line-height:1.55}
+.eyebrow{font-size:10px;letter-spacing:.12em;color:var(--tx-3);margin-bottom:8px}
+.fine{font-size:10.5px;color:var(--tx-3);line-height:1.5}
+.gap{margin-bottom:14px}.gap-s{margin-bottom:8px}.gap-x{margin-bottom:3px}.center{text-align:center}
+
+.card{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:9px}
+.card.tap{cursor:pointer;transition:.15s}.card.tap:hover{border-color:var(--line-2)}
+.row{display:flex;align-items:center;gap:10px}
+.dot{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:15px;flex-shrink:0}
+.dot.g{background:var(--leaf-bg)}.dot.s{background:var(--sun-bg)}
+.title{font-weight:500;font-size:13.5px}.meta{font-size:11px;color:var(--tx-3);margin-top:1px}
+
+.btn{width:100%;font-family:inherit;font-size:13.5px;font-weight:500;padding:12px;border-radius:10px;
+  border:1px solid var(--leaf);background:var(--leaf);color:#0E1A10;cursor:pointer;transition:.15s}
+.btn:hover{opacity:.88}
+.btn.ghost{background:transparent;border-color:var(--line-2);color:var(--tx)}
+.btn.ghost:hover{border-color:var(--tx-2)}
+.btn.dash{border:1px dashed var(--line-2);background:transparent;color:var(--tx-3);font-weight:400}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.two>.btn:first-child{order:2}
+.two>.btn.ghost:last-child{order:1}
+
+label{display:block;font-size:11px;color:var(--tx-3);margin-bottom:6px}
+input[type=text],input[type=date],select,textarea{width:100%;font-family:inherit;font-size:13.5px;padding:10px 11px;
+  border:1px solid var(--line);border-radius:9px;background:var(--s1);color:var(--tx)}
+textarea{min-height:74px;resize:vertical;line-height:1.6}
+input:focus,select:focus,textarea:focus{outline:1px solid var(--leaf);outline-offset:0;border-color:var(--leaf)}
+.field{margin-bottom:15px}
+
+.opt{border:1px solid var(--line);border-radius:11px;padding:12px 13px;cursor:pointer;transition:.15s;background:var(--s1)}
+.opt:hover{border-color:var(--line-2)}.opt.on{border-color:var(--leaf);background:var(--leaf-bg)}
+.opt b{font-size:13px;font-weight:500}.opt p{font-size:11px;color:var(--tx-2);margin-top:4px;line-height:1.5}
+.opt .rate{font-size:11.5px;color:var(--tx-3)}
+.opt.ben,.opt.eb-approve{min-height:92px;display:flex;flex-direction:column;justify-content:center}
+.opt[data-m]{min-height:84px;display:flex;flex-direction:column;justify-content:center}
+.stack{display:flex;flex-direction:column;gap:7px}
+.tag{font-size:9.5px;background:var(--leaf-bg);color:var(--leaf);padding:2px 6px;border-radius:5px;border:1px solid #2A4530}
+.pill{font-family:inherit;font-size:12.5px;padding:9px 12px;border-radius:9px;border:1px solid var(--line);
+  background:var(--s1);color:var(--tx-2);cursor:pointer;transition:.15s}
+.pill.on{background:var(--s2);border-color:var(--leaf);color:var(--tx)}
+.pills{display:flex;flex-wrap:wrap;gap:7px}
+#c-pills{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+#c-pills .pill{padding:8px 3px;font-size:10.5px;text-align:center}
+input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:transparent}
+
+.hero{background:var(--leaf-bg);border:1px solid #2A4530;border-radius:13px;padding:16px 15px;margin-bottom:20px;text-align:center}
+.hero-label{font-size:11px;color:#8FB794;letter-spacing:.04em}
+.hero-num{font-size:32px;font-weight:500;color:var(--leaf);letter-spacing:-.02em;line-height:1.25;margin:3px 0 2px}
+.hero-num.idle{color:var(--tx-3);font-size:26px}
+.hero-sub{font-size:11.5px;color:#8FB794;line-height:1.5}
+.note{background:var(--leaf-bg);border:1px solid #2A4530;border-radius:11px;padding:12px 13px;font-size:12.5px;line-height:1.55;color:#C6E3C9}
+.note b{color:var(--leaf);font-weight:500}
+.lock{background:var(--sun-bg);border:1px solid #3D3520;border-radius:11px;padding:14px;text-align:center}
+.lock p{color:#C4AE84}
+.stat{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat .k{font-size:12px;color:var(--tx-2)}.stat .v{font-size:13.5px;font-weight:500}
+.quote{background:linear-gradient(180deg,var(--sun-bg),var(--s1));border:1px solid #3D3520;border-radius:12px;
+  padding:20px 16px 14px 14px;font-size:12.5px;line-height:1.65;color:#D9C9A0;font-style:italic;position:relative}
+.q-mark{position:absolute;top:2px;right:10px;font-size:26px;color:var(--sun);opacity:.5;font-style:normal;line-height:1}
+
+.hero-card{padding:22px 16px 18px}
+.amt-pill{display:inline-flex;align-items:center;gap:7px;margin-top:11px;background:var(--leaf-bg);border:1px solid #2A4530;border-radius:999px;padding:7px 14px}
+.amt-pill span{font-size:11px;color:#8FB794}.amt-pill b{font-size:13.5px;color:var(--leaf);font-weight:600}
+.tl{position:relative;height:30px;margin:0 2px}
+.tl .base,.tl .past{position:absolute;top:13px;height:2px;pointer-events:none}
+.tl .base{right:0;left:0;background:var(--s2)}.tl .past{right:0;background:var(--leaf)}
+.tl .cap{position:absolute;top:6px;width:16px;height:16px;border-radius:5px;display:grid;place-items:center;font-size:8px;pointer-events:none}
+.tl input[type=range]{position:absolute;top:0;left:0;height:30px;margin:0;-webkit-appearance:none;appearance:none;background:transparent}
+.tl input[type=range]::-webkit-slider-runnable-track{background:transparent;height:30px}
+.tl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--leaf);border:3px solid var(--bg);margin-top:7px;cursor:pointer;box-shadow:0 0 0 4px rgba(127,192,136,.18),0 1px 3px rgba(0,0,0,.4)}
+.tl input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--leaf);border:3px solid var(--bg);cursor:pointer;box-shadow:0 0 0 4px rgba(127,192,136,.18),0 1px 3px rgba(0,0,0,.4)}
+.ends{display:flex;justify-content:space-between;font-size:10px;color:var(--tx-3);margin-top:3px}
+
+/* ===== finalized home card ===== */
+.topbar{flex-shrink:0;display:flex;align-items:center;gap:11px;padding:18px 18px 12px;min-height:68px}
+.topbar.off{display:none}
+.topbar .tt{flex:1;min-width:0}
+.topbar h1{font-size:15.5px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
+.topbar .sub{font-size:11.5px;margin-top:2px}
+.topbar .me{width:38px;height:38px;border-radius:12px;overflow:hidden;flex-shrink:0;background:var(--s2);
+  border:1px solid var(--line);cursor:pointer;transition:border-color .15s}
+.topbar .me:hover{border-color:var(--line-2)}
+.hdr{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.hdr .htxt{flex:1;min-width:0}
+.hdr .me{width:42px;height:42px;border-radius:13px;overflow:hidden;flex-shrink:0;background:var(--s2);
+  border:1px solid var(--line);cursor:pointer;transition:border-color .15s}
+.hdr .me:hover{border-color:var(--line-2)}
+.eyebrow.big{margin:30px 0 10px}
+.summary{padding:6px 2px 0}
+.s-row{display:flex;align-items:center;gap:16px}
+.s-body{flex:1;min-width:0}
+.s-art{flex-shrink:0;width:68px;display:grid;place-items:center;position:relative}
+.s-art::before{content:"";position:absolute;width:78px;height:78px;border-radius:50%;
+  background:radial-gradient(circle,rgba(127,192,136,.14),transparent 68%)}
+.s-art svg{position:relative}
+.ppav{position:relative;display:flex;align-items:center}
+.ppav>span{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid var(--bg);background:var(--s2)}
+.ppav>span+span{margin-right:-13px}
+.ppav .avsvg{display:block;width:100%;height:100%}
+.s-eyebrow{font-size:10px;letter-spacing:.1em;color:var(--tx-3);margin-bottom:7px}
+.s-num{font-size:33px;font-weight:600;color:var(--leaf);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.s-label{font-size:12.5px;color:var(--tx-2);margin-top:8px;line-height:1.5}
+.s-meta{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--tx-3);margin-top:14px;
+  padding-top:12px;border-top:1px solid var(--line)}
+.s-meta b{color:var(--tx-2);font-weight:600;font-variant-numeric:tabular-nums}
+.s-meta i{width:3px;height:3px;border-radius:50%;background:var(--line-2);font-style:normal;flex-shrink:0}
+.ncard{background:var(--s1);border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:9px;
+  transition:border-color .16s;cursor:pointer}
+.ncard:hover{border-color:var(--line-2)}
+.nc-top{display:flex;align-items:center;gap:8px}
+.peek{flex:0 0 auto;white-space:nowrap;text-align:left}
+.peek .pk{display:block;font-size:10.5px;color:var(--tx-3);line-height:1.3}
+.peek .pv{display:block;font-size:13.5px;font-weight:600;color:var(--leaf);font-variant-numeric:tabular-nums;line-height:1.3;margin-top:3px;letter-spacing:-.01em}
+.nc-top .dot{width:31px;height:31px;font-size:14px}
+.chev{color:var(--tx-3);flex-shrink:0;line-height:0;display:flex;align-items:center}
+.nc-id{flex:1;min-width:0}
+.nc-nm{font-weight:500;font-size:13.5px;line-height:1.32;letter-spacing:-.012em}
+.nc-meta{font-size:10.5px;color:var(--tx-3);line-height:1.3;margin-top:3px;white-space:nowrap}
+.nc-op{font-size:10.5px;color:var(--tx-3);margin-top:1px}
+.nc-avs{display:flex;margin-right:auto;flex-shrink:0}
+.nc-av{width:27px;height:27px;border-radius:8px;border:2px solid var(--s1);overflow:hidden;background:var(--s2);flex-shrink:0}
+.nc-av+.nc-av{margin-right:-8px}
+.nc-av.more{display:grid;place-items:center;font-size:10px;font-weight:600;color:var(--tx-2)}
+.avsvg{width:100%;height:100%;display:block}
+.nc-sums{display:flex;justify-content:space-between;align-items:flex-end;margin-top:13px;gap:10px}
+.nc-sums .k{display:block;font-size:10px;color:var(--tx-3);margin-bottom:3px}
+.nc-sums .v{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.nc-sums .v.now{color:var(--leaf)}
+.nc-sums .v.end{color:var(--tx-2);font-weight:500;font-size:15px}
+.nc-sums .t{text-align:left}
+.nc-track{display:flex;align-items:flex-start;gap:9px;margin-top:22px}
+.nc-track .rail{position:relative;flex:1;height:4px;background:var(--s2);border-radius:2px;margin-top:10px}
+.nc-track .rail .fut{position:absolute;inset:0;border-radius:2px;background:repeating-linear-gradient(-90deg,var(--line) 0 5px,transparent 5px 10px)}
+.nc-track .rail .f{position:absolute;top:0;right:0;height:100%;border-radius:2px;background:linear-gradient(270deg,var(--leaf),var(--leaf-2))}
+.nc-track .rail .medal{position:absolute;top:50%;transform:translate(50%,-50%);width:24px;height:24px;border-radius:50%;
+  background:var(--s1);border:1.5px solid var(--leaf);display:grid;place-items:center;box-shadow:0 0 0 3px var(--s1),0 1px 4px rgba(0,0,0,.4)}
+.nc-track .goal{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:5px}
+.nc-track .goal .disc{width:24px;height:24px;border-radius:50%;background:var(--s1);border:1.5px dashed var(--line-2);
+  display:grid;place-items:center;font-size:11px;opacity:.75}
+.nc-track .goal .yr{font-size:10px;color:var(--tx-3);font-variant-numeric:tabular-nums;line-height:1}
+.nc-who{font-size:11px;color:var(--tx-2);margin-top:16px;line-height:1.55}
+
+/* feed (activity) */
+.feed{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}
+.feed:last-child{border-bottom:none}
+.feed .fi{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:14px;flex-shrink:0;background:var(--leaf-bg)}
+.feed .fi.s{background:var(--sun-bg)}
+.feed .ft{font-size:12.5px;line-height:1.45}
+.feed .fw{font-size:10.5px;color:var(--tx-3);margin-top:2px}
+
+/* ===== edit screen ===== */
+.sw{position:relative;width:38px;height:22px;border-radius:11px;background:var(--s2);border:1px solid var(--line-2);
+  cursor:pointer;transition:.18s;flex-shrink:0}
+.sw::after{content:"";position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;
+  background:var(--tx-3);transition:.18s}
+.sw.on{background:var(--leaf-bg);border-color:var(--leaf)}
+.sw.on::after{background:var(--leaf);transform:translateX(-16px)}
+.setrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.setrow:last-child{border-bottom:none}
+.setrow .st{flex:1;min-width:0}
+.setrow .st b{display:block;font-size:12.5px;font-weight:500}
+.setrow .st p{font-size:10.5px;color:var(--tx-3);line-height:1.5;margin-top:2px}
+.person{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.person:last-child{border-bottom:none}
+.person .pa{width:30px;height:30px;border-radius:9px;overflow:hidden;flex-shrink:0;background:var(--s2)}
+.person .pn{flex:1;font-size:12.5px}
+.person .px{font-family:inherit;font-size:10.5px;color:var(--tx-3);background:none;border:1px solid var(--line);
+  border-radius:7px;padding:4px 9px;cursor:pointer;transition:.15s}
+.person .px:hover{color:var(--rose);border-color:var(--rose)}
+/* profile: your own photo + the address book of relatives */
+.myface{display:flex;align-items:center;gap:13px;margin-bottom:16px}
+.myface .pic{position:relative;width:62px;height:62px;border-radius:19px;overflow:hidden;flex-shrink:0;
+  background:var(--s2);border:1px solid var(--line);cursor:pointer}
+.myface .pic .cam{position:absolute;inset:auto 0 0 0;height:19px;background:rgba(6,8,5,.72);
+  display:grid;place-items:center;font-size:9.5px;color:var(--tx-2)}
+.myface .who b{display:block;font-size:16px;font-weight:600}
+.myface .who span{display:block;font-size:11.5px;color:var(--tx-2);margin-top:3px}
+.rel{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.rel:last-child{border-bottom:none}
+.rel .ra{width:34px;height:34px;border-radius:11px;overflow:hidden;flex-shrink:0;background:var(--s2)}
+.rel .ra svg{display:block;width:100%;height:100%}
+.rel .rn{flex:1;min-width:0}
+.rel .rn b{display:block;font-size:12.5px;font-weight:500}
+.rel .rn i{display:block;font-style:normal;font-size:10.5px;color:var(--tx-2);margin-top:2px}
+.rel .rx{font-family:inherit;font-size:10.5px;padding:5px 11px;border-radius:999px;cursor:pointer;
+  flex-shrink:0;background:var(--leaf-bg);border:1px solid var(--leaf-line);color:var(--leaf)}
+.rel .rs{font-size:10px;color:var(--tx-3);flex-shrink:0}
+.avpick{display:flex;gap:9px;margin:4px 0 2px;flex-wrap:wrap}
+.avpick button{width:40px;height:40px;border-radius:13px;overflow:hidden;padding:0;cursor:pointer;
+  background:var(--s2);border:2px solid transparent;transition:border-color .15s}
+.avpick button.on{border-color:var(--leaf)}
+.avpick svg{display:block;width:100%;height:100%}
+.sheet label{display:block;font-size:11px;color:var(--tx-3);margin:11px 0 5px}
+.sheet input[type=text],.sheet textarea{width:100%;font-family:inherit;font-size:13px;color:var(--tx);background:var(--s2);
+  border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.sheet textarea{min-height:88px;resize:vertical;line-height:1.6}
+/* payment methods + letters */
+.pm{border:1px solid var(--line);border-radius:14px;padding:13px;background:var(--s1);margin-bottom:9px}
+.pm.live{border-color:var(--leaf-line);background:var(--leaf-bg)}
+.pm.warn{border-color:#5A3742;background:var(--rose-bg)}
+.pm-h{display:flex;align-items:center;gap:9px}
+.pm-h b{flex:1;font-size:13px;font-weight:500}
+.pm-tag{font-size:9.5px;letter-spacing:.06em;padding:3px 9px;border-radius:999px;flex-shrink:0}
+.pm-tag.on{background:var(--leaf);color:#12210F}
+.pm-tag.off{border:1px solid var(--line);color:var(--tx-3)}
+.pm-tag.bad{background:var(--rose);color:#2A1F22}
+.pm p{font-size:11px;color:var(--tx-2);line-height:1.6;margin-top:7px}
+.pm .act{font-family:inherit;font-size:11px;margin-top:10px;padding:6px 13px;border-radius:999px;cursor:pointer;
+  background:transparent;border:1px solid var(--line-2);color:var(--tx-2)}
+.pm .act:hover{color:var(--tx);border-color:var(--tx-3)}
+.lt{display:flex;gap:11px;padding:12px 0;border-bottom:1px solid var(--line)}
+.lt:last-child{border-bottom:none}
+.lt .li{width:30px;height:30px;border-radius:10px;flex-shrink:0;display:grid;place-items:center;font-size:14px;
+  background:var(--sun-bg);border:1px solid var(--sun-line)}
+.lt.draft .li{background:var(--s2);border-color:var(--line)}
+.lt .lb2{flex:1;min-width:0}
+.lt .lb2 b{display:block;font-size:12.5px;font-weight:500}
+.lt .lb2 i{display:block;font-style:normal;font-size:10.5px;color:var(--tx-2);margin-top:3px;line-height:1.5}
+.lt .lact{font-family:inherit;font-size:10.5px;padding:5px 11px;border-radius:999px;cursor:pointer;flex-shrink:0;
+  align-self:center;background:var(--leaf-bg);border:1px solid var(--leaf-line);color:var(--leaf)}
+.editbtn{background:none;border:1px solid var(--line);border-radius:9px;width:32px;height:32px;
+  display:grid;place-items:center;font-size:14px;color:var(--tx-2);cursor:pointer;transition:.15s;flex-shrink:0}
+.editbtn:hover{border-color:var(--line-2);color:var(--tx)}
+.warn{background:var(--sun-bg);border:1px solid var(--sun-line);border-radius:10px;padding:11px 12px;
+  font-size:11px;line-height:1.55;color:#C4AE84;margin-top:8px}
+
+/* ===== detail screen (time journey) ===== */
+.tax{display:flex;align-items:flex-start;gap:0;margin-top:20px}
+.tax-rail{position:relative;flex:1;height:4px;background:var(--s2);border-radius:2px;margin:10px -12px 0}
+.tax-fut{position:absolute;inset:0;border-radius:2px;background:repeating-linear-gradient(-90deg,var(--line) 0 5px,transparent 5px 10px)}
+.tax-past{position:absolute;top:0;right:0;height:100%;border-radius:2px;background:linear-gradient(270deg,var(--leaf),var(--leaf-2))}
+.tax-proj{position:absolute;top:0;height:100%;border-radius:2px;background:var(--leaf);opacity:.32}
+.tax-medal{position:absolute;top:50%;transform:translate(50%,-50%);width:26px;height:26px;border-radius:50%;
+  background:var(--bg);border:1.5px solid var(--leaf);display:grid;place-items:center;pointer-events:none;
+  box-shadow:0 0 0 3px var(--bg),0 0 0 6px rgba(127,192,136,.14)}
+.tax input[type=range]{position:absolute;top:-14px;left:0;height:32px;margin:0;-webkit-appearance:none;
+  appearance:none;background:transparent;cursor:grab}
+.tax input[type=range]::-webkit-slider-runnable-track{background:transparent;height:32px}
+.tax input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;background:transparent}
+.tax input[type=range]::-moz-range-thumb{width:32px;height:32px;background:transparent;border:none}
+.tax-goal{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;z-index:2}
+.tax-goal .disc{width:24px;height:24px;border-radius:50%;background:var(--bg);border:1.5px dashed var(--line-2);
+  display:grid;place-items:center;font-size:11px;opacity:.75}
+.tax-goal .yr{font-size:10px;color:var(--tx-3);font-variant-numeric:tabular-nums;line-height:1}
+.tax-start{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;z-index:2}
+.tax-start .disc{width:24px;height:24px;border-radius:50%;background:var(--leaf-bg);
+  border:1.5px solid var(--leaf-line);display:grid;place-items:center}
+.tax-start .yr{font-size:10px;color:var(--tx-3);white-space:nowrap;line-height:1}
+.d-line{font-size:12px;color:var(--tx-2);line-height:1.6;margin-top:30px;text-align:center;
+  padding:0 6px;text-wrap:balance}
+.tax-when{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  font-size:10.5px;color:var(--leaf-soft);white-space:nowrap;font-weight:500}
+.tax-medal.idle{animation:sproutPulse 2.9s ease-in-out infinite}
+@keyframes sproutPulse{
+  0%,100%{box-shadow:0 0 0 3px var(--bg),0 0 0 6px rgba(127,192,136,.14)}
+  50%{box-shadow:0 0 0 3px var(--bg),0 0 0 12px rgba(127,192,136,.045)}
+}
+.cbr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.cbr:last-child{border-bottom:none}
+.cba{width:28px;height:28px;border-radius:9px;overflow:hidden;flex-shrink:0;background:var(--s2)}
+.cbn{flex:1;font-size:12.5px}
+.cbv{font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--leaf-soft)}
+.cbn b{display:block;font-size:12.5px;font-weight:500}
+.cbn i{display:block;font-style:normal;font-size:10.5px;color:var(--tx-2);margin-top:2px}
+.cbr.pend{opacity:.6}
+.cbp{font-size:10.5px;color:var(--tx-3);flex-shrink:0}
+
+/* ===== redeem code ===== */
+.codebox{width:100%;font-family:inherit;font-size:25px;font-weight:600;letter-spacing:.3em;text-align:center;
+  padding:16px 10px;border:1.5px solid var(--line-2);border-radius:13px;background:var(--s1);color:var(--tx);
+  direction:ltr;text-transform:uppercase}
+.codebox:focus{outline:none;border-color:var(--leaf);box-shadow:0 0 0 3px rgba(127,192,136,.14)}
+.codebox::placeholder{color:var(--tx-3)}
+.verified{display:flex;align-items:center;gap:11px;background:var(--leaf-bg);border:1px solid var(--leaf-line);
+  border-radius:12px;padding:13px 14px}
+.verified .vi{width:30px;height:30px;border-radius:50%;background:var(--leaf);color:#0E1A10;display:grid;
+  place-items:center;font-size:15px;font-weight:700;flex-shrink:0}
+.verified b{display:block;font-size:13px;font-weight:500;color:var(--leaf)}
+.verified p{font-size:10.5px;color:#8FB794;margin-top:2px;line-height:1.45}
+
+/* ===== bottom tab bar ===== */
+.tabbar{flex-shrink:0;z-index:5;display:flex;align-items:flex-end;justify-content:space-around;
+  padding:9px 12px 4px;background:rgba(18,20,17,.94);backdrop-filter:blur(9px);
+  border-top:1px solid var(--line)}
+.tab{flex:1;background:none;border:none;font-family:inherit;color:var(--tx-3);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:4px;font-size:9.5px;padding:3px 0;transition:.15s}
+.tab .lb{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  min-height:24px;line-height:1.25}
+.tab .lb span{white-space:nowrap}
+.tab .ic{font-size:17px;line-height:1;height:20px;display:grid;place-items:center}
+.tab.on{color:var(--leaf)}
+.tab.center{flex:0 0 auto}
+.tab.center .ic{width:44px;height:44px;border-radius:15px;background:var(--leaf);color:#0E1A10;display:grid;place-items:center;
+  font-size:24px;font-weight:500;margin-top:-20px;box-shadow:0 5px 14px rgba(127,192,136,.32);border:3px solid var(--bg)}
+.tab.center span{color:var(--tx-2)}
+/* in-app toast + confirmation sheet — native alert()/confirm() are blocked in the frame */
+.toast{position:absolute;left:50%;bottom:88px;z-index:40;transform:translateX(-50%) translateY(10px);
+  background:#282C26;color:var(--tx);border:1px solid var(--line);border-radius:13px;
+  padding:10px 16px;font-size:12.5px;line-height:1.5;max-width:78%;text-align:center;
+  box-shadow:0 12px 26px -10px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.scrim{position:absolute;inset:0;z-index:50;background:rgba(5,7,4,.66);display:flex;align-items:flex-end;
+  opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{width:100%;background:var(--s1);border-top:1px solid var(--line);border-radius:20px 20px 0 0;
+  padding:16px 18px 20px;transform:translateY(100%);transition:transform .26s cubic-bezier(.22,.8,.3,1);
+  max-height:86%;overflow-y:auto;scrollbar-width:none}
+.sheet::-webkit-scrollbar{display:none}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin:4px 0 2px}
+.chips button{font-family:inherit;font-size:11.5px;padding:8px 13px;border-radius:11px;cursor:pointer;
+  background:var(--s2);border:1px solid var(--line);color:var(--tx-2);transition:.15s;text-align:right}
+.chips button.on{background:var(--leaf-bg);border-color:var(--leaf-line);color:var(--leaf)}
+#c-terms{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+#c-terms button{text-align:center;padding:9px 4px;font-size:11px;white-space:nowrap}
+.chk{display:flex;align-items:flex-start;gap:9px;margin-top:11px;cursor:pointer;font-size:12px;
+  color:var(--tx-2);line-height:1.5}
+.chk input{width:17px;height:17px;accent-color:var(--leaf);flex-shrink:0;margin-top:1px}
+.hint{font-size:10.5px;color:var(--tx-3);margin-top:6px;line-height:1.5}
+/* empty states — never a zero, one action, and no nagging where empty may be permanent */
+.es{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:26px 4px;min-height:62%}
+.es .art{margin-bottom:16px;color:var(--leaf)}
+.es h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
+.es p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin-top:10px;max-width:27ch}
+.es .btn{margin-top:18px}
+.es .fine{margin-top:11px;max-width:31ch}
+.es .strip{margin-top:17px;width:100%;background:var(--s1);border:1px solid var(--line);
+  border-radius:13px;padding:12px 13px;text-align:right}
+.es .strip b{display:block;font-size:11.5px;font-weight:500}
+.es .strip span{display:block;font-size:10.5px;color:var(--tx-2);margin-top:3px;line-height:1.5}
+.steps{display:flex;gap:5px;padding:0 2px 14px}
+.steps i{flex:1;height:3px;border-radius:2px;background:var(--s2);font-style:normal}
+.steps i.on{background:var(--leaf)}
+.steplbl{font-size:10.5px;letter-spacing:.04em;color:var(--tx-3);margin:8px 0 0}
+.wel{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 4px 0}
+@keyframes drawStem{from{stroke-dashoffset:62}to{stroke-dashoffset:0}}
+@keyframes unfurlR{0%{opacity:0;transform:rotate(46deg) scale(.3)}
+  62%{opacity:1;transform:rotate(-7deg) scale(1.07)}100%{opacity:1;transform:rotate(0) scale(1)}}
+@keyframes unfurlL{0%{opacity:0;transform:rotate(-46deg) scale(.3)}
+  62%{opacity:1;transform:rotate(7deg) scale(1.07)}100%{opacity:1;transform:rotate(0) scale(1)}}
+@keyframes budPop{0%{opacity:0;transform:scale(0)}62%{opacity:1;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}}
+@keyframes bloom{from{opacity:0;transform:scale(.55)}to{opacity:.2;transform:scale(1)}}
+@keyframes ripple{from{opacity:.45;transform:scale(.35)}to{opacity:0;transform:scale(1.75)}}
+@keyframes breathe{0%,100%{transform:rotate(-1.4deg)}50%{transform:rotate(1.4deg)}}
+@keyframes mote{0%{opacity:0;transform:translateY(2px)}22%{opacity:.5}100%{opacity:0;transform:translateY(-40px)}}
+.grow svg [class^=lf],.grow svg .bud,.grow svg .bloom,.grow svg .ripple,.grow svg .mote{transform-box:view-box}
+.grow .plant{transform-box:view-box;transform-origin:30px 62px;animation:breathe 6.5s ease-in-out 2s infinite}
+.grow .ripple{transform-origin:30px 62px;opacity:0;animation:ripple .95s ease-out .05s forwards}
+.grow .bloom{transform-origin:30px 40px;opacity:0;animation:bloom .9s ease-out 1.1s forwards}
+.grow .stem{stroke-dasharray:62;animation:drawStem 1.05s cubic-bezier(.22,.85,.3,1) .1s forwards}
+.grow .lfBL{transform-origin:30px 48px;opacity:0;animation:unfurlL .62s cubic-bezier(.25,1.4,.45,1) .58s forwards}
+.grow .lfBR{transform-origin:30px 48px;opacity:0;animation:unfurlR .62s cubic-bezier(.25,1.4,.45,1) .66s forwards}
+.grow .lfTL{transform-origin:30px 33px;opacity:0;animation:unfurlL .64s cubic-bezier(.25,1.45,.45,1) .88s forwards}
+.grow .lfTR{transform-origin:30px 33px;opacity:0;animation:unfurlR .64s cubic-bezier(.25,1.45,.45,1) .96s forwards}
+.grow .bud{transform-origin:30px 8px;opacity:0;animation:budPop .5s cubic-bezier(.3,1.6,.5,1) 1.3s forwards}
+.grow .mote{transform-origin:center;opacity:0;animation:mote 5s ease-out infinite}
+.grow .m2{animation-delay:1.6s}.grow .m3{animation-delay:3.2s}
+.brandname{font-size:38px;font-weight:600;letter-spacing:-.02em;line-height:1;margin-top:16px}
+.orline{display:flex;align-items:center;gap:11px;margin:14px 0 11px;color:var(--tx-3);font-size:10.5px}
+.orline::before,.orline::after{content:"";flex:1;height:1px;background:var(--line)}
+.social{display:flex;gap:8px}
+.social button{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;
+  font-size:12.5px;padding:11px;border-radius:12px;background:transparent;border:1px solid var(--line);
+  color:var(--tx-2);cursor:pointer;transition:.15s}
+.social button:hover{color:var(--tx);border-color:var(--line-2)}
+/* ---- how-it-works story (screen 21) ---- */
+.how-story{position:relative;min-height:100%;overflow:hidden}
+.how-bars{position:absolute;top:0;left:0;right:0;display:flex;gap:5px;padding:14px 14px 0;z-index:10}
+.how-bar{flex:1;height:3px;border-radius:2px;background:rgba(237,239,233,.18);overflow:hidden}
+.how-bar i{display:block;height:100%;width:0%;background:var(--tx);border-radius:2px}
+.how-bar.done i{width:100%!important;transition:none}
+.how-bar.live i{transition:width linear}
+.how-close{position:absolute;top:20px;left:14px;z-index:12;width:26px;height:26px;border-radius:50%;
+  border:none;background:rgba(0,0,0,.35);color:var(--tx);font-size:13px;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-family:inherit}
+.how-tap{position:absolute;top:0;bottom:0;width:38%;z-index:9;cursor:pointer}
+.how-tap.prev{left:0}
+.how-tap.next{right:0}
+.how-slides{position:absolute;inset:0}
+.how-slide{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  text-align:center;padding:56px 22px 24px;opacity:0;pointer-events:none;transition:opacity .25s ease;
+}
+.how-slide.active{opacity:1;pointer-events:auto}
+.how-eyebrow{font-size:11px;letter-spacing:.14em;color:var(--leaf);text-transform:uppercase;margin:0 0 14px}
+.how-slide h2{font-size:19px;font-weight:500;line-height:1.34;margin:0 0 12px;color:var(--tx)}
+.how-slide p{font-size:12.5px;color:var(--tx-2);line-height:1.6;max-width:270px;margin:0}
+.how-sprout{width:60px;height:74px;margin-bottom:16px;position:relative}
+.how-sprout svg{width:100%;height:100%;overflow:visible}
+.how-gline{stroke:var(--line);stroke-width:1.4}
+.how-stem{stroke:var(--leaf);stroke-width:3;stroke-linecap:round;fill:none}
+.how-lf{fill:var(--leaf)}
+.how-art{height:52px;display:flex;align-items:center;justify-content:center;gap:8px;margin:18px 0 4px}
+.how-aha{margin-top:30px}
+.how-aha-line{font-size:12px;color:var(--tx-3);margin:0 0 6px}
+.how-aha-num{font-weight:700;font-size:32px;color:var(--tx);margin:0 0 7px;font-variant-numeric:tabular-nums}
+.how-aha-figure{font-size:1.3em;color:var(--leaf)}
+.how-aha-num .how-cur{font-size:.5em;color:var(--tx-2);margin-inline-end:5px;font-weight:500}
+.how-crowd span{width:32px;height:32px;border-radius:50%;overflow:hidden;border:1.5px solid var(--bg);
+  display:inline-block;margin-inline-start:-9px}
+.how-crowd span svg{width:100%;height:100%;display:block}
+.how-crowd span.how-you{border-color:var(--leaf-line);box-shadow:0 0 0 1.5px var(--leaf-line)}
+.how-occasions{font-size:20px;letter-spacing:6px;opacity:.7;margin:16px 0 2px}
+.how-waits{margin-top:12px;font-size:12.5px;color:var(--tx-3)}
+.how-start{position:absolute;left:22px;right:22px;bottom:22px;z-index:11;padding:13px;border-radius:12px;
+  border:none;background:var(--leaf);color:#12140f;font-family:inherit;font-size:14px;font-weight:600;
+  cursor:pointer}
+@media (prefers-reduced-motion:reduce){
+  .how-story *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+.wel h1{font-size:23px;font-weight:600;line-height:1.3;margin-top:16px;text-wrap:balance}
+.wel .claim{font-size:13px;color:var(--tx-2);line-height:1.65;margin-top:11px;max-width:29ch}
+.wel ul{list-style:none;width:100%;margin-top:22px;text-align:right}
+.wel li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);font-size:12.5px;line-height:1.5}
+.wel li:last-child{border-bottom:none}
+.wel li b{color:var(--leaf);font-weight:500;flex-shrink:0}
+.link{display:block;width:100%;text-align:center;font-family:inherit;font-size:12px;color:var(--tx-2);
+  background:none;border:none;cursor:pointer;padding:12px 0;text-decoration:underline;text-underline-offset:3px}
+.emptybtn{font-family:inherit;font-size:11px;padding:7px 12px;border-radius:8px;margin-top:9px;
+  border:1px solid var(--line);background:transparent;color:var(--tx-3);cursor:pointer;transition:.15s}
+.emptybtn.on{background:var(--leaf-bg);border-color:var(--leaf-line);color:var(--leaf)}
+.hint b{color:var(--leaf);font-weight:500}
+.req{border:1px solid #5A3742;background:var(--rose-bg);border-radius:14px;padding:13px;margin-bottom:9px}
+.req .rq-h{display:flex;align-items:center;gap:10px}
+.req .rq-h .ra{width:32px;height:32px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--s2)}
+.req .rq-h .ra svg{display:block;width:100%;height:100%}
+.req .rq-h b{flex:1;font-size:12.5px;font-weight:500}
+.req .rq-h span{font-size:10px;color:var(--tx-3);flex-shrink:0}
+.req p{font-size:11px;color:#D9AEB6;line-height:1.6;margin-top:8px}
+.req .rq-a{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}
+.req .rq-a button{font-family:inherit;font-size:11.5px;padding:8px;border-radius:10px;cursor:pointer}
+.req .rq-a .ok{background:var(--leaf);color:#12210F;border:none}
+.req .rq-a .no{background:transparent;border:1px solid var(--line-2);color:var(--tx-2)}
+.fold{font-family:inherit;font-size:11px;color:var(--tx-3);background:none;border:none;cursor:pointer;
+  padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+.scrim.on .sheet{transform:translateY(0)}
+.sheet-grip{width:34px;height:4px;border-radius:2px;background:var(--s2);margin:0 auto 13px}
+.sheet h3{font-size:14.5px;font-weight:600;margin:0 0 7px}
+.sheet p{font-size:12px;color:var(--tx-2);line-height:1.6;margin:0 0 14px;white-space:pre-line}
+@keyframes softIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .grow .stem{stroke-dashoffset:0!important;opacity:0;animation:softIn .5s ease-out forwards!important}
+  .grow .lfBL,.grow .lfBR{transform:none!important;animation:softIn .5s ease-out .28s forwards!important}
+  .grow .lfTL,.grow .lfTR{transform:none!important;animation:softIn .5s ease-out .48s forwards!important}
+  .grow .bud{transform:none!important;animation:softIn .5s ease-out .68s forwards!important}
+  .grow .bloom{transform:none!important;opacity:.2!important}
+  .grow .ripple,.grow .mote{display:none}
+  .grow .plant{transform:none!important}
+}
+</style>
+</head>
+<body>
+<script>
+/* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
+   מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
+window.NETA_CONFIG = {
+  url: 'https://oimstvogumuytgttkuej.supabase.co',
+  key: 'sb_publishable_rK0O13oJQ1qoh7twlrZYYA_jWX4-BeT'
+};
+
+</script>
+
+<!-- placeholder avatars -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="av-parent" viewBox="0 0 40 40"><rect width="40" height="40" fill="#2B2F3A"/><path d="M9.5 17 C9.5 7 30.5 7 30.5 17 L30.5 28 L26 28 L26 17 C26 12 14 12 14 17 L14 28 L9.5 28Z" fill="#5A3E2B"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#3E6E58"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#D9A578"/><circle cx="20" cy="16" r="8.2" fill="#E8B98F"/><path d="M11.5 15.5 C12 9 28 9 28.5 15.5 C26 11.5 14 11.5 11.5 15.5Z" fill="#5A3E2B"/></symbol>
+  <symbol id="av-granny" viewBox="0 0 40 40"><rect width="40" height="40" fill="#322A31"/><circle cx="20" cy="7.5" r="4.2" fill="#BCB6AB"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#7C5C70"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#D8B090"/><circle cx="20" cy="16" r="8.2" fill="#E7C2A2"/><path d="M11 16 C11 8.5 29 8.5 29 16 C29 12.5 27 11 20 11 C13 11 11 12.5 11 16Z" fill="#BCB6AB"/></symbol>
+  <symbol id="av-uncle" viewBox="0 0 40 40"><rect width="40" height="40" fill="#26303B"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#3B5B7B"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#C7935F"/><circle cx="20" cy="16" r="8.2" fill="#D8A472"/><path d="M11 15.5 C11 8 29 8 29 15.5 C29 12 27.5 10.8 20 10.8 C12.5 10.8 11 12 11 15.5Z" fill="#362B22"/><g stroke="#161A20" stroke-width="1.1" fill="none"><circle cx="16.6" cy="16.4" r="2.5"/><circle cx="23.4" cy="16.4" r="2.5"/><line x1="19.1" y1="16.4" x2="20.9" y2="16.4"/></g></symbol>
+  <symbol id="av-granny2" viewBox="0 0 40 40"><rect width="40" height="40" fill="#31291F"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#6F5A45"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#DBB489"/><circle cx="20" cy="16" r="8.2" fill="#EACAA8"/><path d="M10.5 16.5 C10.5 8 29.5 8 29.5 16.5 C29 12 27 10.5 20 10.5 C13 10.5 11 12 10.5 16.5Z" fill="#C8C3B9"/></symbol>
+  <symbol id="av-friend" viewBox="0 0 40 40"><rect width="40" height="40" fill="#2B3A2E"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#4E7358"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#C99A78"/><circle cx="20" cy="16" r="8.2" fill="#DDAF8A"/><path d="M11.5 15 C12.5 8 27.5 8 28.5 15 C27 11.5 13 11.5 11.5 15Z" fill="#2E2018"/></symbol>
+  <g id="ic-plus">
+    <line x1="12" y1="4.6" x2="12" y2="19.4" stroke="currentColor" stroke-width="2.7" stroke-linecap="round"/>
+    <line x1="4.6" y1="12" x2="19.4" y2="12" stroke="currentColor" stroke-width="2.7" stroke-linecap="round"/>
+  </g>
+  <g id="ic-feed">
+    <line x1="17" y1="5" x2="17" y2="19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" opacity=".38"/>
+    <circle cx="17" cy="5.4" r="2.7" fill="currentColor"/>
+    <circle cx="17" cy="12" r="2.7" fill="currentColor" opacity=".72"/>
+    <circle cx="17" cy="18.6" r="2.7" fill="currentColor" opacity=".45"/>
+    <line x1="11.6" y1="5.4" x2="3.4" y2="5.4" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/>
+    <line x1="11.6" y1="12" x2="6" y2="12" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" opacity=".72"/>
+    <line x1="11.6" y1="18.6" x2="4.8" y2="18.6" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" opacity=".45"/>
+  </g>
+  <g id="ic-person">
+    <circle cx="12" cy="8.2" r="4.3" fill="currentColor"/>
+    <path d="M4 20.6 C4 15.3 7.5 12.8 12 12.8 C16.5 12.8 20 15.3 20 20.6 Z" fill="currentColor" opacity=".7"/>
+  </g>
+  <g id="sprout-art">
+    <line x1="30" y1="62" x2="30" y2="20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    <path d="M30 48 C 20 44, 15 34, 21 28 C 27 34, 29 41, 30 48" fill="currentColor" opacity=".55"/>
+    <path d="M30 48 C 40 44, 45 34, 39 28 C 33 34, 31 41, 30 48" fill="currentColor" opacity=".55"/>
+    <path d="M30 33 C 17 28, 11 14, 19 7 C 27 15, 29 25, 30 33" fill="currentColor"/>
+    <path d="M30 33 C 43 28, 49 14, 41 7 C 33 15, 31 25, 30 33" fill="currentColor" opacity=".72"/>
+  </g>
+  <symbol id="chev" viewBox="0 0 7 12"><path d="M6 1L1.5 6L6 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="sprout" viewBox="0 0 14 15"><line x1="7" y1="14" x2="7" y2="5.5" stroke="#7FC088" stroke-width="1.4" stroke-linecap="round"/><path d="M7 9.5 C 4 8.7, 2.8 5.4, 4.4 4 C 6 5.2, 6.7 7.4, 7 9.5" fill="#7FC088"/><path d="M7 7.8 C 10 7, 11.2 3.8, 9.6 2.4 C 8 3.6, 7.3 5.7, 7 7.8" fill="#7FC088"/></symbol>
+</svg>
+
+<div class="wrap">
+<div class="device">
+<div class="notch"></div>
+<div class="statusbar">
+  <span>9:41</span>
+  <span class="si">
+    <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><rect x="0" y="6" width="3" height="5" rx="0.5" fill="currentColor"/><rect x="4.5" y="4" width="3" height="7" rx="0.5" fill="currentColor"/><rect x="9" y="2" width="3" height="9" rx="0.5" fill="currentColor"/><rect x="13.5" y="0" width="3" height="11" rx="0.5" fill="currentColor" opacity=".35"/></svg>
+    <svg width="15" height="11" viewBox="0 0 15 11" fill="none"><path d="M7.5 9.5a1.1 1.1 0 100-2.2 1.1 1.1 0 000 2.2z" fill="currentColor"/><path d="M4.3 6.2a4.6 4.6 0 016.4 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/><path d="M1.8 3.6a8.2 8.2 0 0111.4 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".55"/></svg>
+    <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.75" y="0.75" width="19.5" height="10.5" rx="2.5" stroke="currentColor" stroke-width="1"/><rect x="2" y="2" width="14" height="8" rx="1.3" fill="currentColor"/><rect x="21" y="4" width="1.6" height="4" rx="0.8" fill="currentColor" opacity=".6"/></svg>
+  </span>
+</div>
+<div class="topbar" id="topbar">
+  <div class="me" onclick="go(10)" title="הפרופיל שלך"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></div>
+  <div class="tt"><h1 id="tb-t">שלום אלון</h1><div class="sub" id="tb-s">הכסף גדל בזמן שהם גדלים</div></div>
+</div>
+
+<div id="flowbar" style="display:none;padding:2px 18px 10px">
+  <div class="steps" id="steps-top"></div>
+  <p class="steplbl" id="flowlbl"></p>
+</div>
+<div class="stage" id="stage">
+
+<!-- 0 HOME -->
+<section class="screen on" data-name="הנטיעות שלי">
+  <div class="card gap" id="resume-card" style="display:none;background:var(--sun-bg);border-color:var(--sun-line)">
+    <div class="row gap-s"><span>⏸</span><b style="font-size:13px;font-weight:500;color:var(--sun)">הנטיעה שהתחלת ממתינה</b></div>
+    <p class="sub" style="color:#C4AE84" id="resume-t">בר המצווה של דניאל · 100 ₪ בחודש. נשאר רק לחבר אמצעי תשלום כדי שההפקדה הראשונה תצא.</p>
+    <button class="btn" style="margin-top:12px" onclick="resumeOnbo()">השלם והפעל</button>
+  </div>
+  <div id="home-full">
+  <div class="summary">
+    <div class="s-row">
+      <div class="s-body">
+        <div class="s-eyebrow">ההשקעה שלך</div>
+        <div class="s-num" id="s-you">13,300 ₪</div>
+        <div class="s-label" id="s-label">זה הסכום שנטעת עד כה עבור העתיד של דניאל ונועה</div>
+      </div>
+      <div class="s-art">
+        <svg width="58" height="68" viewBox="0 0 60 70" aria-hidden="true">
+          <ellipse cx="30" cy="63" rx="20" ry="6" fill="var(--leaf)" opacity=".08"/>
+          <ellipse cx="30" cy="63" rx="11" ry="2.4" fill="var(--s2)"/>
+          <line x1="30" y1="62" x2="30" y2="20" stroke="var(--leaf)" stroke-width="2.6" stroke-linecap="round"/>
+          <path d="M30 48 C 20 44, 15 34, 21 28 C 27 34, 29 41, 30 48" fill="var(--leaf)" opacity=".5"/>
+          <path d="M30 48 C 40 44, 45 34, 39 28 C 33 34, 31 41, 30 48" fill="var(--leaf)" opacity=".5"/>
+          <path d="M30 33 C 17 28, 11 14, 19 7 C 27 15, 29 25, 30 33" fill="var(--leaf)"/>
+          <path d="M30 33 C 43 28, 49 14, 41 7 C 33 15, 31 25, 30 33" fill="#A9D6AF"/>
+        </svg>
+      </div>
+    </div>
+    <div class="s-meta"><span><b id="s-cnt">2</b> השקעות בעתידם</span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span></div>
+  </div>
+
+  <p class="eyebrow big">הנטיעות שלך</p>
+
+  <div id="garden"></div>
+
+  <button class="btn dash gap" style="margin-top:2px" onclick="startCreate()">+ פתח נטיעה חדשה</button>
+  </div><!-- /home-full -->
+
+  <div class="es" id="home-empty" style="display:none">
+    <div class="art"><svg width="66" height="78" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
+    <h3>שיהיה להם ממה להתחיל</h3>
+    <p>נטיעה היא הפקדה חודשית קטנה שמחכה לרגע אחד — בר מצווה, לימודים, דירה ראשונה. אתה קובע מתי היא נפתחת.</p>
+    <button class="btn" onclick="startCreate()">פתח את הנטיעה הראשונה</button>
+    <p class="fine">100 ₪ בחודש היום יהפכו לכ-23,500 ₪ בעוד 13 שנה. אפשר לשנות את הסכום בכל עת.</p>
+  </div>
+</section>
+
+<!-- 1 CREATE -->
+<section class="screen" data-name="הקמה">
+
+  <div id="cp-0">
+  <h2 class="gap-x">נטיעה חדשה</h2>
+  <p class="sub gap">בעוד כמה שנים מישהו ייהנה ממה שנטעת היום</p>
+  <div class="field"><label>בעתיד של מי תרצה להשקיע?</label>
+    <div class="row" style="gap:8px;align-items:stretch">
+      <input type="text" id="c-name" value="דניאל" style="flex:1">
+      <div class="chips" id="c-sex" style="margin:0;flex:0 0 auto">
+        <button onclick="setSex(this,'m')">בן</button>
+        <button onclick="setSex(this,'f')">בת</button>
+      </div>
+    </div>
+    <label class="chk"><input type="checkbox" id="c-undecided" onchange="toggleDesig(this)">
+      <span>עוד לא החלטתי עבור מי, כרגע אני רק רוצה לשים כסף ליום עתידי</span></label></div>
+  <div class="field">
+    <label>לאיזה רגע?</label>
+    <div class="pills" id="c-pills">
+      <button class="pill on" data-t="בר/בת מצווה" data-i="🎂">בר/בת מצווה</button>
+      <button class="pill" data-t="לימודים" data-i="🎓">לימודים</button>
+      <button class="pill" data-t="טיול אחרי צבא" data-i="🎒">טיול אחרי צבא</button>
+      <button class="pill" data-t="רכב ראשון" data-i="🚗">רכב ראשון</button>
+      <button class="pill" data-t="דירה" data-i="🏠">דירה</button>
+      <button class="pill" data-t="חתונה" data-i="💍">חתונה</button>
+      <button class="pill" data-t="קופת הפתעות" data-i="🎁">קופת הפתעות</button>
+      <button class="pill" data-t="custom" data-i="✦">משהו אחר</button>
+    </div>
+    <input type="text" id="c-custom" placeholder="למשל: טיול גדול, רכב ראשון" style="margin-top:8px;display:none">
+  </div>
+
+  <p class="eyebrow" style="margin-top:20px">כך זה ייראה אצלך</p>
+  <div class="card">
+    <div class="row"><div class="dot g" id="p-icon">🎂</div><div style="flex:1"><div class="title" id="p-title">בר/בת מצווה של דניאל</div><div class="meta" id="p-date">אוגוסט 2032</div></div></div>
+  </div>
+  <button class="btn gap" onclick="cGo(2)">המשך</button>
+  </div><!-- /cp-0 -->
+
+  <div id="cp-1" style="display:none">
+  <h2 class="gap-x" id="cp1-h">מי יקבל את הכסף שנטעת?</h2>
+  <p class="sub gap" id="cp1-sub">זה החלק שקובע שהכסף באמת יגיע למי שנטעת עבורו.</p>
+
+  <div id="c-benefields">
+  <div class="field"><label>שם מלא של הנהנה</label><input type="text" id="c-full" placeholder="למשל: דניאל כהן" oninput="fullTouched=true;checkBene()"></div>
+  <div class="field" id="c-approvefield">
+    <p class="eyebrow">מי יאשר את הפדיון כשיגיע המועד?</p>
+    <div class="stack gap">
+      <div class="opt ben on" data-b="self"><b id="c-selfb">דניאל עצמו</b><p id="c-selfp">קוד פדיון יישלח אליו במועד שקבעת, ישירות ולא דרכך.</p><p class="fine" id="c-selfhint" style="display:none;margin-top:6px"></p></div>
+      <div class="opt ben" data-b="guardian"><b>מי שאני קובע היום</b><p id="c-guardp">הכסף משתחרר בתאריך שקבעת לידי מי שתסמן — אך נשאר רשום על שם הנהנה, והמורשה מקבל אותו עבורו.</p></div>
+      <div class="opt ben" data-b="later"><b>אחליט בהמשך</b><p>אפשר לקבוע זאת בכל שלב עד המועד — כל שינוי כזה נשלח בהתראה לכל מי שהשקיע.</p></div>
+    </div>
+  </div>
+  <div class="field" id="c-codefield">
+    <label>לאן יישלח הקוד למימוש ההשקעה במועד המיוחל</label>
+    <input type="text" id="c-bene" placeholder="אימייל או טלפון של הנהנה">
+  </div>
+  <div id="c-guard" style="display:none">
+    <div class="field"><label>שם המורשה</label><input type="text" id="c-gname" placeholder="למשל: מיכל כהן, אמא של דניאל"></div>
+    <div class="field"><label>תעודת זהות של המורשה</label><input type="text" id="c-gid" placeholder="9 ספרות"></div>
+    <p class="fine" id="c-acctfine">חשבון היעד יצטרך להיות על שמו. העברה לחשבון של אדם אחר לא תאושר.</p>
+  </div>
+
+  </div><!-- /c-benefields -->
+
+  <button class="fold" onclick="toggleSafe()" style="margin-top:6px" id="c-safebtn">מה מגן על זה ›</button>
+  <div id="c-safe" style="display:none">
+    <div class="card">
+      <div class="stat"><span class="k">גם אתה לא יכול למשוך לפני המועד</span><span class="v" style="font-size:11.5px;font-weight:400;color:var(--tx-2)">זו הנעילה שמבטיחה שהכסף יגיע</span></div>
+      <div class="stat"><span class="k">חשבון היעד</span><span class="v" style="font-size:11.5px;font-weight:400;color:var(--tx-2)">רק על שם הנהנה או המורשה</span></div>
+      <div class="stat"><span class="k">שינוי הנהנה או המורשה</span><span class="v" style="font-size:11.5px;font-weight:400;color:var(--tx-2)">נכנס לתוקף אחרי 7 ימים</span></div>
+      <div class="stat"><span class="k">כל שינוי כזה</span><span class="v" style="font-size:11.5px;font-weight:400;color:var(--tx-2)">נשלח בהתראה לכל מי שהשקיע</span></div>
+      <div class="stat"><span class="k">ביום הפדיון</span><span class="v" style="font-size:11.5px;font-weight:400;color:var(--tx-2)">כל המשקיעים מקבלים הודעה</span></div>
+    </div>
+    <p class="fine gap">המנגנונים האלה נועדו למקרה אחד: שמישהו ינסה להסיט את הכסף בשקט לקראת המועד. שינוי כזה לעולם לא קורה מיד, ולעולם לא בלי שכולם יידעו.</p>
+  </div>
+
+  <div class="two gap"><button class="btn" onclick="beneContinue()">המשך</button><button class="btn ghost" onclick="toAmount()">חזרה</button></div>
+  </div><!-- /cp-1 -->
+
+  <div id="cp-2" style="display:none">
+  <h2 class="gap-x">פתוחה לאנשים אחרים או פרטית?</h2>
+  <p class="sub gap">אפשר לשנות את זה בכל שלב.</p>
+  <div class="stack gap">
+    <div class="opt shr on" data-s="private"><b>פרטית</b><p>רק מי שתזמין אישית — יכול להיות רק אתה, או גם בן/בת זוג. אף אחד אחר לא יכול להצטרף בלי הזמנה שלך.</p></div>
+    <div class="opt shr" data-s="open" id="shr-open"><b>פתוחה לאנשים אחרים</b><p>כל מי שתזמין יכול להצטרף ולהשקיע — קרובים, חברים, כל מי שתרצה. כל אחד רואה רק את ההשתתפות שלו, אלא אם בחר אחרת.</p></div>
+  </div>
+  <p class="fine gap" id="c-sharenote" style="display:none">קופה שעדיין לא יועדה רשומה על שמך, ולכן אחרים לא יכולים להפקיד לתוכה — כסף שהם ייתנו יישאר בשליטתך, ולא הובטח לאיש. אפשר לפתוח אותה ברגע שתייעד אותה.</p>
+  <button class="btn ghost gap-s" id="c-designbtn" style="display:none" onclick="backToName()">בחר עבור מי</button>
+  <p class="fine gap">רוצה לבנות את זה עם עוד אדם אחד, כבעלים שווה ולא כמשקיע? אפשר להוסיף שותף/ה בכל שלב — גם אחרי ההקמה, מהנטיעה עצמה.</p>
+
+  <div class="two gap"><button class="btn" onclick="toAmount()">המשך</button><button class="btn ghost" onclick="shareBack()">חזרה</button></div>
+  </div><!-- /cp-2 -->
+</section>
+
+<!-- 2 CONTRIBUTE -->
+<section class="screen" data-name="השקעה">
+  <div class="row gap"><div class="dot g" id="ct-icon">🎂</div><div><div class="title" id="ct-title">השקע עבור דניאל</div><div class="meta" id="ct-meta">בר מצווה · המועד המיוחל אוגוסט 2032</div></div></div>
+  <p class="sticky-sum" id="amt-sticky"><span id="amt-sticky-txt"></span></p>
+  <p class="eyebrow" id="eb-freq">1 · כל חודש או פעם אחת</p>
+  <div class="two gap"><button class="pill" data-f="m" onclick="setFreq('m')">כל חודש</button><button class="pill" data-f="l" onclick="setFreq('l')">סכום חד פעמי</button></div>
+  <p class="hint" id="freq-stop-hint" style="margin:-2px 0 10px">אפשר לעצור את ההפקדה בכל רגע.</p>
+  <div id="panel-m" class="field"><div class="row"><input type="range" id="amt-m" min="20" max="1000" step="10" value="100"><b id="out-m" style="min-width:62px;text-align:left;font-size:13.5px">100 ₪</b></div></div>
+  <div id="panel-l" class="field" style="display:none"><div class="row"><input type="range" id="amt-l" min="100" max="30000" step="100" value="1000"><b id="out-l" style="min-width:74px;text-align:left;font-size:13.5px">1,000 ₪</b></div></div>
+  <div class="hero" id="hero"><p class="hero-label" id="hero-label">בחר למטה מה יקרה לכסף עד אז</p><p class="hero-label" id="hero-mid" style="display:none"></p><p class="hero-num" id="hero-num">—</p><p class="hero-sub" id="hero-sub"></p></div>
+
+  <p class="eyebrow" id="eb-term" style="margin-top:20px">2 · מתי תרצה לקצור את הפירות?</p>
+  <div class="chips" id="c-terms">
+    <button onclick="setTerm(this,5)">5 שנים</button>
+    <button onclick="setTerm(this,10)">10 שנים</button>
+    <button onclick="setTerm(this,15)">15 שנים</button>
+    <button onclick="setTerm(this,20)">20 שנה</button>
+    <button onclick="openExactDate(this)">תאריך מדויק</button>
+  </div>
+  <div class="field" id="c-datefield" style="display:none;margin-top:10px">
+    <input type="date" id="c-date" value="2032-08-01" oninput="dateTouched=true;onExactDate()">
+  </div>
+  <p class="fine" id="c-datehint" style="margin:8px 0 16px"></p>
+
+  <p class="eyebrow" id="eb-mode">3 · מה יקרה לכסף עד אז</p>
+  <div class="stack gap">
+    <div class="opt" data-m="keep"><b>שיישמר כמו שהוא</b><p id="keep-desc">הסכום שתפקיד כל חודש יחכה במלואו בהגעה למועד המיוחל.</p></div>
+    <div class="opt" data-m="safe"><div class="row" style="gap:6px"><b>שיצבור ריבית מובטחת</b><span class="tag">מתאים לרוב</span></div><p>הסכום רק גדל. הריבית ידועה מראש ואינה יורדת.</p></div>
+    <div class="opt" data-m="market"><b>שיושקע בשוק ההון</b><p>פוטנציאל צמיחה גבוה יותר, אך הערך עולה ויורד ואינו מובטח.</p></div>
+  </div>
+  <div id="safe-block" style="display:none">
+    <p class="eyebrow" id="eb-trk1">4 · באיזה מסלול</p>
+    <div class="stack gap">
+      <div class="opt trk" data-r="0.02"><div class="row" style="justify-content:space-between"><b>פיקדון גמיש</b><span class="rate">כ-2% בשנה</span></div><p>ללא סכום מינימלי. הריבית עשויה להשתנות בין תקופות.</p></div>
+      <div class="opt trk" data-r="0.035"><div class="row" style="justify-content:space-between"><b>פיקדון נעול</b><span class="rate">כ-3.5% בשנה</span></div><p>ריבית קבועה עד המועד. נדרש סכום פתיחה מינימלי.</p></div>
+    </div>
+  </div>
+  <div id="market-block" style="display:none">
+    <p class="eyebrow" id="eb-trk2">4 · באיזה קצב</p>
+    <div class="stack gap">
+      <div class="opt trk" data-r="0.06"><div class="row" style="justify-content:space-between"><b>מאוזן</b><span class="rate">כ-6% בשנה</span></div><p>איזון בין צמיחה ליציבות.</p></div>
+      <div class="opt trk" data-r="0.08"><div class="row" style="justify-content:space-between"><b>עוקב מדד</b><span class="rate">כ-8% בשנה</span></div><p>צמוד למדד מנייתי רחב, בדומה לחיסכון לכל ילד.</p></div>
+      <div class="opt trk" data-r="0.09"><div class="row" style="justify-content:space-between"><b>נועז</b><span class="rate">כ-9% בשנה</span></div><p>תנודתי יותר. מתאים כשנשארו שנים רבות ליעד.</p></div>
+    </div>
+  </div>
+  <p class="fine" id="fine" style="margin-bottom:14px"></p>
+  <div class="two"><button class="btn" id="amt-cta" onclick="afterAmount()">השקע עכשיו</button><button class="btn ghost" id="amt-back" onclick="backFromAmount()">חזרה</button></div>
+</section>
+
+<!-- 3 PAYMENT -->
+<section class="screen" data-name="תשלום">
+  <div class="row gap"><div class="dot g" id="pay-icon">🎂</div><div><div class="title">איך תעביר את ההפקדה?</div><div class="meta" id="pay-meta">הפקדה חודשית · עבור דניאל</div></div></div>
+
+  <div id="pay-saved" class="stack gap" style="display:none"></div>
+  <div id="pay-recurring" class="stack gap">
+    <p class="eyebrow">כדי שלא תצטרך לזכור כל חודש</p>
+    <div class="opt pay on" data-p="hora"><div class="row" style="gap:6px"><b>הוראת קבע מהבנק</b><span class="tag">הכי נוח לחודשי</span></div><p>יורד אוטומטית כל חודש בסכום שבחרת. אפשר לבטל בכל עת מול הבנק.</p></div>
+    <div class="opt pay" data-p="card-rec"><b>חיוב כרטיס אשראי</b><p>חיוב חוזר כל חודש באותו תאריך, ישירות מהכרטיס שלך.</p></div>
+  </div>
+
+  <div id="pay-onetime" class="stack gap" style="display:none">
+    <p class="eyebrow">בחר את הדרך הכי נוחה לך</p>
+    <div class="opt pay on" data-p="card"><b>כרטיס אשראי</b><p>חיוב מיידי, מאושר תוך רגע.</p></div>
+    <div class="opt pay" data-p="bit"><div class="row" style="gap:6px"><b>Bit</b><span class="tag">מושלם למתנה</span></div><p>שולחים כמו לכל מתנה למשפחה — מהיר ופשוט.</p></div>
+    <div class="opt pay" data-p="transfer"><b>העברה בנקאית</b><p>פרטי חשבון להעברה, מאובטחים דרך הגוף הפיננסי המנהל.</p></div>
+  </div>
+
+  <div id="pay-fields"></div>
+
+  <div class="two" style="margin-top:20px"><button class="btn" onclick="toReview()">המשך לסיכום</button><button class="btn ghost" id="pay-back" onclick="backFromPay()">חזרה</button></div>
+</section>
+
+<!-- 4 AHA -->
+<section class="screen" data-name="רגע ההשקעה">
+  <div class="center">
+    <svg width="120" height="140" viewBox="0 0 140 160" style="margin:4px auto 0;display:block">
+      <ellipse cx="70" cy="150" rx="36" ry="6" fill="var(--s2)"/>
+      <line x1="70" y1="148" x2="70" y2="50" stroke="var(--leaf)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M70 120 C 52 114, 44 98, 53 87 C 62 98, 68 109, 70 120" fill="var(--leaf)" opacity=".35"/>
+      <path d="M70 120 C 88 114, 96 98, 87 87 C 78 98, 72 109, 70 120" fill="var(--leaf)" opacity=".35"/>
+      <path d="M70 95 C 48 87, 38 66, 51 53 C 62 67, 68 82, 70 95" fill="var(--leaf)" opacity=".35"/>
+      <path d="M70 95 C 92 87, 102 66, 89 53 C 78 67, 72 82, 70 95" fill="var(--leaf)"/>
+      <circle cx="89" cy="53" r="15" fill="none" stroke="var(--leaf)" stroke-width="1" opacity=".45"/>
+      <g id="env" style="opacity:0;transition:opacity .4s"><line x1="53" y1="87" x2="53" y2="102" stroke="var(--line-2)" stroke-width="1"/><rect x="43" y="102" width="20" height="14" rx="2" fill="var(--sun-bg)" stroke="var(--sun)" stroke-width=".9"/><path d="M43 103 L53 110 L63 103" fill="none" stroke="var(--sun)" stroke-width=".9"/></g>
+    </svg>
+    <h2 style="margin:13px 0 6px" id="aha-h2">העלה שלך נוסף לעץ של דניאל</h2>
+    <p class="sub" style="margin-bottom:4px" id="aha-sub">בחרת להשקיע <b style="color:var(--tx)">1,000 ₪</b> היום, שיהפכו בעוד 6 שנים לכ-<b style="color:var(--leaf)">1,419 ₪</b> ביום הבר מצווה שלו</p>
+    <p class="fine gap">הדמיה לפי מסלול מאוזן. אינה מהווה הבטחת תשואה.</p>
+    <div class="note gap" id="aha-note">עד כה השקיעו בדניאל <b>אתה, סבתא ודוד יוסי</b></div>
+  </div>
+  <button class="btn dash" id="letter-open" onclick="openLetter()"><span id="lo-txt">✉ רוצה לצרף מכתב שייפתח באוגוסט 2032?</span></button>
+
+  <div class="card" id="letter-form" style="text-align:right;display:none">
+    <p class="sub gap-s" id="lf-txt">המכתב ייחתם עכשיו וייפתח על ידי דניאל רק באוגוסט 2032, יחד עם מה שהשקעת עבורו.</p>
+    <textarea id="letter" placeholder="דניאל, ביום שתקרא את זה..."></textarea>
+    <div class="two" style="margin-top:8px">
+      <button class="btn" onclick="seal()">חתום את המכתב</button>
+      <button class="btn ghost" onclick="skipLetter()">לא עכשיו</button>
+    </div>
+  </div>
+  <div class="lock" id="letter-done" style="display:none"><div style="font-size:18px">🔒</div><b style="display:block;margin:5px 0 4px;font-size:13.5px">המכתב נחתם</b><p class="sub" id="ld-txt">תלוי על העץ עד אוגוסט 2032. רק דניאל יוכל לפתוח אותו.</p></div>
+
+  <button class="btn dash" id="tp-open" style="margin-top:8px" onclick="openTellParents()"><span id="tp-open-txt">🎉 רוצה לשתף מישהו שישמח לראות שנטעת עבור דניאל?</span></button>
+  <div class="note" id="tp-form" style="text-align:right;display:none">
+    <p class="sub gap-s" id="tp-form-sub" style="color:#C6E3C9">יראו בדיוק כמה נטעת, ויוכלו לחזור מתי שבא להם ולראות איך זה גדל — בלי גישה לכסף עצמו.</p>
+    <div class="field" style="margin-bottom:0"><label>לאן לשלוח</label><input type="text" id="tp-contact" placeholder="050-0000000 או name@mail.com" oninput="tpChanHint()">
+      <p class="hint" id="tp-hint">הקישור יישלח בוואטסאפ אם תזין מספר, ובאימייל אם תזין כתובת.</p></div>
+    <div class="two" style="margin-top:12px">
+      <button class="btn" onclick="sendTellParents()">שלח קישור</button>
+      <button class="btn ghost" onclick="skipTellParents()">לא עכשיו</button>
+    </div>
+  </div>
+  <div class="note" id="tp-done" style="display:none;text-align:center"><div style="font-size:20px">🎉</div><b style="display:block;margin:6px 0 4px;font-size:13.5px;color:var(--leaf)">נשלח!</b><p class="sub" id="tp-done-txt" style="color:#C6E3C9">יראו בדיוק כמה נטעת, ויוכלו לחזור ולראות איך זה גדל.</p></div>
+
+  <button class="btn" id="a-next" style="margin-top:14px" onclick="ahaNext()">חזרה לנטיעות שלי</button>
+</section>
+
+<!-- 5 DETAIL -->
+<section class="screen" data-name="פרטי נטיעה">
+  <div class="row gap" style="align-items:flex-start">
+    <div class="dot g" style="width:40px;height:40px;font-size:17px" id="d-icon">🎂</div>
+    <div style="flex:1"><div class="title" style="font-size:14.5px" id="d-title">בר המצווה של דניאל</div><div class="meta" id="d-date" style="margin-top:3px">המועד המיוחל: אוגוסט 2032</div><div class="meta" id="d-owners" style="margin-top:3px;color:var(--leaf);display:none"></div></div>
+    <button class="editbtn" onclick="go(11)" aria-label="עריכת הנטיעה">✎</button>
+  </div>
+  <svg width="146" height="166" viewBox="0 0 140 162" style="margin:2px auto 0;display:block">
+    <ellipse cx="70" cy="152" rx="54" ry="17" fill="var(--leaf)" opacity=".07"/>
+    <ellipse cx="70" cy="152" rx="30" ry="5" fill="var(--s2)"/>
+    <line id="d-stem" x1="70" y1="150" x2="70" y2="103" stroke="var(--leaf)" stroke-width="3.5" stroke-linecap="round"/>
+    <g id="d-l1"><path d="M70 122 C 54 116, 46 101, 55 90 C 64 101, 68 111, 70 122" fill="var(--leaf)" opacity=".5"/><path d="M70 122 C 86 116, 94 101, 85 90 C 76 101, 72 111, 70 122" fill="var(--leaf)" opacity=".5"/></g>
+    <g id="d-l2" style="opacity:.15"><path d="M70 96 C 49 88, 39 67, 51 54 C 62 68, 68 82, 70 96" fill="var(--leaf)"/><path d="M70 96 C 91 88, 101 67, 89 54 C 78 68, 72 82, 70 96" fill="var(--leaf)"/><path d="M66 89 C 53 82, 46 68, 54 58 C 61 68, 65 79, 66 89" fill="#A9D6AF" opacity=".45"/></g>
+    <g id="d-bud" style="opacity:0"><circle cx="70" cy="44" r="14" fill="var(--sun)" opacity=".14"/><circle cx="70" cy="44" r="7.5" fill="var(--sun-bg)"/><circle cx="70" cy="44" r="3.4" fill="var(--sun)"/></g>
+  </svg>
+
+  <div class="nc-sums" style="margin-top:12px">
+    <div><span class="k" id="d-lb">נצבר עד כה</span><span class="v now" id="d-num">15,600 ₪</span></div>
+    <div class="t"><span class="k">בקצב הזה ייצבר</span><span class="v end">כ-35,300 ₪</span></div>
+  </div>
+
+  <div class="tax">
+    <span class="tax-start">
+      <span class="disc"><svg width="9" height="12" viewBox="0 0 10 12" aria-hidden="true"><path d="M5 1 C8.4 4, 9 8, 5 11 C1 8, 1.6 4, 5 1Z" fill="var(--leaf)"/></svg></span>
+      <span class="yr" id="d-planted">נשתל 2019</span>
+    </span>
+    <div class="tax-rail">
+      <div class="tax-fut"></div>
+      <div class="tax-past" id="d-past" style="width:53.8%"></div>
+      <div class="tax-proj" id="d-proj" style="right:53.8%;width:0"></div>
+      <span class="tax-medal idle" id="d-medal" style="right:53.8%">
+        <svg width="14" height="15" viewBox="0 0 14 15"><use href="#sprout"/></svg>
+        <span class="tax-when" id="d-when">עוד 6 שנים</span>
+      </span>
+      <input type="range" id="d-time" min="0" max="6" step="1" value="0" style="width:46.2%" aria-label="גרירה קדימה בזמן">
+    </div>
+    <span class="tax-goal"><span class="disc" id="d-goalicon">🎂</span><span class="yr" id="d-yr">2032</span></span>
+  </div>
+
+  <p class="d-line" id="d-line">בזכות 150 ₪ בחודש ממך, מסבתא ומדוד יוסי, דניאל מתקרב ליום הגדול שלו</p>
+
+  <p class="eyebrow" style="margin-top:20px" id="d-cbh">מי השקיע בעתיד של דניאל</p>
+  <div class="card" id="d-who">
+    <div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></div><span class="cbn">אתה</span><span class="cbv">9,100 ₪</span></div>
+    <div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></div><span class="cbn">סבתא רחל</span><span class="cbv">4,300 ₪</span></div>
+    <div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></div><span class="cbn">דוד יוסי</span><span class="cbv">2,200 ₪</span></div>
+  </div>
+  <p class="fine gap" id="d-whofine">רק אתה רואה את הפילוח הזה, כבעל הנטיעה. הקרובים רואים זה את זה — בלי סכומים.</p>
+
+  <div class="card" style="background:var(--sun-bg);border-color:var(--sun-line);margin-top:16px">
+    <div class="row gap-s"><span>✉</span><b style="font-size:13px" id="d-lcount">ולא רק כסף, 3 מכתבים חתומים — מסבתא, מדוד יוסי וממך</b></div>
+    <p class="sub" style="color:#C4AE84" id="d-lett">המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.</p>
+  </div>
+
+  <div class="two" id="d-acts" style="margin-top:18px"></div>
+  <p class="fine" id="d-actnote" style="margin-top:9px;display:none"></p>
+</section>
+
+<!-- 6 INVITE PICKER -->
+<section class="screen" data-name="בחירת נטיעה">
+  <h2 class="gap-s">למי מזמינים קרובים?</h2>
+  <p class="sub gap">בחר את הנטיעה שאליה תרצה להזמין את המשפחה</p>
+  <div class="card tap" onclick="pickInvite('danielBar')">
+    <div class="row"><div class="dot g">🎂</div><div style="flex:1"><div class="title" id="ip-nm">בר המצווה של דניאל</div><div class="meta" id="ip-date">המועד המיוחל: אוגוסט 2032</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div>
+  </div>
+  <div class="card tap" onclick="pickInvite('noaStudy')">
+    <div class="row"><div class="dot g">🎓</div><div style="flex:1"><div class="title">הלימודים של נועה</div><div class="meta">המועד המיוחל: ספטמבר 2038 · <span style="color:var(--tx-3)">פרטית</span></div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div>
+  </div>
+  <p class="fine gap" style="margin-top:4px">מוצגות רק הנטיעות שאתה היוזם שלהן — קרוב שפתח נטיעה הוא זה שמזמין אליה.</p>
+  <button class="btn ghost" onclick="openPeople()">חזרה</button>
+</section>
+
+<!-- 7 INVITE / מעגל -->
+<section class="screen" data-name="הזמנה">
+  <h2 class="gap-s">הזמן את המשפחה</h2>
+  <p class="sub gap" id="inv-sub1">שלח קישור. מי שיפתח אותו יוכל להשקיע בדניאל בלי לראות כמה השקיעו אחרים.</p>
+  <div class="card center" style="background:var(--leaf-bg);border-color:#2A4530">
+    <div style="font-size:22px">🌳</div><b style="display:block;margin:6px 0 4px;font-size:14px" id="inv-title">שותפים בעתיד של דניאל</b>
+    <p class="sub" style="color:#A8CBAC" id="inv-sub2">אוגוסט 2032 · 44% מהדרך</p>
+    <p class="fine" style="color:#7FA184;margin-top:5px">כרטיס השיתוף מציג התקדמות בלבד, ללא סכומים.</p>
+  </div>
+  <div class="card" id="inv-stats">
+    <div class="stat"><span class="k">סבתא רחל</span><span class="v">השתתפה</span></div>
+    <div class="stat"><span class="k">דוד יוסי</span><span class="v">השתתף</span></div>
+    <div class="stat"><span class="k">אתה</span><span class="v">8,200 ₪</span></div>
+  </div>
+  <p class="fine gap" id="inv-fine">אתה רואה סכומים מלאים כבעל הנטיעה. הקרובים רואים רק את ההשתתפות שלהם, אלא אם בחרו אחרת.</p>
+  <button class="btn gap-s" onclick="toast('הקישור הועתק')">העתק קישור הזמנה</button>
+  <p class="fine gap">אפשר לשלוח את הקישור גם לקבוצת המשפחה. כל מי שייכנס דרכו יופיע אצלך לאישור, עם שמו — אף אחד לא מצטרף בלי שתראה מי.</p>
+
+  <p class="eyebrow big">איך ההזמנה מאובטחת</p>
+  <div class="card">
+    <div class="row gap-s"><span>🔒</span><b style="font-size:13px;font-weight:500">קוד אימות לנמען שהזנת</b></div>
+    <p class="sub">מי שפותח את הקישור מתבקש להזין קוד חד-פעמי שנשלח <b style="color:var(--tx)">למספר או לכתובת שאליהם שלחת את ההזמנה</b>. קישור שהועבר לאדם אחר לא יעבור את השלב הזה — הוא לא יקבל את הקוד.</p>
+    <p class="sub" style="margin-top:9px">בקשה שהמערכת לא הצליחה לאמת מגיעה אליך לאישור, עם שם המבקש. אתה מחליט.</p>
+  </div>
+
+
+  <button class="btn ghost gap-s" onclick="go(0)">חזרה לנטיעות שלי</button>
+</section>
+
+<!-- 8 REDEEM -->
+<section class="screen" data-name="פדיון">
+  <div class="center gap"><div style="font-size:26px" id="rd-icon">🎂</div><h2 style="margin:8px 0 4px" id="rd-h">הגיע היום, דניאל</h2><p class="sub" id="rd-sub">אוגוסט 2032 · הנטיעה שלך הבשילה</p></div>
+  <div class="card"><div class="stat"><span class="k">נפתחה</span><span class="v" id="rd-planted">2019</span></div><div class="stat"><span class="k" id="rd-whok">השקיעו עבורך</span><span class="v" id="rd-who">4 אנשים</span></div><div class="stat"><span class="k">סכום לפדיון</span><span class="v" style="color:var(--leaf)" id="rd-sum">35,300 ₪</span></div></div>
+  <div class="card" style="background:var(--sun-bg);border-color:#3D3520"><div class="row gap-s"><span>✉</span><b style="font-size:13.5px" id="rd-lcount">3 מכתבים מחכים לך</b></div><p class="sub" style="color:#C4AE84" id="rd-lsub">נכתבו לפני שנים על ידי סבתא, דוד יוסי ואמא ואבא. הם נפתחים היום, יחד איתך.</p></div>
+  <div class="lock gap"><b style="display:block;margin-bottom:4px;font-size:13.5px">אימות זהות</b><p class="sub">הפדיון מתבצע מול הגוף הפיננסי המנהל, לאחר אימות זהות מלא. נטע לא מחזיקה ולא מנהלת את הכספים.</p></div>
+  <button class="btn" onclick="go(13)">התחל אימות ופדיון</button>
+</section>
+
+<!-- 9 ACTIVITY / פעילות -->
+<section class="screen" data-name="פעילות">
+  <div id="act-full">
+  <div class="card">
+    <div class="feed"><div class="fi">🌱</div><div><div class="ft"><b style="font-weight:500">דוד יוסי</b> הפקיד 50 ₪ בגיוס של דניאל</div><div class="fw">לפני יומיים</div></div></div>
+    <div class="feed"><div class="fi">🎓</div><div><div class="ft">הלימודים של נועה עברו את <b style="font-weight:500;color:var(--leaf)">4,000 ₪</b></div><div class="fw">לפני שבוע</div></div></div>
+    <div class="feed"><div class="fi s">✉</div><div><div class="ft"><b style="font-weight:500">סבתא רחל</b> צירפה מכתב שייפתח בדירה של נועה</div><div class="fw">לפני שבועיים</div></div></div>
+    <div class="feed"><div class="fi">🎂</div><div><div class="ft">בר המצווה של דניאל — כבר 6 שנים של נטיעה</div><div class="fw">לפני חודש</div></div></div>
+  </div>
+  <div class="note">כאן תראו כל הפקדה חדשה, כל אבן דרך וכל מכתב שמצטרף — <b>הלב הפועם של הגינה המשפחתית.</b></div>
+  </div><!-- /act-full -->
+
+  <div class="es" id="act-empty" style="display:none">
+    <div class="art" style="color:var(--leaf-2);opacity:.75"><svg width="54" height="54" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></div>
+    <h3>שקט, וזה בסדר</h3>
+    <p>הכסף עובד גם כשלא קורה כלום. אין צורך לעשות דבר.</p>
+    <div class="strip" id="act-next"><b>ההפקדה הבאה · 1 בספטמבר</b><span>150 ₪ לבר המצווה של דניאל, בהוראת קבע.</span></div>
+    <p class="fine">כאן יופיעו הרגעים: קרוב שהפקיד, אבן דרך שנחצתה, מכתב שנוסף.</p>
+  </div>
+</section>
+
+<!-- 10 PROFILE / פרופיל -->
+<section class="screen" data-name="פרופיל">
+  <div class="card" id="pr-stats">
+    <div class="stat"><span class="k">הנטיעות שלך</span><span class="v" id="pr-mine">2</span></div>
+    <div class="stat"><span class="k">נטיעות שקרובים פתחו</span><span class="v" id="pr-theirs">2</span></div>
+    <div class="stat"><span class="k">סה״כ נצבר עד כה</span><span class="v" style="color:var(--leaf)" id="pr-sum">27,500 ₪</span></div>
+  </div>
+  <p class="eyebrow" style="margin-top:22px">הגדרות</p>
+  <div class="card tap" onclick="openRelatives()"><div class="row"><div class="dot g">👥</div><div style="flex:1"><div class="title">הקרובים שלי</div><div class="meta" id="rel-meta">4 קרובים · אחת ממתינה להצטרפות</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
+  <div class="card tap" onclick="pickMyFace()"><div class="row"><div class="pic" style="width:38px;height:38px;border-radius:12px;overflow:hidden;flex-shrink:0;background:var(--s2);border:1px solid var(--line)"><svg class="avsvg" viewBox="0 0 40 40" id="my-av"><use href="#av-parent"/></svg></div><div style="flex:1"><div class="title">התמונה שלי</div><div class="meta">מופיעה לך ולקרובים שהזמנת</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
+  <div class="card tap" onclick="openPay()"><div class="row"><div class="dot g">💳</div><div style="flex:1"><div class="title">אמצעי תשלום</div><div class="meta" id="pf-pay-meta">הוראת קבע · 210 ₪ בכל חודש</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
+  <div class="card tap" onclick="openLetters()"><div class="row"><div class="dot g">✉</div><div style="flex:1"><div class="title">המכתבים שלי</div><div class="meta" id="lett-meta">2 מכתבים חתומים · טיוטה אחת</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
+  <div class="card tap"><div class="row"><div class="dot g">🔐</div><div style="flex:1"><div class="title">אבטחה ואימות זהות</div><div class="meta">אימות מלא נדרש רק במועד הפדיון</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
+  <div class="card tap"><div class="row"><div class="dot g">🔔</div><div style="flex:1"><div class="title">התראות</div><div class="meta">הפקדות, אבני דרך ומכתבים</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
+  <div class="lock" style="text-align:right;margin-top:5px"><p class="sub" style="color:#C4AE84">הכספים מוחזקים ומנוהלים בגוף פיננסי מוסדר. נטע היא שכבת החוויה בלבד ואינה מחזיקה את הכסף.</p></div>
+</section>
+
+<!-- 11 EDIT -->
+<section class="screen" data-name="עריכה">
+  <div class="row gap"><div class="dot g">🎂</div><div><div class="title">עריכת הנטיעה</div><div class="meta" id="e-meta">בר המצווה של דניאל</div></div></div>
+
+  <p class="eyebrow">מה שאתה יכול לשנות בכל רגע</p>
+  <div class="field"><label>שם הנטיעה</label><input type="text" id="e-name" value="בר המצווה של דניאל"></div>
+
+  <div class="card">
+    <div class="row gap-s"><span>✉</span><b style="font-size:13px">המכתב שלך</b></div>
+    <p class="fine gap-s" id="e-lstat">נחתם במרץ 2024 · דניאל יקרא אותו באוגוסט 2032</p>
+    <textarea id="e-letter" style="min-height:64px">דניאל, ביום שתקרא את זה כבר תהיה גדול. רצינו שתדע שחשבנו עליך הרבה לפני.</textarea>
+    <p class="fine" style="margin-top:7px">רק אתה יכול לערוך את המכתב שלך, וזה אפשרי עד למועד המיוחל. אף אחד אחר לא רואה אותו — גם לא שאר המשקיעים.</p>
+  </div>
+
+  <p class="eyebrow" style="margin-top:20px">מי רואה את הנטיעה</p>
+  <div class="card">
+    <div class="setrow"><div class="st"><b>קישור השיתוף פעיל</b><p>כשהוא כבוי, קישורים קיימים מפסיקים לעבוד</p></div><div class="sw on" onclick="this.classList.toggle('on')" role="switch"></div></div>
+    <div class="setrow"><div class="st"><b>הקרובים רואים זה את זה</b><p>מי שהשקיע יראה מי עוד משתתף — לעולם בלי סכומים</p></div><div class="sw on" onclick="this.classList.toggle('on')" role="switch"></div></div>
+    <div class="setrow"><div class="st"><b>עדכון כשמישהו מצטרף</b><p>התראה כשקרוב חדש משקיע בדניאל</p></div><div class="sw on" onclick="this.classList.toggle('on')" role="switch"></div></div>
+  </div>
+
+  <p class="eyebrow" style="margin-top:18px">למי יש גישה היום</p>
+  <div class="card">
+    <div class="person"><div class="pa"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></div><span class="pn">סבתא רחל</span><button class="px" onclick="toast('הגישה של סבתא רחל תוסר')">הסר גישה</button></div>
+    <div class="person"><div class="pa"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></div><span class="pn">דוד יוסי</span><button class="px" onclick="toast('הגישה של דוד יוסי תוסר')">הסר גישה</button></div>
+  </div>
+  <p class="fine gap">הסרת גישה מפסיקה צפייה בהמשך — היא לא מוחקת ולא מחזירה כסף שכבר הושקע. כל מי שהשקיע מחליט בעצמו אם הסכום שלו גלוי לאחרים; זו בחירה שלו, לא שלך.</p>
+
+  <p class="eyebrow" style="margin-top:18px">שינוי שמשפיע על כולם</p>
+  <div class="field" style="margin-bottom:6px">
+    <label>המועד המיוחל</label>
+    <input type="date" id="e-date" value="2032-08-01">
+  </div>
+  <div class="warn" id="e-datewarn">דחיית המועד אפשרית, והקדמתו לא — סבתא ודוד יוסי השקיעו מתוך הבנה שהכסף ייפתח באוגוסט 2032. כל שינוי יישלח אליהם בהתראה.</div>
+
+  <p class="eyebrow" style="margin-top:20px">מי יאשר את הפדיון</p>
+  <div class="stack gap">
+    <div class="opt eb-approve on" data-eb="self" onclick="setEditApprover(this,'self')"><b>דניאל עצמו</b><p>קוד פדיון יישלח אליו במועד שקבעת, ישירות ולא דרכך.</p></div>
+    <div class="opt eb-approve" data-eb="guardian" onclick="setEditApprover(this,'guardian')"><b>מי שאני קובע היום</b><p>הכסף משתחרר בתאריך שקבעת לידי מי שתסמן — אך נשאר רשום על שם הנהנה, והמורשה מקבל אותו עבורו.</p></div>
+    <div class="opt eb-approve" data-eb="later" onclick="setEditApprover(this,'later')"><b>אחליט בהמשך</b><p>אפשר לקבוע זאת בכל שלב עד המועד — כל שינוי כזה נשלח בהתראה לכל מי שהשקיע.</p></div>
+  </div>
+
+  <div class="field" id="e-codefield" style="margin-top:16px;margin-bottom:6px">
+    <label id="e-codelbl">לאן יישלח הקוד למימוש ההשקעה של דניאל</label>
+    <input type="text" value="daniel.k@mail.com">
+  </div>
+  <div class="warn" id="e-codewarn">לכאן יישלח הקוד באוגוסט 2032, ישירות לדניאל. שינוי הכתובת נרשם ביומן הנטיעה, נשלח בהתראה לכל מי שהשקיע, ונכנס לתוקף רק אחרי 7 ימים.</div>
+
+  <div id="e-guard" style="display:none">
+    <div class="field" style="margin-top:16px;margin-bottom:6px"><label>שם המורשה</label><input type="text" id="e-gname" placeholder="למשל: מיכל כהן, אמא של דניאל"></div>
+    <div class="field" style="margin-bottom:6px"><label>תעודת זהות של המורשה</label><input type="text" id="e-gid" placeholder="9 ספרות"></div>
+    <div class="warn" id="e-guardwarn">שינוי המורשה נרשם ביומן הנטיעה, נשלח בהתראה לכל מי שהשקיע, ונכנס לתוקף רק אחרי 7 ימים.</div>
+  </div>
+
+  <p class="fine" id="e-laterp" style="display:none;margin-top:10px">עדיין לא נקבע מי יאשר — אפשר לקבוע זאת בכל שלב עד המועד.</p>
+
+  <p class="eyebrow" style="margin-top:20px">קבוע ולא ניתן לשינוי כאן</p>
+  <div class="card">
+    <div class="stat"><span class="k">מועד הפתיחה</span><span class="v">מרץ 2019</span></div>
+    <div class="stat"><span class="k">הנהנה</span><span class="v">דניאל</span></div>
+  </div>
+  <div class="lock" style="text-align:right">
+    <p class="sub" style="color:#C4AE84">מועד הפתיחה הוא עובדה שנרשמה ואינו משתנה. שינוי זהות הנהנה הוא פעולה משפטית בחשבון נעול, ומתבצע מול הגוף הפיננסי המנהל בלבד — לא באפליקציה.</p>
+    <button class="btn ghost" style="margin-top:10px" onclick="toast('פנייה נשלחה לגוף הפיננסי המנהל')">בקש שינוי מול הגוף המנהל</button>
+  </div>
+
+  <button class="btn" style="margin-top:16px" onclick="saveEdit()">שמור שינויים</button>
+  <button class="btn ghost" style="margin-top:8px" onclick="cancelEdit()">ביטול</button>
+</section>
+
+<!-- 12 CODE ENTRY -->
+<section class="screen" data-name="הזנת קוד">
+  <div class="center gap">
+    <div style="font-size:30px">🌳</div>
+    <h2 style="margin:11px 0 5px" id="rc-h">הגיע היום שלך</h2>
+    <p class="sub" id="rc-sub">מישהו שתל עבורך משהו לפני שנים.<br>הזן את הקוד שקיבלת כדי לפתוח אותו.</p>
+  </div>
+
+  <div class="field" style="margin-top:20px">
+    <label>קוד הפדיון</label>
+    <input class="codebox" id="rcode" value="NETA-4K9M" maxlength="9" aria-label="קוד הפדיון">
+    <p class="fine" style="margin-top:8px">הקוד נשלח אליך ישירות במועד המיוחל, לכתובת שנרשמה כשהנטיעה נפתחה. הוא חד־פעמי ותקף ל־90 יום.</p>
+  </div>
+
+  <button class="btn gap" onclick="go(8)">פתח את הנטיעה שלי</button>
+
+  <div class="lock" style="text-align:right">
+    <b style="display:block;margin-bottom:5px;font-size:12.5px">הקוד לא מעביר כסף בעצמו</b>
+    <p class="sub" style="color:#C4AE84">הוא פותח את התהליך ומזהה איזו נטיעה נפדית. שחרור הכסף בפועל מתבצע רק לאחר אימות זהות מלא מול הגוף הפיננסי המנהל, ורק לחשבון שעל שמך. אם הקוד הגיע לידיים לא נכונות — הוא לא מספיק כדי לקחת את הכסף.</p>
+  </div>
+
+  <p class="fine center" style="margin-top:14px">לא קיבלת קוד? <b style="color:var(--leaf)">שלח שוב</b></p>
+</section>
+
+<!-- 13 DESTINATION -->
+<section class="screen" data-name="יעד הכסף">
+  <h2 class="gap-s">לאן הכסף ילך?</h2>
+  <p class="sub gap" id="rt-sub">35,300 ₪ מחכים לך. אתה מחליט מה קורה איתם עכשיו.</p>
+
+  <div class="verified gap">
+    <div class="vi">✓</div>
+    <div><b id="rt-vt">הזהות שלך אומתה</b><p id="rt-vp">דניאל · אומת מול הגוף הפיננסי המנהל, 12 באוגוסט 2032</p></div>
+  </div>
+
+  <p class="eyebrow">בחר מה לעשות</p>
+  <div class="stack gap">
+    <div class="opt dest on" data-d="bank"><b>העברה לחשבון הבנק שלי</b><p>הכסף עובר במלואו לחשבון שעל שמך, תוך 3 ימי עסקים.</p></div>
+    <div class="opt dest" data-d="part"><div class="row" style="gap:6px"><b>חלק עכשיו, השאר ממשיך לגדול</b><span class="tag">אפשר לפצל</span></div><p>מושכים חלק מהסכום, והיתרה נשארת מושקעת על שמך — עכשיו כבר בחשבון שלך.</p></div>
+    <div class="opt dest" data-d="keep"><b>להשאיר הכול ולהמשיך להשקיע</b><p>הנטיעה עוברת לבעלותך המלאה ואפשר למשוך ממנה בכל רגע.</p></div>
+  </div>
+
+  <div id="dest-bank">
+    <p class="eyebrow">פרטי החשבון</p>
+    <div class="field" style="margin-bottom:9px"><label>בנק וסניף</label><input type="text" value="לאומי · 800"></div>
+    <div class="field" style="margin-bottom:9px"><label>מספר חשבון</label><input type="text" value="12-345678"></div>
+    <div class="warn" id="rt-warn" style="margin-bottom:14px">החשבון חייב להיות על שמך, דניאל. העברה לחשבון של אדם אחר — כולל הורה או קרוב — לא תאושר. זו ההגנה שמבטיחה שהכסף שנשתל עבורך יגיע דווקא אליך.</div>
+  </div>
+
+  <div class="card" style="background:var(--sun-bg);border-color:var(--sun-line)">
+    <div class="row gap-s"><span>✉</span><b style="font-size:13px">3 המכתבים שלך נפתחים עכשיו</b></div>
+    <p class="sub" style="color:#C4AE84">הם ייפתחו יחד עם אישור הפדיון, ויישארו שלך לתמיד — גם אם תבחר למשוך את הכסף.</p>
+  </div>
+
+  <button class="btn" style="margin-top:14px" onclick="toast('הפדיון אושר · המכתבים נפתחים')">אשר את הפדיון</button>
+  <p class="fine center" style="margin-top:11px">הודעה על הפדיון תישלח לכל מי שהשקיע עבורך.</p>
+</section>
+
+
+<!-- 14 PEOPLE / מעגל -->
+<section class="screen" data-name="הנטיעות של הקרובים">
+  <div id="kin-full">
+  <div class="summary">
+    <div class="s-row">
+      <div class="s-body">
+        <div class="s-eyebrow" id="pp-eyebrow">הושקע עבור דניאל ונועה</div>
+        <div class="s-num" id="pp-num">14,200 ₪</div>
+        <div class="s-label" id="pp-label">זה הסכום שסבתא רחל ודוד יוסי נטעו עד כה עבור עתיד יקירכם</div>
+      </div>
+      <div class="s-art"><span class="ppav">
+        <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></span>
+        <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></span>
+      </span></div>
+    </div>
+    <div class="s-meta" id="pp-meta"></div>
+  </div>
+
+  <p class="eyebrow big">הנטיעות שהם פתחו</p>
+  <div id="pp-guest"></div>
+  <p class="fine gap">נטיעות שקרוב פתח עבור הילדים שלך והזמין אותך לראות. אתה יכול להשקיע בהן, אבל ההזמנות אליהן נשלחות ממי שפתח אותן.</p>
+
+  <p class="eyebrow big">הקרובים שלך</p>
+  <div class="card" id="pp-list"></div>
+  <p class="fine gap">כמה כל אחד השקיע מופיע בתוך הנטיעה עצמה. הקרובים רואים זה את זה — בלי סכומים.</p>
+  <button class="btn gap-s" onclick="go(6)">הזמן קרוב</button>
+  <p class="fine" style="margin-top:8px">בלחיצה תבחר לאיזו נטיעה ההזמנה שייכת.</p>
+  </div><!-- /kin-full -->
+
+  <div class="es" id="kin-empty" style="display:none">
+    <div class="art" style="color:var(--leaf-2)"><svg width="74" height="74" viewBox="7 6 57 57" aria-hidden="true"><g opacity=".45" transform="translate(-1.4,13.64) scale(.78)"><use href="#sprout-art"/></g><g opacity=".85" transform="translate(14,0)"><use href="#sprout-art"/></g></svg></div>
+    <h3>כאן יופיע מה שאחרים נטעו</h3>
+    <p>כשקרוב פותח נטיעה למי שיקר לך, או מצטרף לאחת משלך — היא תופיע כאן.</p>
+    <button class="btn ghost" onclick="go(6)">הזמן קרוב</button>
+    <p class="fine">נטיעה פרטית נשארת פרטית. אף אחד לא רואה אותה עד שתחליט להזמין.</p>
+  </div>
+</section>
+
+
+<!-- 15 RELATIVES / הקרובים שלי -->
+<section class="screen" data-name="הקרובים שלי">
+  <h2 class="gap-s">הקרובים שלי</h2>
+  <p class="sub gap">רשימה אחת לכל הנטיעות. כשתזמין מישהו לנטיעה, תבחר אותו מכאן במקום להקליד את הפרטים מחדש.</p>
+
+  <p class="eyebrow" id="req-head" style="display:none">בקשות הצטרפות שממתינות לך</p>
+  <div id="req-list"></div>
+  <div class="card" id="rel-list"></div>
+  <button class="btn gap-s" onclick="addRelative()">+ הוסף קרוב</button>
+  <p class="fine gap">ההזמנה נשלחת בוואטסאפ או באימייל כקישור אישי, חד-פעמי, שנקשר למי שפתח אותו — קישור שהועבר הלאה לא יצרף אף אחד אחר. קרוב שהצטרף רואה רק את הנטיעות שצירפת אותו אליהן, ורק התקדמות — בלי סכומים.</p>
+  <button class="btn ghost" onclick="go(10)">חזרה לפרופיל</button>
+</section>
+
+
+<!-- 16 PAYMENT METHODS / אמצעי תשלום -->
+<section class="screen" data-name="אמצעי תשלום">
+  <h2 class="gap-s">אמצעי תשלום</h2>
+  <p class="sub gap" id="pm-sub">כאן מנוהלות ההפקדות החוזרות שלך — <b style="color:var(--tx)">210 ₪ בכל חודש</b>.</p>
+  <div id="pm-list"></div>
+  <button class="btn ghost gap-s" onclick="addPay()">+ הוסף אמצעי תשלום</button>
+  <p class="fine gap">ההפקדות עוברות ישירות לחשבונות הנעולים אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף ואינה שומרת את פרטי הכרטיס.</p>
+  <button class="btn ghost" onclick="go(10)">חזרה לפרופיל</button>
+</section>
+
+<!-- 17 MY LETTERS / המכתבים שלי -->
+<section class="screen" data-name="המכתבים שלי">
+  <h2 class="gap-s">המכתבים שלי</h2>
+  <p class="sub gap">מה שכתבת לילדים, ומתי הם ייפתחו.</p>
+  <div class="card" id="lt-list"></div>
+  <p class="fine gap">מכתב ניתן לעריכה עד המועד המיוחל — החתימה קובעת מי יקרא ומתי, לא מקפיאה את התוכן. אחרי שהוא נפתח, הוא נשאר של הילד לתמיד, גם אם הכסף נמשך.</p>
+  <button class="btn ghost" onclick="go(10)">חזרה לפרופיל</button>
+</section>
+
+
+<!-- 18 NEW PLANTING, DAY TWO -->
+<section class="screen" data-name="נטיעה · יום 2">
+  <div class="row gap" style="align-items:flex-start">
+    <div class="dot g" style="width:40px;height:40px;font-size:17px">🎂</div>
+    <div style="flex:1"><div class="title" style="font-size:14.5px">בר המצווה של איתי</div><div class="meta" style="margin-top:3px">המועד המיוחל: אוגוסט 2039</div></div>
+  </div>
+  <svg width="146" height="166" viewBox="0 0 140 162" style="margin:2px auto 0;display:block;opacity:.55" aria-hidden="true">
+    <ellipse cx="70" cy="152" rx="54" ry="17" fill="var(--leaf)" opacity=".07"/>
+    <ellipse cx="70" cy="152" rx="30" ry="5" fill="var(--s2)"/>
+    <line x1="70" y1="150" x2="70" y2="120" stroke="var(--leaf)" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M70 132 C 58 128, 52 117, 59 109 C 66 117, 68 124, 70 132" fill="var(--leaf)" opacity=".5"/>
+    <path d="M70 132 C 82 128, 88 117, 81 109 C 74 117, 72 124, 70 132" fill="var(--leaf)" opacity=".5"/>
+  </svg>
+  <div class="nc-sums" style="margin-top:12px">
+    <div><span class="k">ההפקדה הראשונה</span><span class="v now">1 בספטמבר</span></div>
+    <div class="t"><span class="k">בקצב הזה ייצבר</span><span class="v end">כ-23,500 ₪</span></div>
+  </div>
+  <div class="tax">
+    <span class="tax-start">
+      <span class="disc"><svg width="9" height="12" viewBox="0 0 10 12" aria-hidden="true"><path d="M5 1 C8.4 4, 9 8, 5 11 C1 8, 1.6 4, 5 1Z" fill="var(--leaf)"/></svg></span>
+      <span class="yr">נשתל היום</span>
+    </span>
+    <div class="tax-rail"><div class="tax-fut"></div><div class="tax-past" style="width:0"></div>
+      <span class="tax-medal idle" style="right:0"><svg width="14" height="15" viewBox="0 0 14 15"><use href="#sprout"/></svg></span>
+    </div>
+    <span class="tax-goal"><span class="disc dash">🎂</span><span class="yr">2039</span></span>
+  </div>
+  <div class="lock" style="text-align:right;margin-top:26px">
+    <p class="sub" style="color:#C4AE84">הנבט עומד בתחילת הציר. ב-1 בספטמבר הוא יזוז בפעם הראשונה, ומשם הוא רק ממשיך.</p>
+  </div>
+  <div class="two" style="margin-top:18px"><button class="btn" onclick="go(2)">השקע עוד</button><button class="btn ghost" onclick="go(6)">הזמן קרובים</button></div>
+</section>
+
+
+<!-- 19 WELCOME -->
+<section class="screen" data-name="פתיחה">
+  <div id="splash" class="grow" style="display:flex;flex-direction:column;min-height:100%">
+    <div style="flex:1;display:grid;place-items:center;text-align:center">
+      <div>
+        <svg width="132" height="150" viewBox="4 0 52 68" style="color:var(--leaf);display:block;margin:0 auto" aria-hidden="true">
+          <defs><radialGradient id="bl"><stop offset="0" stop-color="var(--leaf)" stop-opacity=".55"/><stop offset="1" stop-color="var(--leaf)" stop-opacity="0"/></radialGradient></defs>
+          <ellipse class="bloom" cx="30" cy="38" rx="28" ry="32" fill="url(#bl)"/>
+          <circle class="ripple" cx="30" cy="62" r="13" fill="none" stroke="var(--leaf)" stroke-width="1.2"/>
+          <ellipse cx="30" cy="62" rx="19" ry="3.2" fill="var(--leaf)" opacity=".13"/>
+          <g class="plant">
+            <line class="stem" x1="30" y1="62" x2="30" y2="18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            <path class="lfBL" d="M30 48 C 20 44, 15 34, 21 28 C 27 34, 29 41, 30 48" fill="currentColor" opacity=".5"/>
+            <path class="lfBR" d="M30 48 C 40 44, 45 34, 39 28 C 33 34, 31 41, 30 48" fill="currentColor" opacity=".62"/>
+            <path class="lfTL" d="M30 33 C 17 28, 11 14, 19 7 C 27 15, 29 25, 30 33" fill="currentColor"/>
+            <path class="lfTR" d="M30 33 C 43 28, 49 14, 41 7 C 33 15, 31 25, 30 33" fill="var(--leaf-soft)"/>
+            <circle class="bud" cx="30" cy="8" r="3.4" fill="var(--leaf-soft)"/>
+          </g>
+          <circle class="mote m1" cx="16" cy="50" r="1.15" fill="var(--leaf-soft)"/>
+          <circle class="mote m2" cx="44" cy="44" r="1" fill="var(--leaf-soft)"/>
+          <circle class="mote m3" cx="37" cy="55" r=".85" fill="var(--leaf-soft)"/>
+        </svg>
+        <div class="brandname">נטע</div>
+        <p class="claim" style="margin:11px auto 0">הכסף גדל בזמן שהם גדלים</p>
+      </div>
+    </div>
+    <div>
+      <button class="btn" onclick="go(ONBO.login)">המשך עם טלפון</button>
+      <div class="orline">או</div>
+      <div class="social">
+        <button onclick="socialIn('Apple')"><svg width="13" height="15" viewBox="0 0 14 17" fill="currentColor"><path d="M11.6 9c0-2 1.6-2.9 1.7-3-.9-1.4-2.4-1.5-2.9-1.6-1.2-.1-2.4.7-3 .7s-1.6-.7-2.6-.7C3.5 4.4 2.2 5.2 1.5 6.5.1 9 1.1 12.8 2.5 14.9c.7 1 1.5 2.1 2.5 2.1s1.3-.6 2.5-.6 1.5.6 2.6.6 1.7-1 2.4-2c.7-1.1 1-2.2 1-2.3 0 0-1.9-.7-1.9-2.7zM9.7 3.2c.5-.7.9-1.6.8-2.5-.8 0-1.8.5-2.4 1.2-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.4-1.1z"/></svg>Apple</button>
+        <button onclick="socialIn('Google')"><svg width="14" height="14" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.6 9.2c0-.6-.1-1.2-.2-1.8H9v3.4h4.8a4.1 4.1 0 01-1.8 2.7v2.2h2.9c1.7-1.6 2.7-3.9 2.7-6.5z"/><path fill="#34A853" d="M9 18c2.4 0 4.5-.8 6-2.2l-2.9-2.2c-.8.5-1.8.9-3.1.9-2.4 0-4.4-1.6-5.1-3.8H.9v2.3A9 9 0 009 18z"/><path fill="#FBBC05" d="M3.9 10.7a5.4 5.4 0 010-3.4V5H.9a9 9 0 000 8l3-2.3z"/><path fill="#EA4335" d="M9 3.6c1.3 0 2.5.5 3.4 1.3l2.6-2.6A9 9 0 00.9 5l3 2.3C4.6 5.2 6.6 3.6 9 3.6z"/></svg>Google</button>
+      </div>
+      <p class="fine" style="text-align:center;margin-top:13px">חדש או חוזר — אותה כניסה. נשלח קוד אימות חד-פעמי, בלי סיסמאות.</p>
+      <button class="link" onclick="howOpen()">איך זה עובד ›</button>
+    </div>
+  </div>
+</section>
+
+<!-- 22 SIGN IN -->
+<section class="screen" data-name="כניסה">
+  <h2 class="gap-s">מה המספר שלך?</h2>
+  <p class="sub gap">אותו מספר משמש לכניסה ולהזמנות שתשלח. אין סיסמה.</p>
+  <div class="field"><label>טלפון נייד</label><input type="text" id="lg-phone" placeholder="050-0000000"></div>
+  <div id="lg-codebox" style="display:none">
+    <div class="field"><label id="lg-codelbl">קוד אימות נשלח אליך</label><input type="text" id="lg-otp" placeholder="4 ספרות"></div>
+    <button class="link" style="text-align:right;padding-top:0" onclick="toast('נשלח קוד חדש')">לא קיבלתי — שלח שוב</button>
+  </div>
+  <div class="two gap-s"><button class="btn" id="lg-cta" onclick="loginNext()">שלח קוד</button><button class="btn ghost" onclick="go(ONBO.welcome)">חזרה</button></div>
+  <p class="fine gap">אם כבר יש לך חשבון, תיכנס אליו. אם לא — ניצור אחד. אותו כפתור.</p>
+</section>
+
+<!-- 23 HOW IT WORKS -->
+<section class="screen" data-name="איך זה עובד">
+  <div class="how-story" id="how-story">
+    <div class="how-bars">
+      <div class="how-bar" data-how-bar><i></i></div>
+      <div class="how-bar" data-how-bar><i></i></div>
+      <div class="how-bar" data-how-bar><i></i></div>
+    </div>
+    <button class="how-close" onclick="howClose()" aria-label="סגור">✕</button>
+    <div class="how-tap prev" data-how-nav="prev" aria-label="הקודם"></div>
+    <div class="how-tap next" data-how-nav="next" aria-label="הבא"></div>
+
+    <div class="how-slides">
+      <section class="how-slide" data-how-slide>
+        <p class="how-eyebrow">01 · מתחילים לנטוע היום</p>
+        <div class="how-sprout" aria-hidden="true">
+          <svg viewBox="0 0 80 98">
+            <line class="how-gline" x1="10" y1="82" x2="70" y2="82"/>
+            <path class="how-stem" d="M40 82 L40 46"/>
+            <path class="how-lf" d="M40 58 C 30 55, 25 45, 31 38 C 37 45, 39 52, 40 58 Z"/>
+            <path class="how-lf" d="M40 58 C 50 55, 55 45, 49 38 C 43 45, 41 52, 40 58 Z"/>
+          </svg>
+        </div>
+        <h2>אתה מחליט כמה להשקיע<br>בעתיד של הקרובים שלך</h2>
+        <div class="how-aha">
+          <p class="how-aha-line">למשל, 100 ₪ בחודש במשך 5 שנים</p>
+          <p class="how-aha-num"><span class="how-cur">שיהפכו ל-</span><span class="how-aha-figure">6,977</span><span class="how-cur"> ₪</span></p>
+        </div>
+      </section>
+
+      <section class="how-slide" data-how-slide>
+        <p class="how-eyebrow">02 · מזמינים להצטרף</p>
+        <div class="how-sprout" aria-hidden="true">
+          <svg viewBox="0 0 80 98">
+            <line class="how-gline" x1="10" y1="82" x2="70" y2="82"/>
+            <path class="how-stem" d="M40 82 L40 46"/>
+            <path class="how-lf" d="M40 58 C 30 55, 25 45, 31 38 C 37 45, 39 52, 40 58 Z"/>
+            <path class="how-lf" d="M40 58 C 50 55, 55 45, 49 38 C 43 45, 41 52, 40 58 Z"/>
+          </svg>
+        </div>
+        <h2>קרובים ואוהבים<br>מצטרפים לנטיעה</h2>
+        <p>סבתא רחל, דוד יוסי, חברה קרובה — כל אחד יכול להצטרף ולהוסיף משלו, בלי שאף אחד יראה כמה השקיעו אחרים.</p>
+        <div class="how-art"><div class="how-crowd">
+          <span class="how-you"><svg viewBox="0 0 40 40"><use href="#av-parent"/></svg></span>
+          <span><svg viewBox="0 0 40 40"><use href="#av-granny"/></svg></span>
+          <span><svg viewBox="0 0 40 40"><use href="#av-uncle"/></svg></span>
+          <span><svg viewBox="0 0 40 40"><use href="#av-friend"/></svg></span>
+        </div></div>
+      </section>
+
+      <section class="how-slide" data-how-slide>
+        <p class="how-eyebrow">03 · קוצרים את הפירות</p>
+        <div class="how-sprout" aria-hidden="true">
+          <svg viewBox="0 0 80 98">
+            <line class="how-gline" x1="10" y1="82" x2="70" y2="82"/>
+            <path class="how-stem" d="M40 82 L40 46"/>
+            <path class="how-lf" d="M40 58 C 30 55, 25 45, 31 38 C 37 45, 39 52, 40 58 Z"/>
+            <path class="how-lf" d="M40 58 C 50 55, 55 45, 49 38 C 43 45, 41 52, 40 58 Z"/>
+          </svg>
+        </div>
+        <h2>מה שנטעתם היום,<br>הופך לרגע שלו</h2>
+        <p>בר/בת מצווה, לימודים, דירה ראשונה — או מה שהוא יבחר.</p>
+        <div class="how-occasions" aria-hidden="true">🎂 🎓 🏠 💍</div>
+        <div class="how-aha">
+          <p class="how-aha-line">אחרי שלוש עשרה שנה</p>
+          <p class="how-aha-num"><span class="how-cur">₪</span><span>23,500</span></p>
+        </div>
+        <p class="how-waits">הכסף כבר מחכה לו.</p>
+        <button class="how-start" onclick="howFinish()">להתחיל ›</button>
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- 20 IDENTITY -->
+<section class="screen" data-name="פתיחת חשבון">
+  <h2 class="gap-s">כדי לשמור את הנטיעה</h2>
+  <p class="sub gap">המספר שלך כבר אומת. נשאר להשלים את הפרטים שהגוף הפיננסי המנהל צריך כדי לפתוח את החשבון על שמך.</p>
+  <div class="field"><label>שם מלא</label><input type="text" id="id-name" value="אלון ברדויד"></div>
+  <div class="field"><label>תעודת זהות</label><input type="text" id="id-num" placeholder="9 ספרות"></div>
+  <div class="verified gap-s"><div class="vi">✓</div><div><b id="id-verified">המספר אומת</b><p>לשם אנחנו שולחים אישורי הפקדה, והתראות על כל שינוי בנטיעה.</p></div></div>
+  <div class="two gap"><button class="btn" id="id-cta" onclick="idNext()">אשר והמשך</button><button class="btn ghost" onclick="go(1)">חזרה</button></div>
+  <p class="fine gap">אימות זהות מלא נדרש רק במועד הפדיון. עכשיו זה רק כדי לפתוח את החשבון על שמך.</p>
+</section>
+
+<!-- 21 ONBOARDING DONE -->
+<section class="screen" data-name="סיום הרשמה">
+  <div class="center">
+    <svg width="112" height="132" viewBox="10 6 40 57" style="color:var(--leaf);margin:6px auto 0;display:block" aria-hidden="true"><use href="#sprout-art"/></svg>
+    <h2 style="margin:14px 0 6px">נטעת את הראשונה</h2>
+    <p class="sub" id="ob-sub">בר המצווה של דניאל · אוגוסט 2039</p>
+  </div>
+  <div class="card gap">
+    <div class="stat"><span class="k" id="ob-k">מופקד כל חודש</span><span class="v" id="ob-amt">100 ₪</span></div>
+    <div class="stat"><span class="k" id="ob-whenk">ההפקדה הראשונה</span><span class="v" id="ob-when">1 בספטמבר</span></div>
+    <div class="stat"><span class="k" id="ob-endk">בקצב הזה ייצבר</span><span class="v" style="color:var(--leaf)" id="ob-end">כ-23,500 ₪</span></div>
+  </div>
+  <div class="verified gap-s"><div class="vi">✓</div><div><b id="ob-okt">הוראת הקבע פעילה</b><p id="ob-okp">מכאן זה קורה מעצמו. אפשר לעצור או לשנות בכל רגע, מהפרופיל.</p></div></div>
+  <button class="btn gap" id="ob-cta" onclick="onboDone()">לנטיעות שלי</button>
+</section>
+
+<!-- 24 REVIEW — the last screen before an irreversible commitment -->
+<section class="screen" data-name="סיכום ואישור">
+  <h2 class="gap-x">לפני שנועלים</h2>
+  <p class="sub gap">מכאן הכסף נרשם ונעול עד המועד. זה הרגע לבדוק.</p>
+
+  <div class="card gap-s">
+    <div class="row gap-s" id="py-headrow"><div class="dot g" id="py-icon">🎂</div><div style="flex:1"><div class="title" id="py-title">בר/בת מצווה של דניאל</div><div class="meta" id="py-date">אוגוסט 2032</div></div></div>
+    <div class="stat" id="py-benerow"><span class="k" id="py-benek">הכסף רשום על שם</span><span class="v" style="font-size:12px;font-weight:400" id="py-bene">דניאל</span></div>
+    <div class="stat" id="py-relrow"><span class="k" id="py-relk">משתחרר</span><span class="v" style="font-size:12px;font-weight:400" id="py-rel">בגיל 18</span></div>
+    <div class="stat" id="py-ownrow"><span class="k">מי יכול להשקיע בה</span><span class="v" style="font-size:12px;font-weight:400" id="py-own">פרטית</span></div>
+    <div class="stat"><span class="k" id="pay-k">מופקד כל חודש</span><span class="v" id="pay-v">100 ₪</span></div>
+    <div class="stat" id="py-trackrow"><span class="k">מסלול</span><span class="v" style="font-size:12px;font-weight:400" id="py-track">יישמר כמו שהוא</span></div>
+    <div class="stat"><span class="k">עד</span><span class="v" style="font-size:12.5px;font-weight:400" id="pay-when">אוגוסט 2032</span></div>
+    <div class="stat"><span class="k">אמצעי תשלום</span><span class="v" style="font-size:12px;font-weight:400" id="py-method">הוראת קבע</span></div>
+  </div>
+  <p class="fine gap" id="pay-fine">ההפקדה עוברת ישירות לחשבון הנעול על שם דניאל, אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.</p>
+
+  <div class="two"><button class="btn" onclick="finishDeposit()">אשר את ההפקדה</button><button class="btn ghost" onclick="go(3)">חזרה</button></div>
+</section>
+
+<!-- 25 PARTNER INVITE (the receiving side — what a co-owner sees when they open the link) -->
+<section class="screen" data-name="הזמנה לשותפות">
+  <div class="center gap">
+    <div style="font-size:26px">🌱</div>
+    <h2 style="margin:8px 0 4px">אלון הזמין אותך</h2>
+    <p class="sub" id="pi-sub">להיות שותף/ה שווה — לא רק להשקיע</p>
+  </div>
+
+  <div class="card center" style="background:var(--leaf-bg);border-color:#2A4530">
+    <div style="font-size:22px" id="pi-icon">🎂</div>
+    <b style="display:block;margin:6px 0 4px;font-size:14px" id="pi-title">בר המצווה של דניאל</b>
+    <p class="sub" style="color:#A8CBAC" id="pi-meta">המועד המיוחל: אוגוסט 2032 · נצבר עד כה 15,600 ₪</p>
+  </div>
+
+  <p class="eyebrow big">מה זה אומר בפועל</p>
+  <div class="card">
+    <div style="padding:9px 0;border-bottom:1px solid var(--line)"><b style="font-size:12.5px">שניכם מפקידים</b><p class="fine" style="margin-top:3px">אין "בעלים" אחד ו"משקיע" אחר</p></div>
+    <div style="padding:9px 0;border-bottom:1px solid var(--line)"><b style="font-size:12.5px">שניכם רואים הכל</b><p class="fine" style="margin-top:3px">כולל כל הפקדה, מכל אחד — לא רק את שלך</p></div>
+    <div style="padding:9px 0"><b style="font-size:12.5px">כל שינוי מהותי</b><p class="fine" style="margin-top:3px">דורש הסכמה של שניכם</p></div>
+  </div>
+  <p class="fine gap">זה שונה מהזמנה רגילה לקרוב: קרוב רואה רק את מה שהוא השקיע ולא יכול לשנות כלום. שותפות היא בעלות משותפת אמיתית, לא השתתפות.</p>
+
+  <div class="two"><button class="btn" onclick="acceptPartner()">קבל שותפות</button><button class="btn ghost" onclick="declinePartner()">לא עכשיו</button></div>
+  <div class="note" id="pi-done" style="display:none;text-align:center;margin-top:14px">🎉 <b style="color:var(--leaf)">קיבלת את השותפות</b><p class="sub" style="color:#C6E3C9">מעכשיו אתם רשומים כבעלים שווים.</p></div>
+</section>
+
+</div><!-- /stage -->
+
+<!-- BOTTOM TAB BAR -->
+<nav class="tabbar" id="tabbar">
+  <button class="tab on" onclick="go(0)"><span class="ic"><svg width="14" height="20" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>הנטיעות</span><span>שלי</span></span></button>
+  <button class="tab" onclick="openPeople()"><span class="ic"><svg width="20" height="20" viewBox="7 6 57 57" aria-hidden="true"><g opacity=".5" transform="translate(-1.4,13.64) scale(.78)"><use href="#sprout-art"/></g><g transform="translate(14,0)"><use href="#sprout-art"/></g></svg></span><span class="lb"><span>הנטיעות</span><span>של הקרובים</span></span></button>
+  <button class="tab center" onclick="startCreate()"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg></span><span class="lb"><span>נטיעה</span></span></button>
+  <button class="tab" onclick="go(9)"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></span><span class="lb"><span>פעילות</span></span></button>
+  <button class="tab" onclick="go(10)"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-person"/></svg></span><span class="lb"><span>פרופיל</span></span></button>
+</nav>
+<div class="home-indicator"><span></span></div>
+
+<div class="toast" id="toast"></div>
+<div class="scrim" id="scrim" onclick="if(event.target===this)sheetClose()">
+  <div class="sheet">
+    <div class="sheet-grip"></div>
+    <h3 id="sh-t"></h3>
+    <p id="sh-b"></p>
+    <div id="sh-acts"></div>
+  </div>
+</div>
+
+</div><!-- /device -->
+
+<div class="devlabel">תצוגת בדיקה — לא חלק מהאפליקציה</div>
+<div class="nav" id="nav"></div>
+<button class="emptybtn" id="empty-btn">מצב ריק — אפליקציה בלי נתונים</button>
+<button class="emptybtn" onclick="onboOpen()">התחל אונבורדינג — משתמש חדש</button>
+<button class="emptybtn" onclick="onboAbandon()">נטש באמצע ההרשמה</button>
+</div><!-- /wrap -->
+
+<script>
+const screens=[...document.querySelectorAll('.screen')],nav=document.getElementById('nav');
+screens.forEach((s,i)=>{const b=document.createElement('button');b.textContent=(i+1)+' · '+s.dataset.name;b.onclick=()=>go(i);nav.appendChild(b)});
+const tabScreens={0:0,6:1,7:1,14:1,1:2,9:3,10:4,15:4,16:4,17:4};
+const ONBO={welcome:19,login:20,how:21,identity:22,done:23};
+let onbo=false;
+const topbars={
+  0:['שלום אלון','הכסף גדל בזמן שהם גדלים'],
+  14:['הנטיעות של הקרובים','מה שקרובים פתחו למי שיקר לך'],
+  9:['מה קרה לאחרונה','הרגעים הקטנים של הנתינה במשפחה'],
+  10:['אלון','מלווה 2 נטיעות · שותף ב-2 נוספות']
+};
+const NOCHROME=[19,20,21,23,25];
+const REVIEW=24;
+function go(i){
+  if(i===ONBO.welcome)playSplash();
+  document.getElementById('tabbar').style.display=NOCHROME.includes(i)?'none':'';
+  if(i===2){flowBar(stepNo('amount'),'כמה תשקיע');document.getElementById('amt-back').style.display=creating?'':'none';txt('amt-cta',creating?'המשך':'השקע עכשיו');}
+  else if(i===ONBO.identity)flowBar(stepNo('identity'),'פתיחת חשבון');
+  else if(i===3)flowBar(stepNo('pay'),'תשלום');
+  else if(i===REVIEW)flowBar(stepNo('review'),'סיכום ואישור');
+  else if(![1,REVIEW,ONBO.welcome,ONBO.login,ONBO.how,ONBO.done].includes(i)){
+    /* leaving the flow ends it — otherwise a later deposit still lands on the signup screens */
+    creating=false;onbo=false;
+    document.getElementById('flowbar').style.display='none';
+  }
+  const tb=topbars[i],bar=document.getElementById('topbar');
+  bar.classList.toggle('off',!tb);
+  if(tb){txt('tb-t',tb[0]);txt('tb-s',tb[1]);}
+  screens.forEach((s,n)=>s.classList.toggle('on',n===i));
+  [...nav.children].forEach((b,n)=>b.classList.toggle('on',n===i));
+  let active=tabScreens[i];
+  if(active===undefined && [2,3,4,5,8,11,12,13,REVIEW].includes(i)) active=0;
+  document.querySelectorAll('.tab').forEach((t,n)=>t.classList.toggle('on',n===active));
+  document.querySelector('.stage').scrollTo?.(0,0);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const months=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+const monthsShort=['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
+let cType='בר/בת מצווה',cIcon='🎂',dateTouched=false,fullTouched=false;
+/* a fund without a named beneficiary is a different instrument, and says so */
+let designated=true;
+/* a wedding fund and a bar-mitzva fund are not the same year — derive the date from the occasion */
+/* every sentence about the beneficiary inflects in Hebrew; the app used to assume male in all of them */
+let beneSex='m';
+function bs(m,f){return beneSex==='f'?f:m}
+function setSex(el,x){
+  beneSex=x;
+  [...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)});
+  beneCopy();checkBene();updateGoal();
+}
+function beneCopy(){
+  txt('cp1-sub','זה החלק שקובע שהכסף באמת יגיע למי שנטעת '+bs('עבורו','עבורה')+'.');
+  txt('c-selfp','קוד פדיון יישלח '+bs('אליו','אליה')+' במועד שקבעת, ישירות ולא דרכך.');
+  txt('c-guardp','הכסף משתחרר בתאריך שקבעת לידי מי שתסמן — אך נשאר רשום על שם הנהנה, והמורשה מקבל אותו '+bs('עבורו','עבורה')+'.');
+  txt('c-acctfine','חשבון היעד יצטרך להיות על '+bs('שמו','שמה')+'. העברה לחשבון של אדם אחר לא תאושר.');
+}
+/* ties the projected total to what the occasion actually is, not just the date it lands on —
+   phrased as "toward" rather than a promise, since released money is fully his to do anything with */
+const OCCASION_PHRASE={
+  'בר/בת מצווה':'לקראת בר/בת המצווה של ',
+  'לימודים':'לקראת הלימודים של ',
+  'טיול אחרי צבא':'לקראת הטיול של NAME אחרי הצבא',
+  'רכב ראשון':'לקראת הרכב הראשון של ',
+  'דירה':'לקראת הדירה של ',
+  'חתונה':'לקראת החתונה של ',
+  'קופת הפתעות':'בשביל '
+};
+function occasionPhrase(){
+  const nm=(cName.value||'הילד').trim();
+  const t=cType==='custom'?(cCustom.value.trim()||'המטרה'):cType;
+  const p=OCCASION_PHRASE[t];
+  if(p)return p.includes('NAME')?p.replace('NAME',nm):p+nm;
+  return 'לקראת '+t+' של '+nm;
+}
+/* Hebrew: 1 -> שנה, 2–10 -> שנים, 11 and up -> שנה again */
+function yrWord(y){return (y===1||y>=11)?' שנה':' שנים';}
+/* the control is a horizon, but everything the product says downstream is a real month and year */
+function dateNote(){
+  if(!cDate.value){txt('c-datehint','');return}
+  const d=new Date(cDate.value),y=yearsUntil(cDate.value);
+  txt('c-datehint','נפתחת ב'+months[d.getMonth()]+' '+d.getFullYear()+' — עוד '+y+yrWord(y)+'.');
+}
+function setTerm(el,yrs){
+  [...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)});
+  document.getElementById('c-datefield').style.display='none';
+  const d=new Date();d.setFullYear(d.getFullYear()+yrs);
+  /* build the date from local parts, not toISOString() — that converts to UTC first, which
+     silently rolls the date back a day for anyone east of UTC in the early-morning hours,
+     throwing the "10 years" button off by a day and, via yearsUntil()'s date compare, a full year */
+  const mm=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
+  cDate.value=d.getFullYear()+'-'+mm+'-'+dd;
+  dateTouched=false;
+  dateNote();prev();updateGoal();render();
+}
+function openExactDate(el){
+  [...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)});
+  document.getElementById('c-datefield').style.display='block';
+  onExactDate();
+}
+function onExactDate(){dateNote();prev();updateGoal();render();}
+const cName=document.getElementById('c-name'),cCustom=document.getElementById('c-custom'),cDate=document.getElementById('c-date');
+document.querySelectorAll('#c-pills .pill').forEach(p=>p.onclick=()=>{document.querySelectorAll('#c-pills .pill').forEach(x=>x.classList.remove('on'));p.classList.add('on');cType=p.dataset.t;cIcon=p.dataset.i;cCustom.style.display=cType==='custom'?'block':'none';prev();checkBene();render()});
+function prev(){
+  const n=cName.value.trim()||'הילד',t=cType==='custom'?(cCustom.value.trim()||'המטרה'):cType;
+  document.getElementById('p-title').textContent=designated?(t+' של '+n):t;
+  document.getElementById('p-icon').textContent=cIcon;
+  const el=document.getElementById('p-date');
+  if(!cDate.value){el.textContent='המועד ייבחר בשלב הבא';return}
+  const d=new Date(cDate.value),y=yearsUntil(cDate.value);
+  el.textContent=months[d.getMonth()]+' '+d.getFullYear()+' · עוד '+y+yrWord(y);
+}
+[cName,cCustom,cDate].forEach(el=>el.addEventListener('input',function(){prev();checkBene();render()}));prev();
+let shareMode='private',isNewPlant=false;
+document.querySelectorAll('.opt.shr').forEach(el=>el.onclick=()=>{
+  document.querySelectorAll('.opt.shr').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');shareMode=el.dataset.s;
+});
+function toggleShare(sw){
+  sw.classList.toggle('on');
+  document.getElementById('c-share-box').style.display=sw.classList.contains('on')?'block':'none';
+}
+let goal={name:'דניאל',type:'בר/בת מצווה',icon:'🎂',dateLabel:'אוגוסט 2032',years:yearsUntil('2032-08-01')};
+function yearsUntil(dateStr){const target=new Date(dateStr),today=new Date();let y=target.getFullYear()-today.getFullYear();if(target.getMonth()<today.getMonth()||(target.getMonth()===today.getMonth()&&target.getDate()<today.getDate()))y--;return Math.max(1,y);}
+/* onboarding: the same creation flow, wrapped — it ends only when a standing order exists */
+function playSplash(){
+  const sp=document.getElementById('splash');
+  if(!sp)return;
+  sp.classList.remove('grow');void sp.offsetWidth;sp.classList.add('grow');
+}
+function onboOpen(){
+  /* a brand-new account has nothing saved — not even a payment method */
+  onbo=true;idDone=false;setEmpty(true);
+  document.getElementById('resume-card').style.display='none';
+  go(ONBO.welcome);
+}
+/* someone who opened an account but never connected payment comes back to exactly this */
+function onboAbandon(){
+  onbo=false;setEmpty(true);
+  document.getElementById('resume-card').style.display='block';
+  txt('resume-t',(goal.type||'בר/בת מצווה')+' של '+(goal.name||'דניאל')+' · '+
+    (freq==='m'?(+amtM.value).toLocaleString('he-IL')+' ₪ בחודש':'הפקדה חד פעמית')+
+    '. נשאר רק לחבר אמצעי תשלום כדי שההפקדה הראשונה תצא.');
+  go(0);
+}
+function resumeOnbo(){onbo=true;document.getElementById('resume-card').style.display='none';openPayment()}
+/* the empty home carries the pitch and the number — a new account lands there and starts the flow by choice.
+   go(0) clears onbo (leaving a flow by tab cancels it), so the flag is re-set after it. */
+function onboStart(){setEmpty(true);go(0);onbo=true;}
+function onboDone(){onboEnd()}
+function onboEnd(){onbo=false;setEmpty(false);document.getElementById('resume-card').style.display='none';go(0)}
+function idNext(){
+  const n=(document.getElementById('id-name')||{}).value;
+  if(!n||!n.trim()){toast('צריך שם מלא');return}
+  const id=(document.getElementById('id-num')||{}).value;
+  if(!id||!id.trim()){toast('צריך מספר תעודת זהות');return}
+
+  /* תעודת הזהות נדרשת ע"י הגוף הפיננסי, לא ע"י נטע — ולכן היא לא נשמרת
+     כאן. המסד מחזיק שם בלבד. */
+  if(!netaServer||!netaServer.signedIn()){
+    idDone=true;toast('החשבון נפתח על שמך');openPayment();return;
+  }
+  const b=document.getElementById('id-cta');
+  if(b){b.disabled=true;b.style.opacity='.55'}
+  netaServer.ensureProfile(n.trim()).then(function(){
+    if(b){b.disabled=false;b.style.opacity=''}
+    idDone=true;toast('החשבון נפתח על שמך');openPayment();
+  }).catch(function(e){
+    if(b){b.disabled=false;b.style.opacity=''}
+    toast(e.message||'לא הצלחנו לפתוח את החשבון');
+  });
+}
+/* auth lives at the door, not in the middle of the flow */
+let userPhone='';
+function socialIn(w){userPhone='';toast('התחברות עם '+w);if(onbo){onboStart();return}go(0)}
+/* אימייל בשלב הזה ולא טלפון: SMS דורש ספק חיצוני בתשלום, והמסך והזרימה
+   זהים לחלוטין. המעבר לטלפון הוא החלפת נקודת קצה, לא עיצוב מחדש. */
+function loginIsEmail(){return !!netaServer}
+
+function loginPrep(){
+  if(!netaServer)return;
+  const f=document.getElementById('lg-phone');
+  if(!f)return;
+  f.type='email';f.placeholder='you@example.com';f.autocomplete='email';
+  const lbl=f.parentNode.querySelector('label');
+  if(lbl)lbl.textContent='אימייל';
+  const h=document.querySelector('[data-name="כניסה"] h2');
+  if(h)h.textContent='מה האימייל שלך?';
+  const sub=document.querySelector('[data-name="כניסה"] .sub');
+  if(sub)sub.textContent='נשלח לך קוד חד-פעמי. אין סיסמה.';
+  const otp=document.getElementById('lg-otp');
+  if(otp){otp.placeholder='6 ספרות';otp.inputMode='numeric'}
+}
+
+function loginBusy(on,label){
+  const b=document.getElementById('lg-cta');
+  if(!b)return;
+  b.disabled=on;b.style.opacity=on?'.55':'';
+  if(label)txt('lg-cta',label);
+}
+
+function loginNext(){
+  const box=document.getElementById('lg-codebox');
+  const idField=(document.getElementById('lg-phone')||{}).value||'';
+
+  if(box.style.display==='none'){
+    if(!idField.trim()){toast(loginIsEmail()?'צריך אימייל':'צריך מספר טלפון');return}
+    if(loginIsEmail()&&idField.indexOf('@')<0){toast('כתובת אימייל לא תקינה');return}
+    userPhone=idField.trim();
+
+    if(!netaServer){
+      box.style.display='block';
+      txt('lg-codelbl','קוד אימות נשלח ל'+userPhone);
+      txt('lg-cta','אשר והמשך');
+      return;
+    }
+    loginBusy(true,'שולח…');
+    netaServer.sendCode(userPhone).then(function(){
+      loginBusy(false,'אשר והמשך');
+      box.style.display='block';
+      txt('lg-codelbl','קוד אימות נשלח ל'+userPhone);
+    }).catch(function(e){
+      loginBusy(false,'שלח קוד');
+      toast(e.message||'לא הצלחנו לשלוח את הקוד');
+    });
+    return;
+  }
+
+  const c=(document.getElementById('lg-otp')||{}).value;
+  if(!c||!c.trim()){toast('הזן את הקוד שנשלח אליך');return}
+
+  if(!netaServer){
+    txt('id-verified','המספר '+userPhone+' אומת');
+    box.style.display='none';txt('lg-cta','שלח קוד');
+    if(onbo){onboStart();return}
+    toast('ברוך שובך, אלון');go(0);
+    return;
+  }
+
+  loginBusy(true,'מאמת…');
+  netaServer.verifyCode(userPhone,c.trim())
+    .then(function(){return netaServer.hasProfile()})
+    .then(function(known){
+      loginBusy(false,'שלח קוד');
+      txt('id-verified',userPhone+' אומת');
+      box.style.display='none';
+      document.getElementById('lg-otp').value='';
+      /* מי שכבר יש לו פרופיל לא עובר שוב בפתיחת החשבון. */
+      if(known){toast('ברוך שובך');onbo=false;go(0);buildHomeSummary();return}
+      if(onbo){onboStart();return}
+      go(ONBO.identity);
+    })
+    .catch(function(e){
+      loginBusy(false,'אשר והמשך');
+      toast(e.message||'הקוד לא התקבל');
+    });
+}
+/* ---- how-it-works story (screen ONBO.how) ---- */
+const HOW_DUR=6000;
+let howIdx=0,howTimer=null;
+const howReducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function howSlides(){return document.querySelectorAll('[data-how-slide]')}
+function howBars(){return document.querySelectorAll('[data-how-bar]')}
+function howRender(){
+  howSlides().forEach(function(s,i){s.classList.toggle('active',i===howIdx)});
+  howBars().forEach(function(b,i){
+    const fill=b.querySelector('i');
+    b.classList.remove('done','live');
+    fill.style.transition='none';
+    if(i<howIdx){b.classList.add('done');fill.style.width='100%';}
+    else if(i===howIdx){
+      b.classList.add('live');fill.style.width='0%';
+      void fill.offsetWidth;
+      fill.style.transition=howReducedMotion?'none':'width '+HOW_DUR+'ms linear';
+      fill.style.width='100%';
+    } else fill.style.width='0%';
+  });
+}
+function howSchedule(){
+  clearTimeout(howTimer);
+  if(howReducedMotion)return;
+  howTimer=setTimeout(function(){
+    if(!document.getElementById('how-story').closest('.screen').classList.contains('on'))return;
+    if(howIdx<howSlides().length-1)howSet(howIdx+1);
+  },HOW_DUR);
+}
+function howSet(i){howIdx=Math.max(0,Math.min(howSlides().length-1,i));howRender();howSchedule();}
+function howPause(p){
+  const live=document.querySelector('.how-bar.live i');
+  if(live)live.style.transitionProperty=p?'none':'width';
+  if(p)clearTimeout(howTimer);else howSchedule();
+}
+function howNext(){if(howIdx<howSlides().length-1)howSet(howIdx+1);else go(ONBO.login)}
+function howPrev(){howSet(howIdx-1<0?0:howIdx-1)}
+function howFinish(){clearTimeout(howTimer);go(ONBO.login)}
+function howClose(){clearTimeout(howTimer);go(ONBO.welcome)}
+function howOpen(){go(ONBO.how);howSet(0)}
+document.querySelector('[data-how-nav="next"]').addEventListener('click',howNext);
+document.querySelector('[data-how-nav="prev"]').addEventListener('click',howPrev);
+(function(){
+  const story=document.getElementById('how-story');
+  ['pointerdown'].forEach(function(ev){story.addEventListener(ev,function(){howPause(true)})});
+  ['pointerup','pointerleave','pointercancel'].forEach(function(ev){story.addEventListener(ev,function(){howPause(false)})});
+})();
+/* the horizon is edited on the amount screen itself, so recomputing the goal must not navigate */
+function updateGoal(){
+  const n=cName.value.trim()||'הילד';
+  const t=cType==='custom'?(cCustom.value.trim()||'המטרה'):cType;
+  let dateLabel='המועד המיוחל',years=6;
+  if(cDate.value){const d=new Date(cDate.value);dateLabel=months[d.getMonth()]+' '+d.getFullYear();years=yearsUntil(cDate.value);}
+  goal={name:designated?n:t,type:t,icon:cIcon,dateLabel:dateLabel,years:years,desig:designated};
+  /* amount comes first on this screen — it's what the screen is actually for; term is a refinement under it */
+  txt('eb-term','2 · '+(designated?('מתי תרצה ש'+n+' '+bs('יוכל','תוכל')+' לקצור את הפירות?'):'מתי תרצה לקצור את הפירות?'));
+  txt('ct-icon',cIcon);
+  document.getElementById('ct-title').textContent=designated?('השקע עבור '+n):('השקע ל'+t);
+  /* the header no longer states the date — it is an input on this screen now */
+  document.getElementById('ct-meta').textContent=designated?t:'קופה שעדיין לא יועדה';
+}
+function commitGoal(){
+  showTermStep(true);
+  if(!cDate.value){ // arrive with a working projection rather than an empty one
+    const def=document.querySelectorAll('#c-terms button')[1];
+    if(def)setTerm(def,10);
+  }
+  updateGoal();isNewPlant=true;render();go(2);
+}
+let freq='m',mode=null,rate=.035,modeTouched=false;
+const amtM=document.getElementById('amt-m'),amtL=document.getElementById('amt-l');
+/* a one-time deposit that "stays as it is" doesn't grow at all — the sensible default only for
+   a monthly deposit, which keeps accumulating on its own regardless of the track chosen */
+function setFreq(f){freq=f;document.querySelectorAll('.pill[data-f]').forEach(b=>b.classList.toggle('on',b.dataset.f===f));document.getElementById('panel-m').style.display=f==='m'?'block':'none';document.getElementById('panel-l').style.display=f==='l'?'block':'none';document.getElementById('freq-stop-hint').style.display=f==='m'?'block':'none';document.getElementById('keep-desc').textContent=f==='m'?'הסכום שתפקיד כל חודש יחכה במלואו בהגעה למועד המיוחל.':'הסכום שתפקיד יחכה במלואו בהגעה למועד המיוחל.';if(!modeTouched)setMode(f==='l'?'safe':'keep');render()}
+function setMode(m){mode=m;document.querySelectorAll('.opt[data-m]').forEach(el=>el.classList.toggle('on',el.dataset.m===m));document.getElementById('safe-block').style.display=m==='safe'?'block':'none';document.getElementById('market-block').style.display=m==='market'?'block':'none';if(m==='safe'){setTrack(document.querySelector('.trk[data-r="0.035"]'));return}if(m==='market'){setTrack(document.querySelector('.trk[data-r="0.06"]'));return}render()}
+function setTrack(el){rate=parseFloat(el.dataset.r);document.querySelectorAll('.trk').forEach(t=>t.classList.toggle('on',t===el));render()}
+function fvCalc(v,r){const y=goal.years;if(r===0)return freq==='m'?v*y*12:v;if(freq==='m'){const m=r/12,n=y*12;return v*((Math.pow(1+m,n)-1)/m)}return v*Math.pow(1+r,y)}
+function render(){const v=freq==='m'?+amtM.value:+amtL.value;if(freq==='m')document.getElementById('out-m').textContent=v.toLocaleString('he-IL')+' ₪';else document.getElementById('out-l').textContent=v.toLocaleString('he-IL')+' ₪';const label=document.getElementById('hero-label'),mid=document.getElementById('hero-mid'),num=document.getElementById('hero-num'),sub=document.getElementById('hero-sub'),fine=document.getElementById('fine');if(mode===null){label.textContent='בחרו למטה מה יקרה לכסף עד אז';mid.style.display='none';num.textContent='—';num.classList.add('idle');sub.textContent='';fine.textContent='';document.getElementById('amt-sticky-txt').textContent='';return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);const approx=mode==='market'?'כ-':'';num.textContent=approx+Math.round(total).toLocaleString('he-IL')+' ₪';document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+approx+Math.round(total).toLocaleString('he-IL')+' ₪';if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();ahaCopy();document.getElementById('aha-sub').innerHTML='בחרת להשקיע <b style="color:var(--tx)">'+v.toLocaleString('he-IL')+' ₪</b> '+(freq==='m'?'כל חודש':'היום')+', שיהפכו עד '+goal.dateLabel+' לכ-<b style="color:var(--leaf)">'+approx+Math.round(total).toLocaleString('he-IL')+' ₪</b>';const assume=freq==='m'?'בהנחה שההפקדה נמשכת עד אז. ':'';
+  fine.textContent=assume+(mode==='keep'?'הסכום נשמר כפי שהוא ואינו חשוף לשוק. שימו לב שערכו הריאלי עשוי להישחק עם הזמן בשל אינפלציה.':mode==='safe'?'הקרן והריבית מובטחות על ידי הגוף הפיננסי המנהל. התנאים המדויקים, לרבות סכומי מינימום, נקבעים על ידו.':'התשואות להמחשה בלבד ומבוססות על נתוני עבר. הערך עשוי לרדת. אינן מהוות הבטחת תשואה או ייעוץ השקעות.');}
+document.querySelectorAll('.opt[data-m]').forEach(el=>el.onclick=()=>{
+  modeTouched=true;setMode(el.dataset.m);
+  /* the pick itself is invisible above the fold, so scroll to whatever it just revealed —
+     the track question if there is one, otherwise the button that continues the flow */
+  const m=el.dataset.m,next=document.getElementById(m==='safe'?'eb-trk1':m==='market'?'eb-trk2':'amt-cta');
+  next?.scrollIntoView({block:'center',behavior:'smooth'});
+});
+document.querySelectorAll('.trk').forEach(t=>t.onclick=()=>setTrack(t));
+amtM.oninput=render;amtL.oninput=render;setFreq('m');
+let idDone=false;
+function toPayment(){
+  if(onbo && !idDone){go(ONBO.identity);return}
+  openPayment();
+}
+function openPayment(){
+  document.getElementById('pay-back').style.display=creating?'':'none';
+  /* a monthly deposit already funded by a saved standing order should default to that,
+     not to setting up a second one from scratch */
+  const savedHora=freq==='m'?pays.findIndex(function(x){return x.t.includes('הוראת קבע')}):-1;
+  paySaved=savedHora>=0?savedHora:null;
+  payPick=freq==='m'?'hora':'card';
+  document.querySelectorAll('.opt.pay').forEach(function(x){x.classList.toggle('on',paySaved===null&&x.dataset.p===payPick)});
+  renderSavedPays();renderPayFields();
+  const v=freq==='m'?+amtM.value:+amtL.value;
+  txt('pay-icon',goal.icon||cIcon);
+  txt('pay-k',freq==='m'?'מופקד כל חודש':'הפקדה חד פעמית');
+  txt('pay-v',v.toLocaleString('he-IL')+' ₪');
+  txt('pay-when',goal.dateLabel);
+  document.getElementById('pay-recurring').style.display=freq==='m'?'flex':'none';
+  document.getElementById('pay-onetime').style.display=freq==='l'?'flex':'none';
+  document.getElementById('pay-meta').textContent=(freq==='m'?'הפקדה חודשית':'הפקדה חד פעמית')+(goal.desig===false?' · '+goal.type:' · עבור '+goal.name);
+  paySummary();
+  go(3);
+}
+/* picking a method has to lead somewhere — the details are entered right below it */
+const PAY_FIELDS={
+  hora:{t:'פרטי החשבון לחיוב',f:[['pf-bank','שם הבנק','למשל: לאומי'],['pf-branch','מספר סניף','000'],['pf-acct','מספר חשבון','000000']],
+    note:'ההרשאה לחיוב חשבון נחתמת דיגיטלית מול הבנק. אפשר לבטל אותה בכל עת, ישירות מולו.'},
+  'card-rec':{t:'פרטי הכרטיס',f:[['pf-num','מספר כרטיס','0000 0000 0000 0000'],['pf-exp','תוקף','09/30'],['pf-cvv','CVV','000']],
+    note:'הפרטים נמסרים לגוף הפיננסי המנהל ואינם נשמרים אצל נטע.'},
+  card:{t:'פרטי הכרטיס',f:[['pf-num','מספר כרטיס','0000 0000 0000 0000'],['pf-exp','תוקף','09/30'],['pf-cvv','CVV','000']],
+    note:'הפרטים נמסרים לגוף הפיננסי המנהל ואינם נשמרים אצל נטע.'},
+  bit:{t:'המספר שלך ב-Bit',f:[['pf-phone','מספר טלפון','050-0000000']],
+    note:'תקבל בקשת תשלום לאישור באפליקציית Bit.'},
+  transfer:{t:'פרטי החשבון להעברה',f:[],
+    note:'בנק לאומי · סניף 800 · חשבון 41102237, על שם הגוף הפיננסי המנהל. ציין את שם הנטיעה בהעברה.'}
+};
+let payPick='hora',paySaved=null;
+function renderPayFields(){
+  const box=document.getElementById('pay-fields');
+  if(paySaved!==null){box.innerHTML='';return}
+  const d=PAY_FIELDS[payPick];
+  if(!d){box.innerHTML='';return}
+  box.innerHTML='<p class="eyebrow big">'+d.t+'</p>'+
+    d.f.map(function(f){
+      return '<div class="field"><label>'+f[1]+'</label><input type="text" id="'+f[0]+'" placeholder="'+f[2]+'"></div>';
+    }).join('')+
+    '<p class="fine'+(d.f.length?'':' gap')+'">'+d.note+'</p>';
+}
+function renderSavedPays(){
+  const box=document.getElementById('pay-saved');
+  if(!pays.length){box.style.display='none';box.innerHTML='';return}
+  box.style.display='flex';
+  box.innerHTML='<p class="eyebrow">אמצעים שכבר שמורים אצלך</p>'+pays.map(function(x,i){
+    return '<div class="opt saved'+(paySaved===i?' on':'')+'" onclick="pickSaved('+i+')"><b>'+x.t+'</b><p>'+x.n+'</p></div>';
+  }).join('');
+}
+function pickSaved(i){
+  paySaved=i;
+  document.querySelectorAll('.opt.pay').forEach(x=>x.classList.remove('on'));
+  renderSavedPays();renderPayFields();
+}
+document.querySelectorAll('.opt.pay').forEach(el=>el.onclick=()=>{
+  el.closest('.stack').querySelectorAll('.opt.pay').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  payPick=el.dataset.p;paySaved=null;
+  renderSavedPays();renderPayFields();
+});
+/* who approves the redemption is a decision the creator makes now, not a prediction about a future age */
+let beneMode='self';
+document.querySelectorAll('.opt.ben').forEach(el=>el.onclick=()=>{
+  document.querySelectorAll('.opt.ben').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');beneMode=el.dataset.b;
+  document.getElementById('c-guard').style.display=beneMode==='guardian'?'block':'none';
+  document.getElementById('c-codefield').style.display=beneMode==='self'?'block':'none';
+});
+/* creating a planting is three decisions, one per screen */
+let cStep=0;
+const C_LABELS=['בשביל מי','מי יקבל את הכסף שנטעת','פתיחות'];
+let creating=false;
+/* the whole creation is one act: name, amount, recipient, sharing — then payment creates it */
+/* 1 בשביל מי · 2 כמה · [3 ייעוד — רק כשיש נהנה] · שיתוף · [פתיחת חשבון — רק באונבורדינג] · תשלום */
+function flowSteps(){return (onbo?6:5)+(designated?1:0)}
+function stepNo(key){
+  const d=designated?1:0;
+  if(key==='who')return 1;
+  if(key==='share')return 2;
+  if(key==='amount')return 3;
+  if(key==='bene')return 4;
+  if(key==='identity')return 4+d;
+  if(key==='pay')return 4+d+(onbo?1:0);
+  return 5+d+(onbo?1:0); // review
+}
+function flowBar(cur,label){
+  const box=document.getElementById('flowbar'),bar=document.getElementById('steps-top');
+  if(!creating){box.style.display='none';return}
+  box.style.display='block';
+  const t=flowSteps();
+  bar.innerHTML=Array.from({length:t},function(_,i){return '<i class="'+(i<cur?'on':'')+'"></i>'}).join('');
+  txt('flowlbl','שלב '+cur+' מתוך '+t+' · '+label);
+}
+function startCreate(){
+  creating=true;dateTouched=false;beneSex='m';fullTouched=false;modeTouched=false;
+  document.getElementById('c-full').value='';
+  document.querySelectorAll('#c-sex button').forEach(function(x){x.classList.remove('on')});
+  beneCopy();
+  cDate.value='';
+  document.querySelectorAll('#c-terms button').forEach(function(x){x.classList.remove('on')});
+  document.getElementById('c-datefield').style.display='none';
+  txt('c-datehint','');
+  /* every new planting starts from a clean sheet, including the designation choice */
+  const u=document.getElementById('c-undecided');
+  if(u){u.checked=false;toggleDesig(u);}
+  beneMode='self';
+  document.querySelectorAll('.opt.ben').forEach(function(x){x.classList.remove('on')});
+  document.querySelector('.opt.ben[data-b="self"]').classList.add('on');
+  document.getElementById('c-guard').style.display='none';
+  document.getElementById('c-codefield').style.display='block';
+  cStepGo(0);go(1);
+}
+function toAmount(){
+  commitGoal();
+}
+/* order: בשביל מי -> מי עוד שותף -> כמה תשקיע -> [מי יקבל את הכסף, רק אם יש נהנה] -> תשלום.
+   השותפות יושבת מיד אחרי "בשביל מי" כי שתיהן אותה שאלה — מי, ועם מי — ולא רוצים שהן יתקררו זו מזו */
+function backFromAmount(){cStepGo(2);go(1)}
+function backFromPay(){
+  if(onbo){go(ONBO.identity);return}
+  if(creating){
+    if(designated){cStepGo(1);go(1);return}
+    go(2);return; // בלי נהנה, השלב שלפני תשלום הוא מסך הסכום עצמו
+  }
+  go(0);
+}
+function shareBack(){cStepGo(0)}
+function afterAmount(){
+  if(creating && designated){cStepGo(1);go(1);return}
+  toPayment();
+}
+function cGo(n){cStepGo(n)}
+function beneContinue(){
+  toPayment();
+}
+function cStepGo(n){
+  cStep=n;
+  [0,1,2].forEach(function(i){document.getElementById('cp-'+i).style.display=i===n?'block':'none'});
+  flowBar(stepNo(n===0?'who':n===1?'bene':'share'),C_LABELS[n]);
+  if(n===1)checkBene();
+  document.querySelector('.stage').scrollTo?.(0,0);
+}
+/* the wizard produces one true review, right before the lock — not a recap at every step along the way */
+const TRACK_LABELS={0.02:'פיקדון גמיש · כ-2% בשנה',0.035:'פיקדון נעול · כ-3.5% בשנה',
+  0.06:'מאוזן · כ-6% בשנה',0.08:'עוקב מדד · כ-8% בשנה',0.09:'נועז · כ-9% בשנה'};
+function trackLabel(){return mode==='keep'?'יישמר כמו שהוא (ללא ריבית)':(TRACK_LABELS[rate]||'—');}
+function opennessLabel(){return shareMode==='open'?'פתוחה לאנשים אחרים':'פרטית';}
+function paySummary(){
+  const head=document.getElementById('py-headrow');
+  if(!isNewPlant){
+    /* topping up an existing planting: the beneficiary and ownership are already settled,
+       so the review shows only what this deposit actually decides */
+    head.style.display='flex';
+    txt('py-icon',(plants[cur]||{}).icon||goal.icon||'🌱');
+    txt('py-title',(plants[cur]||{}).name||goal.type||'');
+    txt('py-date',goal.dateLabel||'');
+    document.getElementById('py-benerow').style.display='none';
+    document.getElementById('py-relrow').style.display='none';
+    document.getElementById('py-ownrow').style.display='none';
+    document.getElementById('py-trackrow').style.display='flex';
+    txt('py-track',trackLabel());
+    return;
+  }
+  head.style.display='flex';
+  txt('py-icon',document.getElementById('p-icon').textContent);
+  txt('py-title',document.getElementById('p-title').textContent);
+  txt('py-date',document.getElementById('p-date').textContent);
+  document.getElementById('py-ownrow').style.display='flex';
+  txt('py-own',opennessLabel());
+  document.getElementById('py-trackrow').style.display='flex';
+  txt('py-track',trackLabel());
+  const nm=((document.getElementById('c-name')||{}).value||'הילד').trim();
+  document.getElementById('py-benerow').style.display='flex';
+  document.getElementById('py-relrow').style.display='flex';
+  if(!designated){
+    txt('py-benek','ייעוד');
+    txt('py-bene','עדיין לא נקבע · רשום על שמך');
+    txt('py-relk','מי מחליט');
+    txt('py-rel','אתה, בכל שלב עד המועד');
+    return;
+  }
+  txt('py-benek','הכסף רשום על שם');
+  txt('py-bene',((document.getElementById('c-full')||{}).value||'').trim()||nm);
+  txt('py-relk','משתחרר');
+  txt('py-rel',beneMode==='guardian'?'במועד המיוחל, לידי המורשה'
+    :beneMode==='later'?'טרם נקבע · תוכל לעדכן בכל שלב עד המועד'
+    :('במועד המיוחל, '+bs('לידיו','לידיה')));
+}
+function toggleSafe(){
+  const el=document.getElementById('c-safe');
+  el.style.display=el.style.display==='none'?'block':'none';
+}
+function toggleDesig(cb){
+  designated=!cb.checked;
+  const nm=document.getElementById('c-name');
+  nm.disabled=!designated;nm.style.opacity=designated?'':'.4';
+  document.getElementById('c-sex').style.display=designated?'':'none';
+  document.getElementById('c-approvefield').style.display=designated?'':'none';
+  document.getElementById('c-benefields').style.display=designated?'block':'none';
+  document.getElementById('c-safebtn').style.display=designated?'':'none';
+  if(!designated)document.getElementById('c-safe').style.display='none';
+  const open=document.getElementById('shr-open');
+  open.style.opacity=designated?'':'.45';
+  open.style.pointerEvents=designated?'':'none';
+  document.getElementById('c-sharenote').style.display=designated?'none':'block';
+  document.getElementById('c-designbtn').style.display=designated?'none':'block';
+  if(!designated && shareMode==='open'){
+    document.querySelectorAll('.opt.shr').forEach(x=>x.classList.remove('on'));
+    document.querySelector('.opt.shr[data-s="private"]').classList.add('on');
+    shareMode='private';
+  }
+  prev();checkBene();
+  if(creating)flowBar(stepNo('who'),C_LABELS[0]);
+}
+function backToName(){
+  const u=document.getElementById('c-undecided');
+  u.checked=false;toggleDesig(u);
+  cStepGo(0);
+  document.getElementById('c-name').focus();
+}
+function checkBene(){
+  const nm=((document.getElementById('c-name')||{}).value||'הילד').trim();
+  if(!designated){
+    txt('cp1-h','הכסף עד שתחליט');
+    txt('cp1-sub','לא חייבים לדעת עכשיו למי. זה מה שקורה בינתיים.');
+    return;
+  }
+  txt('cp1-h','מי יקבל את הכסף שנטעת?');
+  beneCopy();
+  /* the first name was already given one step ago — don't make him retype it, only extend it */
+  const full=document.getElementById('c-full');
+  if(full && !fullTouched)full.value=nm;
+  /* once he's given a full name here, that's the more specific, authoritative one — prefer it
+     everywhere on this screen over the casual first name from step 1 */
+  const dispNm=(full&&full.value.trim().split(' ')[0])||nm;
+  document.getElementById('c-codefield').style.display=beneMode==='self'?'block':'none';
+  txt('c-selfb',dispNm+' עצמו');
+  /* "he'll redeem it himself" only holds if he's actually grown by then — a short horizon makes that
+     unlikely, so nudge toward the fact that the approver can still be changed, without asking his age */
+  const selfHint=document.getElementById('c-selfhint'),t=(document.getElementById('c-date')||{}).value;
+  if(selfHint){
+    const short=t && yearsUntil(t)<3;
+    selfHint.style.display=short?'block':'none';
+    if(short)selfHint.textContent='אם עד אז '+dispNm+' עדיין '+bs('יהיה קטין','תהיה קטינה')+' — אפשר לעדכן את זה למי שתבחר, בכל שלב עד המועד.';
+  }
+}
+document.querySelectorAll('.opt.dest').forEach(el=>el.onclick=()=>{
+  document.querySelectorAll('.opt.dest').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('dest-bank').style.display=el.dataset.d==='keep'?'none':'block';
+});
+/* ---- editing the planting name propagates across the app ---- */
+let plantName='בר המצווה של דניאל';
+function childOf(t){const p=t.split(' של ');return (p.length>1?p[p.length-1]:t).trim()||'הילד';}
+function txt(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+function applyPlantName(raw){
+  plantName=(raw||'').trim()||'הנטיעה';
+  const kid=childOf(plantName);
+  txt('h-nm',plantName);
+  plants.danielBar.line='בזכות 150 ₪ בחודש ממך, מסבתא ומדוד יוסי, '+kid+' מתקרב ליום הגדול שלו';
+  txt('d-line',plants.danielBar.line);
+  txt('d-title',plantName);
+  txt('d-cbh','מי השקיע בעתיד של '+kid);
+  txt('ip-nm',plantName);
+  txt('e-meta',plantName);
+  txt('e-codelbl','לאן יישלח הקוד למימוש ההשקעה של '+kid);
+  plants.danielBar.name=plantName;plants.danielBar.kid=kid;
+  applyPlantDate(plantDate);
+}
+let plantDate='2032-08-01';
+let plantLetter=document.getElementById('e-letter').value;
+function applyPlantDate(iso){
+  plantDate=iso;
+  const d=new Date(iso), mo=months[d.getMonth()], yr=d.getFullYear(), kid=childOf(plantName);
+  const label=mo+' '+yr, shortLabel=monthsShort[d.getMonth()]+' '+yr, yrs=yearsUntil(iso);
+  txt('h-date','המועד המיוחל: '+shortLabel);
+  txt('h-yr',yr);
+  txt('d-date','המועד המיוחל: '+label);
+  txt('d-yr',yr);
+  txt('ip-date','המועד המיוחל: '+label);
+  txt('e-lstat','נחתם במרץ 2024 · '+kid+' יקרא אותו ב'+label);
+  txt('e-datewarn','דחיית המועד אפשרית, והקדמתו לא — סבתא ודוד יוסי השקיעו מתוך הבנה שהכסף ייפתח ב'+label+'. כל שינוי יישלח אליהם בהתראה.');
+  txt('e-codewarn','לכאן יישלח הקוד ב'+label+', ישירות ל'+kid+'. שינוי הכתובת נרשם ביומן הנטיעה, נשלח בהתראה לכל מי שהשקיע, ונכנס לתוקף רק אחרי 7 ימים.');
+  plants.danielBar.date=label;plants.danielBar.yr=yr;
+  applyLetter(plantLetter);
+}
+function applyLetter(v){
+  plantLetter=v;
+  const kid=childOf(plantName), d=new Date(plantDate), label=months[d.getMonth()]+' '+d.getFullYear();
+  const mine=plantLetter.trim().length>0, n=mine?3:2;
+  const from=mine?'מסבתא, מדוד יוסי וממך':'מסבתא ומדוד יוסי';
+  const head='ולא רק כסף, '+n+' מכתבים חתומים — '+from;
+  const when='המכתבים ייפתחו ב'+label+', יחד עם '+kid+'.';
+  txt('d-lcount',head);txt('d-lett',when);
+  plants.danielBar.lCount=head;plants.danielBar.lSub=when;
+}
+/* a separate class from .opt.ben on purpose — that one is wired globally to the creation flow's
+   own beneMode/c-guard/c-codefield state, and reusing it here would clobber that state */
+let editApprover='self';
+function setEditApprover(el,mode){
+  document.querySelectorAll('.opt.eb-approve').forEach(function(x){x.classList.remove('on')});
+  el.classList.add('on');
+  editApprover=mode;
+  document.getElementById('e-codefield').style.display=mode==='self'?'block':'none';
+  document.getElementById('e-codewarn').style.display=mode==='self'?'block':'none';
+  document.getElementById('e-guard').style.display=mode==='guardian'?'block':'none';
+  document.getElementById('e-laterp').style.display=mode==='later'?'block':'none';
+}
+function saveEdit(){
+  applyPlantName(document.getElementById('e-name').value);
+  applyLetter(document.getElementById('e-letter').value);
+  const picked=document.getElementById('e-date').value;
+  if(picked && picked<plantDate){
+    /* the sheet no longer blocks, so stay on the edit screen instead of navigating away */
+    document.getElementById('e-date').value=plantDate;
+    ask('אי אפשר להקדים את המועד',
+      'סבתא ודוד יוסי השקיעו מתוך הבנה שהכסף ייפתח במועד הקיים. אפשר רק לדחות אותו, לא להקדים. שאר השינויים נשמרו.',
+      'הבנתי');
+    return;
+  }
+  if(picked)applyPlantDate(picked);
+  /* this screen edits plants.danielBar specifically, same as the name/date fields above —
+     matches the existing single-plant scope of the edit screen, not a new limitation */
+  plants.danielBar.approver=editApprover;
+  plants.danielBar.guardName=editApprover==='guardian'?(document.getElementById('e-gname').value||'').trim():undefined;
+  go(5);
+}
+function cancelEdit(){
+  document.getElementById('e-name').value=plantName;
+  document.getElementById('e-date').value=plantDate;
+  document.getElementById('e-letter').value=plantLetter;
+  go(5);
+}
+function pickInvite(key){
+  cur=key;
+  if(!plants[key].shared){openToCircle();return}
+  openInvite(inviteFor(key));
+}
+/* ---- in-frame toast + sheet (native alert/confirm never render here) ---- */
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('on');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2800);
+}
+let sheetFn=null;
+let sheetAlt=null;
+function ask(title,body,okLabel,fn,altLabel,altFn){
+  txt('sh-t',title);txt('sh-b',body);
+  sheetFn=fn||null;sheetAlt=altFn||null;
+  document.getElementById('sh-acts').innerHTML=fn
+    ? '<div class="two"><button class="btn" onclick="sheetConfirm()">'+okLabel+'</button><button class="btn ghost" onclick="sheetAltGo()">'+(altLabel||'ביטול')+'</button></div>'
+    : '<button class="btn" onclick="sheetClose()">'+okLabel+'</button>';
+  document.getElementById('scrim').classList.add('on');
+}
+function sheetAltGo(){const f=sheetAlt;sheetClose();if(f)f()}
+function sheetForm(title,html,okLabel,fn){
+  txt('sh-t',title);
+  document.getElementById('sh-b').innerHTML=html;
+  sheetFn=fn||null;
+  document.getElementById('sh-acts').innerHTML=
+    '<div class="two"><button class="btn" onclick="sheetConfirm()">'+okLabel+'</button><button class="btn ghost" onclick="sheetClose()">ביטול</button></div>';
+  document.getElementById('scrim').classList.add('on');
+}
+function sheetClose(){document.getElementById('scrim').classList.remove('on');sheetFn=null;sheetAlt=null}
+function sheetConfirm(){const f=sheetFn;if(f&&f()===false)return;sheetClose()}
+function openInvite(key){
+  const d=typeof key==='string'?inviteFor(key):key;
+  document.getElementById('inv-sub1').textContent=d.sub1;
+  document.getElementById('inv-title').textContent=d.title;
+  document.getElementById('inv-sub2').textContent=d.sub2;
+  document.getElementById('inv-stats').innerHTML=d.stats;
+  txt('inv-fine',d.fine||'אתה רואה סכומים מלאים כבעל הנטיעה. הקרובים רואים רק את ההשתתפות שלהם, אלא אם בחרו אחרת.');
+  go(7);
+}
+/* copy on the payment + aha screens follows the planting being deposited into */
+function ahaCopy(){
+  const nm=goal.name, dl=goal.dateLabel, open=goal.desig===false;
+  const letterBtn=document.getElementById('letter-open');
+  if(letterBtn)letterBtn.style.display=open?'none':'';
+  const tpBtn=document.getElementById('tp-open');
+  if(tpBtn)tpBtn.style.display=(open||!isNewPlant)?'none':'';
+  if(open){
+    txt('pay-fine','ההפקדה עוברת לחשבון הרשום על שמך, אצל הגוף הפיננסי המנהל, ומיועדת לקופה שפתחת. נטע אינה מחזיקה בכסף בשום שלב.');
+    const el0=document.getElementById('aha-note');
+    if(el0)el0.innerHTML='שמת כסף בצד. <b>תחליט למי הוא הולך, כשתדע.</b>';
+    return;
+  }
+  txt('pay-fine','ההפקדה עוברת ישירות לחשבון הנעול על שם '+nm+', אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.');
+  txt('lo-txt','✉ רוצה לצרף מכתב שייפתח ב'+dl+'?');
+  txt('tp-open-txt','🎉 רוצה לשתף מישהו שישמח לראות שנטעת עבור '+nm+'?');
+  txt('tp-form-sub','יראו בדיוק כמה נטעת, ויוכלו לחזור מתי שבא להם ולראות איך זה גדל — בלי גישה לכסף עצמו.');
+  txt('tp-done-txt','יראו בדיוק כמה נטעת, ויוכלו לחזור ולראות איך זה גדל.');
+  txt('lf-txt','המכתב ייחתם עכשיו וייפתח על ידי '+nm+' רק ב'+dl+', יחד עם מה שהשקעת '+bs('עבורו','עבורה')+'.');
+  txt('ld-txt','תלוי על העץ עד '+dl+'. רק '+nm+' יוכל לפתוח אותו.');
+  const lt=document.getElementById('letter');if(lt)lt.placeholder=nm+', ביום שתקרא את זה...';
+  const el=document.getElementById('aha-note');
+  if(isNewPlant){el.innerHTML='זו הנטיעה הראשונה עבור <b>'+nm+'</b> — אתה פותח אותה';return}
+  let p=null;try{p=plants[cur];}catch(e){}
+  if(!p){el.innerHTML='עד כה השקעת עבור <b>'+nm+'</b>';return}
+  const others=p.who.filter(w=>w[1]!=='אתה').map(w=>w[1]);
+  el.innerHTML=others.length
+    ?'עד כה השקיעו ב'+p.kid+' <b>'+['אתה'].concat(others).join(', ')+'</b>'
+    :'עד כה <b>אתה</b> היחיד שהשקיע ב'+p.kid;
+}
+function tpChanHint(){
+  const v=(document.getElementById('tp-contact')||{}).value,c=chanOf(v);
+  txt('tp-hint',c?'הקישור יישלח ב'+CHAN[c]:'הקישור יישלח בוואטסאפ אם תזין מספר, ובאימייל אם תזין כתובת.');
+}
+function openTellParents(){
+  document.getElementById('tp-open').style.display='none';
+  document.getElementById('tp-form').style.display='block';
+}
+function skipTellParents(){
+  document.getElementById('tp-form').style.display='none';
+  document.getElementById('tp-open').style.display='block';
+}
+function sendTellParents(){
+  const v=(document.getElementById('tp-contact')||{}).value;
+  if(!v||!v.trim()){toast('צריך טלפון או אימייל כדי לשלוח');return}
+  document.getElementById('tp-form').style.display='none';
+  document.getElementById('tp-done').style.display='block';
+  toast('הקישור נשלח');
+}
+function openLetter(){
+  document.getElementById('letter-open').style.display='none';
+  document.getElementById('letter-form').style.display='block';
+  document.getElementById('letter').focus();
+}
+function skipLetter(){
+  document.getElementById('letter-form').style.display='none';
+  document.getElementById('letter-open').style.display='block';
+}
+function seal(){const t=document.getElementById('letter');if(!t.value.trim()){t.focus();return}document.getElementById('letter-form').style.display='none';document.getElementById('letter-done').style.display='block';document.getElementById('env').style.opacity='1'}
+let pendingPay=null;
+function methodLabel(){
+  if(paySaved!==null)return (pays[paySaved]||{}).t||'אמצעי שמור';
+  const names={hora:'הוראת קבע מהבנק','card-rec':'חיוב כרטיס אשראי',card:'כרטיס אשראי',bit:'Bit',transfer:'העברה בנקאית'};
+  return names[payPick]||'—';
+}
+function toReview(){
+  pendingPay=null;
+  if(paySaved===null){
+    const d=PAY_FIELDS[payPick]||{f:[]};
+    const missing=d.f.filter(function(f){const el=document.getElementById(f[0]);return !el||!el.value.trim()});
+    if(missing.length){toast('חסר '+missing[0][1]);return}
+    if(d.f.length){
+      const label=payPick==='hora'?'הוראת קבע · '+document.getElementById('pf-bank').value.trim():
+        payPick==='bit'?'Bit':'כרטיס ····'+document.getElementById('pf-num').value.trim().slice(-4);
+      const nn=payPick==='hora'?'חשבון ····'+document.getElementById('pf-acct').value.trim().slice(-4):
+        payPick==='bit'?document.getElementById('pf-phone').value.trim():'תוקף '+document.getElementById('pf-exp').value.trim();
+      pendingPay={t:label,n:nn,state:freq==='m'?'live':'off',
+        note:freq==='m'?'מממנת את ההפקדה החודשית שהגדרת.':'שימש להפקדה חד פעמית.'};
+    }
+  }
+  paySummary();
+  txt('py-method',methodLabel());
+  go(REVIEW);
+}
+/* אוסף את מה שהמסע צבר לצורה אחת, שגם המסד וגם ההדגמה מקבלים.
+   סכומים באגורות, כמו במסד — העיגול לשקלים קורה רק בתצוגה. */
+function plantingFromFlow(){
+  const v=freq==='m'?+amtM.value:+amtL.value;
+  const recurring=freq==='m';
+  const total=mode==='keep'?fvCalc(v,0):fvCalc(v,rate);
+  const d=cDate&&cDate.value?new Date(cDate.value+'T00:00:00'):null;
+  const desig=goal.desig!==false;
+  return {
+    name:plantingName(goal.type,goal.name,desig),
+    icon:goal.icon,
+    occasion:occasionEnum(goal.type),
+    designated:desig,
+    beneficiary:goal.name,
+    targetDate:cDate?cDate.value:null,
+    targetYear:d?d.getFullYear():null,
+    targetMonth:d?d.getMonth():null,
+    mode:MODE_ENUM[mode]||'guaranteed',
+    rate:rate,
+    amount:Math.round(v*100),
+    projection:Math.round(total*100),
+    recurring:recurring
+  };
+}
+
+function finishDeposit(){
+  /* the method is only saved once the deposit is actually confirmed */
+  if(pendingPay){pays.push(pendingPay);pendingPay=null;buildPays();}
+  creating=false;document.getElementById('flowbar').style.display='none';
+
+  /* נטיעה חדשה נשמרת כאן ולא קודם: עד לרגע הזה אין הפקדה, ונטיעה בלי
+     הפקדה היא רשומה ריקה — אין מה להראות ואין מה לחשב. */
+  if(isNewPlant){
+    const src=netaSource();
+    if(src.create){
+      src.create(plantingFromFlow())
+        .then(function(){return buildHomeSummary()})
+        .catch(function(e){toast(e.message||'הנטיעה לא נשמרה')});
+    }
+  }
+  txt('aha-h2',goal.desig===false?(isNewPlant?'שמת כסף בצד':'הוספת לקופה שלך')
+    :(isNewPlant?('נטעת עבור '+goal.name):('העלה שלך נוסף לעץ של '+goal.name)));
+  if(onbo){
+    const v=freq==='m'?+amtM.value:+amtL.value;
+    const total=mode==='keep'?fvCalc(v,0):fvCalc(v,rate);
+    const rec=freq==='m';
+    txt('ob-sub',(goal.desig===false?goal.type:(goal.type+' של '+goal.name))+' · '+goal.dateLabel);
+    txt('ob-k',rec?'מופקד כל חודש':'הפקדה חד פעמית');
+    txt('ob-amt',v.toLocaleString('he-IL')+' ₪');
+    txt('ob-whenk',rec?'ההפקדה הראשונה':'ההפקדה בוצעה');
+    txt('ob-when',rec?'1 בספטמבר':'היום');
+    txt('ob-endk',rec?'בקצב הזה ייצבר':'ימשיך לגדול ל');
+    txt('ob-end','כ-'+Math.round(total).toLocaleString('he-IL')+' ₪');
+    txt('ob-okt',rec?'הוראת הקבע פעילה':'ההפקדה נקלטה');
+    txt('ob-okp',rec?'מכאן זה קורה מעצמו. אפשר לעצור או לשנות בכל רגע, מהפרופיל.'
+      :('הכסף בדרכו לחשבון הנעול על '+(goal.desig===false?'שמך':bs('שמו','שמה'))+'. אפשר להוסיף הפקדה נוספת בכל זמן, או להגדיר הפקדה חודשית.'));
+    txt('ob-cta','לנטיעות שלי');
+    isNewPlant=false;go(ONBO.done);return;
+  }
+  txt('a-next','חזרה לנטיעות שלי');
+  isNewPlant=false;
+  go(4);
+}
+function ahaNext(){go(0)}
+/* ---- per-planting data for the detail screen ---- */
+const plants={
+  danielBar:{icon:'🎂',name:'בר המצווה של דניאל',date:'אוגוסט 2032',yr:2032,planted:2019,
+    now:15600,end:35300,yl:6,tNow:53.8,kid:'דניאל',approver:'self',shared:true,mine:true,
+    who:[['av-parent','אתה','9,100 ₪','m'],['av-granny','סבתא רחל','4,300 ₪','f'],['av-uncle','דוד יוסי','2,200 ₪','m']],
+    lCount:'ולא רק כסף, 3 מכתבים חתומים — מסבתא, מדוד יוסי וממך',lSub:'המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.',
+    line:'בזכות 150 ₪ בחודש ממך, מסבתא ומדוד יוסי, דניאל מתקרב ליום הגדול שלו'},
+  noaStudy:{icon:'🎓',name:'הלימודים של נועה',date:'ספטמבר 2038',yr:2038,planted:2024,
+    now:4200,end:21200,yl:12,tNow:14.3,kid:'נועה',approver:'guardian',guardName:'מיכל',shared:false,mine:true,co:'מיכל',
+    who:[['av-parent','אתה','4,200 ₪','m']],
+    lCount:'ולא רק כסף, מכתב אחד חתום ממך',lSub:'המכתב ייפתח בספטמבר 2038, יחד עם נועה.',
+    line:'בזכות 60 ₪ בחודש שאתה מפקיד, נועה מתקרבת ללימודים שלה'},
+  danielArmy:{icon:'★',name:'הגיוס של דניאל',date:'מרץ 2030',yr:2030,planted:2022,
+    now:2300,end:5700,yl:4,tNow:50,kid:'דניאל',approver:'later',shared:true,mine:false,
+    who:[['av-uncle','דוד יוסי','2,300 ₪','m']],
+    lCount:'ולא רק כסף, מכתב אחד חתום מדוד יוסי',lSub:'המכתב ייפתח במרץ 2030, יחד עם דניאל.',
+    line:'בזכות 50 ₪ בחודש שדוד יוסי מפקיד, דניאל יגיע מוכן לגיוס'},
+  openFund:{icon:'🎁',name:'קופת הפתעות',date:'יוני 2035',yr:2035,planted:2025,
+    now:3400,end:12800,yl:9,tNow:11.1,kid:'מי שאחליט',shared:false,mine:true,designated:false,
+    who:[['av-parent','אתה','3,400 ₪','m']],
+    lCount:'ולא רק כסף — עוד לא נכתב מכתב',lSub:'אפשר לצרף מכתב ברגע שתייעד את הקופה.',
+    line:'בזכות 30 ₪ בחודש שאתה מפקיד, יש כאן משהו שמחכה לרגע הנכון'},
+  noaHome:{icon:'🏠',name:'הדירה של נועה',date:'יוני 2045',yr:2045,planted:2021,
+    now:5400,end:59200,yl:19,tNow:20.8,kid:'נועה',shared:true,mine:false,
+    who:[['av-granny','סבתא רחל','5,400 ₪','f']],
+    lCount:'ולא רק כסף, מכתב אחד חתום מסבתא רחל',lSub:'המכתב ייפתח ביוני 2045, יחד עם נועה.',
+    line:'בזכות 100 ₪ בחודש שסבתא רחל מפקידה, נועה תתחיל עם דירה משלה'}
+};
+let cur='danielBar';
+const dTime=document.getElementById('d-time');
+let A0=15600,AF=35300,YL=6,T_NOW=53.8,T_SPAN=46.2;
+
+function openDetail(key){
+  cur=key;const p=plants[key];
+  A0=p.now;AF=p.end;YL=p.yl;T_NOW=p.tNow;T_SPAN=100-p.tNow;
+  txt('d-icon',p.icon);
+  txt('d-title',p.name);
+  txt('d-date','המועד המיוחל: '+p.date);
+  const own=document.getElementById('d-owners');
+  own.style.display=p.co?'block':'none';
+  if(p.co)own.textContent='נוטעים יחד · אתה ו'+p.co;
+  txt('d-planted','נשתל '+p.planted);
+  txt('d-yr',p.yr);
+  txt('d-goalicon',p.icon);
+  txt('d-cbh','מי השקיע בעתיד של '+p.kid);
+  txt('d-line',p.line);
+  txt('d-lcount',p.lCount);
+  txt('d-lett',p.lSub);
+  document.getElementById('d-who').innerHTML=p.who.map(w=>
+    '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+w[0]+'"/></svg></div>'+
+    '<span class="cbn">'+w[1]+'</span><span class="cbv">'+w[2]+'</span></div>').join('');
+  const solo=!p.shared&&p.who.length<2;
+  document.getElementById('d-cbh').style.display=solo?'none':'';
+  document.getElementById('d-who').style.display=solo?'none':'';
+  document.getElementById('d-whofine').style.display=solo?'none':'';
+  buildActions(p);
+  document.getElementById('d-medal').classList.add('idle');
+  document.getElementById('d-past').style.width=T_NOW+'%';
+  document.getElementById('d-proj').style.right=T_NOW+'%';
+  dTime.style.width=T_SPAN+'%';
+  dTime.max=p.yl;dTime.value=0;
+  detail(0);
+  go(5);
+}
+function enterRedeem(key){
+  cur=key||cur||'danielBar';
+  const p=plants[cur];
+  if(p.approver==='later'){
+    ask('עדיין לא נקבע מי יאשר את הפדיון',
+      'לפני שממשיכים צריך לקבוע מי יפעל בשם '+p.kid+' ברגע הזה — אפשר לעשות את זה בעריכת הנטיעה.',
+      'עבור להגדרות', function(){go(11)});
+    return;
+  }
+  populateRedeem(p);
+  go(12);
+}
+/* the guardian's own gender is never known — just a typed name — so any word referring to
+   the guardian stays in neutral slash form (מורשה/ית), same convention as בר/בת מצווה */
+function peopleWord(n){return n===1?'אדם אחד':n+' אנשים'}
+function populateRedeem(p){
+  const guardian=p.approver==='guardian';
+  txt('rc-h',guardian?('הגיע היום של '+p.kid):'הגיע היום שלך');
+  txt('rc-sub',guardian
+    ?('את/ה מורשה/ית לפתוח את מה שנטעו עבור '+p.kid+' — הזן/י את הקוד שקיבלת.')
+    :'מישהו שתל עבורך משהו לפני שנים. הזן את הקוד שקיבלת כדי לפתוח אותו.');
+  txt('rd-icon',p.icon);
+  txt('rd-h',guardian?('הגיע היום המיוחל של '+p.kid):('הגיע היום, '+p.kid));
+  txt('rd-sub',p.date+(guardian?' · את/ה פועל/ת בשמו/ה, כמורשה/ית שנקבע/ה':' · הנטיעה שלך הבשילה'));
+  txt('rd-planted',p.planted);
+  txt('rd-whok',guardian?'השקיעו עבורו':'השקיעו עבורך');
+  txt('rd-who',peopleWord(p.who.length));
+  txt('rd-sum',p.end.toLocaleString('he-IL')+' ₪');
+  txt('rd-lcount',p.lCount||'המכתבים מחכים');
+  txt('rd-lsub',p.lSub||'');
+  txt('rt-sub',p.end.toLocaleString('he-IL')+' ₪ מחכים ל'+(guardian?p.kid:'ך')+'. '+(guardian?'את/ה, כמורשה/ית, מחליט/ה':'אתה מחליט')+' מה קורה איתם עכשיו.');
+  txt('rt-vt','הזהות שלך אומתה');
+  txt('rt-vp',guardian
+    ?(p.guardName+' · מורשה/ית מטעם '+p.kid+', אומת/ה מול הגוף הפיננסי המנהל')
+    :(p.kid+' · אומת מול הגוף הפיננסי המנהל'));
+  txt('rt-warn',guardian
+    ?('החשבון חייב להיות על שם '+p.guardName+', המורשה/ית הרשום/ה. העברה לחשבון אחר לא תאושר.')
+    :('החשבון חייב להיות על שמך, '+p.kid+'. העברה לחשבון של אדם אחר — כולל הורה או קרוב — לא תאושר. זו ההגנה שמבטיחה שהכסף שנשתל עבורך יגיע דווקא אליך.'));
+}
+/* the people tab aggregates across all plantings, so it can never drift from them */
+function stripHe(t){return t.charAt(0)==='ה'?t.slice(1):t}
+/* one address book, shared by every planting's invite */
+const AVATARS=['av-parent','av-granny','av-uncle','av-granny2','av-friend'];
+const relatives=[
+  {av:'av-granny',name:'סבתא רחל',rel:'סבתא של דניאל ונועה',g:'f',status:'in',chan:'wa',contact:'050-2214408'},
+  {av:'av-uncle',name:'דוד יוסי',rel:'דוד של דניאל',g:'m',status:'in',chan:'wa',contact:'052-7719063'},
+  {av:'av-friend',name:'מיכל, אמא של נועה',rel:'אמא של נועה',g:'f',status:'invited',chan:'mail',contact:'michal@mail.com'},
+  {av:'av-granny2',name:'סבא משה',rel:'סבא של דניאל ונועה',g:'m',status:'none',chan:'wa',contact:''}
+];
+const CHAN={wa:'וואטסאפ',mail:'אימייל'};
+let pickedPlant='';
+/* the channel is read from the value itself — asking for it separately was a second
+   decision that the input already answers */
+function chanOf(v){
+  v=(v||'').trim();
+  if(!v)return '';
+  return v.indexOf('@')>-1?'mail':'wa';
+}
+function contactHTML(val){
+  return '<input type="text" id="r-contact" value="'+(val||'')+'" placeholder="050-0000000 או name@mail.com" oninput="chanHint()">'+
+    '<div class="hint" id="ch-hint">ההזמנה תישלח בוואטסאפ אם תזין מספר, ובאימייל אם תזין כתובת.</div>';
+}
+function chanHint(){
+  const v=(document.getElementById('r-contact')||{}).value,c=chanOf(v);
+  txt('ch-hint',c?'ההזמנה תישלח ב'+CHAN[c]:'ההזמנה תישלח בוואטסאפ אם תזין מספר, ובאימייל אם תזין כתובת.');
+}
+function plantHTML(){
+  const mine=Object.keys(plants).filter(function(k){return plants[k].mine});
+  pickedPlant='';
+  return '<div class="chips">'+mine.map(function(k){
+    return '<button onclick="pickedPlant=\''+k+'\';markChip(this)">'+plants[k].icon+' '+plants[k].name+'</button>';
+  }).join('')+'<button class="on" onclick="pickedPlant=\'\';markChip(this)">לא עכשיו</button></div>';
+}
+function markChip(el){[...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)})}
+/* requests the system could not verify — the owner decides, by name */
+const requests=[
+  {name:'רועי כהן',av:'av-friend',plant:'danielBar',when:'לפני 4 שעות',
+   why:'פתח קישור לנטיעה אך לא נשלחה אליו הזמנה. לא הצלחנו לאמת אותו מול מספר או כתובת שהזנת.'}
+];
+function buildRequests(){
+  const box=document.getElementById('req-list'),head=document.getElementById('req-head');
+  if(!requests.length){box.innerHTML='';head.style.display='none';return}
+  head.style.display='';
+  box.innerHTML=requests.map(function(q,i){
+    return '<div class="req"><div class="rq-h">'+
+      '<div class="ra"><svg viewBox="0 0 40 40"><use href="#'+q.av+'"/></svg></div>'+
+      '<b>'+q.name+'</b><span>'+q.when+'</span></div>'+
+      '<p>מבקש להצטרף ל<b>'+plants[q.plant].name+'</b>. '+q.why+'</p>'+
+      '<div class="rq-a"><button class="ok" onclick="answerReq('+i+',1)">אשר</button>'+
+      '<button class="no" onclick="answerReq('+i+',0)">דחה</button></div></div>';
+  }).join('');
+}
+function answerReq(i,ok){
+  const q=requests[i];
+  if(ok){
+    relatives.push({av:q.av,name:q.name,rel:'הצטרף לבקשתו',g:'m',status:'in',chan:'wa',contact:''});
+    toast(q.name+' צורף ל'+plants[q.plant].name);
+  }else{
+    toast('הבקשה נדחתה · הקישור לנטיעה חודש כדי שלא ישמש שוב');
+  }
+  requests.splice(i,1);
+  buildRequests();buildRelatives();
+}
+function sentSheet(k,r){
+  ask('ההזמנה נשלחה ל'+r.name,
+    'כש'+r.name+' תפתח את הקישור, יישלח קוד אימות חד-פעמי ל'+r.contact+' — ורק מי ששולט בו יוכל להצטרף ל'+plants[k].name+'. אין קוד שאתה צריך למסור.\n\nאם מישהו אחר ינסה להיכנס דרך הקישור, הבקשה תגיע אליך לאישור עם שמו.',
+    'הבנתי');
+}
+function sendInvite(r){
+  if(!r.contact){toast('חסרים פרטי קשר ל'+r.name);return false}
+  r.chan=chanOf(r.contact)||'wa';
+  r.status='invited';r.plant=pickedPlant||'';
+  buildRelatives();
+  if(pickedPlant)sentSheet(pickedPlant,r);
+  else toast('הזמנה נשלחה ל'+r.name+' ב'+CHAN[r.chan]);
+}
+function buildRelatives(){
+  const box=document.getElementById('rel-list');
+  if(!relatives.length){
+    box.style.border='none';box.style.background='none';box.style.padding='0';
+    box.innerHTML='<div class="es" style="min-height:0;padding:22px 4px"><div class="art" style="color:var(--leaf-2);opacity:.6">'+
+      '<svg width="52" height="52" viewBox="0 0 24 24"><use href="#ic-person"/></svg></div>'+
+      '<h3 style="font-size:15.5px">מי עוד נוטע איתך?</h3>'+
+      '<p>שמור כאן את סבתא, את הדוד ואת מי שקרוב — ותוכל לצרף אותם לכל נטיעה בלחיצה אחת, בלי להקליד פרטים מחדש.</p></div>';
+    relMeta();return;
+  }
+  box.style.border='';box.style.background='';box.style.padding='';
+  box.innerHTML=relatives.map(function(r,i){
+    let right;
+    if(r.status==='in')right='<span class="rs">באפליקציה</span>';
+    else if(r.status==='invited')right='<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">שלח שוב</button>';
+    else right='<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">הזמן</button>';
+    const sub=r.status==='invited'?(r.plant?'הוזמנה ל'+plants[r.plant].name+' · ממתינה לקוד':r.rel+' · הוזמנה, טרם הצטרפה'):(r.contact?r.rel+' · '+r.contact:r.rel+' · חסרים פרטי קשר');
+    return '<div class="rel" onclick="editRelative('+i+')">'+
+      '<div class="ra"><svg viewBox="0 0 40 40"><use href="#'+r.av+'"/></svg></div>'+
+      '<span class="rn"><b>'+r.name+'</b><i>'+sub+'</i></span>'+right+'</div>';
+  }).join('');
+  relMeta();
+}
+/* payment methods — the standing order is what actually funds the monthly deposits */
+const pays=[
+  {t:'הוראת קבע · בנק לאומי',n:'חשבון ····4471',state:'live',
+   note:'מממנת את בר המצווה של דניאל (150 ₪) ואת הלימודים של נועה (60 ₪).'},
+  {t:'ויזה ····8302',n:'תוקף 11/26',state:'warn',
+   note:'כרטיס גיבוי — משמש רק אם הוראת הקבע נכשלת. פג בעוד פחות משלושה חודשים; כרטיס שפג תוקפו לא יוכל לגבות.'}
+];
+function buildPays(){
+  if(!pays.length){
+    document.getElementById('pm-list').innerHTML=
+      '<div class="es" style="min-height:0;padding:20px 4px"><div class="art" style="color:var(--leaf-2);opacity:.6;font-size:38px;line-height:1">💳</div>'+
+      '<h3 style="font-size:15.5px">עוד לא חיברת אמצעי תשלום</h3>'+
+      '<p>ההפקדה החודשית מתחילה ברגע שתחבר הוראת קבע או כרטיס. בלי זה הנטיעה לא תגדל.</p></div>';
+    txt('pf-pay-meta','עוד לא חובר אמצעי תשלום');
+    return;
+  }
+  document.getElementById('pm-list').innerHTML=pays.map(function(p,i){
+    const cls=p.state==='live'?'pm live':p.state==='warn'?'pm warn':'pm';
+    const tag=p.state==='live'?'<span class="pm-tag on">פעיל</span>'
+      :p.state==='warn'?'<span class="pm-tag bad">פג בקרוב</span>'
+      :'<span class="pm-tag off">גיבוי</span>';
+    return '<div class="'+cls+'"><div class="pm-h"><b>'+p.t+'</b>'+tag+'</div>'+
+      '<p>'+p.n+' · '+p.note+'</p>'+
+      '<button class="act" onclick="swapPay('+i+')">'+(p.state==='warn'?'עדכן כרטיס':'החלף אמצעי')+'</button></div>';
+  }).join('');
+  const live=pays.filter(function(p){return p.state==='live'})[0];
+  txt('pf-pay-meta',(live?live.t.split(' · ')[0]:'ללא אמצעי פעיל')+' · 210 ₪ בכל חודש');
+}
+function openPay(){buildPays();go(16)}
+function swapPay(i){
+  const p=pays[i];
+  sheetForm('עדכון '+p.t.split(' · ')[0],
+    '<label>מספר כרטיס או חשבון</label><input type="text" id="pay-n" placeholder="'+p.n+'">'+
+    '<label>תוקף</label><input type="text" id="pay-e" placeholder="09/30">',
+    'שמור',
+    function(){
+      const n=(document.getElementById('pay-n')||{}).value,e=(document.getElementById('pay-e')||{}).value;
+      if(!n||!n.trim()){toast('צריך מספר כדי לעדכן');return false}
+      p.n=n.trim()+(e&&e.trim()?' · תוקף '+e.trim():'');
+      if(p.state==='warn'){p.state='off';p.note='כרטיס גיבוי — משמש רק אם הוראת הקבע נכשלת.'}
+      buildPays();toast('אמצעי התשלום עודכן');
+    });
+}
+function addPay(){
+  sheetForm('הוסף אמצעי תשלום',
+    '<label>סוג</label><input type="text" id="pay-t" placeholder="כרטיס אשראי / הוראת קבע / Bit">'+
+    '<label>מספר כרטיס או חשבון</label><input type="text" id="pay-n" placeholder="····0000">',
+    'הוסף',
+    function(){
+      const t=(document.getElementById('pay-t')||{}).value,n=(document.getElementById('pay-n')||{}).value;
+      if(!t||!t.trim()||!n||!n.trim()){toast('צריך סוג ומספר');return false}
+      pays.push({t:t.trim(),n:n.trim(),state:'off',note:'אמצעי גיבוי — עדיין לא מממן הפקדה קבועה.'});
+      buildPays();toast('האמצעי נוסף');
+    });
+}
+/* letters, across every planting */
+const letters=[
+  {kid:'דניאל',plant:'בר המצווה של דניאל',signed:'נחתם במרץ 2024',opens:'אוגוסט 2032',draft:false,
+   body:'דניאל, ביום שתקרא את זה כבר תהיה גדול ממני בכמה דברים. התחלנו לשתול את זה כשהיית בן שש.'},
+  {kid:'נועה',plant:'הלימודים של נועה',signed:'נחתם בינואר 2025',opens:'ספטמבר 2038',draft:false,
+   body:'נועה, בחרנו ללמוד יחד איתך עוד לפני שידעת מה תרצי ללמוד.'},
+  {kid:'דניאל',plant:'הגיוס של דניאל',signed:'טיוטה — עוד לא נחתם',opens:'מרץ 2030',draft:true,body:''}
+];
+function buildLetters(){
+  const lbox=document.getElementById('lt-list');
+  if(!letters.length){
+    lbox.style.border='none';lbox.style.background='none';lbox.style.padding='0';
+    lbox.innerHTML='<div class="es" style="min-height:0;padding:22px 4px"><div class="art" style="opacity:.85">'+
+      '<svg width="54" height="44" viewBox="0 0 40 32"><rect x="2" y="4" width="36" height="25" rx="3" fill="var(--sun-bg)" stroke="var(--sun)" stroke-width="1.4"/>'+
+      '<path d="M2.5 5.5 L20 18 L37.5 5.5" fill="none" stroke="var(--sun)" stroke-width="1.4"/></svg></div>'+
+      '<h3 style="font-size:15.5px">יש דברים שלא נמדדים בכסף</h3>'+
+      '<p>מכתב שתכתוב היום ייפתח בעוד שנים, יחד עם מה שנטעת. אפשר לצרף אחד לכל נטיעה, בכל זמן.</p></div>';
+    txt('lett-meta','עוד לא כתבת מכתב');return;
+  }
+  lbox.style.border='';lbox.style.background='';lbox.style.padding='';
+  lbox.innerHTML=letters.map(function(l,i){
+    return '<div class="lt'+(l.draft?' draft':'')+'">'+
+      '<div class="li">'+(l.draft?'✎':'✉')+'</div>'+
+      '<span class="lb2"><b>ל'+l.kid+' · '+l.plant+'</b>'+
+      '<i>'+l.signed+(l.draft?'':' · ייפתח ב'+l.opens)+'</i></span>'+
+      '<button class="lact" onclick="editLetter('+i+')">'+(l.draft?'המשך לכתוב':'ערוך')+'</button></div>';
+  }).join('');
+  const sealed=letters.filter(function(l){return !l.draft}).length,d=letters.length-sealed;
+  txt('lett-meta',sealed+' מכתבים חתומים'+(d?' · '+(d===1?'טיוטה אחת':d+' טיוטות'):''));
+}
+function openLetters(){buildLetters();go(17)}
+function editLetter(i){
+  const l=letters[i];
+  sheetForm('מכתב ל'+l.kid,
+    '<label>ייפתח ב'+l.opens+', יחד עם '+l.kid+'</label>'+
+    '<textarea id="lt-body" placeholder="'+l.kid+', ביום שתקרא את זה...">'+l.body+'</textarea>',
+    l.draft?'חתום את המכתב':'שמור',
+    function(){
+      const v=(document.getElementById('lt-body')||{}).value;
+      if(!v||!v.trim()){toast('המכתב ריק');return false}
+      l.body=v.trim();
+      if(l.draft){l.draft=false;l.signed='נחתם היום';toast('המכתב נחתם')}
+      else toast('המכתב נשמר');
+      buildLetters();
+    });
+}
+function relMeta(){
+  const pend=relatives.filter(function(r){return r.status!=='in'}).length;
+  const q=requests.length;
+  txt('rel-meta',relatives.length+' קרובים'+
+    (q?' · '+(q===1?'בקשה אחת ממתינה לאישורך':q+' בקשות ממתינות לאישורך'):
+      (pend?' · '+pend+' ממתינים להצטרפות':' · כולם באפליקציה')));
+}
+function openRelatives(){buildRequests();buildRelatives();go(15)}
+function inviteRelative(i){
+  const r=relatives[i];
+  sheetForm('הזמנת '+r.name,
+    '<label>לאן לשלוח</label>'+contactHTML(r.contact)+
+    '<label>לצרף לנטיעה</label>'+plantHTML(),
+    'שלח הזמנה',
+    function(){
+      const c=(document.getElementById('r-contact')||{}).value;
+      if(!c||!c.trim()){toast('צריך טלפון או אימייל כדי לשלוח');return false}
+      r.contact=c.trim();
+      return sendInvite(r);
+    });
+}
+let pickedAv='av-parent',pickAvTarget=null;
+function avpickHTML(sel){
+  return '<div class="avpick">'+AVATARS.map(function(a){
+    return '<button class="'+(a===sel?'on':'')+'" onclick="chooseAv(this,\''+a+'\')">'+
+      '<svg viewBox="0 0 40 40"><use href="#'+a+'"/></svg></button>';
+  }).join('')+'</div>';
+}
+function chooseAv(el,a){
+  pickedAv=a;
+  [...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)});
+}
+function pickMyFace(){
+  pickedAv='av-parent';
+  sheetForm('התמונה שלך','בחר תמונה שתופיע לך ולקרובים שהזמנת.'+avpickHTML('av-parent'),'שמור',function(){
+    document.querySelector('#my-av use').setAttribute('href','#'+pickedAv);
+    document.querySelectorAll('.topbar .me use, .hdr .me use').forEach(function(u){u.setAttribute('href','#'+pickedAv)});
+    toast('התמונה עודכנה');
+  });
+}
+function addRelative(){
+  pickedAv='av-granny2';
+  sheetForm('הוסף קרוב',
+    '<label>שם</label><input type="text" id="r-name" placeholder="למשל: סבתא מרים">'+
+    '<label>הקשר לילדים</label><input type="text" id="r-rel" placeholder="למשל: סבתא של נועה">'+
+    '<label>תמונה</label>'+avpickHTML('av-granny2')+
+    '<label>לאן לשלוח את ההזמנה</label>'+contactHTML('')+
+    '<label>לצרף לנטיעה</label>'+plantHTML(),
+    'הוסף',
+    function(){
+      const n=(document.getElementById('r-name')||{}).value,rl=(document.getElementById('r-rel')||{}).value;
+      if(!n||!n.trim()){toast('צריך שם כדי להוסיף קרוב');return false}
+      const c=((document.getElementById('r-contact')||{}).value||'').trim();
+      const r={av:pickedAv,name:n.trim(),rel:(rl||'').trim()||'קרוב משפחה',g:'m',status:'none',chan:chanOf(c)||'wa',contact:c};
+      relatives.push(r);
+      if(c)sendInvite(r);
+      else{buildRelatives();toast(r.name+' נוסף לקרובים שלך')}
+    });
+}
+function editRelative(i){
+  const r=relatives[i];
+  pickedAv=r.av;
+  sheetForm(r.name,
+    '<label>שם</label><input type="text" id="r-name" value="'+r.name+'">'+
+    '<label>הקשר לילדים</label><input type="text" id="r-rel" value="'+r.rel+'">'+
+    '<label>תמונה</label>'+avpickHTML(r.av),
+    'שמור',
+    function(){
+      const n=(document.getElementById('r-name')||{}).value;
+      if(n&&n.trim())r.name=n.trim();
+      const rl=(document.getElementById('r-rel')||{}).value;
+      if(rl&&rl.trim())r.rel=rl.trim();
+      r.av=pickedAv;buildRelatives();toast('הפרטים נשמרו');
+    });
+}
+function buildProfile(){
+  let mine=0,theirs=0,sum=0;
+  Object.keys(plants).forEach(function(k){
+    plants[k].mine?mine++:theirs++;
+    sum+=plants[k].now;
+  });
+  txt('pr-mine',mine);txt('pr-theirs',theirs);
+  txt('pr-sum',sum.toLocaleString('he-IL')+' ₪');
+}
+/* ─── מקור הנתונים ───────────────────────────────────────────────────────
+   מסך הבית קורא ממודל אחד, ולא משנה מאיפה הוא הגיע. שני מימושים:
+   demoSource גוזר אותו מ-plants{} שבקובץ, supabaseSource מהמסד. בלי
+   הגדרה — דמו, כדי שהקובץ הזה ימשיך לעבוד לבדו בלי שרת ובלי מפתחות.
+
+   סכומים בכל המודל הם באגורות, כמו במסד. העיגול לשקלים קורה בתצוגה בלבד. */
+
+/* ─── חיבור לשרת ─────────────────────────────────────────────────────────
+   HTTP ישיר, בלי ספריית לקוח. הקובץ נשאר עצמאי, אין גרסת ספרייה לתחזק,
+   וזה בסך הכל כמה קריאות. מה שספרייה כן נותנת — שמירת סשן ורענון טוקן —
+   כתוב כאן למטה, בגודל שאפשר לקרוא.
+
+   בלי window.NETA_CONFIG שום דבר מזה לא רץ, והאפליקציה נשארת הדגמה.     */
+function netaBackend(cfg){
+  const KEY='neta.session';
+  const base=cfg.url.replace(/\/+$/,'');
+  let sess=null;
+  try{sess=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
+
+  function keep(s){sess=s;try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
+  function drop(){sess=null;try{localStorage.removeItem(KEY)}catch(e){}}
+  function uid(){return sess&&sess.user&&sess.user.id}
+
+  function send(path,opts,auth){
+    const h=Object.assign({apikey:cfg.key,'Content-Type':'application/json'},opts.headers||{});
+    if(auth&&sess&&sess.access_token)h.Authorization='Bearer '+sess.access_token;
+    return fetch(base+path,Object.assign({},opts,{headers:h}));
+  }
+
+  /* הודעת השגיאה של הבקאנד מגיעה בכמה שמות שדה שונים. מחלצים אחת קריאה
+     במקום להציג למשתמש JSON גולמי. */
+  async function body(r){
+    const t=await r.text();
+    if(!r.ok){
+      let m='';
+      try{const j=JSON.parse(t);m=j.msg||j.message||j.error_description||j.error_code||j.error||''}catch(e){}
+      const err=new Error(m||t||('שגיאה '+r.status));err.status=r.status;throw err;
+    }
+    return t?JSON.parse(t):null;
+  }
+
+  /* טוקן חי כשעה. מרעננים פעם אחת ומנסים שוב — לא בלולאה. */
+  async function renew(){
+    if(!sess||!sess.refresh_token)return false;
+    const r=await send('/auth/v1/token?grant_type=refresh_token',
+      {method:'POST',body:JSON.stringify({refresh_token:sess.refresh_token})},false);
+    if(!r.ok){drop();return false}
+    keep(await r.json());return true;
+  }
+
+  async function call(path,opts){
+    let r=await send(path,opts,true);
+    if(r.status===401&&await renew())r=await send(path,opts,true);
+    return body(r);
+  }
+
+  const rpc=function(fn){return call('/rest/v1/rpc/'+fn,{method:'POST',body:'{}'})};
+
+  return {
+    connected:true,
+    signedIn:function(){return !!(sess&&sess.access_token)},
+    email:function(){return sess&&sess.user&&sess.user.email},
+    signOut:function(){drop()},
+
+    sendCode:function(email){
+      return send('/auth/v1/otp',{method:'POST',
+        body:JSON.stringify({email:email,create_user:true})},false).then(body);
+    },
+    verifyCode:function(email,code){
+      return send('/auth/v1/verify',{method:'POST',
+        body:JSON.stringify({email:email,token:code,type:'email'})},false)
+        .then(body).then(function(s){keep(s);return s});
+    },
+
+    /* הפרופיל נוצר בכניסה הראשונה — auth מחזיק את האימייל, השם מגיע מהמסך. */
+    ensureProfile:function(name){
+      if(!uid())return Promise.reject(new Error('לא מחובר'));
+      return call('/rest/v1/profiles?on_conflict=id',{method:'POST',
+        headers:{Prefer:'resolution=merge-duplicates,return=representation'},
+        body:JSON.stringify({id:uid(),name:name})});
+    },
+    hasProfile:function(){
+      if(!uid())return Promise.resolve(false);
+      return call('/rest/v1/profiles?select=id&id=eq.'+uid(),{method:'GET'})
+        .then(function(r){return !!(r&&r.length)});
+    },
+
+    load:function(){
+      return Promise.all([rpc('home_summary'),rpc('my_plantings')]).then(function(r){
+        const s=(r[0]&&r[0][0])||{},rows=r[1]||[];
+        return {
+          summary:{invested:Number(s.invested_agorot||0),
+                   count:Number(s.planting_count||0),
+                   monthly:Number(s.monthly_agorot||0),
+                   kids:s.beneficiary_names||[]},
+          plantings:rows.map(function(p){
+            const d=new Date(p.target_date+'T00:00:00');
+            return {key:p.id,name:p.name,icon:p.icon,designated:p.designated,
+                    targetYear:d.getFullYear(),targetMonth:d.getMonth(),
+                    accrued:Number(p.accrued_agorot||0),
+                    projection:Number(p.projection_agorot||0),
+                    hasStandingOrder:p.has_standing_order,
+                    participants:p.participants||[]};
+          })};
+      });
+    },
+
+    /* נטיעה, ההפקדה הראשונה, והקצב — שלוש רשומות, כי הן שלושה דברים
+       שונים. הפקדה חד-פעמית לא יוצרת הוראת קבע. */
+    create:function(p){
+      let id;
+      return call('/rest/v1/plantings',{method:'POST',
+        headers:{Prefer:'return=representation'},
+        body:JSON.stringify({created_by:uid(),name:p.name,icon:p.icon,
+          occasion:p.occasion,designated:p.designated,
+          beneficiary_name:p.designated?p.beneficiary:null,
+          target_date:p.targetDate,mode:p.mode,
+          track_rate:p.mode==='keep'?null:p.rate,
+          approver:p.designated?'self':null,
+          projection_agorot:p.projection})})
+        .then(function(rows){
+          id=rows[0].id;
+          return call('/rest/v1/contributions',{method:'POST',body:JSON.stringify({
+            planting_id:id,contributor_id:uid(),amount_agorot:p.amount,
+            kind:p.recurring?'recurring':'one_time'})});
+        })
+        .then(function(){
+          if(!p.recurring)return null;
+          return call('/rest/v1/standing_orders',{method:'POST',body:JSON.stringify({
+            planting_id:id,user_id:uid(),amount_agorot:p.amount})});
+        })
+        .then(function(){return id});
+    }
+  };
+}
+
+const netaServer=window.NETA_CONFIG?netaBackend(window.NETA_CONFIG):null;
+
+/* ההקמה מדברת עברית והמסד מדבר enum. התרגום יושב במקום אחד. */
+const OCCASION_ENUM={'בר/בת מצווה':'bar_mitzvah','לימודים':'studies',
+                     'קופת הפתעות':'open_fund'};
+function occasionEnum(t){return OCCASION_ENUM[t]||'other'}
+const MODE_ENUM={keep:'keep',safe:'guaranteed',market:'market'};
+
+/* שם הנטיעה, בצורה שהמוצר כבר מדבר בה: "בר המצווה של דניאל", לא
+   "בר/בת מצווה של דניאל". תווית הצ'יפ היא שאלה שמוצגת למשתמש, ולא שם —
+   היא נושאת לוכסן כדי לכסות שני מגדרים, ובשם הוא נקרא כשגיאה.
+   הצורה נבחרת לפי המגדר שכבר נבחר במסע. */
+const OCCASION_NOUN={
+  'בר/בת מצווה':function(){return bs('בר המצווה','בת המצווה')},
+  'לימודים':     function(){return 'הלימודים'},
+  'דירה':        function(){return 'הדירה'},
+  'חתונה':       function(){return 'החתונה'},
+  'רכב ראשון':   function(){return 'הרכב הראשון'},
+  'טיול אחרי צבא':function(){return 'הטיול אחרי הצבא'},
+  'קופת הפתעות': function(){return 'קופת הפתעות'}
+};
+function plantingName(type,who,designated){
+  const custom=(typeof cCustom!=='undefined'&&cCustom&&cCustom.value.trim())||'';
+  const noun=type==='custom'?(custom||'הנטיעה')
+            :(OCCASION_NOUN[type]?OCCASION_NOUN[type]():type);
+  /* קופה שעדיין לא יועדה נקראת לפי הרגע בלבד — אין למי לשייך אותה. */
+  if(!designated||!who)return noun;
+  return noun+' של '+who;
+}
+
+const demoSource={
+  load:function(){
+    const list=[],kids=[];let invested=0,count=0,monthly=0;
+    Object.keys(plants).forEach(function(k){
+      const p=plants[k];
+      const mine=p.who.filter(function(w){return w[1]==='אתה'})[0];
+      if(mine){
+        invested+=parseInt(mine[2].replace(/[^0-9]/g,''),10)*100;count++;
+        /* קופה שעדיין לא יועדה אין לה נהנה, ולכן אין שם להוסיף למשפט.
+           ה-kid שלה בפרוטוטייפ הוא 'מי שאחליט' — תיאור, לא אדם. */
+        if(p.designated!==false&&kids.indexOf(p.kid)<0)kids.push(p.kid);
+      }
+      if(!p.mine)return;
+      list.push({key:k,name:p.name,icon:p.icon,designated:p.designated!==false,
+                 targetYear:p.yr,targetMonth:monthOf(p.date),accrued:p.now*100,
+                 projection:p.end*100,
+                 participants:p.who.map(function(w){return{name:w[1],avatar:w[0]}})});
+    });
+    /* הקצב אינו נגזר מ-plants{} — אין שם הוראות קבע, רק היסטוריה. */
+    monthly=21000;
+    demoExtra.forEach(function(p){
+      invested+=p.accrued;count++;
+      if(p.designated&&kids.indexOf(p.beneficiary)<0)kids.push(p.beneficiary);
+      if(p.recurring)monthly+=p.monthly;
+      list.push(p);
+    });
+    return Promise.resolve({summary:{invested:invested,count:count,monthly:monthly,
+                                     kids:kids},plantings:list});
+  },
+  /* נטיעה שנוצרה בהדגמה חיה בזיכרון בלבד ונעלמת ברענון. זה בכוונה —
+     ההדגמה לא אמורה לצבור מצב שאף אחד לא ניקה. */
+  create:function(p){
+    demoExtra.push({key:'new-'+(demoExtra.length+1),name:p.name,icon:p.icon,
+      designated:p.designated,beneficiary:p.beneficiary,
+      targetYear:p.targetYear,targetMonth:p.targetMonth,
+      accrued:p.amount,projection:p.projection,
+      recurring:p.recurring,monthly:p.recurring?p.amount:0,
+      hasStandingOrder:p.recurring,participants:[]});
+    return Promise.resolve(demoExtra[demoExtra.length-1].key);
+  }
+};
+const demoExtra=[];
+
+function supabaseSource(client){
+  return {load:function(){
+    return Promise.all([client.rpc('home_summary'),client.rpc('my_plantings')])
+      .then(function(r){
+        const sum=(r[0].data||[])[0]||{},rows=r[1].data||[];
+        return {
+          summary:{invested:Number(sum.invested_agorot||0),
+                   count:Number(sum.planting_count||0),
+                   monthly:Number(sum.monthly_agorot||0),
+                   kids:sum.beneficiary_names||[]},
+          plantings:rows.map(function(p){
+            const d=new Date(p.target_date+'T00:00:00');
+            return {key:p.id,name:p.name,icon:p.icon,designated:p.designated,
+                    targetYear:d.getFullYear(),targetMonth:d.getMonth(),
+                    accrued:Number(p.accrued_agorot||0),
+                    projection:Number(p.projection_agorot||0),
+                    hasStandingOrder:p.has_standing_order,
+                    participants:p.participants||[]};
+          })};
+      });
+  }};
+}
+
+/* "אוגוסט 2032" → מספר החודש. הפרוטוטייפ מחזיק תאריכים כטקסט. */
+function monthOf(str){
+  for(let i=0;i<months.length;i++) if(str.indexOf(months[i])===0) return i;
+  return 0;
+}
+
+/* נקרא בכל טעינה ולא נקבע פעם אחת: מי שמזריק מקור חיצוני עושה זאת אחרי
+   שהסקריפט הזה כבר רץ, וקיבוע ב-const היה מתעלם ממנו בשקט. */
+/* נקרא בכל טעינה ולא נקבע פעם אחת: מי שמזריק מקור חיצוני עושה זאת אחרי
+   שהסקריפט הזה כבר רץ, וקיבוע ב-const היה מתעלם ממנו בשקט.
+   שרת מחובר אבל לא מזוהה עדיין מציג הדגמה — אחרת המסך ריק בלי הסבר. */
+function netaSource(){
+  if(window.NETA_SOURCE)return window.NETA_SOURCE;
+  if(netaServer&&netaServer.signedIn())return netaServer;
+  return demoSource;
+}
+
+function shekel(agorot){
+  return Math.round(agorot/100).toLocaleString('he-IL')+' ₪';
+}
+
+/* הכרטיס חייב לענות על "מה המצב?", ולכן הסכום שנצבר גלוי בו.
+   השם לעולם אינו נחתך — אין כאן ellipsis ואין overflow-wrap. */
+function cardHTML(p){
+  const when=p.designated
+    ? 'המועד המיוחל: '+monthsShort[p.targetMonth]+' '+p.targetYear
+    : 'עדיין לא יועדה · '+months[p.targetMonth]+' '+p.targetYear;
+  return '<div class="ncard" onclick="openDetail(\''+p.key+'\')">'+
+    '<div class="nc-top">'+
+      '<div class="dot '+(p.designated?'g':'s')+'">'+p.icon+'</div>'+
+      '<div class="nc-id">'+
+        '<div class="nc-nm">'+p.name+'</div>'+
+        '<div class="nc-meta">'+when+'</div>'+
+      '</div>'+
+      '<span class="peek"><span class="pk">נצבר</span>'+
+        '<span class="pv">'+shekel(p.accrued)+'</span></span>'+
+      /* חץ שמאלה כ-SVG ולא כתו: ‹ הוא Bidi_Mirrored ומתהפך ב-RTL. */
+      '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12">'+
+        '<use href="#chev"/></svg></span>'+
+    '</div></div>';
+}
+
+function buildHomeSummary(){
+  return netaSource().load().then(function(model){
+    const s=model.summary;
+    txt('s-you',shekel(s.invested));
+    txt('s-cnt',s.count);
+    txt('s-mon',shekel(s.monthly));
+    txt('s-label','זה הסכום שנטעת עד כה עבור העתיד של '+s.kids.join(' ו'));
+    document.getElementById('garden').innerHTML=
+      model.plantings.map(cardHTML).join('');
+    return model;
+  });
+}
+function buildPeople(){
+  const agg={},order=[];
+  Object.keys(plants).forEach(k=>plants[k].who.forEach(w=>{
+    if(w[1]==='אתה')return;
+    if(!agg[w[1]]){agg[w[1]]={av:w[0],g:w[3],n:0,one:''};order.push(w[1])}
+    const a=agg[w[1]];
+    a.n++;a.one=plants[k].name;
+  }));
+  const kids=[...new Set(Object.keys(plants).map(k=>plants[k].kid))].join(' ו');
+  let total=0,theirs=0;
+  Object.keys(plants).filter(function(k){return !plants[k].mine}).forEach(function(k){
+    theirs++;
+    plants[k].who.forEach(function(w){total+=parseInt(w[2].replace(/[^0-9]/g,''),10)});
+  });
+  txt('pp-eyebrow','הושקע עבור '+kids);
+  txt('pp-num',total.toLocaleString('he-IL')+' ₪');
+  const names=order.length===1?order[0]:order.slice(0,-1).join(', ')+' ו'+order[order.length-1];
+  txt('pp-label','זה הסכום ש'+names+(order.length===1?' נטע':' נטעו')+' עד כה עבור עתיד יקירכם');
+  document.getElementById('pp-meta').innerHTML=
+    '<span><b>'+theirs+'</b> נטיעות שהם פתחו</span><i></i><span><b>'+order.length+'</b> קרובים</span>';
+  let html=order.map(function(name){
+    const a=agg[name], verb=a.g==='f'?'משקיעה':'משקיע';
+    const where=a.n>1?verb+' ב-'+a.n+' נטיעות':verb+' ב'+stripHe(a.one);
+    return '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+a.av+'"/></svg></div>'+
+      '<span class="cbn"><b>'+name+'</b><i>'+where+'</i></span></div>';
+  }).join('');
+  html+='<div class="cbr pend"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-friend"/></svg></div>'+
+    '<span class="cbn"><b>מיכל, אמא של נועה</b><i>הוזמנה לפני 3 ימים</i></span>'+
+    '<span class="cbp">טרם הצטרפה</span></div>';
+  document.getElementById('pp-list').innerHTML=html;
+
+  document.getElementById('pp-guest').innerHTML=Object.keys(plants).filter(function(k){
+    return !plants[k].mine;
+  }).map(function(k){
+    const p=plants[k],o=p.who[0],f=o[3]==='f';
+    return '<div class="ncard" onclick="openDetail(\''+k+'\')"><div class="nc-top">'+
+      '<div class="dot s">'+p.icon+'</div>'+
+      '<div class="nc-id"><div class="nc-nm">'+p.name+'</div>'+
+      '<div class="nc-meta">פתח'+(f?'ה':'')+' '+o[1]+' · '+p.date+'</div></div>'+
+      '<span class="peek"><span class="pk">נצבר</span><span class="pv">'+p.now.toLocaleString('he-IL')+' ₪</span></span>'+
+      '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>'+
+      '</div></div>';
+  }).join('');
+}
+function openPeople(){buildPeople();go(14)}
+function designate(){
+  const p=plants[cur];
+  sheetForm('ייעד את '+p.name,
+    'מרגע הייעוד הכסף נרשם על שם הנהנה ואי אפשר לחזור. בתמורה הוא מקבל את אותה נעילה והגנות של כל נטיעה, ואפשר לפתוח אותה להשקעות של קרובים.'+
+    '<label>שם הנהנה</label><input type="text" id="dg-name" placeholder="למשל: שירה">',
+    'ייעד',
+    function(){
+      const n=(document.getElementById('dg-name')||{}).value;
+      if(!n||!n.trim()){toast('צריך שם כדי לייעד');return false}
+      p.designated=true;p.kid=n.trim();p.name='קופת הפתעות של '+n.trim();
+      txt('d-title',p.name);txt('d-cbh','מי השקיע בעתיד של '+p.kid);
+      buildActions(p);toast('הקופה יועדה ל'+p.kid);
+    });
+}
+/* adding a co-owner is independent of both designation and openness — a partner owns
+   the money, so none of the contributor-facing constraints apply to them */
+function addPartner(){
+  const p=plants[cur];
+  sheetForm('הוסף שותף/ה ל'+p.name,
+    'שניכם תהיו רשומים כבעלים שווים — שניכם מפקידים, שניכם רואים הכל, וכל שינוי מהותי דורש הסכמה של שניכם.'+
+    '<label>שם מלא</label><input type="text" id="pt-name" placeholder="שם השותף/ה">',
+    'שלח הזמנה',
+    function(){
+      const n=(document.getElementById('pt-name')||{}).value;
+      if(!n||!n.trim()){toast('צריך שם כדי להוסיף שותף');return false}
+      p.co=n.trim();
+      const own=document.getElementById('d-owners');
+      own.style.display='block';own.textContent='נוטעים יחד · אתה ו'+p.co;
+      buildActions(p);
+      /* sheetConfirm() always closes the current sheet right after this callback returns,
+         wiping sheetFn/sheetAlt with it — defer so the next ask() isn't clobbered by that close */
+      setTimeout(function(){
+        ask('ההזמנה נשלחה ל'+p.co,
+          'רוצה לראות בדיוק מה '+p.co+' תראה כשתפתח את הקישור?',
+          'תצוגה מקדימה', function(){openPartnerInvite(cur,p.co)},
+          'סגור');
+      },0);
+    });
+}
+/* what the invited co-owner actually sees — deliberately not a variant of the regular
+   contributor invite: the whole point of a partner is that it's not "just investing" */
+function openPartnerInvite(key,name){
+  const p=plants[key];
+  txt('pi-sub','להיות שותף/ה שווה ב'+p.name+' — לא רק להשקיע');
+  txt('pi-icon',p.icon);
+  txt('pi-title',p.name);
+  txt('pi-meta','המועד המיוחל: '+p.date+' · נצבר עד כה '+p.now.toLocaleString('he-IL')+' ₪');
+  document.getElementById('pi-done').style.display='none';
+  document.querySelector('.screen[data-name="הזמנה לשותפות"] .two').style.display='';
+  go(25);
+}
+function acceptPartner(){
+  document.querySelector('.screen[data-name="הזמנה לשותפות"] .two').style.display='none';
+  document.getElementById('pi-done').style.display='block';
+}
+function declinePartner(){go(0)}
+function buildActions(p){
+  const acts=document.getElementById('d-acts'),note=document.getElementById('d-actnote');
+  const invite='<button class="btn" onclick="openInvite(cur)">הזמן קרובים</button>';
+  const addPartnerLink='<a href="#" onclick="addPartner();return false" style="color:var(--leaf)">הוסף שותף/ה</a>';
+  if(p.designated===false){
+    acts.className='two';
+    acts.innerHTML='<button class="btn" onclick="investIn(cur)">השקע עוד</button><button class="btn ghost" onclick="designate()">ייעד את הקופה</button>';
+    note.style.display='block';
+    note.innerHTML='הקופה רשומה על שמך ועדיין לא יועדה לאף אחד. קרובים לא יכולים להפקיד לתוכה עד שתייעד אותה.'+
+      (p.co?'':' רוצה לבנות אותה עם עוד אדם אחד? '+addPartnerLink);
+  }else if(p.mine&&p.shared){
+    acts.className='two';
+    acts.innerHTML=invite+'<button class="btn ghost" onclick="investIn(cur)">השקע עוד</button>';
+    note.style.display=p.co?'none':'block';
+    if(!p.co)note.innerHTML='רוצה לבנות אותה עם עוד אדם אחד, כבעלים שווה? '+addPartnerLink;
+  }else{
+    acts.className='';
+    acts.innerHTML='<button class="btn" onclick="investIn(cur)">השקע עוד</button>';
+    note.style.display='block';
+    if(p.mine){
+      note.innerHTML='הנטיעה הזו פרטית — '+(p.co?('רק אתה ו'+p.co+' רואים אותה'):'רק אתה רואה אותה')+'. <a href="#" onclick="openToCircle();return false" style="color:var(--leaf)">אפשר לפתוח אותה לקרובים</a>'+
+        (p.co?'':' · '+addPartnerLink);
+    }else{
+      const o=p.who[0],f=o[3]==='f';
+      note.textContent='את הנטיעה הזו פתח'+(f?'ה':'')+' '+o[1]+'. ההזמנות אליה נשלחות '+(f?'ממנה':'ממנו')+', לא ממך.';
+    }
+  }
+}
+/* an invite card built from the planting itself — never from a fixed one */
+function inviteFor(key){
+  const p=plants[key], others=p.who.filter(w=>w[1]!=='אתה');
+  const pct=Math.round(p.now/p.end*100);
+  return {
+    sub1:'שלח קישור. מי שיפתח אותו יוכל להשקיע ב'+p.kid+' בלי לראות כמה השקיעו אחרים.',
+    title:'שותפים בעתיד של '+p.kid,
+    sub2:p.date+' · '+pct+'% מהדרך',
+    stats:p.who.map(w=>'<div class="stat"><span class="k">'+w[1]+'</span><span class="v">'+
+      (w[1]==='אתה'?w[2]:'השתתפ'+(w[3]==='f'?'ה':''))+'</span></div>').join(''),
+    fine:others.length?null:'עוד אף אחד לא הצטרף — אתה הראשון. ברגע שקרוב ישקיע, הוא יופיע כאן.'
+  };
+}
+function openToCircle(){
+  const p=plants[cur];
+  ask('לפתוח את "'+p.name+'" לקרובים?',
+    'מרגע שקרוב מקבל גישה אי אפשר לבטל את מה שכבר ראה. הסכומים שלך לא ייחשפו — קרובים רואים התקדמות בלבד.',
+    'פתח לקרובים',
+    function(){p.shared=true;openInvite(inviteFor(cur));});
+}
+function showTermStep(on){
+  document.getElementById('c-terms').style.display=on?'':'none';
+  document.getElementById('eb-term').style.display=on?'':'none';
+  if(!on){document.getElementById('c-datefield').style.display='none';txt('c-datehint','');}
+  const o=on?1:0;
+  txt('eb-freq','1 · כל חודש או פעם אחת');
+  txt('eb-mode',(2+o)+' · מה יקרה לכסף עד אז');
+  txt('eb-trk1',(3+o)+' · באיזה מסלול');
+  txt('eb-trk2',(3+o)+' · באיזה קצב');
+}
+function investIn(key){
+  const p=plants[key];cur=key;
+  showTermStep(false);
+  shareMode=p.shared?'open':'private';isNewPlant=false;
+  txt('ct-title','השקע עבור '+p.kid);
+  txt('ct-meta',p.name+' · המועד המיוחל '+p.date);
+  goal={name:p.kid,type:p.name,icon:p.icon,dateLabel:p.date,years:p.yl};
+  render();go(2);
+}
+function detail(y){
+  const t=y/YL, amt=A0+(AF-A0)*t, grow=amt/AF*100;
+  document.getElementById('d-stem').setAttribute('y2',150-(grow/100)*105);
+  document.getElementById('d-l2').style.opacity=grow>=62?1:.15;
+  document.getElementById('d-bud').style.opacity=grow>=88?1:0;
+  const pos=T_NOW+T_SPAN*t;
+  document.getElementById('d-medal').style.right=pos+'%';
+  document.getElementById('d-proj').style.width=(T_SPAN*t)+'%';
+  document.getElementById('d-num').textContent=(y===0?'':'כ-')+Math.round(amt).toLocaleString('he-IL')+' ₪';
+  document.getElementById('d-lb').textContent=y===0?'נצבר עד כה':'צפי לנקודה זו';
+  const left=YL-y;
+  document.getElementById('d-when').textContent=left===0?'הרגע המיוחל':'עוד '+left+yrWord(left);
+}
+dTime.oninput=()=>{document.getElementById('d-medal').classList.remove('idle');detail(+dTime.value)};
+detail(0);
+
+/* run once everything above is declared — these touch consts defined further down */
+/* a switch that empties the app, to test that the structure holds with nothing in it */
+const FULL={rel:relatives.slice(),lt:letters.slice(),rq:requests.slice(),pay:pays.slice()};
+let isEmpty=false;
+function setEmpty(on){
+  isEmpty=on;
+  document.getElementById('empty-btn').classList.toggle('on',on);
+  ['home','act','kin'].forEach(function(k){
+    document.getElementById(k+'-full').style.display=on?'none':'';
+    document.getElementById(k+'-empty').style.display=on?'':'none';
+  });
+  document.getElementById('act-next').style.display=on?'none':'';
+  if(on){txt('pr-mine',0);txt('pr-theirs',0);txt('pr-sum','0 ₪');}else{buildProfile();}
+  txt('pm-sub',on?'כאן תחבר את ההפקדה החוזרת ותנהל אותה לאורך השנים.':'כאן מנוהלות ההפקדות החוזרות שלך — 210 ₪ בכל חודש.');
+  topbars[10][1]=on?'הצטרפת היום':'מלווה 2 נטיעות · שותף ב-2 נוספות';
+  relatives.length=0;letters.length=0;requests.length=0;pays.length=0;
+  if(!on){
+    FULL.rel.forEach(function(x){relatives.push(x)});
+    FULL.lt.forEach(function(x){letters.push(x)});
+    FULL.rq.forEach(function(x){requests.push(x)});
+    FULL.pay.forEach(function(x){pays.push(x)});
+  }
+  buildRequests();buildRelatives();buildLetters();buildPays();
+}
+document.getElementById('empty-btn').onclick=function(){setEmpty(!isEmpty)};
+
+loginPrep();buildHomeSummary();buildProfile();buildRequests();buildRelatives();buildPays();buildLetters();
+checkBene();
+go(ONBO.welcome);
+</script>
+</body>
+</html>
