@@ -1234,7 +1234,7 @@ window.NETA_CONFIG = {
       </div>
     </div>
     <div>
-      <button class="btn" onclick="go(ONBO.login)">המשך עם טלפון</button>
+      <button class="btn" onclick="beginSignIn()">המשך עם טלפון</button>
       <div class="orline">או</div>
       <div class="social">
         <button onclick="socialIn('Apple')"><svg width="13" height="15" viewBox="0 0 14 17" fill="currentColor"><path d="M11.6 9c0-2 1.6-2.9 1.7-3-.9-1.4-2.4-1.5-2.9-1.6-1.2-.1-2.4.7-3 .7s-1.6-.7-2.6-.7C3.5 4.4 2.2 5.2 1.5 6.5.1 9 1.1 12.8 2.5 14.9c.7 1 1.5 2.1 2.5 2.1s1.3-.6 2.5-.6 1.5.6 2.6.6 1.7-1 2.4-2c.7-1.1 1-2.2 1-2.3 0 0-1.9-.7-1.9-2.7zM9.7 3.2c.5-.7.9-1.6.8-2.5-.8 0-1.8.5-2.4 1.2-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.4-1.1z"/></svg>Apple</button>
@@ -1336,12 +1336,14 @@ window.NETA_CONFIG = {
 <!-- 20 IDENTITY -->
 <section class="screen" data-name="פתיחת חשבון">
   <h2 class="gap-s">כדי לשמור את הנטיעה</h2>
-  <p class="sub gap">המספר שלך כבר אומת. נשאר להשלים את הפרטים שהגוף הפיננסי המנהל צריך כדי לפתוח את החשבון על שמך.</p>
+  <p class="sub gap" id="id-sub">כבר אימתנו אותך. נשאר רק השם שעל שמו ייפתח החשבון.</p>
   <div class="field"><label>שם מלא</label><input type="text" id="id-name" value="אלון ברדויד"></div>
-  <div class="field"><label>תעודת זהות</label><input type="text" id="id-num" placeholder="9 ספרות"></div>
+  <!-- שדה תעודת הזהות הוסר. אימות זהות מלא נדרש רק במועד הפדיון, ומתבצע
+     דרך ה-KYC של הגוף הפיננסי המנהל — נטע לא מאחסנת ולא מעבדת מסמכי זיהוי.
+     כשיהיה גוף מנהל בפועל, השדה יחזור במקום ובצורה שהוא ידרוש. -->
   <div class="verified gap-s"><div class="vi">✓</div><div><b id="id-verified">המספר אומת</b><p>לשם אנחנו שולחים אישורי הפקדה, והתראות על כל שינוי בנטיעה.</p></div></div>
   <div class="two gap"><button class="btn" id="id-cta" onclick="idNext()">אשר והמשך</button><button class="btn ghost" onclick="go(1)">חזרה</button></div>
-  <p class="fine gap">אימות זהות מלא נדרש רק במועד הפדיון. עכשיו זה רק כדי לפתוח את החשבון על שמך.</p>
+  <p class="fine gap">אימות זהות מלא נדרש רק במועד הפדיון, ומתבצע מול הגוף הפיננסי המנהל.</p>
 </section>
 
 <!-- 21 ONBOARDING DONE -->
@@ -1568,6 +1570,16 @@ function playSplash(){
   if(!sp)return;
   sp.classList.remove('grow');void sp.offsetWidth;sp.classList.add('grow');
 }
+/* הדלת האמיתית. עד היום מצב "משתמש חדש" נדלק רק מכפתור הבדיקה שמחוץ
+   למכשיר, ולכן באתר חי הוא לא נדלק בכלל: בלי מצב ריק, בלי סרגל התקדמות,
+   ובלי לדעת שמישהו נטש באמצע.
+   setEmpty לא נקרא כאן אלא רק אחרי האימות, כדי שמי שסוגר את מסך הכניסה
+   בלי להתחבר לא ימצא אפליקציה ריקה. */
+function beginSignIn(){
+  onbo=true;idDone=false;
+  go(ONBO.login);
+}
+
 function onboOpen(){
   /* a brand-new account has nothing saved — not even a payment method */
   onbo=true;idDone=false;setEmpty(true);
@@ -1592,8 +1604,6 @@ function onboEnd(){onbo=false;setEmpty(false);document.getElementById('resume-ca
 function idNext(){
   const n=(document.getElementById('id-name')||{}).value;
   if(!n||!n.trim()){toast('צריך שם מלא');return}
-  const id=(document.getElementById('id-num')||{}).value;
-  if(!id||!id.trim()){toast('צריך מספר תעודת זהות');return}
 
   /* תעודת הזהות נדרשת ע"י הגוף הפיננסי, לא ע"י נטע — ולכן היא לא נשמרת
      כאן. המסד מחזיק שם בלבד. */
@@ -1686,9 +1696,11 @@ function loginNext(){
       box.style.display='none';
       document.getElementById('lg-otp').value='';
       /* מי שכבר יש לו פרופיל לא עובר שוב בפתיחת החשבון. */
-      if(known){toast('ברוך שובך');onbo=false;go(0);buildHomeSummary();return}
-      if(onbo){onboStart();return}
-      go(ONBO.identity);
+      if(known){onbo=false;setEmpty(false);go(0);buildHomeSummary();toast('ברוך שובך');return}
+      /* משתמש חדש נוחת על מסך הבית הריק ולא על טופס — מסך הבית הוא הפיץ'
+         של המוצר, וקפיצה ישר לטופס מדלגת על הטיעון החזק ביותר שיש לו.
+         (SPEC: "אחרי האימות — נחיתה על מסך הבית הריק, לא על טופס ההקמה") */
+      onboStart();
     })
     .catch(function(e){
       loginBusy(false,'אשר והמשך');
@@ -2286,7 +2298,11 @@ function finishDeposit(){
     const src=netaSource();
     if(src.create){
       src.create(plantingFromFlow())
-        .then(function(){return buildHomeSummary()})
+        .then(function(){
+          /* יש עכשיו מה להראות — המסך יוצא ממצב ריק. */
+          if(isEmpty)setEmpty(false);
+          return buildHomeSummary();
+        })
         .catch(function(e){toast(e.message||'הנטיעה לא נשמרה')});
     }
   }
@@ -3188,7 +3204,9 @@ function setEmpty(on){
   txt('pm-sub',on?'כאן תחבר את ההפקדה החוזרת ותנהל אותה לאורך השנים.':'כאן מנוהלות ההפקדות החוזרות שלך — 210 ₪ בכל חודש.');
   topbars[10][1]=on?'הצטרפת היום':'מלווה 2 נטיעות · שותף ב-2 נוספות';
   relatives.length=0;letters.length=0;requests.length=0;pays.length=0;
-  if(!on){
+  /* נתוני ההדגמה חוזרים רק כשאין חשבון אמיתי מאחורי המסך. בלי התנאי הזה
+     משתמש שפתח נטיעה ראשונה היה מקבל את סבתא רחל ואת המכתבים שלה. */
+  if(!on && !(netaServer&&netaServer.signedIn())){
     FULL.rel.forEach(function(x){relatives.push(x)});
     FULL.lt.forEach(function(x){letters.push(x)});
     FULL.rq.forEach(function(x){requests.push(x)});
