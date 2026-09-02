@@ -501,7 +501,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '431334a';
+window.NETA_BUILD = '7a62828';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1622,7 +1622,33 @@ function idNext(){
 }
 /* auth lives at the door, not in the middle of the flow */
 let userPhone='';
-function socialIn(w){userPhone='';toast('התחברות עם '+w);if(onbo){onboStart();return}go(0)}
+/* Apple ו-Google עדיין לא ממומשים. בהדגמה זה הצגה בלבד; בחשבון אמיתי
+   כפתור שמצהיר שהוא מאמת אותך ולא מאמת כלום הוא הדבר המסוכן ביותר שיכול
+   לשבת במסך כניסה — ולכן הוא נעלם שם עד שיהיה אמיתי. */
+function socialIn(w){
+  if(netaServer){
+    ask('עוד לא זמין',
+        'כניסה עם '+w+' תתווסף בהמשך. בינתיים הכניסה היא באימייל וקוד חד-פעמי.',
+        'הבנתי');
+    return;
+  }
+  userPhone='';toast('התחברות עם '+w);
+  if(onbo){onboStart();return}
+  go(0);
+}
+
+/* בחשבון אמיתי הכפתורים והמפריד "או" יורדים מהמסך לגמרי. */
+function hideUnbuiltSignIn(){
+  if(!netaServer)return;
+  const scr=document.querySelector('[data-name="פתיחה"]');
+  if(!scr)return;
+  scr.querySelectorAll('[onclick^="socialIn"]').forEach(function(b){
+    const row=b.parentNode;
+    row.style.display='none';
+    const or=row.previousElementSibling;
+    if(or&&or.classList.contains('orline'))or.style.display='none';
+  });
+}
 /* אימייל בשלב הזה ולא טלפון: SMS דורש ספק חיצוני בתשלום, והמסך והזרימה
    זהים לחלוטין. המעבר לטלפון הוא החלפת נקודת קצה, לא עיצוב מחדש. */
 function loginIsEmail(){return !!netaServer}
@@ -3628,7 +3654,7 @@ function setEmpty(on){
 }
 document.getElementById('empty-btn').onclick=function(){setEmpty(!isEmpty)};
 
-loginPrep();
+loginPrep();hideUnbuiltSignIn();
 /* סשן שמור מהכניסה הקודמת — טוענים את הפרופיל לפני שהמסך נצבע. */
 if(liveAccount()){netaServer.loadProfile().then(applyIdentity).then(buildHomeSummary).catch(function(){});}
 buildHomeSummary();buildProfile();buildRequests();buildRelatives();buildPays();buildLetters();
