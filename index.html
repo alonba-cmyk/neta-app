@@ -501,7 +501,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'eec1fbc';
+window.NETA_BUILD = '85c7529';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2894,12 +2894,32 @@ function netaBackend(cfg){
 
   /* הודעת השגיאה של הבקאנד מגיעה בכמה שמות שדה שונים. מחלצים אחת קריאה
      במקום להציג למשתמש JSON גולמי. */
+  /* הודעות השרת באנגלית ובלשון של מסד נתונים. אלה שמשתמש באמת פוגש
+     מתורגמות; השאר עוברות כמו שהן, כי הודעה גולמית עדיפה על ניחוש. */
+  const SERVER_SAYS=[
+    [/email rate limit|over_email_send_rate/i,
+     'נשלחו יותר מדי מיילים בזמן קצר. השירות החינמי של Supabase מגביל לכמה מיילים בשעה — צריך להמתין, או לחבר שירות מייל משלך.'],
+    [/token has expired|invalid.*token|otp_expired/i,
+     'הקוד פג או שאינו נכון. אפשר לבקש קוד חדש.'],
+    [/invalid login credentials/i, 'הקוד לא נכון.'],
+    [/row-level security/i,
+     'השרת לא זיהה מי שומר את הרשומה. כדאי להתנתק ולהיכנס מחדש.'],
+    [/duplicate key|already exists/i, 'הרשומה הזו כבר קיימת.'],
+    [/failed to fetch|networkerror/i, 'אין חיבור לשרת. בדוק את הרשת ונסה שוב.']
+  ];
+  function humanise(msg){
+    for(let i=0;i<SERVER_SAYS.length;i++)
+      if(SERVER_SAYS[i][0].test(msg||''))return SERVER_SAYS[i][1];
+    return msg;
+  }
+
   async function body(r){
     const t=await r.text();
     if(!r.ok){
       let m='';
       try{const j=JSON.parse(t);m=j.msg||j.message||j.error_description||j.error_code||j.error||''}catch(e){}
-      const err=new Error(m||t||('שגיאה '+r.status));err.status=r.status;throw err;
+      const err=new Error(humanise(m||t)||('שגיאה '+r.status));
+      err.status=r.status;err.raw=m||t;throw err;
     }
     return t?JSON.parse(t):null;
   }
@@ -2987,7 +3007,11 @@ function netaBackend(cfg){
       })
         .then(function(r){self.profile=(r&&r[0])||{id:uid(),name:name};return self.profile});
     },
-    signOutAndReload:function(){drop();location.reload();
+    signOutAndReload:function(){
+      /* כניסה מחדש עולה מייל, והמכסה החינמית קטנה. לא פעולה שנעשית בהיסח. */
+      ask('להתנתק?',
+          'כדי להיכנס שוב יישלח אליך קוד במייל. השירות החינמי מגביל לכמה מיילים בשעה, אז אם שלחת כמה לאחרונה — ייתכן שתצטרך להמתין.',
+          'התנתק', function(){drop();location.reload()}, 'הישאר מחובר');
     },
     /* השם נשמר, לא רק העובדה שהפרופיל קיים — הכותרות והפרופיל צריכים אותו,
        ובלעדיו הם מציגים "אלון" הקבוע שבקובץ גם למשתמש אחר. */
