@@ -1614,6 +1614,7 @@ function idNext(){
   if(b){b.disabled=true;b.style.opacity='.55'}
   netaServer.ensureProfile(n.trim()).then(function(){
     if(b){b.disabled=false;b.style.opacity=''}
+    applyIdentity();
     idDone=true;toast('החשבון נפתח על שמך');openPayment();
   }).catch(function(e){
     if(b){b.disabled=false;b.style.opacity=''}
@@ -1689,8 +1690,10 @@ function loginNext(){
 
   loginBusy(true,'מאמת…');
   netaServer.verifyCode(userPhone,c.trim())
-    .then(function(){return netaServer.hasProfile()})
-    .then(function(known){
+    .then(function(){return netaServer.loadProfile()})
+    .then(function(prof){
+      const known=!!prof;
+      applyIdentity();
       loginBusy(false,'שלח קוד');
       txt('id-verified',userPhone+' אומת');
       box.style.display='none';
@@ -2710,6 +2713,14 @@ function editRelative(i){
     });
 }
 function buildProfile(){
+  /* בחשבון אמיתי הספירות מגיעות מהמודל שנטען, לא מ-plants{} שבקובץ. */
+  if(liveAccount()){
+    const m=lastModel;
+    txt('pr-mine',m?m.plantings.length:0);
+    txt('pr-theirs',0);
+    txt('pr-sum',m?shekel(m.summary.invested):'0 ₪');
+    return;
+  }
   let mine=0,theirs=0,sum=0;
   Object.keys(plants).forEach(function(k){
     plants[k].mine?mine++:theirs++;
@@ -2717,6 +2728,20 @@ function buildProfile(){
   });
   txt('pr-mine',mine);txt('pr-theirs',theirs);
   txt('pr-sum',sum.toLocaleString('he-IL')+' ₪');
+}
+
+/* השם שמופיע בכותרות. בחשבון אמיתי הוא של מי שמחובר, ולא "אלון" שבקובץ. */
+function applyIdentity(){
+  if(!liveAccount())return;
+  const prof=netaServer.profile;
+  const name=(prof&&prof.name)||'';
+  if(!name)return;
+  topbars[0][0]='שלום '+name;
+  topbars[10][0]=name;
+  /* הכותרת נצבעת בתוך go(), אז מסך שכבר פתוח צריך רענון ידני. */
+  const cur=document.querySelector('.screen.on');
+  const tb=cur?topbars[[...screens].indexOf(cur)]:null;
+  if(tb){txt('tb-t',tb[0]);txt('tb-s',tb[1]);}
 }
 /* ─── מקור הנתונים ───────────────────────────────────────────────────────
    מסך הבית קורא ממודל אחד, ולא משנה מאיפה הוא הגיע. שני מימושים:
@@ -2794,15 +2819,21 @@ function netaBackend(cfg){
 
     /* הפרופיל נוצר בכניסה הראשונה — auth מחזיק את האימייל, השם מגיע מהמסך. */
     ensureProfile:function(name){
+      const self=this;
       if(!uid())return Promise.reject(new Error('לא מחובר'));
       return call('/rest/v1/profiles?on_conflict=id',{method:'POST',
         headers:{Prefer:'resolution=merge-duplicates,return=representation'},
-        body:JSON.stringify({id:uid(),name:name})});
+        body:JSON.stringify({id:uid(),name:name})})
+        .then(function(r){self.profile=(r&&r[0])||{id:uid(),name:name};return self.profile});
     },
-    hasProfile:function(){
-      if(!uid())return Promise.resolve(false);
-      return call('/rest/v1/profiles?select=id&id=eq.'+uid(),{method:'GET'})
-        .then(function(r){return !!(r&&r.length)});
+    /* השם נשמר, לא רק העובדה שהפרופיל קיים — הכותרות והפרופיל צריכים אותו,
+       ובלעדיו הם מציגים "אלון" הקבוע שבקובץ גם למשתמש אחר. */
+    profile:null,
+    loadProfile:function(){
+      const self=this;
+      if(!uid())return Promise.resolve(null);
+      return call('/rest/v1/profiles?select=id,name,avatar_key&id=eq.'+uid(),{method:'GET'})
+        .then(function(r){self.profile=(r&&r[0])||null;return self.profile});
     },
 
     load:function(){
@@ -2992,15 +3023,26 @@ function cardHTML(p){
     '</div></div>';
 }
 
+/* המודל האחרון שנטען. הפרופיל נשען עליו כדי לא לפנות לשרת פעם שנייה. */
+let lastModel=null;
+
 function buildHomeSummary(){
   return netaSource().load().then(function(model){
+    lastModel=model;
     const s=model.summary;
+    /* בחשבון אמיתי המצב הריק נגזר ממה שיש במסד ולא מדגל שנקבע בכניסה —
+       אחרת מי שנכנס שוב אחרי שהקים נטיעה היה רואה מסך ריק, ולהפך. */
+    if(liveAccount()){
+      const nothing=!model.plantings.length&&!s.count;
+      if(nothing!==isEmpty)setEmpty(nothing);
+    }
     txt('s-you',shekel(s.invested));
     txt('s-cnt',s.count);
     txt('s-mon',shekel(s.monthly));
     txt('s-label','זה הסכום שנטעת עד כה עבור העתיד של '+s.kids.join(' ו'));
     document.getElementById('garden').innerHTML=
       model.plantings.map(cardHTML).join('');
+    if(liveAccount())buildProfile();
     return model;
   });
 }
@@ -3192,12 +3234,22 @@ detail(0);
 /* a switch that empties the app, to test that the structure holds with nothing in it */
 const FULL={rel:relatives.slice(),lt:letters.slice(),rq:requests.slice(),pay:pays.slice()};
 let isEmpty=false;
+/* יש חשבון אמיתי מאחורי המסך? */
+function liveAccount(){return !!(netaServer&&netaServer.signedIn())}
+
+/* הטאבים שכבר קוראים מהשרת. כשיחובר עוד אחד — להוסיף אותו כאן.
+   טאב שאינו ברשימה נשאר במצב ריק בחשבון אמיתי: להציג בו את משפחת ההדגמה
+   זה להראות למשתמש נתונים של מישהו אחר. */
+const LIVE_TABS=['home'];
+
 function setEmpty(on){
   isEmpty=on;
   document.getElementById('empty-btn').classList.toggle('on',on);
+  const live=liveAccount();
   ['home','act','kin'].forEach(function(k){
-    document.getElementById(k+'-full').style.display=on?'none':'';
-    document.getElementById(k+'-empty').style.display=on?'':'none';
+    const blank=on||(live&&LIVE_TABS.indexOf(k)<0);
+    document.getElementById(k+'-full').style.display=blank?'none':'';
+    document.getElementById(k+'-empty').style.display=blank?'':'none';
   });
   document.getElementById('act-next').style.display=on?'none':'';
   if(on){txt('pr-mine',0);txt('pr-theirs',0);txt('pr-sum','0 ₪');}else{buildProfile();}
@@ -3216,7 +3268,10 @@ function setEmpty(on){
 }
 document.getElementById('empty-btn').onclick=function(){setEmpty(!isEmpty)};
 
-loginPrep();buildHomeSummary();buildProfile();buildRequests();buildRelatives();buildPays();buildLetters();
+loginPrep();
+/* סשן שמור מהכניסה הקודמת — טוענים את הפרופיל לפני שהמסך נצבע. */
+if(liveAccount()){netaServer.loadProfile().then(applyIdentity).then(buildHomeSummary).catch(function(){});}
+buildHomeSummary();buildProfile();buildRequests();buildRelatives();buildPays();buildLetters();
 checkBene();
 go(ONBO.welcome);
 </script>
