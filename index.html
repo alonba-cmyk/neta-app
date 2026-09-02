@@ -501,7 +501,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7a62828';
+window.NETA_BUILD = '9eb6fca';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1635,6 +1635,17 @@ function socialIn(w){
   userPhone='';toast('התחברות עם '+w);
   if(onbo){onboStart();return}
   go(0);
+}
+
+/* סרגל המסכים וכפתורי המצבים הם כלי עבודה של הפרוטוטייפ. באפליקציה חיה
+   הם מאפשרים לקפוץ לכל מסך בלי להתחבר, ולהשתמש בה כאילו היא אמיתית. */
+function hideTestRig(){
+  if(!netaServer)return;
+  const wrap=document.querySelector('.wrap');
+  if(!wrap)return;
+  wrap.querySelectorAll('.devlabel,.nav,.emptybtn').forEach(function(el){
+    el.style.display='none';
+  });
 }
 
 /* בחשבון אמיתי הכפתורים והמפריד "או" יורדים מהמסך לגמרי. */
@@ -3284,10 +3295,21 @@ function monthOf(str){
 /* נקרא בכל טעינה ולא נקבע פעם אחת: מי שמזריק מקור חיצוני עושה זאת אחרי
    שהסקריפט הזה כבר רץ, וקיבוע ב-const היה מתעלם ממנו בשקט.
    שרת מחובר אבל לא מזוהה עדיין מציג הדגמה — אחרת המסך ריק בלי הסבר. */
+/* מקור ריק. כשיש שרת ואיש אינו מחובר, אין מה להראות — ובעיקר אין להראות
+   את משפחת ההדגמה. נטיעה שנוצרת מול נתוני דמו נראית אמיתית, נספרת בסיכום,
+   ולא קיימת בשום מקום. */
+const emptySource={
+  load:function(){
+    return Promise.resolve({summary:{invested:0,count:0,monthly:0,kids:[]},
+                            plantings:[]});
+  },
+  feed:function(){return Promise.resolve([])}
+};
+
 function netaSource(){
   if(window.NETA_SOURCE)return window.NETA_SOURCE;
-  if(netaServer&&netaServer.signedIn())return netaServer;
-  return demoSource;
+  if(!netaServer)return demoSource;
+  return netaServer.signedIn()?netaServer:emptySource;
 }
 
 function shekel(agorot){
@@ -3654,12 +3676,14 @@ function setEmpty(on){
 }
 document.getElementById('empty-btn').onclick=function(){setEmpty(!isEmpty)};
 
-loginPrep();hideUnbuiltSignIn();
+loginPrep();hideUnbuiltSignIn();hideTestRig();
 /* סשן שמור מהכניסה הקודמת — טוענים את הפרופיל לפני שהמסך נצבע. */
 if(liveAccount()){netaServer.loadProfile().then(applyIdentity).then(buildHomeSummary).catch(function(){});}
 buildHomeSummary();buildProfile();buildRequests();buildRelatives();buildPays();buildLetters();
 checkBene();
-go(ONBO.welcome);
+/* מי שכבר מחובר נכנס הביתה; מי שלא — נפתח בדלת. משתמש חוזר שרואה שוב את
+   מסך הכניסה חושב שהחיבור שלו אבד. */
+go(liveAccount()?0:ONBO.welcome);
 </script>
 </body>
 </html>
