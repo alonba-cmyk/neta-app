@@ -501,7 +501,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '609c052';
+window.NETA_BUILD = '7e7339a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2582,7 +2582,10 @@ function buildPays(){
       '<button class="act" onclick="swapPay('+i+')">'+(p.state==='warn'?'עדכן כרטיס':'החלף אמצעי')+'</button></div>';
   }).join('');
   const live=pays.filter(function(p){return p.state==='live'})[0];
-  txt('pf-pay-meta',(live?live.t.split(' · ')[0]:'ללא אמצעי פעיל')+' · 210 ₪ בכל חודש');
+  /* הקצב נגזר מהמודל ולא נכתב. "210 ₪" היה קבוע בקוד גם לחשבון ריק. */
+  const monthly=lastModel?lastModel.summary.monthly:21000;
+  txt('pf-pay-meta',(live?live.t.split(' · ')[0]:'ללא אמצעי פעיל')+
+      (monthly?' · '+shekel(monthly)+' בכל חודש':' · אין הפקדה קבועה'));
 }
 function openPay(){buildPays();go(16)}
 function swapPay(i){
@@ -2607,8 +2610,16 @@ function addPay(){
     function(){
       const t=(document.getElementById('pay-t')||{}).value,n=(document.getElementById('pay-n')||{}).value;
       if(!t||!t.trim()||!n||!n.trim()){toast('צריך סוג ומספר');return false}
-      pays.push({t:t.trim(),n:n.trim(),state:'off',note:'אמצעי גיבוי — עדיין לא מממן הפקדה קבועה.'});
-      buildPays();toast('האמצעי נוסף');
+      const row={t:t.trim(),n:n.trim(),state:'off',
+                 note:'אמצעי גיבוי — עדיין לא מממן הפקדה קבועה.'};
+      if(liveAccount()){
+        netaServer.addPayment({label:row.t,last4:lastFour(row.n),
+                               kind:payKind(row.t),isDefault:!pays.length})
+          .then(function(){pays.push(row);buildPays();toast('האמצעי נוסף')})
+          .catch(function(e){ask('האמצעי לא נשמר',(e&&e.message)||'לא הצלחנו להגיע לשרת.','הבנתי')});
+        return;
+      }
+      pays.push(row);buildPays();toast('האמצעי נוסף');
     });
 }
 /* letters, across every planting */
@@ -2660,6 +2671,7 @@ function editLetter(i){
 function relMeta(){
   const pend=relatives.filter(function(r){return r.status!=='in'}).length;
   const q=requests.length;
+  if(!relatives.length){txt('rel-meta','עוד לא הוספת קרובים');return}
   txt('rel-meta',relatives.length+' קרובים'+
     (q?' · '+(q===1?'בקשה אחת ממתינה לאישורך':q+' בקשות ממתינות לאישורך'):
       (pend?' · '+pend+' ממתינים להצטרפות':' · כולם באפליקציה')));
@@ -2711,9 +2723,19 @@ function addRelative(){
       if(!n||!n.trim()){toast('צריך שם כדי להוסיף קרוב');return false}
       const c=((document.getElementById('r-contact')||{}).value||'').trim();
       const r={av:pickedAv,name:n.trim(),rel:(rl||'').trim()||'קרוב משפחה',g:'m',status:'none',chan:chanOf(c)||'wa',contact:c};
-      relatives.push(r);
-      if(c)sendInvite(r);
-      else{buildRelatives();toast(r.name+' נוסף לקרובים שלך')}
+      const done=function(){
+        relatives.push(r);
+        if(c)sendInvite(r);
+        else{buildRelatives();toast(r.name+' נוסף לקרובים שלך')}
+      };
+      if(liveAccount()){
+        netaServer.addRelative({name:r.name,relation:r.rel,avatar:r.av,
+                                contact:c,channel:r.chan==='wa'?'whatsapp':'email'})
+          .then(done)
+          .catch(function(e){ask('הקרוב לא נשמר',(e&&e.message)||'לא הצלחנו להגיע לשרת.','הבנתי')});
+        return;
+      }
+      done();
     });
 }
 function editRelative(i){
@@ -2753,6 +2775,34 @@ function buildProfile(){
 /* מצב החיבור, בשורה אחת בתחתית הפרופיל.
    כשלון שרת נראה מבחוץ בדיוק כמו "אין נתונים" — אותו מסך ריק בדיוק. בלי
    השורה הזו אי אפשר להבדיל ביניהם, וכל אבחון הופך לניחוש. */
+/* הרשימות האישיות — אמצעי תשלום וקרובים — נטענות מהשרת בחשבון אמיתי.
+   בלי זה הן נשארות מה שהוקלד בדפדפן הזה, ונעלמות ברענון. */
+let listsLoaded=false;
+function loadAccountLists(){
+  if(!liveAccount()||listsLoaded)return;
+  listsLoaded=true;
+  netaServer.loadPayments().then(function(rows){
+    pays.length=0;
+    rows.forEach(function(m){
+      pays.push({t:m.label,n:m.last4?('····'+m.last4):'',
+                 state:m.is_default?'live':'off',
+                 note:m.is_default?'מממן את ההפקדות הקבועות שלך.'
+                                  :'אמצעי נוסף — לא מממן הפקדה קבועה.'});
+    });
+    buildPays();
+  }).catch(function(){});
+  netaServer.loadRelatives().then(function(rows){
+    relatives.length=0;
+    rows.forEach(function(r){
+      relatives.push({av:r.avatar_key||'av-granny2',name:r.name,
+                      rel:r.relation||'קרוב משפחה',g:'m',
+                      status:'none',chan:r.channel==='email'?'mail':'wa',
+                      contact:r.contact||''});
+    });
+    buildRelatives();
+  }).catch(function(){});
+}
+
 function buildConnection(){
   const el=document.getElementById('pr-conn');
   if(!el)return;
@@ -2970,6 +3020,35 @@ function netaBackend(cfg){
     /* נטיעה, ההפקדה הראשונה, והקצב — שלוש רשומות, כי הן שלושה דברים
        שונים. הפקדה חד-פעמית לא יוצרת הוראת קבע. */
     whoami:whoami,
+
+    /* אמצעי תשלום וקרובים היו עד כה מערכים בזיכרון: הם נראו על המסך, לא
+       היו קיימים בשום מקום, ונעלמו ברענון. הפרופיל הציג כרטיס שלא קיים. */
+    loadPayments:function(){
+      return call('/rest/v1/payment_methods?select=*&order=created_at',{method:'GET'})
+        .then(function(r){return r||[]}).catch(remember);
+    },
+    addPayment:function(m){
+      return needUid().then(function(u){
+        return call('/rest/v1/payment_methods',{method:'POST',
+          headers:{Prefer:'return=representation'},
+          body:JSON.stringify({user_id:u,label:m.label,last4:m.last4,
+                               kind:m.kind,is_default:!!m.isDefault})});
+      }).then(function(r){return r&&r[0]}).catch(remember);
+    },
+    loadRelatives:function(){
+      return call('/rest/v1/relatives?select=*&order=created_at',{method:'GET'})
+        .then(function(r){return r||[]}).catch(remember);
+    },
+    addRelative:function(r){
+      return needUid().then(function(u){
+        return call('/rest/v1/relatives',{method:'POST',
+          headers:{Prefer:'return=representation'},
+          body:JSON.stringify({owner_id:u,name:r.name,relation:r.relation,
+                               avatar_key:r.avatar,contact:r.contact||null,
+                               channel:r.contact?r.channel:null})});
+      }).then(function(x){return x&&x[0]}).catch(remember);
+    },
+
     create:function(p){
       let id,owner;
       return needUid().then(function(u){owner=u;
@@ -3226,6 +3305,19 @@ function feedRowHTML(e){
          '<div class="fw">'+agoText(e.at)+'</div></div></div>';
 }
 
+/* הטופס מקבל טקסט חופשי. המסד מבקש סוג מתוך שלושה, וארבע ספרות אחרונות
+   בלבד — מספר כרטיס מלא לא נשמר כאן ולא יישמר. */
+function payKind(label){
+  const t=(label||'');
+  if(t.indexOf('קבע')>=0)return 'standing_order';
+  if(/bit|ביט/i.test(t))return 'bit';
+  return 'card';
+}
+function lastFour(text){
+  const digits=(text||'').replace(/[^0-9]/g,'');
+  return digits.length>=4?digits.slice(-4):null;
+}
+
 function buildFeed(){
   const src=netaSource();
   if(!src.feed)return Promise.resolve();
@@ -3253,7 +3345,7 @@ function buildHomeSummary(){
     txt('s-label','זה הסכום שנטעת עד כה עבור העתיד של '+s.kids.join(' ו'));
     document.getElementById('garden').innerHTML=
       model.plantings.map(cardHTML).join('');
-    if(liveAccount())buildProfile();
+    if(liveAccount()){buildProfile();loadAccountLists();}
     buildFeed();buildConnection();
     return model;
   });
