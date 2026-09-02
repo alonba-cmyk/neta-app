@@ -937,12 +937,7 @@ window.NETA_CONFIG = {
 <!-- 9 ACTIVITY / פעילות -->
 <section class="screen" data-name="פעילות">
   <div id="act-full">
-  <div class="card">
-    <div class="feed"><div class="fi">🌱</div><div><div class="ft"><b style="font-weight:500">דוד יוסי</b> הפקיד 50 ₪ בגיוס של דניאל</div><div class="fw">לפני יומיים</div></div></div>
-    <div class="feed"><div class="fi">🎓</div><div><div class="ft">הלימודים של נועה עברו את <b style="font-weight:500;color:var(--leaf)">4,000 ₪</b></div><div class="fw">לפני שבוע</div></div></div>
-    <div class="feed"><div class="fi s">✉</div><div><div class="ft"><b style="font-weight:500">סבתא רחל</b> צירפה מכתב שייפתח בדירה של נועה</div><div class="fw">לפני שבועיים</div></div></div>
-    <div class="feed"><div class="fi">🎂</div><div><div class="ft">בר המצווה של דניאל — כבר 6 שנים של נטיעה</div><div class="fw">לפני חודש</div></div></div>
-  </div>
+  <div class="card" id="feed"></div>
   <div class="note">כאן תראו כל הפקדה חדשה, כל אבן דרך וכל מכתב שמצטרף — <b>הלב הפועם של הגינה המשפחתית.</b></div>
   </div><!-- /act-full -->
 
@@ -2856,6 +2851,18 @@ function netaBackend(cfg){
       });
     },
 
+    feed:function(){
+      return call('/rest/v1/rpc/activity_feed',{method:'POST',
+        body:JSON.stringify({p_limit:30})}).then(function(rows){
+        return (rows||[]).map(function(r){
+          return {kind:r.kind,actor:r.actor_name,name:r.planting_name,
+                  icon:r.planting_icon,isMe:r.is_me,years:r.years,
+                  amount:r.amount_agorot==null?null:Number(r.amount_agorot),
+                  at:r.occurred_at};
+        });
+      });
+    },
+
     /* נטיעה, ההפקדה הראשונה, והקצב — שלוש רשומות, כי הן שלושה דברים
        שונים. הפקדה חד-פעמית לא יוצרת הוראת קבע. */
     create:function(p){
@@ -2958,6 +2965,22 @@ const demoSource={
 };
 const demoExtra=[];
 
+/* אותם ארבעה רגעים שהיו כתובים ב-HTML, עכשיו כנתונים. התאריכים יחסיים
+   להיום כדי ש"לפני יומיים" יישאר נכון גם בעוד חצי שנה. */
+function daysAgo(n){return new Date(Date.now()-n*86400000).toISOString()}
+demoSource.feed=function(){
+  return Promise.resolve([
+    {kind:'contribution',   actor:'דוד יוסי', name:'הגיוס של דניאל',
+     amount:5000, isMe:false, at:daysAgo(2)},
+    {kind:'contribution',   actor:'אתה',      name:'הלימודים של נועה',
+     amount:6000, isMe:true,  at:daysAgo(7)},
+    {kind:'letter_signed',  actor:'סבתא רחל', name:'הדירה של נועה',
+     amount:null, isMe:false, at:daysAgo(14)},
+    {kind:'anniversary',    actor:null,       name:'בר המצווה של דניאל',
+     amount:null, isMe:false, at:daysAgo(32), years:6, icon:'🎂'}
+  ]);
+};
+
 function supabaseSource(client){
   return {load:function(){
     return Promise.all([client.rpc('home_summary'),client.rpc('my_plantings')])
@@ -3026,6 +3049,86 @@ function cardHTML(p){
 /* המודל האחרון שנטען. הפרופיל נשען עליו כדי לא לפנות לשרת פעם שנייה. */
 let lastModel=null;
 
+/* ─── פיד הפעילות ───────────────────────────────────────────────────────
+   נגזר מהנתונים ולא מטבלת אירועים. הסכום מגיע null כשלצופה אסור לראות
+   אותו, והניסוח משתנה בהתאם — לא מציגים "השקיע —" עם מקף ריק.          */
+
+/* זמן יחסי בעברית. הצורה הזוגית (יומיים, שבועיים, חודשיים, שנתיים) אינה
+   נגזרת מכלל, ולכן היא כתובה. "לפני 2 ימים" נשמע כמו תרגום מכונה. */
+function agoText(iso){
+  const then=new Date(iso),now=new Date();
+  const d=Math.floor((now-then)/86400000);
+  if(d<0)return 'עכשיו';
+  if(d===0)return 'היום';
+  if(d===1)return 'אתמול';
+  if(d===2)return 'לפני יומיים';
+  if(d<7) return 'לפני '+d+' ימים';
+  if(d<14)return 'לפני שבוע';
+  if(d<21)return 'לפני שבועיים';
+  if(d<30)return 'לפני '+Math.floor(d/7)+' שבועות';
+  const m=Math.floor(d/30.44);
+  if(m===1)return 'לפני חודש';
+  if(m===2)return 'לפני חודשיים';
+  if(m<12) return 'לפני '+m+' חודשים';
+  const y=Math.floor(d/365.25);
+  if(y===1)return 'לפני שנה';
+  if(y===2)return 'לפני שנתיים';
+  return 'לפני '+y+' שנים';
+}
+
+function yearsWord(n){return n===1?'שנה':(n===2?'שנתיים':n+' שנים')}
+function who(name){return '<b style="font-weight:500">'+name+'</b>'}
+
+/* אות יחס לפני שם מיודע בולעת את ה"א הידיעה: ב + הגיוס = בגיוס, לא בהגיוס.
+   שמות הנטיעות מתחילים ב-ה' ("הלימודים של נועה"), ולכן בלי זה כל שורה
+   בפיד יוצאת שגויה. */
+function withPrep(prep,name){
+  return prep + (name.charAt(0)==='ה' ? name.slice(1) : name);
+}
+
+/* המגדר של מי שהפקיד אינו ידוע — הפרופיל מחזיק שם בלבד. האפיון כבר קבע
+   את הפתרון למצב הזה במקום אחר ("מורשה/ית", "בר/בת מצווה"): צורה כפולה
+   קבועה, ולא ניחוש לפי השם. */
+const VERB={invested:'השקיע/ה',deposited:'הפקיד/ה',
+            attached:'צירף/ה',  joined:'הצטרף/ה'};
+
+function feedRowHTML(e){
+  let icon='🌱',cls='',text='';
+  if(e.kind==='contribution'){
+    const amt=e.amount!=null?(' '+shekel(e.amount)):'';
+    /* בלי סכום הפועל משתנה: "השקיע ב" ולא "הפקיד — ב". */
+    text=e.isMe
+      ? (e.amount!=null?('הפקדת'+amt+' '+withPrep('ל',e.name))
+                       :('השקעת '+withPrep('ב',e.name)))
+      : (e.amount!=null?(who(e.actor)+' '+VERB.deposited+amt+' '+withPrep('ב',e.name))
+                       :(who(e.actor)+' '+VERB.invested+' '+withPrep('ב',e.name)));
+  }else if(e.kind==='letter_signed'){
+    icon='✉';cls=' s';
+    text=(e.isMe?'צירפת מכתב שייפתח ':who(e.actor)+' '+VERB.attached+' מכתב שייפתח ')
+        +withPrep('ב',e.name);
+  }else if(e.kind==='relative_joined'){
+    icon='👥';
+    text=(e.isMe?'הצטרפת ':who(e.actor)+' '+VERB.joined+' ')+withPrep('ל',e.name);
+  }else{
+    icon=e.icon||'🌱';
+    text=e.name+' — כבר '+yearsWord(e.years)+' של נטיעה';
+  }
+  return '<div class="feed"><div class="fi'+cls+'">'+icon+'</div><div>'+
+         '<div class="ft">'+text+'</div>'+
+         '<div class="fw">'+agoText(e.at)+'</div></div></div>';
+}
+
+function buildFeed(){
+  const src=netaSource();
+  if(!src.feed)return Promise.resolve();
+  return src.feed().then(function(rows){
+    const box=document.getElementById('feed');
+    if(!box)return;
+    box.innerHTML=rows.map(feedRowHTML).join('');
+    box.style.display=rows.length?'':'none';
+  }).catch(function(){});
+}
+
 function buildHomeSummary(){
   return netaSource().load().then(function(model){
     lastModel=model;
@@ -3043,6 +3146,7 @@ function buildHomeSummary(){
     document.getElementById('garden').innerHTML=
       model.plantings.map(cardHTML).join('');
     if(liveAccount())buildProfile();
+    buildFeed();
     return model;
   });
 }
@@ -3240,7 +3344,7 @@ function liveAccount(){return !!(netaServer&&netaServer.signedIn())}
 /* הטאבים שכבר קוראים מהשרת. כשיחובר עוד אחד — להוסיף אותו כאן.
    טאב שאינו ברשימה נשאר במצב ריק בחשבון אמיתי: להציג בו את משפחת ההדגמה
    זה להראות למשתמש נתונים של מישהו אחר. */
-const LIVE_TABS=['home'];
+const LIVE_TABS=['home','act'];
 
 function setEmpty(on){
   isEmpty=on;
