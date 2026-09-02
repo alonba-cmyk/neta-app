@@ -501,7 +501,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '69d168d';
+window.NETA_BUILD = '431334a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3009,6 +3009,8 @@ function netaBackend(cfg){
       return needUid().then(function(u){
         return call('/rest/v1/profiles?on_conflict=id',{method:'POST',
         headers:{Prefer:'resolution=merge-duplicates,return=representation'},
+        /* כאן המזהה כן נשלח — הוא מפתח ה-on_conflict, ובלעדיו אין על מה
+           למזג. ברירת המחדל תופסת רק בהוספה חדשה. */
         body:JSON.stringify({id:u,name:name})});
       })
         .then(function(r){self.profile=(r&&r[0])||{id:uid(),name:name};return self.profile});
@@ -3081,33 +3083,34 @@ function netaBackend(cfg){
         .then(function(r){return r||[]}).catch(remember);
     },
     addPayment:function(m){
-      return needUid().then(function(u){
-        return call('/rest/v1/payment_methods',{method:'POST',
-          headers:{Prefer:'return=representation'},
-          body:JSON.stringify({user_id:u,label:m.label,last4:m.last4,
-                               kind:m.kind,is_default:!!m.isDefault})});
-      }).then(function(r){return r&&r[0]}).catch(remember);
+      return call('/rest/v1/payment_methods',{method:'POST',
+        headers:{Prefer:'return=representation'},
+        body:JSON.stringify({label:m.label,last4:m.last4,
+                             kind:m.kind,is_default:!!m.isDefault})})
+        .then(function(r){return r&&r[0]}).catch(remember);
     },
     loadRelatives:function(){
       return call('/rest/v1/relatives?select=*&order=created_at',{method:'GET'})
         .then(function(r){return r||[]}).catch(remember);
     },
     addRelative:function(r){
-      return needUid().then(function(u){
-        return call('/rest/v1/relatives',{method:'POST',
-          headers:{Prefer:'return=representation'},
-          body:JSON.stringify({owner_id:u,name:r.name,relation:r.relation,
-                               avatar_key:r.avatar,contact:r.contact||null,
-                               channel:r.contact?r.channel:null})});
-      }).then(function(x){return x&&x[0]}).catch(remember);
+      return call('/rest/v1/relatives',{method:'POST',
+        headers:{Prefer:'return=representation'},
+        body:JSON.stringify({name:r.name,relation:r.relation,
+                             avatar_key:r.avatar,contact:r.contact||null,
+                             channel:r.contact?r.channel:null})})
+        .then(function(x){return x&&x[0]}).catch(remember);
     },
 
+    /* הבעלים אינו נשלח: הוא ברירת המחדל של העמודה במסד, שנגזרת מהטוקן.
+       כך אין שני צדדים שצריכים להסכים על מי אני. */
     create:function(p){
-      let id,owner;
-      return needUid().then(function(u){owner=u;
+      let id;
+      return Promise.resolve()
+        .then(function(){
         return call('/rest/v1/plantings',{method:'POST',
         headers:{Prefer:'return=representation'},
-        body:JSON.stringify({created_by:owner,name:p.name,icon:p.icon,
+        body:JSON.stringify({name:p.name,icon:p.icon,
           occasion:p.occasion,designated:p.designated,
           beneficiary_name:p.designated?p.beneficiary:null,
           target_date:p.targetDate,mode:p.mode,
@@ -3118,13 +3121,13 @@ function netaBackend(cfg){
         .then(function(rows){
           id=rows[0].id;
           return call('/rest/v1/contributions',{method:'POST',body:JSON.stringify({
-            planting_id:id,contributor_id:owner,amount_agorot:p.amount,
+            planting_id:id,amount_agorot:p.amount,
             kind:p.recurring?'recurring':'one_time'})});
         })
         .then(function(){
           if(!p.recurring)return null;
           return call('/rest/v1/standing_orders',{method:'POST',body:JSON.stringify({
-            planting_id:id,user_id:owner,amount_agorot:p.amount})});
+            planting_id:id,amount_agorot:p.amount})});
         })
         .then(function(){return id})
         .catch(remember);
