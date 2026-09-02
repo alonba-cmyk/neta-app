@@ -501,6 +501,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
+window.NETA_BUILD = '609c052';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2755,11 +2756,13 @@ function buildProfile(){
 function buildConnection(){
   const el=document.getElementById('pr-conn');
   if(!el)return;
-  if(!netaServer){el.textContent='מצב הדגמה · לא מחובר לשרת';return}
+  const build=window.NETA_BUILD?(' · גרסה '+window.NETA_BUILD):'';
+  if(!netaServer){el.textContent='מצב הדגמה · לא מחובר לשרת'+build;return}
   if(!netaServer.signedIn()){el.textContent='מחובר לשרת · לא מזוהה';return}
 
   const prof=netaServer.profile,f=netaServer.lastFailure&&netaServer.lastFailure();
   let t='מחובר · '+((prof&&prof.name)||'ללא פרופיל');
+  if(window.NETA_BUILD)t+=' · גרסה '+window.NETA_BUILD;
   if(netaServer.email&&netaServer.email())t+=' · '+netaServer.email();
   if(f)t+=' · תקלה אחרונה: '+f.msg;
   el.textContent=t+' · בודק זהות מול השרת…';
