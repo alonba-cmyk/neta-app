@@ -501,7 +501,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7e7339a';
+window.NETA_BUILD = 'eec1fbc';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2317,9 +2317,15 @@ function finishDeposit(){
           if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='אשר את ההפקדה'}
           /* נשארים במסך התשלום. גיליון ולא toast — לפעולה שנכשלה יש
              השלכה, ו-toast נעלם לפני שהספיקו לקרוא אותו. */
-          ask('הנטיעה לא נשמרה',
-              (e&&e.message)||'לא הצלחנו להגיע לשרת. אפשר לנסות שוב.',
-              'הבנתי');
+          const f=netaServer&&netaServer.lastFailure&&netaServer.lastFailure();
+          let detail=(e&&e.message)||'לא הצלחנו להגיע לשרת. אפשר לנסות שוב.';
+          if(f){
+            /* המזהה והסטטוס נכנסים להודעה כדי שלא יידרש עוד סיבוב שלם
+               רק כדי לדעת מה נשלח. */
+            if(f.status)detail+=' (סטטוס '+f.status+')';
+            detail+=f.uid?(' · זהות '+String(f.uid).slice(0,8)):' · ללא זהות';
+          }
+          ask('הנטיעה לא נשמרה',detail,'הבנתי');
         });
       return;
     }
@@ -2929,11 +2935,17 @@ function netaBackend(cfg){
     }).catch(function(){return null});
   };
 
-  /* מזהה ודאי לפני כתיבה. */
+  /* מזהה ודאי לפני כתיבה.
+     נבדק מול השרת פעם אחת בכל טעינה, ולא רק כשהעותק המקומי חסר: עותק
+     מקומי יכול גם להיות *שגוי* — סשן ישן שנשמר בדפדפן מזהה אדם אחר מזה
+     שהטוקן שייך לו. קריאה כזו נראית תקינה, נכתבת עם בעלים לא נכון,
+     ונדחית בהודעת הרשאות שלא מסגירה את הסיבה. */
   const needUid=function(){
-    if(uid())return Promise.resolve(uid());
+    if(verified)return Promise.resolve(verified);
     return whoami().then(function(u){
-      if(u&&u.id)return u.id;
+      if(u&&u.id){verified=u.id;return u.id}
+      /* אין תשובה מהשרת — נופלים למקומי רק אם קיים, ומסמנים שלא אומת. */
+      if(uid())return uid();
       throw new Error('נראה שהחיבור פג. אפשר להיכנס שוב מהפרופיל.');
     });
   };
@@ -2941,7 +2953,13 @@ function netaBackend(cfg){
   /* התקלה האחרונה נשמרת ומוצגת במסך הפרופיל. בלי זה כשלון שרת נראה
      בדיוק כמו "אין נתונים", ואי אפשר להבדיל ביניהם מבחוץ. */
   let failure=null;
-  const remember=function(e){failure={when:new Date(),msg:e&&e.message||String(e)};throw e};
+  let verified=null;
+  const remember=function(e){
+    failure={when:new Date(),msg:(e&&e.message)||String(e),
+             status:(e&&e.status)||null,
+             uid:verified||uid()||null};
+    throw e;
+  };
 
   return {
     connected:true,
