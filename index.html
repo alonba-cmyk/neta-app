@@ -501,7 +501,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '85c7529';
+window.NETA_BUILD = '69d168d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2827,10 +2827,16 @@ function buildConnection(){
      כתיבה תידחה בהודעת הרשאות שלא מסגירה את הסיבה — וזו השורה שמסגירה. */
   const out=document.getElementById('pr-signout');
   if(out)out.style.display='';
-  netaServer.whoami().then(function(u){
-    const local=(netaServer.profile&&netaServer.profile.id)||'—';
+  /* שתי שאלות שונות: מה שירות הזהות אומר, ומה המסד רואה. עד היום נבדקה
+     רק הראשונה — והכשל ישב דווקא בשנייה. */
+  Promise.all([netaServer.whoami(),netaServer.whoamiDb()]).then(function(r){
+    const u=r[0],db=r[1];
     if(!u||!u.id){el.textContent=t+' · השרת לא מזהה את החיבור — צריך להיכנס שוב';return}
-    el.textContent=t+(u.id===local?'':' · אי-התאמה בזהות ('+u.id.slice(0,8)+')');
+    if(!db){el.textContent=t+' · המסד לא ענה';return}
+    const ok=db.db_uid===u.id;
+    el.textContent=t+' · מסד: '+(db.db_role||'?')+
+      (db.db_uid?(' / '+String(db.db_uid).slice(0,8)):' / ללא זהות')+
+      (ok?'':' ⚠ לא תואם');
   }).catch(function(){el.textContent=t});
 }
 
@@ -3062,6 +3068,11 @@ function netaBackend(cfg){
     /* נטיעה, ההפקדה הראשונה, והקצב — שלוש רשומות, כי הן שלושה דברים
        שונים. הפקדה חד-פעמית לא יוצרת הוראת קבע. */
     whoami:whoami,
+    /* מה המסד רואה בבקשה — לא מה שהאפליקציה חושבת ששלחה. */
+    whoamiDb:function(){
+      return call('/rest/v1/rpc/whoami_db',{method:'POST',body:'{}'})
+        .then(function(r){return (r&&r[0])||null}).catch(function(){return null});
+    },
 
     /* אמצעי תשלום וקרובים היו עד כה מערכים בזיכרון: הם נראו על המסך, לא
        היו קיימים בשום מקום, ונעלמו ברענון. הפרופיל הציג כרטיס שלא קיים. */
