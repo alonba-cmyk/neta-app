@@ -957,6 +957,7 @@ window.NETA_CONFIG = {
     <div class="stat"><span class="k">נטיעות שקרובים פתחו</span><span class="v" id="pr-theirs">2</span></div>
     <div class="stat"><span class="k">סה״כ נצבר עד כה</span><span class="v" style="color:var(--leaf)" id="pr-sum">27,500 ₪</span></div>
   </div>
+  <p class="fine" id="pr-conn" style="margin:14px 0 0;opacity:.8"></p>
   <p class="eyebrow" style="margin-top:22px">הגדרות</p>
   <div class="card tap" onclick="openRelatives()"><div class="row"><div class="dot g">👥</div><div style="flex:1"><div class="title">הקרובים שלי</div><div class="meta" id="rel-meta">4 קרובים · אחת ממתינה להצטרפות</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
   <div class="card tap" onclick="pickMyFace()"><div class="row"><div class="pic" style="width:38px;height:38px;border-radius:12px;overflow:hidden;flex-shrink:0;background:var(--s2);border:1px solid var(--line)"><svg class="avsvg" viewBox="0 0 40 40" id="my-av"><use href="#av-parent"/></svg></div><div style="flex:1"><div class="title">התמונה שלי</div><div class="meta">מופיעה לך ולקרובים שהזמנת</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
@@ -2291,19 +2292,40 @@ function finishDeposit(){
   creating=false;document.getElementById('flowbar').style.display='none';
 
   /* נטיעה חדשה נשמרת כאן ולא קודם: עד לרגע הזה אין הפקדה, ונטיעה בלי
-     הפקדה היא רשומה ריקה — אין מה להראות ואין מה לחשב. */
+     הפקדה היא רשומה ריקה — אין מה להראות ואין מה לחשב.
+
+     מסך "רגע ההשקעה" מחכה לאישור מהשרת. קודם הוא הופיע מיד, וכשהשמירה
+     נכשלה המשתמש קרא "נטעת עבור X" על נטיעה שלא קיימת. */
   if(isNewPlant){
     const src=netaSource();
     if(src.create){
+      const btn=document.querySelector('[onclick="finishDeposit()"]');
+      if(btn){btn.disabled=true;btn.style.opacity='.55';btn.textContent='שומר…'}
       src.create(plantingFromFlow())
         .then(function(){
-          /* יש עכשיו מה להראות — המסך יוצא ממצב ריק. */
           if(isEmpty)setEmpty(false);
           return buildHomeSummary();
         })
-        .catch(function(e){toast(e.message||'הנטיעה לא נשמרה')});
+        .then(function(){
+          if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='אשר את ההפקדה'}
+          celebrate();
+        })
+        .catch(function(e){
+          if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='אשר את ההפקדה'}
+          /* נשארים במסך התשלום. גיליון ולא toast — לפעולה שנכשלה יש
+             השלכה, ו-toast נעלם לפני שהספיקו לקרוא אותו. */
+          ask('הנטיעה לא נשמרה',
+              (e&&e.message)||'לא הצלחנו להגיע לשרת. אפשר לנסות שוב.',
+              'הבנתי');
+        });
+      return;
     }
   }
+  celebrate();
+}
+
+/* מה שקורה אחרי שהנטיעה קיימת בפועל. */
+function celebrate(){
   txt('aha-h2',goal.desig===false?(isNewPlant?'שמת כסף בצד':'הוספת לקופה שלך')
     :(isNewPlant?('נטעת עבור '+goal.name):('העלה שלך נוסף לעץ של '+goal.name)));
   if(onbo){
@@ -2725,6 +2747,21 @@ function buildProfile(){
   txt('pr-sum',sum.toLocaleString('he-IL')+' ₪');
 }
 
+/* מצב החיבור, בשורה אחת בתחתית הפרופיל.
+   כשלון שרת נראה מבחוץ בדיוק כמו "אין נתונים" — אותו מסך ריק בדיוק. בלי
+   השורה הזו אי אפשר להבדיל ביניהם, וכל אבחון הופך לניחוש. */
+function buildConnection(){
+  const el=document.getElementById('pr-conn');
+  if(!el)return;
+  if(!netaServer){el.textContent='מצב הדגמה · לא מחובר לשרת';return}
+  if(!netaServer.signedIn()){el.textContent='מחובר לשרת · לא מזוהה';return}
+  const prof=netaServer.profile,f=netaServer.lastFailure&&netaServer.lastFailure();
+  let t='מחובר · '+((prof&&prof.name)||'ללא פרופיל');
+  if(netaServer.email&&netaServer.email())t+=' · '+netaServer.email();
+  if(f)t+=' · תקלה אחרונה: '+f.msg;
+  el.textContent=t;
+}
+
 /* השם שמופיע בכותרות. בחשבון אמיתי הוא של מי שמחובר, ולא "אלון" שבקובץ. */
 function applyIdentity(){
   if(!liveAccount())return;
@@ -2796,6 +2833,11 @@ function netaBackend(cfg){
 
   const rpc=function(fn){return call('/rest/v1/rpc/'+fn,{method:'POST',body:'{}'})};
 
+  /* התקלה האחרונה נשמרת ומוצגת במסך הפרופיל. בלי זה כשלון שרת נראה
+     בדיוק כמו "אין נתונים", ואי אפשר להבדיל ביניהם מבחוץ. */
+  let failure=null;
+  const remember=function(e){failure={when:new Date(),msg:e&&e.message||String(e)};throw e};
+
   return {
     connected:true,
     signedIn:function(){return !!(sess&&sess.access_token)},
@@ -2831,8 +2873,10 @@ function netaBackend(cfg){
         .then(function(r){self.profile=(r&&r[0])||null;return self.profile});
     },
 
+    lastFailure:function(){return failure},
     load:function(){
-      return Promise.all([rpc('home_summary'),rpc('my_plantings')]).then(function(r){
+      return Promise.all([rpc('home_summary'),rpc('my_plantings')]).catch(remember)
+        .then(function(r){
         const s=(r[0]&&r[0][0])||{},rows=r[1]||[];
         return {
           summary:{invested:Number(s.invested_agorot||0),
@@ -2853,7 +2897,7 @@ function netaBackend(cfg){
 
     feed:function(){
       return call('/rest/v1/rpc/activity_feed',{method:'POST',
-        body:JSON.stringify({p_limit:30})}).then(function(rows){
+        body:JSON.stringify({p_limit:30})}).catch(remember).then(function(rows){
         return (rows||[]).map(function(r){
           return {kind:r.kind,actor:r.actor_name,name:r.planting_name,
                   icon:r.planting_icon,isMe:r.is_me,years:r.years,
@@ -2887,7 +2931,8 @@ function netaBackend(cfg){
           return call('/rest/v1/standing_orders',{method:'POST',body:JSON.stringify({
             planting_id:id,user_id:uid(),amount_agorot:p.amount})});
         })
-        .then(function(){return id});
+        .then(function(){return id})
+        .catch(remember);
     }
   };
 }
@@ -3146,7 +3191,7 @@ function buildHomeSummary(){
     document.getElementById('garden').innerHTML=
       model.plantings.map(cardHTML).join('');
     if(liveAccount())buildProfile();
-    buildFeed();
+    buildFeed();buildConnection();
     return model;
   });
 }
