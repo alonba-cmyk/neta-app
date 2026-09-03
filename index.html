@@ -368,6 +368,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* empty states — never a zero, one action, and no nagging where empty may be permanent */
 .es{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
   padding:26px 4px;min-height:62%}
+/* הדגם שבתחתית מסך ריק: איך המסך ייראה כשיהיה בו תוכן. דוהה אל תוך הרקע
+   ולא לחיץ — הוא תמונה, לא נתונים. הוא חי בתוך .es ולכן נעלם מעצמו ברגע
+   שיש נטיעה אמיתית להראות. */
+.gsample{position:relative;width:100%;margin-top:20px;height:132px;overflow:hidden;
+  text-align:right;pointer-events:none;user-select:none}
+.gsample > *{opacity:.34;filter:saturate(.45)}
+.gsample:after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to bottom,transparent 22%,var(--bg) 99%)}
+.gsample .ncard{margin-bottom:9px;cursor:default}
+.gsample .feed:last-child{border-bottom:0}
 .es .art{margin-bottom:16px;color:var(--leaf)}
 .es h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
 .es p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin-top:10px;max-width:27ch}
@@ -501,7 +511,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '24e85d9';
+window.NETA_BUILD = '873be01';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -611,6 +621,7 @@ window.NETA_CONFIG = {
     <p>נטיעה היא הפקדה חודשית קטנה שמחכה לרגע אחד — בר מצווה, לימודים, דירה ראשונה. אתה קובע מתי היא נפתחת.</p>
     <button class="btn" onclick="startCreate()">פתח את הנטיעה הראשונה</button>
     <p class="fine">100 ₪ בחודש היום יהפכו לכ-23,500 ₪ בעוד 13 שנה. אפשר לשנות את הסכום בכל עת.</p>
+    <div class="gsample" id="home-ghost" aria-hidden="true"></div>
   </div>
 </section>
 
@@ -943,6 +954,7 @@ window.NETA_CONFIG = {
     <p>הכסף עובד גם כשלא קורה כלום. אין צורך לעשות דבר.</p>
     <div class="strip" id="act-next"><b>ההפקדה הבאה · 1 בספטמבר</b><span>150 ₪ לבר המצווה של דניאל, בהוראת קבע.</span></div>
     <p class="fine">כאן יופיעו הרגעים: קרוב שהפקיד, אבן דרך שנחצתה, מכתב שנוסף.</p>
+    <div class="gsample" id="act-ghost" aria-hidden="true"></div>
   </div>
 </section>
 
@@ -1129,6 +1141,7 @@ window.NETA_CONFIG = {
     <p>כשקרוב פותח נטיעה למי שיקר לך, או מצטרף לאחת משלך — היא תופיע כאן.</p>
     <button class="btn ghost" onclick="openInvitePicker()">הזמן קרוב</button>
     <p class="fine">נטיעה פרטית נשארת פרטית. אף אחד לא רואה אותה עד שתחליט להזמין.</p>
+    <div class="gsample" id="kin-ghost" aria-hidden="true"></div>
   </div>
 </section>
 
@@ -3526,6 +3539,46 @@ function cardHTML(p){
     '</div></div>';
 }
 
+/* ─── הדגם שבתחתית מסך ריק ────────────────────────────────────────────
+   מסך ריק מסביר למה כדאי, אבל לא מראה מה מחכה. הדגם מראה — ודוהה אל תוך
+   הרקע כדי שיהיה ברור שהוא לא המצב, אלא תמונה שלו.
+
+   הוא נגזר מ-plants{} ולא מועתק לצידו: עותק שני של משפחת ההדגמה נשאר
+   מאחור בכל שינוי, וזה בדיוק סוג הנתון שאסור לו להישאר מאחור.
+
+   שלושה כללים שלא משתנים: אינו לחיץ (.gsample מבטל pointer-events),
+   נעלם מעצמו ברגע שיש תוכן אמיתי (הוא חי בתוך המסך הריק), ומשתמש רק
+   בשמות ההדגמה — לעולם לא בשם שהמשתמש הקליד. */
+function ghostCardHTML(p,by){
+  return '<div class="ncard"><div class="nc-top">'+
+    '<div class="dot '+(p.designated===false?'s':'g')+'">'+p.icon+'</div>'+
+    '<div class="nc-id"><div class="nc-nm">'+p.name+'</div>'+
+    '<div class="nc-meta">'+(by||('המועד המיוחל: '+p.date))+'</div></div>'+
+    '<span class="peek"><span class="pk">נצבר</span>'+
+      '<span class="pv">'+p.now.toLocaleString('he-IL')+' ₪</span></span>'+
+    '</div></div>';
+}
+function buildGhosts(){
+  const home=document.getElementById('home-ghost');
+  if(home)home.innerHTML=['danielBar','noaStudy']
+    .map(function(k){return ghostCardHTML(plants[k])}).join('');
+
+  const kin=document.getElementById('kin-ghost');
+  if(kin)kin.innerHTML=['noaHome','danielArmy'].map(function(k){
+    const p=plants[k],o=p.who[0],f=o[3]==='f';
+    return ghostCardHTML(p,'פתח'+(f?'ה':'')+' '+o[1]+' · '+p.date);
+  }).join('');
+
+  const act=document.getElementById('act-ghost');
+  if(act)act.innerHTML=[
+    {kind:'contribution',actor:'סבתא רחל',name:'בר המצווה של דניאל',
+     isMe:false,amount:null,at:daysAgo(1)},
+    {kind:'contribution',name:'בר המצווה של דניאל',isMe:true,amount:15000,at:daysAgo(8)},
+    {kind:'letter_signed',actor:'דוד יוסי',name:'בר המצווה של דניאל',
+     isMe:false,at:daysAgo(34)}
+  ].map(feedRowHTML).join('');
+}
+
 /* המודל האחרון שנטען. הפרופיל נשען עליו כדי לא לפנות לשרת פעם שנייה. */
 let lastModel=null;
 
@@ -3930,7 +3983,7 @@ function setEmpty(on){
 }
 document.getElementById('empty-btn').onclick=function(){setEmpty(!isEmpty)};
 
-loginPrep();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();applyTabSources();
+loginPrep();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();applyTabSources();buildGhosts();
 /* סשן שמור מהכניסה הקודמת — טוענים את הפרופיל לפני שהמסך נצבע. */
 if(liveAccount()){netaServer.loadProfile().then(applyIdentity).then(buildHomeSummary).catch(function(){});}
 buildHomeSummary();buildProfile();buildRequests();buildRelatives();buildPays();buildLetters();
