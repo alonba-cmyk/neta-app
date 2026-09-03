@@ -501,7 +501,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '441c313';
+window.NETA_BUILD = 'c436d7f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -874,7 +874,7 @@ window.NETA_CONFIG = {
   </div>
   <p class="fine gap" id="d-whofine">רק אתה רואה את הפילוח הזה, כבעל הנטיעה. הקרובים רואים זה את זה — בלי סכומים.</p>
 
-  <div class="card" style="background:var(--sun-bg);border-color:var(--sun-line);margin-top:16px">
+  <div class="card" id="d-letters" style="background:var(--sun-bg);border-color:var(--sun-line);margin-top:16px">
     <div class="row gap-s"><span>✉</span><b style="font-size:13px" id="d-lcount">ולא רק כסף, 3 מכתבים חתומים — מסבתא, מדוד יוסי וממך</b></div>
     <p class="sub" style="color:#C4AE84" id="d-lett">המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.</p>
   </div>
@@ -887,13 +887,8 @@ window.NETA_CONFIG = {
 <section class="screen" data-name="בחירת נטיעה">
   <h2 class="gap-s">למי מזמינים קרובים?</h2>
   <p class="sub gap">בחר את הנטיעה שאליה תרצה להזמין את המשפחה</p>
-  <div class="card tap" onclick="pickInvite('danielBar')">
-    <div class="row"><div class="dot g">🎂</div><div style="flex:1"><div class="title" id="ip-nm">בר המצווה של דניאל</div><div class="meta" id="ip-date">המועד המיוחל: אוגוסט 2032</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div>
-  </div>
-  <div class="card tap" onclick="pickInvite('noaStudy')">
-    <div class="row"><div class="dot g">🎓</div><div style="flex:1"><div class="title">הלימודים של נועה</div><div class="meta">המועד המיוחל: ספטמבר 2038 · <span style="color:var(--tx-3)">פרטית</span></div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div>
-  </div>
-  <p class="fine gap" style="margin-top:4px">מוצגות רק הנטיעות שאתה היוזם שלהן — קרוב שפתח נטיעה הוא זה שמזמין אליה.</p>
+  <div id="ip-list"></div>
+  <p class="fine gap" style="margin-top:4px" id="ip-fine">מוצגות רק הנטיעות שאתה היוזם שלהן — קרוב שפתח נטיעה הוא זה שמזמין אליה.</p>
   <button class="btn ghost" onclick="openPeople()">חזרה</button>
 </section>
 
@@ -1124,7 +1119,7 @@ window.NETA_CONFIG = {
   <p class="eyebrow big">הקרובים שלך</p>
   <div class="card" id="pp-list"></div>
   <p class="fine gap">כמה כל אחד השקיע מופיע בתוך הנטיעה עצמה. הקרובים רואים זה את זה — בלי סכומים.</p>
-  <button class="btn gap-s" onclick="go(6)">הזמן קרוב</button>
+  <button class="btn gap-s" onclick="openInvitePicker()">הזמן קרוב</button>
   <p class="fine" style="margin-top:8px">בלחיצה תבחר לאיזו נטיעה ההזמנה שייכת.</p>
   </div><!-- /kin-full -->
 
@@ -1132,7 +1127,7 @@ window.NETA_CONFIG = {
     <div class="art" style="color:var(--leaf-2)"><svg width="74" height="74" viewBox="7 6 57 57" aria-hidden="true"><g opacity=".45" transform="translate(-1.4,13.64) scale(.78)"><use href="#sprout-art"/></g><g opacity=".85" transform="translate(14,0)"><use href="#sprout-art"/></g></svg></div>
     <h3>כאן יופיע מה שאחרים נטעו</h3>
     <p>כשקרוב פותח נטיעה למי שיקר לך, או מצטרף לאחת משלך — היא תופיע כאן.</p>
-    <button class="btn ghost" onclick="go(6)">הזמן קרוב</button>
+    <button class="btn ghost" onclick="openInvitePicker()">הזמן קרוב</button>
     <p class="fine">נטיעה פרטית נשארת פרטית. אף אחד לא רואה אותה עד שתחליט להזמין.</p>
   </div>
 </section>
@@ -1202,7 +1197,7 @@ window.NETA_CONFIG = {
   <div class="lock" style="text-align:right;margin-top:26px">
     <p class="sub" style="color:#C4AE84">הנבט עומד בתחילת הציר. ב-1 בספטמבר הוא יזוז בפעם הראשונה, ומשם הוא רק ממשיך.</p>
   </div>
-  <div class="two" style="margin-top:18px"><button class="btn" onclick="go(2)">השקע עוד</button><button class="btn ghost" onclick="go(6)">הזמן קרובים</button></div>
+  <div class="two" style="margin-top:18px"><button class="btn" onclick="go(2)">השקע עוד</button><button class="btn ghost" onclick="openInvitePicker()">הזמן קרובים</button></div>
 </section>
 
 
@@ -1996,8 +1991,8 @@ function paySummary(){
     /* topping up an existing planting: the beneficiary and ownership are already settled,
        so the review shows only what this deposit actually decides */
     head.style.display='flex';
-    txt('py-icon',(plants[cur]||{}).icon||goal.icon||'🌱');
-    txt('py-title',(plants[cur]||{}).name||goal.type||'');
+    txt('py-icon',(plantAt(cur)||{}).icon||goal.icon||'🌱');
+    txt('py-title',(plantAt(cur)||{}).name||goal.type||'');
     txt('py-date',goal.dateLabel||'');
     document.getElementById('py-benerow').style.display='none';
     document.getElementById('py-relrow').style.display='none';
@@ -2176,9 +2171,49 @@ function cancelEdit(){
   document.getElementById('e-letter').value=plantLetter;
   go(5);
 }
+/* הנטיעות שאפשר להזמין אליהן: אלה שאתה היוזם שלהן ושכבר יועדו. קופה
+   שלא יועדה חסומה לקרובים במסד עצמו, ולכן אין טעם להציע אותה. */
+function invitablePlantings(){
+  if(liveAccount()){
+    return ((lastModel&&lastModel.plantings)||[])
+      .filter(function(p){return p.designated!==false})
+      .map(function(p){return {key:p.key,icon:p.icon,name:p.name,
+        meta:'המועד המיוחל: '+monthsShort[p.targetMonth]+' '+p.targetYear};});
+  }
+  return Object.keys(plants).filter(function(k){return plants[k].mine&&plants[k].designated!==false})
+    .map(function(k){const p=plants[k];
+      return {key:k,icon:p.icon,name:p.name,
+        meta:'המועד המיוחל: '+p.date+(p.shared?'':' · <span style="color:var(--tx-3)">פרטית</span>')};});
+}
+/* המסך הזה החזיק שני כרטיסים כתובים ביד. בחשבון אמיתי הוא הציע להזמין
+   קרובים לנטיעות של משפחת ההדגמה — נטיעות שלא קיימות ולא מופיעות בבית. */
+function openInvitePicker(){
+  const list=invitablePlantings();
+  const el=document.getElementById('ip-list');
+  el.innerHTML=list.length?list.map(function(p){
+    return '<div class="card tap" onclick="pickInvite(\''+p.key+'\')">'+
+      '<div class="row"><div class="dot g">'+p.icon+'</div><div style="flex:1">'+
+      '<div class="title">'+p.name+'</div><div class="meta">'+p.meta+'</div></div>'+
+      '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12">'+
+      '<use href="#chev"/></svg></span></div></div>';
+  }).join('')
+  :'<div class="card"><p class="sub" style="margin:0">אין עדיין נטיעה שאפשר להזמין אליה. ברגע שתפתח נטיעה מיועדת, היא תופיע כאן.</p></div>';
+  const fine=document.getElementById('ip-fine');
+  if(fine)fine.style.display=list.length?'':'none';
+  go(6);
+}
 function pickInvite(key){
   cur=key;
-  if(!plants[key].shared){openToCircle();return}
+  const p=plantAt(key);
+  if(!p){
+    if(!netaServer)return;
+    netaServer.detail(key).then(function(r){
+      if(!r){toast('לא הצלחנו לטעון את הנטיעה');return}
+      livePlants[key]=liveDetail(r);pickInvite(key);
+    });
+    return;
+  }
+  if(!p.shared){openToCircle();return}
   openInvite(inviteFor(key));
 }
 /* ---- in-frame toast + sheet (native alert/confirm never render here) ---- */
@@ -2240,7 +2275,7 @@ function ahaCopy(){
   const lt=document.getElementById('letter');if(lt)lt.placeholder=nm+', ביום שתקרא את זה...';
   const el=document.getElementById('aha-note');
   if(isNewPlant){el.innerHTML='זו הנטיעה הראשונה עבור <b>'+nm+'</b> — אתה פותח אותה';return}
-  let p=null;try{p=plants[cur];}catch(e){}
+  let p=null;try{p=plantAt(cur);}catch(e){}
   if(!p){el.innerHTML='עד כה השקעת עבור <b>'+nm+'</b>';return}
   const others=p.who.filter(w=>w[1]!=='אתה').map(w=>w[1]);
   el.innerHTML=others.length
@@ -2336,38 +2371,41 @@ function finishDeposit(){
 
      מסך "רגע ההשקעה" מחכה לאישור מהשרת. קודם הוא הופיע מיד, וכשהשמירה
      נכשלה המשתמש קרא "נטעת עבור X" על נטיעה שלא קיימת. */
-  if(isNewPlant){
-    const src=netaSource();
-    if(src.create){
-      const btn=document.querySelector('[onclick="finishDeposit()"]');
-      if(btn){btn.disabled=true;btn.style.opacity='.55';btn.textContent='שומר…'}
-      src.create(plantingFromFlow())
-        .then(function(){
-          if(isEmpty)setEmpty(false);
-          return buildHomeSummary();
-        })
-        .then(function(){
-          if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='אשר את ההפקדה'}
-          celebrate();
-        })
-        .catch(function(e){
-          if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='אשר את ההפקדה'}
-          /* נשארים במסך התשלום. גיליון ולא toast — לפעולה שנכשלה יש
-             השלכה, ו-toast נעלם לפני שהספיקו לקרוא אותו. */
-          const f=netaServer&&netaServer.lastFailure&&netaServer.lastFailure();
-          let detail=(e&&e.message)||'לא הצלחנו להגיע לשרת. אפשר לנסות שוב.';
-          if(f){
-            /* המזהה והסטטוס נכנסים להודעה כדי שלא יידרש עוד סיבוב שלם
-               רק כדי לדעת מה נשלח. */
-            if(f.status)detail+=' (סטטוס '+f.status+')';
-            detail+=f.uid?(' · זהות '+String(f.uid).slice(0,8)):' · ללא זהות';
-          }
-          ask('הנטיעה לא נשמרה',detail,'הבנתי');
-        });
-      return;
-    }
-  }
-  celebrate();
+  const src=netaSource();
+  /* הפקדה לנטיעה קיימת נשמרת כאן בדיוק כמו נטיעה חדשה. עד כה רק ההקמה
+     נשמרה: "השקע עוד" הראה "העלה שלך נוסף לעץ" בלי שנוסף כלום. */
+  const rec=plantingFromFlow();
+  const save=isNewPlant ? (src.create&&function(){return src.create(rec)})
+                        : (src.deposit&&cur&&function(){
+                            return src.deposit(cur,rec.amount,rec.recurring)});
+  if(!save){celebrate();return}
+
+  const btn=document.querySelector('[onclick="finishDeposit()"]');
+  if(btn){btn.disabled=true;btn.style.opacity='.55';btn.textContent='שומר…'}
+  save()
+    .then(function(){
+      if(isEmpty)setEmpty(false);
+      return buildHomeSummary();
+    })
+    .then(function(){return isNewPlant?null:refreshDetail(cur)})
+    .then(function(){
+      if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='אשר את ההפקדה'}
+      celebrate();
+    })
+    .catch(function(e){
+      if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='אשר את ההפקדה'}
+      /* נשארים במסך התשלום. גיליון ולא toast — לפעולה שנכשלה יש
+         השלכה, ו-toast נעלם לפני שהספיקו לקרוא אותו. */
+      const f=netaServer&&netaServer.lastFailure&&netaServer.lastFailure();
+      let detail=(e&&e.message)||'לא הצלחנו להגיע לשרת. אפשר לנסות שוב.';
+      if(f){
+        /* המזהה והסטטוס נכנסים להודעה כדי שלא יידרש עוד סיבוב שלם
+           רק כדי לדעת מה נשלח. */
+        if(f.status)detail+=' (סטטוס '+f.status+')';
+        detail+=f.uid?(' · זהות '+String(f.uid).slice(0,8)):' · ללא זהות';
+      }
+      ask(isNewPlant?'הנטיעה לא נשמרה':'ההפקדה לא נשמרה',detail,'הבנתי');
+    });
 }
 
 /* מה שקורה אחרי שהנטיעה קיימת בפועל. */
@@ -2428,8 +2466,100 @@ let cur='danielBar';
 const dTime=document.getElementById('d-time');
 let A0=15600,AF=35300,YL=6,T_NOW=53.8,T_SPAN=46.2;
 
+/* ─── נטיעה אמיתית במסך שנבנה להדגמה ───────────────────────────────────
+   מסך הנטיעה נבנה עד כה מ-plants{} שבקובץ. בחשבון אמיתי הכרטיס במסך הבית
+   הוא של נטיעה אמיתית, והמזהה שלה אינו קיים ב-plants — הלחיצה נפלה בשקט
+   על שגיאה, ומה שכן נפתח (הזמנה, בחירת נטיעה) הראה את משפחת ההדגמה.
+   הנטיעה נטענת עכשיו מהמסד, ומה שאין עליה — לא מוצג.                    */
+const livePlants={};
+function plantAt(key){return livePlants[key]||plants[key]||null}
+/* השם של נטיעה לפי מפתח — בלי להניח שהיא מ-plants{}. הצ'יפים בגיליון
+   ההזמנה מחזירים עכשיו מזהה אמיתי, וקריאה ישירה ל-plants[id].name נפלה. */
+function nameOfPlanting(key){
+  const p=plantAt(key);
+  if(p)return p.name;
+  const live=((lastModel&&lastModel.plantings)||[]).filter(function(x){return x.key===key})[0];
+  return live?live.name:'הנטיעה';
+}
+
+/* המשפט מתחת לציר. אין במסד את המגדר של הנהנה, ולכן הוא נשאר חף מפועל
+   מוטה — עדיף משפט שנכון לכל ילד על ניחוש לפי השם. */
+function liveLine(monthly,others,kid,designated){
+  const rate=monthly?monthly.toLocaleString('he-IL')+' ₪ בחודש':'';
+  const to=kid?withPrep('ל',kid):'מי שתחליט';
+  if(!designated)return monthly
+    ? 'בקצב של '+rate+', הקופה ממשיכה לגדול — ועדיין לא יועדה לאף אחד'
+    : 'הקופה רשומה על שמך וממתינה לייעוד';
+  const names=others.length?listNames(others):'';
+  if(monthly&&others.length)return 'בזכות '+rate+' שאתה מפקיד, ומה ש'+names+' הוסיפו, נבנה כאן משהו ש'+'מחכה '+to;
+  if(monthly)             return 'בזכות '+rate+' שאתה מפקיד, נבנה כאן משהו שמחכה '+to;
+  if(others.length)       return 'מה שאתה ו'+names+' הפקדתם מחכה '+to;
+  return 'מה שהפקדת מחכה '+to;
+}
+function listNames(a){
+  return a.length<2?(a[0]||''):a.slice(0,-1).join(', ')+' ו'+a[a.length-1];
+}
+
+/* שורת המסד בצורה שהמסך יודע לצייר. */
+function liveDetail(r){
+  const t=new Date(r.target_date+'T00:00:00'), o=new Date(r.opened_on+'T00:00:00');
+  const now=Number(r.accrued_agorot||0)/100;
+  const span=t-o, passed=Date.now()-o;
+  const desig=r.designated!==false;
+  const monthly=Number(r.monthly_agorot||0)/100;
+  const who=(r.participants||[]).map(function(w){
+    return [w.avatar||'av-parent', w.is_me?'אתה':w.name,
+            /* null מגיע כשלצופה אסור לראות את הסכום — אותו כלל כמו בפיד.
+               המגדר אינו ידוע, ולכן הצורה הכפולה שהאפיון כבר קבע. */
+            w.amount==null?VERB.participated:shekel(Number(w.amount)), null];
+  });
+  const others=who.filter(function(w){return w[1]!=='אתה'}).map(function(w){return w[1]});
+  const n=Number(r.signed_letters||0);
+  const when=months[t.getMonth()]+' '+t.getFullYear();
+  return {
+    live:true, key:r.id, icon:r.icon||'🌱', name:r.name,
+    date:when, yr:t.getFullYear(), planted:o.getFullYear(),
+    now:now, end:Math.max(now,Number(r.projection_agorot||0)/100),
+    yl:Math.max(0,t.getFullYear()-new Date().getFullYear()),
+    tNow:Math.max(0,Math.min(100,span>0?passed/span*100:0)),
+    kid:desig?(r.beneficiary_name||''):'', designated:desig,
+    approver:r.approver||undefined, guardName:r.guardian_name||undefined,
+    shared:!!r.open_to_relatives, mine:!!r.is_initiator,
+    co:r.co_owner_name||undefined,
+    who:who, monthly:monthly,
+    line:liveLine(monthly,others,desig?r.beneficiary_name:'',desig),
+    lCount:n?('ולא רק כסף, '+(n===1?'מכתב אחד חתום':n+' מכתבים חתומים')+
+              (r.letter_authors&&r.letter_authors.length?' — מ'+listNames(r.letter_authors):'')):'',
+    lSub:n?((n===1?'המכתב ייפתח ב':'המכתבים ייפתחו ב')+when+
+            (r.beneficiary_name?', יחד עם '+r.beneficiary_name:'')+'.'):''
+  };
+}
+
+/* ─── מסך הנטיעה ─────────────────────────────────────────────────────── */
 function openDetail(key){
-  cur=key;const p=plants[key];
+  const known=plantAt(key);
+  if(known){paintDetail(key,known);return}
+  if(!netaServer)return;
+  netaServer.detail(key).then(function(r){
+    if(!r){toast('לא הצלחנו לטעון את הנטיעה');return}
+    livePlants[key]=liveDetail(r);
+    paintDetail(key,livePlants[key]);
+  }).catch(function(){toast('לא הצלחנו לטעון את הנטיעה')});
+}
+/* טעינה מחדש של נטיעה חיה אחרי שינוי, כדי שהמסך יראה את מה שנשמר.
+   מצייר מחדש רק אם מסך הנטיעה הוא זה שפתוח — אחרת הוא היה קופץ לשם
+   מתוך מסך אחר, למשל אחרי הפקדה שמסתיימת במסך "רגע ההשקעה". */
+function refreshDetail(key){
+  if(!netaServer||!livePlants[key])return Promise.resolve();
+  const onDetail=document.querySelector('.screen.on')===screens[5];
+  return netaServer.detail(key).then(function(r){
+    if(!r)return;
+    livePlants[key]=liveDetail(r);
+    if(onDetail)paintDetail(key,livePlants[key]);
+  }).catch(function(){});
+}
+function paintDetail(key,p){
+  cur=key;
   A0=p.now;AF=p.end;YL=p.yl;T_NOW=p.tNow;T_SPAN=100-p.tNow;
   txt('d-icon',p.icon);
   txt('d-title',p.name);
@@ -2440,8 +2570,12 @@ function openDetail(key){
   txt('d-planted','נשתל '+p.planted);
   txt('d-yr',p.yr);
   txt('d-goalicon',p.icon);
-  txt('d-cbh','מי השקיע בעתיד של '+p.kid);
+  txt('d-cbh',p.kid?('מי השקיע בעתיד של '+p.kid):'מי הפקיד לקופה');
   txt('d-line',p.line);
+  /* כרטיס המכתבים מוצג רק אם באמת נחתם מכתב. קודם הוא הציג את המשפט של
+     ההדגמה — שלושה מכתבים מסבתא ומדוד — על נטיעה שאין בה אף אחד. */
+  const lt=document.getElementById('d-letters');
+  if(lt)lt.style.display=p.lCount?'':'none';
   txt('d-lcount',p.lCount);
   txt('d-lett',p.lSub);
   document.getElementById('d-who').innerHTML=p.who.map(w=>
@@ -2462,7 +2596,7 @@ function openDetail(key){
 }
 function enterRedeem(key){
   cur=key||cur||'danielBar';
-  const p=plants[cur];
+  const p=plantAt(cur);
   if(p.approver==='later'){
     ask('עדיין לא נקבע מי יאשר את הפדיון',
       'לפני שממשיכים צריך לקבוע מי יפעל בשם '+p.kid+' ברגע הזה — אפשר לעשות את זה בעריכת הנטיעה.',
@@ -2527,10 +2661,9 @@ function chanHint(){
   txt('ch-hint',c?'ההזמנה תישלח ב'+CHAN[c]:'ההזמנה תישלח בוואטסאפ אם תזין מספר, ובאימייל אם תזין כתובת.');
 }
 function plantHTML(){
-  const mine=Object.keys(plants).filter(function(k){return plants[k].mine});
   pickedPlant='';
-  return '<div class="chips">'+mine.map(function(k){
-    return '<button onclick="pickedPlant=\''+k+'\';markChip(this)">'+plants[k].icon+' '+plants[k].name+'</button>';
+  return '<div class="chips">'+invitablePlantings().map(function(p){
+    return '<button onclick="pickedPlant=\''+p.key+'\';markChip(this)">'+p.icon+' '+p.name+'</button>';
   }).join('')+'<button class="on" onclick="pickedPlant=\'\';markChip(this)">לא עכשיו</button></div>';
 }
 function markChip(el){[...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)})}
@@ -2565,7 +2698,7 @@ function answerReq(i,ok){
 }
 function sentSheet(k,r){
   ask('ההזמנה נשלחה ל'+r.name,
-    'כש'+r.name+' תפתח את הקישור, יישלח קוד אימות חד-פעמי ל'+r.contact+' — ורק מי ששולט בו יוכל להצטרף ל'+plants[k].name+'. אין קוד שאתה צריך למסור.\n\nאם מישהו אחר ינסה להיכנס דרך הקישור, הבקשה תגיע אליך לאישור עם שמו.',
+    'כש'+r.name+' תפתח את הקישור, יישלח קוד אימות חד-פעמי ל'+r.contact+' — ורק מי ששולט בו יוכל להצטרף ל'+nameOfPlanting(k)+'. אין קוד שאתה צריך למסור.\n\nאם מישהו אחר ינסה להיכנס דרך הקישור, הבקשה תגיע אליך לאישור עם שמו.',
     'הבנתי');
 }
 function sendInvite(r){
@@ -2592,7 +2725,7 @@ function buildRelatives(){
     if(r.status==='in')right='<span class="rs">באפליקציה</span>';
     else if(r.status==='invited')right='<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">שלח שוב</button>';
     else right='<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">הזמן</button>';
-    const sub=r.status==='invited'?(r.plant?'הוזמנה ל'+plants[r.plant].name+' · ממתינה לקוד':r.rel+' · הוזמנה, טרם הצטרפה'):(r.contact?r.rel+' · '+r.contact:r.rel+' · חסרים פרטי קשר');
+    const sub=r.status==='invited'?(r.plant?'הוזמנה ל'+nameOfPlanting(r.plant)+' · ממתינה לקוד':r.rel+' · הוזמנה, טרם הצטרפה'):(r.contact?r.rel+' · '+r.contact:r.rel+' · חסרים פרטי קשר');
     return '<div class="rel" onclick="editRelative('+i+')">'+
       '<div class="ra"><svg viewBox="0 0 40 40"><use href="#'+r.av+'"/></svg></div>'+
       '<span class="rn"><b>'+r.name+'</b><i>'+sub+'</i></span>'+right+'</div>';
@@ -2997,7 +3130,7 @@ function netaBackend(cfg){
     return body(r);
   }
 
-  const rpc=function(fn){return call('/rest/v1/rpc/'+fn,{method:'POST',body:'{}'})};
+  const rpc=function(fn,args){return call('/rest/v1/rpc/'+fn,{method:'POST',body:JSON.stringify(args||{})})};
 
   /* מי אני לפי השרת. הסשן המקומי יכול להחזיק טוקן בלי אובייקט משתמש — למשל
      כשהוא הגיע מקישור במייל — ואז uid() ריק, ההוספה נשלחת בלי בעלים,
@@ -3107,6 +3240,13 @@ function netaBackend(cfg){
       });
     },
 
+    /* מסך של נטיעה אחת. קריאה אחת ולא שש, ובעיקר — מהנטיעה עצמה. */
+    detail:function(id){
+      return rpc('planting_detail',{p_id:id}).catch(remember).then(function(rows){
+        return (rows&&rows[0])||null;
+      });
+    },
+
     feed:function(){
       return call('/rest/v1/rpc/activity_feed',{method:'POST',
         body:JSON.stringify({p_limit:30})}).catch(remember).then(function(rows){
@@ -3156,6 +3296,37 @@ function netaBackend(cfg){
 
     /* הבעלים אינו נשלח: הוא ברירת המחדל של העמודה במסד, שנגזרת מהטוקן.
        כך אין שני צדדים שצריכים להסכים על מי אני. */
+    /* הפקדה לנטיעה שכבר קיימת. עד כה "השקע עוד" עבר את כל מסע התשלום,
+       הציג את מסך החגיגה — ולא כתב כלום. הסכום חזר לקדמותו ברענון. */
+    deposit:function(id,amount,recurring){
+      return call('/rest/v1/contributions',{method:'POST',
+        body:JSON.stringify({planting_id:id,amount_agorot:amount,
+                             kind:recurring?'recurring':'one_time'})})
+        .then(function(){
+          if(!recurring)return null;
+          /* הוראת קבע פעילה אחת לאדם בכל נטיעה — אינדקס ייחודי במסד.
+             שינוי קצב הוא ביטול והקמה מחדש, כדי שההיסטוריה תישמר. */
+          return call('/rest/v1/standing_orders?planting_id=eq.'+id+'&active=is.true',
+              {method:'PATCH',body:JSON.stringify({active:false})})
+            .then(function(){
+              return call('/rest/v1/standing_orders',{method:'POST',
+                body:JSON.stringify({planting_id:id,amount_agorot:amount})});
+            });
+        }).catch(remember);
+    },
+
+    /* פתיחה לקרובים וייעוד קופה הם שינויים בנטיעה עצמה, ולא בתצוגה.
+       קודם הם שינו אובייקט בזיכרון: המסך הראה שהם קרו, והמסד לא ידע. */
+    openToRelatives:function(id){
+      return call('/rest/v1/plantings?id=eq.'+id,{method:'PATCH',
+        body:JSON.stringify({open_to_relatives:true})}).catch(remember);
+    },
+    designate:function(id,name,label){
+      return call('/rest/v1/plantings?id=eq.'+id,{method:'PATCH',
+        body:JSON.stringify({designated:true,beneficiary_name:name,
+                             name:label,approver:'self'})}).catch(remember);
+    },
+
     create:function(p){
       let id;
       return Promise.resolve()
@@ -3396,7 +3567,8 @@ function withPrep(prep,name){
    את הפתרון למצב הזה במקום אחר ("מורשה/ית", "בר/בת מצווה"): צורה כפולה
    קבועה, ולא ניחוש לפי השם. */
 const VERB={invested:'השקיע/ה',deposited:'הפקיד/ה',
-            attached:'צירף/ה',  joined:'הצטרף/ה'};
+            attached:'צירף/ה',  joined:'הצטרף/ה',
+            participated:'השתתף/ה'};
 
 function feedRowHTML(e){
   let icon='🌱',cls='',text='';
@@ -3515,7 +3687,7 @@ function buildPeople(){
 }
 function openPeople(){buildPeople();go(14)}
 function designate(){
-  const p=plants[cur];
+  const p=plantAt(cur);
   sheetForm('ייעד את '+p.name,
     'מרגע הייעוד הכסף נרשם על שם הנהנה ואי אפשר לחזור. בתמורה הוא מקבל את אותה נעילה והגנות של כל נטיעה, ואפשר לפתוח אותה להשקעות של קרובים.'+
     '<label>שם הנהנה</label><input type="text" id="dg-name" placeholder="למשל: שירה">',
@@ -3523,7 +3695,17 @@ function designate(){
     function(){
       const n=(document.getElementById('dg-name')||{}).value;
       if(!n||!n.trim()){toast('צריך שם כדי לייעד');return false}
-      p.designated=true;p.kid=n.trim();p.name='קופת הפתעות של '+n.trim();
+      const label='קופת הפתעות של '+n.trim();
+      if(p.live){
+        const key=cur;
+        netaServer.designate(key,n.trim(),label)
+          .then(function(){return refreshDetail(key)})
+          .then(function(){return buildHomeSummary()})
+          .then(function(){toast('הקופה יועדה ל'+n.trim())})
+          .catch(function(e){ask('הייעוד לא נשמר',(e&&e.message)||'נסה שוב.','הבנתי')});
+        return;
+      }
+      p.designated=true;p.kid=n.trim();p.name=label;
       txt('d-title',p.name);txt('d-cbh','מי השקיע בעתיד של '+p.kid);
       buildActions(p);toast('הקופה יועדה ל'+p.kid);
     });
@@ -3531,7 +3713,7 @@ function designate(){
 /* adding a co-owner is independent of both designation and openness — a partner owns
    the money, so none of the contributor-facing constraints apply to them */
 function addPartner(){
-  const p=plants[cur];
+  const p=plantAt(cur);
   sheetForm('הוסף שותף/ה ל'+p.name,
     'שניכם תהיו רשומים כבעלים שווים — שניכם מפקידים, שניכם רואים הכל, וכל שינוי מהותי דורש הסכמה של שניכם.'+
     '<label>שם מלא</label><input type="text" id="pt-name" placeholder="שם השותף/ה">',
@@ -3556,7 +3738,7 @@ function addPartner(){
 /* what the invited co-owner actually sees — deliberately not a variant of the regular
    contributor invite: the whole point of a partner is that it's not "just investing" */
 function openPartnerInvite(key,name){
-  const p=plants[key];
+  const p=plantAt(key);
   txt('pi-sub','להיות שותף/ה שווה ב'+p.name+' — לא רק להשקיע');
   txt('pi-icon',p.icon);
   txt('pi-title',p.name);
@@ -3570,7 +3752,32 @@ function acceptPartner(){
   document.getElementById('pi-done').style.display='block';
 }
 function declinePartner(){go(0)}
+/* בנטיעה אמיתית מוצע רק מה שבאמת נשמר בשרת. פעולה שמשנה אובייקט בזיכרון
+   נראית כאילו קרתה ונעלמת ברענון — וזה גרוע מכפתור שאינו קיים. */
+function buildLiveActions(p){
+  const acts=document.getElementById('d-acts'),note=document.getElementById('d-actnote');
+  note.style.display='block';
+  if(!p.designated){
+    acts.className='two';
+    acts.innerHTML='<button class="btn" onclick="investIn(cur)">הפקד לקופה</button>'+
+                   '<button class="btn ghost" onclick="designate()">ייעד את הקופה</button>';
+    note.textContent='הקופה רשומה על שמך ועדיין לא יועדה לאף אחד. קרובים לא יכולים להפקיד לתוכה עד שתייעד אותה.';
+    return;
+  }
+  if(p.shared){
+    acts.className='two';
+    acts.innerHTML='<button class="btn" onclick="openInvite(cur)">הזמן קרובים</button>'+
+                   '<button class="btn ghost" onclick="investIn(cur)">השקע עוד</button>';
+    note.textContent='הנטיעה פתוחה לקרובים. שליחת ההזמנה עצמה עדיין בפיתוח.';
+    return;
+  }
+  acts.className='two';
+  acts.innerHTML='<button class="btn" onclick="investIn(cur)">השקע עוד</button>'+
+                 '<button class="btn ghost" onclick="openToCircle()">פתח לקרובים</button>';
+  note.textContent='הנטיעה הזו פרטית — רק אתה רואה אותה.';
+}
 function buildActions(p){
+  if(p.live){buildLiveActions(p);return}
   const acts=document.getElementById('d-acts'),note=document.getElementById('d-actnote');
   const invite='<button class="btn" onclick="openInvite(cur)">הזמן קרובים</button>';
   const addPartnerLink='<a href="#" onclick="addPartner();return false" style="color:var(--leaf)">הוסף שותף/ה</a>';
@@ -3600,23 +3807,30 @@ function buildActions(p){
 }
 /* an invite card built from the planting itself — never from a fixed one */
 function inviteFor(key){
-  const p=plants[key], others=p.who.filter(w=>w[1]!=='אתה');
+  const p=plantAt(key), others=p.who.filter(w=>w[1]!=='אתה');
   const pct=Math.round(p.now/p.end*100);
   return {
     sub1:'שלח קישור. מי שיפתח אותו יוכל להשקיע ב'+p.kid+' בלי לראות כמה השקיעו אחרים.',
     title:'שותפים בעתיד של '+p.kid,
     sub2:p.date+' · '+pct+'% מהדרך',
     stats:p.who.map(w=>'<div class="stat"><span class="k">'+w[1]+'</span><span class="v">'+
-      (w[1]==='אתה'?w[2]:'השתתפ'+(w[3]==='f'?'ה':''))+'</span></div>').join(''),
+      (w[1]==='אתה'?w[2]:(w[3]==='f'?'השתתפה':w[3]==='m'?'השתתף':VERB.participated))+'</span></div>').join(''),
     fine:others.length?null:'עוד אף אחד לא הצטרף — אתה הראשון. ברגע שקרוב ישקיע, הוא יופיע כאן.'
   };
 }
 function openToCircle(){
-  const p=plants[cur];
+  const p=plantAt(cur);
   ask('לפתוח את "'+p.name+'" לקרובים?',
     'מרגע שקרוב מקבל גישה אי אפשר לבטל את מה שכבר ראה. הסכומים שלך לא ייחשפו — קרובים רואים התקדמות בלבד.',
     'פתח לקרובים',
-    function(){p.shared=true;openInvite(inviteFor(cur));});
+    function(){
+      if(!p.live){p.shared=true;openInvite(inviteFor(cur));return}
+      const key=cur;
+      netaServer.openToRelatives(key)
+        .then(function(){return refreshDetail(key)})
+        .then(function(){openInvite(inviteFor(key))})
+        .catch(function(e){ask('לא הצלחנו לפתוח את הנטיעה',(e&&e.message)||'נסה שוב.','הבנתי')});
+    });
 }
 function showTermStep(on){
   document.getElementById('c-terms').style.display=on?'':'none';
@@ -3629,7 +3843,7 @@ function showTermStep(on){
   txt('eb-trk2',(3+o)+' · באיזה קצב');
 }
 function investIn(key){
-  const p=plants[key];cur=key;
+  const p=plantAt(key);cur=key;
   showTermStep(false);
   shareMode=p.shared?'open':'private';isNewPlant=false;
   txt('ct-title','השקע עבור '+p.kid);
