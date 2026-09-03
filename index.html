@@ -501,7 +501,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '3e2504b';
+window.NETA_BUILD = '441c313';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2846,6 +2846,21 @@ function loadAccountLists(){
   }).catch(function(){});
 }
 
+/* המספרים והשם כתובים קשיח ב-HTML כדי שהפרוטוטייפ ייראה נכון מיד. בחשבון
+   אמיתי הם נכונים לאף אחד, ומוצגים עד שהשרת עונה — הבזק של 13,300 ₪ ושל
+   שם אחר, לפני האמת. מנקים אותם לפני הטעינה הראשונה.
+   "שלום" לבד תקין לכל אדם, ומשלים לשם המלא כשהפרופיל מגיע. */
+function blankBeforeFirstLoad(){
+  if(!netaServer)return;
+  ['s-you','s-cnt','s-mon','s-label'].forEach(function(id){txt(id,'')});
+  const g=document.getElementById('garden');
+  if(g)g.innerHTML='';
+  topbars[0][0]='שלום';
+  topbars[10][0]='';
+  const tb=topbars[0];
+  if(document.querySelector('.screen.on')===screens[0]){txt('tb-t',tb[0]);txt('tb-s',tb[1]);}
+}
+
 function buildConnection(){
   const el=document.getElementById('pr-conn');
   if(!el)return;
@@ -3676,7 +3691,7 @@ function setEmpty(on){
 }
 document.getElementById('empty-btn').onclick=function(){setEmpty(!isEmpty)};
 
-loginPrep();hideUnbuiltSignIn();hideTestRig();
+loginPrep();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();
 /* סשן שמור מהכניסה הקודמת — טוענים את הפרופיל לפני שהמסך נצבע. */
 if(liveAccount()){netaServer.loadProfile().then(applyIdentity).then(buildHomeSummary).catch(function(){});}
 buildHomeSummary();buildProfile();buildRequests();buildRelatives();buildPays();buildLetters();
