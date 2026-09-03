@@ -377,6 +377,8 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .gsample:after{content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(to bottom,transparent 22%,var(--bg) 99%)}
 .gsample .ncard{margin-bottom:9px;cursor:default}
+.gsample.tall{height:212px}
+.gsample.tall:after{background:linear-gradient(to bottom,transparent 46%,var(--bg) 99%)}
 .gsample .feed:last-child{border-bottom:0}
 .es .art{margin-bottom:16px;color:var(--leaf)}
 .es h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
@@ -511,7 +513,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0c70eda';
+window.NETA_BUILD = 'eff3384';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -841,7 +843,7 @@ window.NETA_CONFIG = {
   <div class="row gap" style="align-items:flex-start">
     <div class="dot g" style="width:40px;height:40px;font-size:17px" id="d-icon">🎂</div>
     <div style="flex:1"><div class="title" style="font-size:14.5px" id="d-title">בר המצווה של דניאל</div><div class="meta" id="d-date" style="margin-top:3px">המועד המיוחל: אוגוסט 2032</div><div class="meta" id="d-owners" style="margin-top:3px;color:var(--leaf);display:none"></div></div>
-    <button class="editbtn" onclick="go(11)" aria-label="עריכת הנטיעה">✎</button>
+    <button class="editbtn" onclick="openEdit()" aria-label="עריכת הנטיעה">✎</button>
   </div>
   <svg width="146" height="166" viewBox="0 0 140 162" style="margin:2px auto 0;display:block">
     <ellipse cx="70" cy="152" rx="54" ry="17" fill="var(--leaf)" opacity=".07"/>
@@ -986,13 +988,14 @@ window.NETA_CONFIG = {
   <p class="eyebrow">מה שאתה יכול לשנות בכל רגע</p>
   <div class="field"><label>שם הנטיעה</label><input type="text" id="e-name" value="בר המצווה של דניאל"></div>
 
-  <div class="card">
+  <div class="card" id="e-letters">
     <div class="row gap-s"><span>✉</span><b style="font-size:13px">המכתב שלך</b></div>
     <p class="fine gap-s" id="e-lstat">נחתם במרץ 2024 · דניאל יקרא אותו באוגוסט 2032</p>
     <textarea id="e-letter" style="min-height:64px">דניאל, ביום שתקרא את זה כבר תהיה גדול. רצינו שתדע שחשבנו עליך הרבה לפני.</textarea>
     <p class="fine" style="margin-top:7px">רק אתה יכול לערוך את המכתב שלך, וזה אפשרי עד למועד המיוחל. אף אחד אחר לא רואה אותו — גם לא שאר המשקיעים.</p>
   </div>
 
+  <div id="e-visibility">
   <p class="eyebrow" style="margin-top:20px">מי רואה את הנטיעה</p>
   <div class="card">
     <div class="setrow"><div class="st"><b>קישור השיתוף פעיל</b><p>כשהוא כבוי, קישורים קיימים מפסיקים לעבוד</p></div><div class="sw on" onclick="this.classList.toggle('on')" role="switch"></div></div>
@@ -1000,12 +1003,17 @@ window.NETA_CONFIG = {
     <div class="setrow"><div class="st"><b>עדכון כשמישהו מצטרף</b><p>התראה כשקרוב חדש משקיע בדניאל</p></div><div class="sw on" onclick="this.classList.toggle('on')" role="switch"></div></div>
   </div>
 
+  </div><!-- /e-visibility -->
+
+  <div id="e-access">
   <p class="eyebrow" style="margin-top:18px">למי יש גישה היום</p>
   <div class="card">
     <div class="person"><div class="pa"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></div><span class="pn">סבתא רחל</span><button class="px" onclick="toast('הגישה של סבתא רחל תוסר')">הסר גישה</button></div>
     <div class="person"><div class="pa"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></div><span class="pn">דוד יוסי</span><button class="px" onclick="toast('הגישה של דוד יוסי תוסר')">הסר גישה</button></div>
   </div>
   <p class="fine gap">הסרת גישה מפסיקה צפייה בהמשך — היא לא מוחקת ולא מחזירה כסף שכבר הושקע. כל מי שהשקיע מחליט בעצמו אם הסכום שלו גלוי לאחרים; זו בחירה שלו, לא שלך.</p>
+
+  </div><!-- /e-access -->
 
   <p class="eyebrow" style="margin-top:18px">שינוי שמשפיע על כולם</p>
   <div class="field" style="margin-bottom:6px">
@@ -1014,6 +1022,7 @@ window.NETA_CONFIG = {
   </div>
   <div class="warn" id="e-datewarn">דחיית המועד אפשרית, והקדמתו לא — סבתא ודוד יוסי השקיעו מתוך הבנה שהכסף ייפתח באוגוסט 2032. כל שינוי יישלח אליהם בהתראה.</div>
 
+  <div id="e-approver">
   <p class="eyebrow" style="margin-top:20px">מי יאשר את הפדיון</p>
   <div class="stack gap">
     <div class="opt eb-approve on" data-eb="self" onclick="setEditApprover(this,'self')"><b>דניאל עצמו</b><p>קוד פדיון יישלח אליו במועד שקבעת, ישירות ולא דרכך.</p></div>
@@ -1034,11 +1043,12 @@ window.NETA_CONFIG = {
   </div>
 
   <p class="fine" id="e-laterp" style="display:none;margin-top:10px">עדיין לא נקבע מי יאשר — אפשר לקבוע זאת בכל שלב עד המועד.</p>
+  </div><!-- /e-approver -->
 
   <p class="eyebrow" style="margin-top:20px">קבוע ולא ניתן לשינוי כאן</p>
   <div class="card">
-    <div class="stat"><span class="k">מועד הפתיחה</span><span class="v">מרץ 2019</span></div>
-    <div class="stat"><span class="k">הנהנה</span><span class="v">דניאל</span></div>
+    <div class="stat"><span class="k">מועד הפתיחה</span><span class="v" id="e-opened">מרץ 2019</span></div>
+    <div class="stat"><span class="k">הנהנה</span><span class="v" id="e-bene">דניאל</span></div>
   </div>
   <div class="lock" style="text-align:right">
     <p class="sub" style="color:#C4AE84">מועד הפתיחה הוא עובדה שנרשמה ואינו משתנה. שינוי זהות הנהנה הוא פעולה משפטית בחשבון נעול, ומתבצע מול הגוף הפיננסי המנהל בלבד — לא באפליקציה.</p>
@@ -2159,7 +2169,56 @@ function setEditApprover(el,mode){
   document.getElementById('e-guard').style.display=mode==='guardian'?'block':'none';
   document.getElementById('e-laterp').style.display=mode==='later'?'block':'none';
 }
+/* מסך העריכה נכתב כולו סביב plants.danielBar: השם, המכתב, רשימת הגישה
+   והמתגים. בנטיעה אמיתית הוא נפתח כמו שהוא — מכתב לדניאל שלא קיים, וקרובים
+   שלא קיימים — והכפתור "שמור" כתב אותם לאובייקט ההדגמה.
+
+   עכשיו הוא נבנה מהנטיעה, ומוצג בו רק מה שבאמת נשמר: השם והמועד המיוחל.
+   מכתבים, מתגי גלוּיות והסרת גישה עדיין לא מחוברים לשרת, ולכן אינם מוצגים
+   — מסך שמראה מכתב ולא שומר אותו גרוע ממסך בלעדיו. */
+const EDIT_UNWIRED=['e-letters','e-visibility','e-access','e-approver'];
+function buildLiveEdit(p){
+  EDIT_UNWIRED.forEach(function(id){
+    const el=document.getElementById(id);if(el)el.style.display='none';
+  });
+  txt('e-meta',p.name);
+  document.getElementById('e-name').value=p.name;
+  document.getElementById('e-date').value=p.targetDate||'';
+  txt('e-datewarn','דחיית המועד אפשרית, והקדמתו לא — מי שכבר השקיע עשה זאת מתוך הבנה שהכסף ייפתח ב'+p.date+'. כל שינוי יישלח אליו בהתראה.');
+  const o=p.openedOn?new Date(p.openedOn+'T00:00:00'):null;
+  txt('e-opened',o?(months[o.getMonth()]+' '+o.getFullYear()):'—');
+  txt('e-bene',p.kid||'עדיין לא יועדה');
+}
+function openEdit(){
+  const p=plantAt(cur);
+  if(!p||!p.live){go(11);return}
+  buildLiveEdit(p);
+  go(11);
+}
+function saveLiveEdit(p){
+  const name=(document.getElementById('e-name').value||'').trim();
+  if(!name){toast('לנטיעה צריך שם');return}
+  const picked=document.getElementById('e-date').value;
+  /* המסד חוסם הקדמה בטריגר, וזו הבדיקה שנותנת לזה משפט במקום שגיאה. */
+  if(picked&&p.targetDate&&picked<p.targetDate){
+    document.getElementById('e-date').value=p.targetDate;
+    ask('אי אפשר להקדים את המועד',
+      'מי שכבר השקיע עשה זאת מתוך הבנה שהכסף ייפתח במועד הקיים. אפשר רק לדחות אותו.',
+      'הבנתי');
+    return;
+  }
+  const fields={name:name};
+  if(picked&&picked!==p.targetDate)fields.target_date=picked;
+  if(name===p.name&&!fields.target_date){go(5);return}
+  netaServer.updatePlanting(p.key,fields)
+    .then(function(){return refreshDetail(p.key,true)})
+    .then(function(){return buildHomeSummary()})
+    .then(function(){go(5);toast('השינויים נשמרו')})
+    .catch(function(e){ask('השינויים לא נשמרו',(e&&e.message)||'נסה שוב.','הבנתי')});
+}
 function saveEdit(){
+  const live=plantAt(cur);
+  if(live&&live.live){saveLiveEdit(live);return}
   applyPlantName(document.getElementById('e-name').value);
   applyLetter(document.getElementById('e-letter').value);
   const picked=document.getElementById('e-date').value;
@@ -2179,6 +2238,8 @@ function saveEdit(){
   go(5);
 }
 function cancelEdit(){
+  const live=plantAt(cur);
+  if(live&&live.live){buildLiveEdit(live);go(5);return}
   document.getElementById('e-name').value=plantName;
   document.getElementById('e-date').value=plantDate;
   document.getElementById('e-letter').value=plantLetter;
@@ -2531,6 +2592,7 @@ function liveDetail(r){
   const when=months[t.getMonth()]+' '+t.getFullYear();
   return {
     live:true, key:r.id, icon:r.icon||'🌱', name:r.name,
+    targetDate:r.target_date, openedOn:r.opened_on,
     date:when, yr:t.getFullYear(), planted:o.getFullYear(),
     now:now, end:Math.max(now,Number(r.projection_agorot||0)/100),
     yl:Math.max(0,t.getFullYear()-new Date().getFullYear()),
@@ -2562,9 +2624,12 @@ function openDetail(key){
 /* טעינה מחדש של נטיעה חיה אחרי שינוי, כדי שהמסך יראה את מה שנשמר.
    מצייר מחדש רק אם מסך הנטיעה הוא זה שפתוח — אחרת הוא היה קופץ לשם
    מתוך מסך אחר, למשל אחרי הפקדה שמסתיימת במסך "רגע ההשקעה". */
-function refreshDetail(key){
+function refreshDetail(key,force){
   if(!netaServer||!livePlants[key])return Promise.resolve();
-  const onDetail=document.querySelector('.screen.on')===screens[5];
+  /* force: הקורא יודע שהוא בדרך למסך הנטיעה גם אם עוד לא הגיע אליו —
+     כך אחרי שמירה מהעריכה. בלעדיו הרענון קרה, ואז go(5) הציג את המסך
+     הישן: הכרטיס בבית התעדכן והמסך שנפתח מעליו לא. */
+  const onDetail=force||document.querySelector('.screen.on')===screens[5];
   return netaServer.detail(key).then(function(r){
     if(!r)return;
     livePlants[key]=liveDetail(r);
@@ -2613,7 +2678,7 @@ function enterRedeem(key){
   if(p.approver==='later'){
     ask('עדיין לא נקבע מי יאשר את הפדיון',
       'לפני שממשיכים צריך לקבוע מי יפעל בשם '+p.kid+' ברגע הזה — אפשר לעשות את זה בעריכת הנטיעה.',
-      'עבור להגדרות', function(){go(11)});
+      'עבור להגדרות', function(){openEdit()});
     return;
   }
   populateRedeem(p);
@@ -3387,6 +3452,10 @@ function netaBackend(cfg){
       return call('/rest/v1/plantings?id=eq.'+id,{method:'PATCH',
         body:JSON.stringify({open_to_relatives:true})}).catch(remember);
     },
+    updatePlanting:function(id,fields){
+      return call('/rest/v1/plantings?id=eq.'+id,{method:'PATCH',
+        body:JSON.stringify(fields)}).catch(remember);
+    },
     designate:function(id,name,label){
       return call('/rest/v1/plantings?id=eq.'+id,{method:'PATCH',
         body:JSON.stringify({designated:true,beneficiary_name:name,
@@ -3613,11 +3682,16 @@ function buildGhosts(){
   if(home)home.innerHTML=['danielBar','noaStudy']
     .map(function(k){return ghostCardHTML(plants[k])}).join('');
 
+  /* המסך המלא כאן הוא שני חלקים — מה שהם פתחו, ומי הם. הדגם מראה את
+     שניהם באותו סדר, כי הכפתור שמעליו ("הזמן קרוב") מוליד דווקא את החלק
+     השני. הדהייה בולעת את רובו, וזו הכוונה: שורה אחת מספיקה כדי להבין
+     שיש שם רשימה. */
   const kin=document.getElementById('kin-ghost');
-  if(kin)kin.innerHTML=['noaHome','danielArmy'].map(function(k){
-    const p=plants[k],o=p.who[0],f=o[3]==='f';
-    return ghostCardHTML(p,'פתח'+(f?'ה':'')+' '+o[1]+' · '+p.date);
-  }).join('');
+  if(kin)kin.innerHTML=
+    ['noaHome','danielArmy'].map(function(k){
+      const p=plants[k],o=p.who[0],f=o[3]==='f';
+      return ghostCardHTML(p,'פתח'+(f?'ה':'')+' '+o[1]+' · '+p.date);
+    }).join('');
 
   const act=document.getElementById('act-ghost');
   if(act)act.innerHTML=[
@@ -3747,6 +3821,28 @@ function buildHomeSummary(){
     return model;
   });
 }
+/* מי הקרובים, לפי הנטיעות עצמן — לא רשימה שנשמרת בנפרד ויכולה לסתור אותן.
+   הופרד מ-buildPeople כדי שגם הדגם יקרא מאותו מקום. */
+function peopleFromPlants(){
+  const agg={},order=[];
+  Object.keys(plants).forEach(function(k){
+    plants[k].who.forEach(function(w){
+      if(w[1]==='אתה')return;
+      if(!agg[w[1]]){agg[w[1]]={av:w[0],g:w[3],n:0,one:''};order.push(w[1])}
+      agg[w[1]].n++;agg[w[1]].one=plants[k].name;
+    });
+  });
+  return order.map(function(name){
+    const a=agg[name], verb=a.g==='f'?'משקיעה':'משקיע';
+    return {name:name,av:a.av,
+            where:a.n>1?(verb+' ב-'+a.n+' נטיעות'):(verb+' ב'+stripHe(a.one))};
+  });
+}
+function personRowHTML(r){
+  return '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40">'+
+    '<use href="#'+r.av+'"/></svg></div>'+
+    '<span class="cbn"><b>'+r.name+'</b><i>'+r.where+'</i></span></div>';
+}
 function buildPeople(){
   /* הטאב הזה עוד לא חובר לשרת, ולכן בחשבון אמיתי הוא לא מצויר כלל. הסתרת
      המסך לבדה הספיקה למראה, אבל השאירה בעמוד סכומים ושמות של משפחת
@@ -3777,12 +3873,7 @@ function buildPeople(){
   txt('pp-label','זה הסכום ש'+names+(order.length===1?' נטע':' נטעו')+' עד כה עבור עתיד יקירכם');
   document.getElementById('pp-meta').innerHTML=
     '<span><b>'+theirs+'</b> נטיעות שהם פתחו</span><i></i><span><b>'+order.length+'</b> קרובים</span>';
-  let html=order.map(function(name){
-    const a=agg[name], verb=a.g==='f'?'משקיעה':'משקיע';
-    const where=a.n>1?verb+' ב-'+a.n+' נטיעות':verb+' ב'+stripHe(a.one);
-    return '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+a.av+'"/></svg></div>'+
-      '<span class="cbn"><b>'+name+'</b><i>'+where+'</i></span></div>';
-  }).join('');
+  let html=peopleFromPlants().map(personRowHTML).join('');
   html+='<div class="cbr pend"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-friend"/></svg></div>'+
     '<span class="cbn"><b>מיכל, אמא של נועה</b><i>הוזמנה לפני 3 ימים</i></span>'+
     '<span class="cbp">טרם הצטרפה</span></div>';
