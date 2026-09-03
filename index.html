@@ -513,7 +513,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'eff3384';
+window.NETA_BUILD = '88911df';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -920,7 +920,7 @@ window.NETA_CONFIG = {
     <div class="stat"><span class="k">אתה</span><span class="v">8,200 ₪</span></div>
   </div>
   <p class="fine gap" id="inv-fine">אתה רואה סכומים מלאים כבעל הנטיעה. הקרובים רואים רק את ההשתתפות שלהם, אלא אם בחרו אחרת.</p>
-  <button class="btn gap-s" onclick="toast('הקישור הועתק')">העתק קישור הזמנה</button>
+  <button class="btn gap-s" id="inv-copy" onclick="copyInviteLink()">העתק קישור הזמנה</button>
   <p class="fine gap">אפשר לשלוח את הקישור גם לקבוצת המשפחה. כל מי שייכנס דרכו יופיע אצלך לאישור, עם שמו — אף אחד לא מצטרף בלי שתראה מי.</p>
 
   <p class="eyebrow big">איך ההזמנה מאובטחת</p>
@@ -993,6 +993,7 @@ window.NETA_CONFIG = {
     <p class="fine gap-s" id="e-lstat">נחתם במרץ 2024 · דניאל יקרא אותו באוגוסט 2032</p>
     <textarea id="e-letter" style="min-height:64px">דניאל, ביום שתקרא את זה כבר תהיה גדול. רצינו שתדע שחשבנו עליך הרבה לפני.</textarea>
     <p class="fine" style="margin-top:7px">רק אתה יכול לערוך את המכתב שלך, וזה אפשרי עד למועד המיוחל. אף אחד אחר לא רואה אותו — גם לא שאר המשקיעים.</p>
+    <button class="btn ghost" id="e-sign" style="display:none;margin-top:10px" onclick="signLetter()">חתום על המכתב</button>
   </div>
 
   <div id="e-visibility">
@@ -1423,6 +1424,29 @@ window.NETA_CONFIG = {
 
   <div class="two"><button class="btn" onclick="acceptPartner()">קבל שותפות</button><button class="btn ghost" onclick="declinePartner()">לא עכשיו</button></div>
   <div class="note" id="pi-done" style="display:none;text-align:center;margin-top:14px">🎉 <b style="color:var(--leaf)">קיבלת את השותפות</b><p class="sub" style="color:#C6E3C9">מעכשיו אתם רשומים כבעלים שווים.</p></div>
+</section>
+
+<!-- 26 SHARED LINK (what someone who opens the link sees, before signing in) -->
+<section class="screen" data-name="קישור לנטיעה">
+  <div class="center gap">
+    <div style="font-size:26px">🌱</div>
+    <h2 style="margin:8px 0 4px" id="sl-h">מישהו נוטע כאן עבור העתיד</h2>
+    <p class="sub" id="sl-sub">הקישור מראה התקדמות בלבד — בלי סכומים ובלי שמות.</p>
+  </div>
+
+  <div class="card center" style="background:var(--leaf-bg);border-color:var(--leaf-line)">
+    <div style="font-size:22px">🌳</div>
+    <b style="display:block;margin:6px 0 4px;font-size:14px" id="sl-title">—</b>
+    <p class="sub" style="color:var(--leaf-soft)" id="sl-meta">—</p>
+    <div class="tax-rail" style="margin-top:12px;height:6px;border-radius:3px;background:var(--s2);overflow:hidden">
+      <div id="sl-bar" style="height:100%;width:0;background:var(--leaf);border-radius:3px"></div>
+    </div>
+  </div>
+
+  <p class="fine gap" id="sl-fine">כמה הושקע, ומי השקיע — לא מוצג כאן, גם לא לך. קישור עובר בוואטסאפ, ובוואטסאפ הכול מועבר הלאה.</p>
+
+  <button class="btn gap-s" onclick="leaveShared()">פתח נטיעה משלך</button>
+  <p class="fine center" style="margin-top:9px">כדי להשקיע בנטיעה הזו צריך הזמנה אישית ממי שפתח אותה — קישור לבדו אינו מצרף אף אחד.</p>
 </section>
 
 </div><!-- /stage -->
@@ -2176,11 +2200,48 @@ function setEditApprover(el,mode){
    עכשיו הוא נבנה מהנטיעה, ומוצג בו רק מה שבאמת נשמר: השם והמועד המיוחל.
    מכתבים, מתגי גלוּיות והסרת גישה עדיין לא מחוברים לשרת, ולכן אינם מוצגים
    — מסך שמראה מכתב ולא שומר אותו גרוע ממסך בלעדיו. */
-const EDIT_UNWIRED=['e-letters','e-visibility','e-access','e-approver'];
+const EDIT_UNWIRED=['e-visibility','e-access','e-approver'];
+
+/* המכתב של הנטיעה הפתוחה, כפי שהגיע מהשרת. null = עוד לא נכתב. */
+let liveLetter=null;
+function letterStatus(p){
+  if(!liveLetter||!liveLetter.signed_at)return 'טיוטה — עוד לא נחתם. ייפתח ב'+p.date+'.';
+  const d=new Date(liveLetter.signed_at);
+  return 'נחתם ב'+months[d.getMonth()]+' '+d.getFullYear()+
+         (p.kid?' · '+p.kid+' יקרא אותו ב'+p.date:' · ייפתח ב'+p.date);
+}
+function paintLetter(p){
+  const box=document.getElementById('e-letters');
+  if(box)box.style.display='';
+  document.getElementById('e-letter').value=(liveLetter&&liveLetter.body)||'';
+  txt('e-lstat',letterStatus(p));
+  const sign=document.getElementById('e-sign');
+  /* חתימה מוצעת רק כשיש מה לחתום עליו, ופעם אחת — היא אינה הפיכה. */
+  if(sign)sign.style.display=(liveLetter&&!liveLetter.signed_at)?'':'none';
+}
+function signLetter(){
+  const p=plantAt(cur);
+  if(!p||!p.live)return;
+  const body=(document.getElementById('e-letter').value||'').trim();
+  if(!body){toast('אין עדיין מה לחתום — המכתב ריק');return}
+  ask('לחתום על המכתב?',
+    'אחרי החתימה אפשר עדיין לתקן אותו עד המועד המיוחל, אבל הוא נספר ככתוב ומוצג לך ולנטיעה כמכתב חתום. לא ניתן לבטל חתימה.',
+    'חתום',
+    function(){
+      netaServer.saveLetter(p.key,body,true)
+        .then(function(row){liveLetter=row;paintLetter(p);return refreshDetail(p.key)})
+        .then(function(){toast('המכתב נחתם')})
+        .catch(function(e){ask('המכתב לא נחתם',(e&&e.message)||'נסה שוב.','הבנתי')});
+    });
+}
 function buildLiveEdit(p){
   EDIT_UNWIRED.forEach(function(id){
     const el=document.getElementById(id);if(el)el.style.display='none';
   });
+  /* המכתב נטען מהשרת, ועד שהוא מגיע הכרטיס ריק — לא הטקסט של ההדגמה. */
+  liveLetter=null;paintLetter(p);
+  netaServer.myLetter(p.key).then(function(row){liveLetter=row;paintLetter(p)})
+    .catch(function(){});
   txt('e-meta',p.name);
   document.getElementById('e-name').value=p.name;
   document.getElementById('e-date').value=p.targetDate||'';
@@ -2209,8 +2270,21 @@ function saveLiveEdit(p){
   }
   const fields={name:name};
   if(picked&&picked!==p.targetDate)fields.target_date=picked;
-  if(name===p.name&&!fields.target_date){go(5);return}
-  netaServer.updatePlanting(p.key,fields)
+
+  /* גוף המכתב נשמר כטיוטה. החתימה היא פעולה נפרדת ומכוונת. */
+  const body=(document.getElementById('e-letter').value||'').trim();
+  const had=(liveLetter&&liveLetter.body)||'';
+  const letter=(body!==had&&(body||liveLetter))
+    ? netaServer.saveLetter(p.key,body,false).then(function(row){liveLetter=row})
+    : Promise.resolve();
+
+  if(name===p.name&&!fields.target_date){
+    letter.then(function(){go(5);if(body!==had)toast('המכתב נשמר')})
+      .catch(function(e){ask('המכתב לא נשמר',(e&&e.message)||'נסה שוב.','הבנתי')});
+    return;
+  }
+  letter
+    .then(function(){return netaServer.updatePlanting(p.key,fields)})
     .then(function(){return refreshDetail(p.key,true)})
     .then(function(){return buildHomeSummary()})
     .then(function(){go(5);toast('השינויים נשמרו')})
@@ -2261,6 +2335,73 @@ function invitablePlantings(){
 }
 /* המסך הזה החזיק שני כרטיסים כתובים ביד. בחשבון אמיתי הוא הציע להזמין
    קרובים לנטיעות של משפחת ההדגמה — נטיעות שלא קיימות ולא מופיעות בבית. */
+/* ─── קישור השיתוף ────────────────────────────────────────────────────
+   "העתק קישור הזמנה" הפעיל עד כה toast בלבד — לא נוצר קישור ולא הועתק דבר.
+   עכשיו הוא מוצא קישור פעיל לנטיעה, או יוצר אחד, ומעתיק אותו.
+
+   מה שהקישור פותח הוא כרטיס התקדמות בלבד: שם, מועד ואחוז. הוא אינו מצרף
+   אף אחד ואינו חושף סכום — הצירוף עצמו הוא הזמנה אישית, וזה מה שהמסך אומר. */
+function shareUrl(token){
+  return location.origin+location.pathname+'#n='+token;
+}
+function copyText(t){
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    return navigator.clipboard.writeText(t);
+  /* clipboard API דורש הקשר מאובטח, ובפתיחת הקובץ מקומית אין כזה. */
+  return new Promise(function(res,rej){
+    const el=document.createElement('textarea');
+    el.value=t;el.style.position='fixed';el.style.opacity='0';
+    document.body.appendChild(el);el.select();
+    const ok=document.execCommand&&document.execCommand('copy');
+    document.body.removeChild(el);
+    ok?res():rej(new Error('לא הצלחנו להעתיק'));
+  });
+}
+function copyInviteLink(){
+  const p=plantAt(cur);
+  if(!liveAccount()||!p||!p.live){toast('הקישור הועתק');return}
+  const btn=document.getElementById('inv-copy');
+  const done=function(){if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='העתק קישור הזמנה'}};
+  if(btn){btn.disabled=true;btn.style.opacity='.55';btn.textContent='מכין קישור…'}
+  netaServer.shareToken(p.key)
+    .then(function(token){
+      const url=shareUrl(token);
+      return copyText(url).then(function(){done();toast('הקישור הועתק')},
+        function(){
+          /* אם ההעתקה נחסמה, עדיף להראות את הקישור מאשר לטעון שהועתק. */
+          done();
+          sheetForm('קישור ההזמנה',
+            'הדפדפן לא איפשר העתקה אוטומטית. אפשר להעתיק מכאן.'+
+            '<textarea readonly style="min-height:52px">'+attrText(url)+'</textarea>',
+            'סגור',function(){});
+        });
+    })
+    .catch(function(e){done();ask('לא הצלחנו להכין קישור',(e&&e.message)||'נסה שוב.','הבנתי')});
+}
+
+/* מי שפתח קישור — עוד לפני שהוא נכנס לחשבון כלשהו. */
+function sharedTokenInUrl(){
+  const m=(location.hash||'').match(/[#&]n=([A-Za-z0-9_-]{16,64})/);
+  return m?m[1]:null;
+}
+function openShared(token){
+  if(!netaServer)return false;
+  netaServer.sharedSummary(token).then(function(r){
+    if(!r){toast('הקישור אינו פעיל יותר');leaveShared();return}
+    const t=new Date(r.target_date+'T00:00:00');
+    const pct=Number(r.percent)||0;
+    txt('sl-title',r.planting_name);
+    txt('sl-meta',months[t.getMonth()]+' '+t.getFullYear()+' · '+pct+'% מהדרך');
+    document.getElementById('sl-bar').style.width=Math.max(2,Math.min(100,pct))+'%';
+    go(screens.findIndex(function(x){return x.dataset.name==='קישור לנטיעה'}));
+  });
+  return true;
+}
+function leaveShared(){
+  history.replaceState(null,'',location.pathname);
+  go(liveAccount()?0:ONBO.welcome);
+}
+
 function openInvitePicker(){
   const list=invitablePlantings();
   const el=document.getElementById('ip-list');
@@ -2904,7 +3045,10 @@ function buildLetters(){
       '<button class="lact" onclick="editLetter('+i+')">'+(l.draft?'המשך לכתוב':'ערוך')+'</button></div>';
   }).join('');
   const sealed=letters.filter(function(l){return !l.draft}).length,d=letters.length-sealed;
-  txt('lett-meta',sealed+' מכתבים חתומים'+(d?' · '+(d===1?'טיוטה אחת':d+' טיוטות'):''));
+  /* הטיוטות כבר נספרו נכון ביחיד; החתומים לא — "1 מכתבים חתומים". */
+  const sealedText=sealed===1?'מכתב אחד חתום':sealed+' מכתבים חתומים';
+  txt('lett-meta',(sealed?sealedText:'')+
+    (d?(sealed?' · ':'')+(d===1?'טיוטה אחת':d+' טיוטות'):''));
 }
 function openLetters(){buildLetters();go(17)}
 function editLetter(i){
@@ -2916,7 +3060,15 @@ function editLetter(i){
     function(){
       const v=(document.getElementById('lt-body')||{}).value;
       if(!v||!v.trim()){toast('המכתב ריק');return false}
-      l.body=v.trim();
+      const body=v.trim(), sign=l.draft;
+      if(l.planting&&liveAccount()){
+        netaServer.saveLetter(l.planting,body,sign)
+          .then(function(){return loadLetters()})
+          .then(function(){toast(sign?'המכתב נחתם':'המכתב נשמר')})
+          .catch(function(e){ask('המכתב לא נשמר',(e&&e.message)||'נסה שוב.','הבנתי')});
+        return;
+      }
+      l.body=body;
       if(l.draft){l.draft=false;l.signed='נחתם היום';toast('המכתב נחתם')}
       else toast('המכתב נשמר');
       buildLetters();
@@ -3032,9 +3184,29 @@ function buildProfile(){
 /* הרשימות האישיות — אמצעי תשלום וקרובים — נטענות מהשרת בחשבון אמיתי.
    בלי זה הן נשארות מה שהוקלד בדפדפן הזה, ונעלמות ברענון. */
 let listsLoaded=false;
+/* "המכתבים שלי" נטען מהשרת. הרשימה שבקובץ היא של משפחת ההדגמה, וכל עוד
+   היא לא נטענה מחדש המסך אמר "עוד לא כתבת מכתב" בזמן שהעריכה הראתה אחד. */
+function loadLetters(){
+  if(!liveAccount())return Promise.resolve();
+  return netaServer.myLetters().then(function(rows){
+    letters.length=0;
+    rows.forEach(function(r){
+      const pl=r.plantings||{}, kid=pl.beneficiary_name||'';
+      const t=pl.target_date?new Date(pl.target_date+'T00:00:00'):null;
+      const opens=t?(months[t.getMonth()]+' '+t.getFullYear()):'';
+      const sd=r.signed_at?new Date(r.signed_at):null;
+      letters.push({kid:kid||'הקופה',plant:pl.name||'הנטיעה',opens:opens,
+                    draft:!r.signed_at,body:r.body||'',planting:r.planting_id,
+                    signed:sd?('נחתם ב'+months[sd.getMonth()]+' '+sd.getFullYear())
+                            :'טיוטה — עוד לא נחתם'});
+    });
+    buildLetters();
+  }).catch(function(){});
+}
 function loadAccountLists(){
   if(!liveAccount()||listsLoaded)return;
   listsLoaded=true;
+  loadLetters();
   netaServer.loadPayments().then(function(rows){
     pays.length=0;
     rows.forEach(function(m){
@@ -3452,6 +3624,56 @@ function netaBackend(cfg){
       return call('/rest/v1/plantings?id=eq.'+id,{method:'PATCH',
         body:JSON.stringify({open_to_relatives:true})}).catch(remember);
     },
+    /* המכתב שלי לנטיעה הזו. RLS מחזירה רק את שלי ממילא, והסינון כאן הוא
+       כדי לא למשוך גם את של הבעלים כשאני הבעלים. */
+    myLetter:function(plantingId){
+      return call('/rest/v1/letters?select=id,body,signed_at&planting_id=eq.'+plantingId+
+                  '&author_id=eq.'+uid(),{method:'GET'})
+        .then(function(r){return (r&&r[0])||null}).catch(remember);
+    },
+    /* מכתב אחד לכל אדם בכל נטיעה (אינדקס ייחודי ב-0013), ולכן שמירה היא
+       upsert ולא "עוד אחד". signed_at נשלח רק כשחותמים: בלעדיו העדכון לא
+       נוגע בו, וחתימה שנחתמה נשארת — גם המסד חוסם ביטול. */
+    saveLetter:function(plantingId,body,sign){
+      const row={planting_id:plantingId,body:body};
+      if(sign)row.signed_at=new Date().toISOString();
+      return call('/rest/v1/letters?on_conflict=planting_id,author_id',{method:'POST',
+        headers:{Prefer:'resolution=merge-duplicates,return=representation'},
+        body:JSON.stringify(row)})
+        .then(function(r){return (r&&r[0])||null}).catch(remember);
+    },
+    /* קישור השיתוף. אותו קישור פעיל לכל נטיעה — יצירת אחד חדש בכל לחיצה
+       הייתה מותירה מאחור קישורים שאי אפשר לבטל כי אף אחד לא יודע שהם קיימים.
+       הטוקן נוצר בדפדפן מ-crypto, בתבנית שה-CHECK במסד דורש. */
+    shareToken:function(plantingId){
+      return call('/rest/v1/share_links?select=token&planting_id=eq.'+plantingId+
+                  '&revoked_at=is.null&limit=1',{method:'GET'})
+        .then(function(r){
+          if(r&&r[0])return r[0].token;
+          const a=new Uint8Array(24);crypto.getRandomValues(a);
+          const abc='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
+          let t='';a.forEach(function(x){t+=abc[x%abc.length]});
+          return call('/rest/v1/share_links',{method:'POST',
+            headers:{Prefer:'return=representation'},
+            body:JSON.stringify({token:t,planting_id:plantingId})})
+            .then(function(rows){return (rows&&rows[0]&&rows[0].token)||t});
+        }).catch(remember);
+    },
+    /* מה שמי שפותח את הקישור רואה: שם, מועד ואחוז. הפונקציה במסד פתוחה
+       לקריאה ללא התחברות, וזו בדיוק מטרתה — אין בה סכום ואין שם תורם. */
+    sharedSummary:function(token){
+      return send('/rest/v1/rpc/share_link_summary',{method:'POST',
+        body:JSON.stringify({p_token:token})},false).then(body)
+        .then(function(r){return (r&&r[0])||null}).catch(function(){return null});
+    },
+
+    myLetters:function(){
+      return call('/rest/v1/letters?select=id,body,signed_at,planting_id,'+
+                  'plantings(name,beneficiary_name,target_date)&author_id=eq.'+uid()+
+                  '&order=created_at',{method:'GET'})
+        .then(function(r){return r||[]}).catch(remember);
+    },
+
     updatePlanting:function(id,fields){
       return call('/rest/v1/plantings?id=eq.'+id,{method:'PATCH',
         body:JSON.stringify(fields)}).catch(remember);
@@ -4130,8 +4352,10 @@ if(liveAccount()){netaServer.loadProfile().then(applyIdentity).then(buildHomeSum
 buildHomeSummary();buildProfile();buildRequests();buildRelatives();buildPays();buildLetters();
 checkBene();
 /* מי שכבר מחובר נכנס הביתה; מי שלא — נפתח בדלת. משתמש חוזר שרואה שוב את
-   מסך הכניסה חושב שהחיבור שלו אבד. */
-go(liveAccount()?0:ONBO.welcome);
+   מסך הכניסה חושב שהחיבור שלו אבד.
+   ומי שהגיע דרך קישור שיתוף רואה קודם כל את הכרטיס שהקישור פותח. */
+const sharedToken=sharedTokenInUrl();
+if(!sharedToken||!openShared(sharedToken))go(liveAccount()?0:ONBO.welcome);
 </script>
 </body>
 </html>
