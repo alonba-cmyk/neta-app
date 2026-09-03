@@ -501,7 +501,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'c436d7f';
+window.NETA_BUILD = '24e85d9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2988,6 +2988,9 @@ function blankBeforeFirstLoad(){
   ['s-you','s-cnt','s-mon','s-label'].forEach(function(id){txt(id,'')});
   const g=document.getElementById('garden');
   if(g)g.innerHTML='';
+  /* גם הפנקסים האישיים. הם מאותחלים בקובץ עם משפחת ההדגמה, וניקוי שלהם
+     היה תלוי עד כה במתג "מצב ריק" — שזז פעם אחת בלבד. */
+  relatives.length=0;letters.length=0;requests.length=0;pays.length=0;
   topbars[0][0]='שלום';
   topbars[10][0]='';
   const tb=topbars[0];
@@ -3636,12 +3639,22 @@ function buildHomeSummary(){
     txt('s-label','זה הסכום שנטעת עד כה עבור העתיד של '+s.kids.join(' ו'));
     document.getElementById('garden').innerHTML=
       model.plantings.map(cardHTML).join('');
-    if(liveAccount()){buildProfile();loadAccountLists();}
+    if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();}
     buildFeed();buildConnection();
     return model;
   });
 }
 function buildPeople(){
+  /* הטאב הזה עוד לא חובר לשרת, ולכן בחשבון אמיתי הוא לא מצויר כלל. הסתרת
+     המסך לבדה הספיקה למראה, אבל השאירה בעמוד סכומים ושמות של משפחת
+     ההדגמה — בדיוק סוג הנתון שדולף בפעם הבאה שמישהו מציג את המסך. */
+  if(liveAccount()){
+    txt('pp-eyebrow','');txt('pp-num','');txt('pp-label','');
+    ['pp-meta','pp-list','pp-guest'].forEach(function(id){
+      const el=document.getElementById(id);if(el)el.innerHTML='';
+    });
+    return;
+  }
   const agg={},order=[];
   Object.keys(plants).forEach(k=>plants[k].who.forEach(w=>{
     if(w[1]==='אתה')return;
@@ -3879,6 +3892,18 @@ function liveAccount(){return !!(netaServer&&netaServer.signedIn())}
    זה להראות למשתמש נתונים של מישהו אחר. */
 const LIVE_TABS=['home','act'];
 
+/* טאב שאינו ברשימה נשאר ריק בחשבון אמיתי. זה נגזר מהחשבון בלבד, ולא
+   מהמתג של "מצב ריק": המתג זז רק כשהוא משתנה, ומרגע שנפתחה הנטיעה
+   הראשונה הוא כבר לא זז — והטאבים שלא חוברו חזרו להציג את ההדגמה. */
+function applyTabSources(){
+  if(!liveAccount())return;
+  ['home','act','kin'].forEach(function(k){
+    if(LIVE_TABS.indexOf(k)>=0)return;
+    document.getElementById(k+'-full').style.display='none';
+    document.getElementById(k+'-empty').style.display='';
+  });
+}
+
 function setEmpty(on){
   isEmpty=on;
   document.getElementById('empty-btn').classList.toggle('on',on);
@@ -3905,7 +3930,7 @@ function setEmpty(on){
 }
 document.getElementById('empty-btn').onclick=function(){setEmpty(!isEmpty)};
 
-loginPrep();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();
+loginPrep();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();applyTabSources();
 /* סשן שמור מהכניסה הקודמת — טוענים את הפרופיל לפני שהמסך נצבע. */
 if(liveAccount()){netaServer.loadProfile().then(applyIdentity).then(buildHomeSummary).catch(function(){});}
 buildHomeSummary();buildProfile();buildRequests();buildRelatives();buildPays();buildLetters();
