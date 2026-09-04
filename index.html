@@ -578,7 +578,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0211b1c';
+window.NETA_BUILD = 'b8cde68';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4829,13 +4829,13 @@ function buildLiveActions(p){
   if(p.shared){
     acts.className='';
     acts.innerHTML=pairWithBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button>');
-    note.textContent='הנטיעה פתוחה לקרובים. שליחת ההזמנה עצמה עדיין בפיתוח.';
+    note.style.display='none';
     return;
   }
   acts.className='';
   acts.innerHTML=pairWithBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button>');
-  note.innerHTML='הנטיעה הזו פרטית — '+(p.co?('רק אתה ו'+p.co+' רואים אותה'):'רק אתה רואה אותה')+
-    (p.co?'':'. <a href="#" onclick="openToCircle();return false" style="color:var(--leaf)">אפשר לפתוח אותה לקרובים</a>');
+  note.innerHTML=p.co?('פרטית — רק אתה ו'+p.co+' רואים אותה')
+    :'הנטיעה הזאת פרטית, <a href="#" onclick="openToCircle();return false" style="color:var(--leaf)">פתח אותה לקרובים</a>';
 }
 /* חזרה מצטרפת לכל שורת פעולות באחת משתי דרכים: זוג עם כפתור בודד
    (מקבלת מקום נקי, ghost, אותו כלל שהוא ‎.two>.btn.ghost:last-child‎
@@ -4868,7 +4868,8 @@ function buildActions(p){
     acts.innerHTML=pairWithBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button>');
     note.style.display='block';
     if(p.mine){
-      note.innerHTML='הנטיעה הזו פרטית — '+(p.co?('רק אתה ו'+p.co+' רואים אותה'):'רק אתה רואה אותה')+'. <a href="#" onclick="openToCircle();return false" style="color:var(--leaf)">אפשר לפתוח אותה לקרובים</a>'+
+      note.innerHTML=(p.co?'פרטית — רק אתה ו'+p.co+' רואים אותה. ':'הנטיעה הזאת פרטית, ')+
+        '<a href="#" onclick="openToCircle();return false" style="color:var(--leaf)">פתח אותה לקרובים</a>'+
         (p.co?'':' · '+addPartnerLink);
     }else{
       const o=p.who[0],f=o[3]==='f';
