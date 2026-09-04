@@ -513,7 +513,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b3e1615';
+window.NETA_BUILD = 'a15b6ef';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1441,9 +1441,17 @@ window.NETA_CONFIG = {
        שהאפיון אוסר לחשוף כאן, וקישור עובר בוואטסאפ. -->
   <div id="sl-card">
     <div class="center gap">
-      <div style="font-size:26px">🌱</div>
-      <h2 style="margin:8px 0 4px">מישהו הזמין אותך להיות חלק</h2>
-      <p class="sub">נטע היא דרך לשתול סכום קטן בכל חודש לקראת רגע גדול בחיים של ילד — ולהיות שם כשהוא מגיע.</p>
+      <div class="pic" id="sl-face" style="width:52px;height:52px;border-radius:16px;overflow:hidden;margin:0 auto;background:var(--s2);border:1px solid var(--line)">
+        <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent" id="sl-av"/></svg>
+      </div>
+      <h2 style="margin:11px 0 4px" id="sl-h">מישהו הזמין אותך להיות חלק</h2>
+    </div>
+
+    <!-- מה שהמזמין כתב בעצמו. מוצג רק אם נכתב. -->
+    <div class="card" id="sl-note" style="display:none;position:relative;padding-inline-start:16px">
+      <div style="position:absolute;inset-inline-start:0;top:12px;bottom:12px;width:2px;background:var(--leaf-2);border-radius:2px"></div>
+      <p class="sub" style="color:var(--tx)" id="sl-note-t"></p>
+      <p class="fine" style="margin-top:7px" id="sl-note-by"></p>
     </div>
 
     <div class="card center" style="background:var(--leaf-bg);border-color:var(--leaf-line)">
@@ -1455,7 +1463,7 @@ window.NETA_CONFIG = {
       </div>
     </div>
 
-    <p class="fine gap">למי היא נועדה, ולאיזה רגע — יוצג רק אחרי שנוודא שהקישור הגיע אליך ולא הועבר הלאה.</p>
+    <p class="fine gap" id="sl-fine">לאיזה רגע היא נועדה, ומתי בדיוק — יוצג רק אחרי שנוודא שהקישור הגיע אליך.</p>
 
     <button class="btn gap-s" onclick="startJoin()">אני רוצה להצטרף</button>
     <button class="btn ghost" style="margin-top:8px" onclick="leaveShared()">רק הצצתי</button>
@@ -2435,16 +2443,37 @@ function sharedState(which){
   });
   go(SHARED_SCREEN());
 }
+/* הכרטיס שלפני האימות. מה שהוא חושף — שם הנהנה, השנה, מי הזמין וכמה כבר
+   נטעו — הוא החלטה מודעת שנרשמה ב-docs/open-decisions.md §10, לא ברירת
+   מחדל. מה שהוא עדיין לא חושף: היעד, התאריך המדויק וכל סכום. */
 function openShared(token){
   if(!netaServer)return false;
   netaServer.sharedSummary(token).then(function(r){
     if(!r){sharedState('dead');return}
-    const t=new Date(r.target_date+'T00:00:00');
+    const who=r.inviter_name||'מישהו';
+    const kid=r.beneficiary_name||'';
+    const you=r.invitee_name?(r.invitee_name+', '):'';
+    txt('sl-h', you+who+' הזמין אותך להיות חלק'+
+        (kid?(' מההשקעה ב'+kid):' ממשהו שהוא פתח'));
+
+    const av=document.getElementById('sl-av');
+    if(av)av.setAttribute('href','#'+(r.inviter_avatar||'av-parent'));
+
+    const note=document.getElementById('sl-note');
+    if(r.personal_note){
+      txt('sl-note-t','"'+r.personal_note+'"');
+      txt('sl-note-by','— '+who);
+      note.style.display='';
+    } else note.style.display='none';
+
+    txt('sl-title',kid?('נטיעה שנפתחה לקראת '+r.target_year)
+                     :('נטיעה שנפתחה לקראת '+r.target_year));
+    /* מספר, לא שמות: רשימת שמות מתחילה להיות פרופיל של משפחה. */
+    const n=Number(r.participants)||0;
+    txt('sl-meta', n>1 ? (who+' ועוד '+(n-1)+' מהמשפחה כבר נטעו כאן')
+                : n===1 ? (who+' כבר נטע כאן')
+                : 'אתה הראשון שמצטרף');
     const pct=Number(r.percent)||0;
-    /* שנה בלבד. חודש מדויק מצטרף לאחוז ולמספר הילדים שיש למישהו, וזה
-       כבר מתחיל להיות זיהוי. */
-    txt('sl-title','נטיעה שנפתחה לקראת '+t.getFullYear());
-    txt('sl-meta',pct+'% מהדרך');
     document.getElementById('sl-bar').style.width=Math.max(2,Math.min(100,pct))+'%';
     sharedState('card');
   });
@@ -3095,8 +3124,9 @@ function sendInvite(r){
      הקישור. הרשומה היא כל ההבדל בין "צורף מיד" ל"מחכה לאישורך". */
   if(liveAccount()&&pickedPlant){
     const key=pickedPlant;
-    netaServer.sendInvitation(key,r.name,r.contact,r.chan==='mail'?'email':'whatsapp')
-      .then(function(){return netaServer.shareToken(key)})
+    netaServer.sendInvitation(key,r.name,r.contact,
+        r.chan==='mail'?'email':'whatsapp',r.note)
+      .then(function(inv){return netaServer.inviteToken(key,inv&&inv.id)})
       .then(function(token){personalInviteSheet(key,r,shareUrl(token))})
       .catch(function(e){ask('ההזמנה לא נרשמה',(e&&e.message)||'נסה שוב.','הבנתי')});
     return;
@@ -3109,7 +3139,8 @@ function sendInvite(r){
    מצהיר שנשלח משהו. */
 function personalInviteSheet(key,r,url){
   sheetForm('ההזמנה ל'+r.name+' נרשמה',
-    'העבר לה את הקישור ב'+CHAN[r.chan]+'. כשהיא תפתח אותו ותיכנס לנטע עם '+
+    'הקישור הזה אישי לה: הוא פונה אליה בשם'+(r.note?' ונושא את מה שכתבת':'')+
+    '. העבר לה אותו ב'+CHAN[r.chan]+', וכשהיא תיכנס לנטע עם '+
     attrText(r.contact)+' — היא תצורף ל'+nameOfPlanting(key)+' מיד, בלי שתצטרך לאשר.'+
     '<label>הקישור</label><textarea readonly style="min-height:52px">'+attrText(url)+'</textarea>'+
     '<p class="fine" style="margin-top:8px">מי שיפתח את אותו קישור עם כתובת אחרת יגיע אליך לאישור, בשמו.</p>',
@@ -3271,16 +3302,25 @@ function relMeta(){
       (pend?' · '+pend+' ממתינים להצטרפות':' · כולם באפליקציה')));
 }
 function openRelatives(){buildRequests();buildRelatives();go(15)}
+/* המשפט האישי. האזהרה יושבת מתחת לשדה ברגע הכתיבה, ולא בהגדרות ולא
+   בעזרה — זה הרגע היחיד שבו היא משנה משהו. */
+function noteHTML(){
+  return '<label>משפט אישי · לא חובה</label>'+
+    '<textarea id="r-note" maxlength="240" style="min-height:58px" '+
+    'placeholder="פתחתי משהו קטן לעתיד, ישמח אותי אם תהיה חלק."></textarea>'+
+    '<p class="fine" style="margin-top:6px;color:#C9A2AC">מה שתכתוב כאן יראה כל מי שיפתח את הקישור — גם אם הוא הועבר הלאה.</p>';
+}
 function inviteRelative(i){
   const r=relatives[i];
   sheetForm('הזמנת '+r.name,
     '<label>לאן לשלוח</label>'+contactHTML(r.contact)+
-    '<label>לצרף לנטיעה</label>'+plantHTML(),
+    '<label>לצרף לנטיעה</label>'+plantHTML()+noteHTML(),
     'שלח הזמנה',
     function(){
       const c=(document.getElementById('r-contact')||{}).value;
       if(!c||!c.trim()){toast('צריך טלפון או אימייל כדי לשלוח');return false}
       r.contact=c.trim();
+      r.note=((document.getElementById('r-note')||{}).value||'').trim();
       return sendInvite(r);
     });
 }
@@ -3309,14 +3349,16 @@ function addRelative(){
     '<label>שם</label><input type="text" id="r-name" placeholder="למשל: סבתא מרים">'+
     '<label>הקשר לילדים</label><input type="text" id="r-rel" placeholder="למשל: סבתא של נועה">'+
     '<label>תמונה</label>'+avpickHTML('av-granny2')+
-    '<label>לאן לשלוח את ההזמנה</label>'+contactHTML('')+
+    '<label>לאן לשלוח את ההזמנה</label>'+contactHTML('')+noteHTML()+
     '<label>לצרף לנטיעה</label>'+plantHTML(),
     'הוסף',
     function(){
       const n=(document.getElementById('r-name')||{}).value,rl=(document.getElementById('r-rel')||{}).value;
       if(!n||!n.trim()){toast('צריך שם כדי להוסיף קרוב');return false}
       const c=((document.getElementById('r-contact')||{}).value||'').trim();
-      const r={av:pickedAv,name:n.trim(),rel:(rl||'').trim()||'קרוב משפחה',g:'m',status:'none',chan:chanOf(c)||'wa',contact:c};
+      const r={av:pickedAv,name:n.trim(),rel:(rl||'').trim()||'קרוב משפחה',g:'m',status:'none',
+               chan:chanOf(c)||'wa',contact:c,
+               note:((document.getElementById('r-note')||{}).value||'').trim()};
       const done=function(){
         relatives.push(r);
         if(c)sendInvite(r);
@@ -3890,12 +3932,24 @@ function netaBackend(cfg){
 
     /* ההזמנה עצמה. בלי הרשומה הזו אין למה להשוות את מי שפותח את הקישור,
        וכל אחד נופל לתור האישורים — זה מה שקרה עד עכשיו. */
-    sendInvitation:function(plantingId,name,contact,channel){
+    sendInvitation:function(plantingId,name,contact,channel,note){
       return call('/rest/v1/invitations',{method:'POST',
         headers:{Prefer:'return=representation'},
         body:JSON.stringify({planting_id:plantingId,invitee_name:name,
-                             contact:contact,channel:channel})})
+                             contact:contact,channel:channel,
+                             personal_note:note||null})})
         .then(function(r){return (r&&r[0])||null}).catch(remember);
+    },
+    /* קישור משלו לכל הזמנה אישית — הוא מה שמאפשר לכרטיס לפנות בשם
+       ולהציג את המשפט שנכתב דווקא לאדם הזה. */
+    inviteToken:function(plantingId,invitationId){
+      const a=new Uint8Array(24);crypto.getRandomValues(a);
+      const abc='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
+      let t='';a.forEach(function(x){t+=abc[x%abc.length]});
+      return call('/rest/v1/share_links',{method:'POST',
+        headers:{Prefer:'return=representation'},
+        body:JSON.stringify({token:t,planting_id:plantingId,invitation_id:invitationId})})
+        .then(function(rows){return (rows&&rows[0]&&rows[0].token)||t}).catch(remember);
     },
 
     updatePlanting:function(id,fields){
