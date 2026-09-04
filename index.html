@@ -570,7 +570,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '8137983';
+window.NETA_BUILD = '17b4245';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4885,9 +4885,13 @@ function inviteExtraRows(p){
   relatives.forEach(function(r,i){
     if(r.contact&&inNames.indexOf(r.name)<0)idxs.push(i);
   });
+  /* pend, לא ghost: זה קרוב אמיתי שאפשר להזמין עכשיו, לא דוגמה מוחשכת
+     ולא-לחיצה. אותה שקיפות חלקית שכבר קיימת ב"הקרובים שלי" למי שהוזמן
+     וטרם הצטרף — כדי שהעין תבדיל בבירור בין מי שכבר משקיע לבין מי
+     שרק אפשרות. */
   return idxs.slice(0,2).map(function(i){
     const r=relatives[i];
-    return '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+(r.av||'av-granny2')+'"/></svg></div>'+
+    return '<div class="cbr pend"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+(r.av||'av-granny2')+'"/></svg></div>'+
       '<span class="cbn">'+r.name+'<i>מהקרובים שלך · עדיין '+(r.g==='f'?'לא הצטרפה':'לא הצטרף')+'</i></span>'+
       '<span class="rx" onclick="quickInvite('+i+')">הזמן</span></div>';
   }).join('');
