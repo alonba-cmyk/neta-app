@@ -513,7 +513,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ca2ae61';
+window.NETA_BUILD = '33254a0';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2529,7 +2529,7 @@ function finishJoin(){
   netaServer.redeemInvite(t).then(function(r){
     const status=(r&&r.status)||'dead_link';
     if(status==='dead_link'){dropInvite();sharedState('dead');return}
-    if(status==='not_invited'){askForAccess(t);return}
+    if(status==='not_invited'){askForAccess(t,!!r.has_pending_invite);return}
     dropInvite();
     history.replaceState(null,'',location.pathname);
     /* חשבון חדש עדיין בלי שם — בלעדיו הוא מופיע לבעל הנטיעה כשורה ריקה. */
@@ -2564,10 +2564,35 @@ function introduceThen(next){
   });
 }
 
-/* הקישור הועבר הלאה: לא נחסמים — מבקשים אישור, בשם. */
-function askForAccess(token){
+/* יציאה מהקישור כדי להיכנס בכתובת אחרת. הטוקן נשמר, ולכן הכניסה השנייה
+   ממשיכה בדיוק מאותה נקודה. */
+function switchAccount(){
+  const t=pendingInvite();
+  netaServer.signOut();
+  keepInvite(t);
+  onbo=false;
+  location.hash='';
+  location.reload();
+}
+
+/* מי שהקישור הועבר אליו. לא נחסמים — אבל גם לא שולחים לדרך הארוכה כשיש
+   דרך קצרה: אם ממתינה הזמנה לנטיעה ופשוט לא לכתובת הזו, המוצא הוא להיכנס
+   עם הכתובת שאליה נשלחה — לא לבקש רשות ממי שכבר נתן אותה. */
+function askForAccess(token,waiting){
+  const mine=(netaServer&&netaServer.email())||'';
+  if(waiting){
+    ask('נכנסת עם כתובת אחרת',
+      (mine?('נכנסת עם '+mine+'. '):'')+
+      'ההזמנה לנטיעה הזו נשלחה לכתובת אחרת — אם היא שלך, הכי מהיר להיכנס איתה, וההצטרפות תהיה מיידית.',
+      'היכנס עם כתובת אחרת', switchAccount,
+      'בקש אישור בכל זאת', function(){requestSheet(token)});
+    return;
+  }
+  requestSheet(token);
+}
+function requestSheet(token){
   sheetForm('נבקש אישור ממי שפתח את הנטיעה',
-    'לכתובת שאיתה נכנסת לא נשלחה הזמנה אישית — ייתכן שזה קישור פתוח, וייתכן שההזמנה נשלחה לכתובת אחרת שלך. כך או כך, מי שפתח את הנטיעה יראה מי ביקש ויחליט.'+
+    'זה קישור פתוח — לא נשלחה דרכו הזמנה אישית לאף אחד. מי שפתח את הנטיעה יראה מי ביקש, ויחליט.'+
     '<label>שם מלא</label><input type="text" id="ja-name" placeholder="למשל: רחל לוי">'+
     '<label>מה הקשר שלך לילד</label><input type="text" id="ja-rel" placeholder="למשל: סבתא">',
     'שלח בקשה',
@@ -3180,7 +3205,12 @@ function buildRelatives(){
   box.innerHTML=relatives.map(function(r,i){
     let right;
     if(r.status==='in')right='<span class="rs">באפליקציה</span>';
-    else if(r.status==='invited')right='<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">שלח שוב</button>';
+    /* מי שכבר הוזמן — מה שחסר לו הוא הקישור עצמו, לא הזמנה נוספת.
+       הזמנות שנוצרו לפני שהקישור האישי נוסף אין להן טוקן, ולכן לא הייתה
+       שום דרך באפליקציה לקבל אותו בדיעבד. */
+    else if(r.status==='invited')right=liveAccount()
+      ? '<button class="rx" onclick="event.stopPropagation();copyRelativeLink('+i+')">העתק קישור</button>'
+      : '<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">שלח שוב</button>';
     else right='<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">הזמן</button>';
     const sub=r.status==='invited'?(r.plant?'הוזמנה ל'+nameOfPlanting(r.plant)+' · ממתינה לקוד':r.rel+' · הוזמנה, טרם הצטרפה'):(r.contact?r.rel+' · '+r.contact:r.rel+' · חסרים פרטי קשר');
     return '<div class="rel" onclick="editRelative('+i+')">'+
@@ -3328,6 +3358,33 @@ function noteHTML(){
     '<textarea id="r-note" maxlength="240" style="min-height:58px" '+
     'placeholder="פתחתי משהו קטן לעתיד, ישמח אותי אם תהיה חלק."></textarea>'+
     '<p class="fine" style="margin-top:6px;color:#C9A2AC">מה שתכתוב כאן יראה כל מי שיפתח את הקישור — גם אם הוא הועבר הלאה.</p>';
+}
+/* הקישור האישי של קרוב שכבר הוזמן. */
+function copyRelativeLink(i){
+  const r=relatives[i];
+  if(!r||!r.contact){toast('חסרים פרטי קשר ל'+r.name);return}
+  netaServer.findInvitation(r.contact)
+    .then(function(inv){
+      if(!inv){
+        ask('לא נמצאה הזמנה פתוחה',
+          'ייתכן ש'+r.name+' כבר הצטרפה, או שההזמנה בוטלה. אפשר להזמין מחדש.',
+          'הבנתי');
+        return null;
+      }
+      return netaServer.linkForInvitation(inv.id,inv.planting_id)
+        .then(function(token){
+          const url=shareUrl(token);
+          return copyText(url).then(
+            function(){toast('הקישור של '+r.name+' הועתק')},
+            function(){
+              sheetForm('הקישור של '+r.name,
+                'הדפדפן לא איפשר העתקה אוטומטית. אפשר להעתיק מכאן.'+
+                '<textarea readonly style="min-height:52px">'+attrText(url)+'</textarea>',
+                'סגור',function(){});
+            });
+        });
+    })
+    .catch(function(e){ask('לא הצלחנו להביא את הקישור',(e&&e.message)||'נסה שוב.','הבנתי')});
 }
 function inviteRelative(i){
   const r=relatives[i];
@@ -3961,6 +4018,25 @@ function netaBackend(cfg){
     },
     /* קישור משלו לכל הזמנה אישית — הוא מה שמאפשר לכרטיס לפנות בשם
        ולהציג את המשפט שנכתב דווקא לאדם הזה. */
+    /* ההזמנה שכבר נשלחה לאדם הזה, אם יש. */
+    findInvitation:function(contact){
+      return call('/rest/v1/invitations?select=id,planting_id,invitee_name'+
+                  '&contact=eq.'+encodeURIComponent(contact)+
+                  '&state=in.(sent,needs_approval)&order=created_at.desc&limit=1',
+                  {method:'GET'})
+        .then(function(r){return (r&&r[0])||null}).catch(remember);
+    },
+    /* הקישור של אותה הזמנה. הזמנות שנוצרו לפני שהקישור האישי נוסף אין
+       להן טוקן, ולכן הוא נוצר כאן בפעם הראשונה שמבקשים אותו. */
+    linkForInvitation:function(invitationId,plantingId){
+      const self=this;
+      return call('/rest/v1/share_links?select=token&invitation_id=eq.'+invitationId+
+                  '&revoked_at=is.null&limit=1',{method:'GET'})
+        .then(function(r){
+          if(r&&r[0])return r[0].token;
+          return self.inviteToken(plantingId,invitationId);
+        }).catch(remember);
+    },
     inviteToken:function(plantingId,invitationId){
       const a=new Uint8Array(24);crypto.getRandomValues(a);
       const abc='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
