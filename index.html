@@ -323,6 +323,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   padding:0 6px;text-wrap:balance}
 .tax-when{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);
   font-size:10.5px;color:var(--leaf-soft);white-space:nowrap;font-weight:500}
+/* קרוב לקצה הראשי (נטיעה חדשה, כמעט לא עבר זמן) הטקסט הממורכז מתנגש
+   ב"נשתל <שנה>" שמתחתיו — כשקרוב לקצה השני מתנגש ב"<שנה>" של היעד.
+   קרוב לכל קצה, "עוד X שנים" גדל רק לכיוון האמצע הפנוי במקום להישאר
+   ממורכז מתחת לנקודה. */
+.tax-when.lo{left:auto;right:50%;transform:translateX(-18px)}
+.tax-when.hi{left:50%;transform:translateX(18px)}
 .tax-medal.idle{animation:sproutPulse 2.9s ease-in-out infinite}
 @keyframes sproutPulse{
   0%,100%{box-shadow:0 0 0 3px var(--bg),0 0 0 6px rgba(127,192,136,.14)}
@@ -555,7 +561,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7abc59d';
+window.NETA_BUILD = '09f8346';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4926,7 +4932,10 @@ function detail(y){
   document.getElementById('d-num').textContent=(y===0?'':'כ-')+Math.round(amt).toLocaleString('he-IL')+' ₪';
   document.getElementById('d-lb').textContent=y===0?'נצבר עד כה':'צפי לנקודה זו';
   const left=YL-y;
-  document.getElementById('d-when').textContent=left===0?'הרגע המיוחל':'עוד '+left+yrWord(left);
+  const whenEl=document.getElementById('d-when');
+  whenEl.textContent=left===0?'הרגע המיוחל':'עוד '+left+yrWord(left);
+  whenEl.classList.toggle('lo',pos<=22);
+  whenEl.classList.toggle('hi',pos>=78);
 }
 dTime.oninput=()=>{document.getElementById('d-medal').classList.remove('idle');detail(+dTime.value)};
 detail(0);
