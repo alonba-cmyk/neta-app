@@ -513,7 +513,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'a15b6ef';
+window.NETA_BUILD = 'ca2ae61';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -908,11 +908,11 @@ window.NETA_CONFIG = {
 <!-- 7 INVITE / מעגל -->
 <section class="screen" data-name="הזמנה">
   <h2 class="gap-s">הזמן את המשפחה</h2>
-  <p class="sub gap" id="inv-sub1">שלח קישור. מי שיפתח אותו יוכל להשקיע בדניאל בלי לראות כמה השקיעו אחרים.</p>
+  <p class="sub gap" id="inv-sub1">מי שתזמין יוכל להשקיע בדניאל, בלי לראות כמה השקיעו אחרים.</p>
   <div class="card center" style="background:var(--leaf-bg);border-color:#2A4530">
     <div style="font-size:22px">🌳</div><b style="display:block;margin:6px 0 4px;font-size:14px" id="inv-title">שותפים בעתיד של דניאל</b>
     <p class="sub" style="color:#A8CBAC" id="inv-sub2">אוגוסט 2032 · 44% מהדרך</p>
-    <p class="fine" style="color:#7FA184;margin-top:5px">כרטיס השיתוף מציג התקדמות בלבד, ללא סכומים.</p>
+    <a href="#" class="link" style="display:inline-block;margin-top:8px;font-size:11.5px;color:var(--leaf-soft);border-bottom:1px dashed var(--leaf-line);padding-bottom:2px" onclick="previewInvite();return false">כך זה ייראה למי שיקבל ←</a>
   </div>
   <div class="card" id="inv-stats">
     <div class="stat"><span class="k">סבתא רחל</span><span class="v">השתתפה</span></div>
@@ -920,15 +920,15 @@ window.NETA_CONFIG = {
     <div class="stat"><span class="k">אתה</span><span class="v">8,200 ₪</span></div>
   </div>
   <p class="fine gap" id="inv-fine">אתה רואה סכומים מלאים כבעל הנטיעה. הקרובים רואים רק את ההשתתפות שלהם, אלא אם בחרו אחרת.</p>
-  <button class="btn gap-s" id="inv-copy" onclick="copyInviteLink()">העתק קישור הזמנה</button>
-  <p class="fine gap">זה קישור <b style="color:var(--tx-2)">פתוח</b>, ולכן אפשר לשלוח אותו גם לקבוצת המשפחה: כל מי שייכנס דרכו יופיע אצלך לאישור עם שמו, ואף אחד לא מצטרף בלי שתראה מי. כדי שמישהו יצורף מיד ובלי אישור — הזמן אותו בשמו מ<b style="color:var(--tx-2)">הקרובים שלי</b>, ואז הקישור נקשר לכתובת שלו.</p>
 
-  <p class="eyebrow big">איך ההזמנה מאובטחת</p>
-  <div class="card">
-    <div class="row gap-s"><span>🔒</span><b style="font-size:13px;font-weight:500">קוד אימות לנמען שהזנת</b></div>
-    <p class="sub">מי שפותח את הקישור מתבקש להזין קוד חד-פעמי שנשלח <b style="color:var(--tx)">למספר או לכתובת שאליהם שלחת את ההזמנה</b>. קישור שהועבר לאדם אחר לא יעבור את השלב הזה — הוא לא יקבל את הקוד.</p>
-    <p class="sub" style="margin-top:9px">בקשה שהמערכת לא הצליחה לאמת מגיעה אליך לאישור, עם שם המבקש. אתה מחליט.</p>
-  </div>
+  <!-- שתי דרכים, וכל אחת נושאת את ההסבר של עצמה. סעיף אבטחה כללי מתחת
+       לשניהם הוא בדיוק מה שייצר כאן משפט שלא היה נכון לאחד מהם. -->
+  <p class="eyebrow big">שתי דרכים להזמין</p>
+  <button class="btn" onclick="openRelatives()">הזמן קרוב בשמו</button>
+  <p class="fine gap">בוחרים אדם מ<b style="color:var(--tx-2)">הקרובים שלי</b>, כותבים לו משפט, והקישור נקשר לכתובת שלו. הוא <b style="color:var(--tx-2)">מצטרף מיד</b>, בלי שתצטרך לאשר.</p>
+
+  <button class="btn ghost gap-s" id="inv-copy" onclick="copyInviteLink()">העתק קישור פתוח</button>
+  <p class="fine gap">קישור בלי נמען — מתאים לקבוצת המשפחה. כל מי שייכנס דרכו <b style="color:var(--tx-2)">יופיע אצלך לאישור עם שמו</b>, ואף אחד לא מצטרף בלי שתראה מי.</p>
 
 
   <button class="btn ghost gap-s" onclick="go(0)">חזרה לנטיעות שלי</button>
@@ -2410,7 +2410,7 @@ function copyInviteLink(){
   const p=plantAt(cur);
   if(!liveAccount()||!p||!p.live){toast('הקישור הועתק');return}
   const btn=document.getElementById('inv-copy');
-  const done=function(){if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='העתק קישור הזמנה'}};
+  const done=function(){if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='העתק קישור פתוח'}};
   if(btn){btn.disabled=true;btn.style.opacity='.55';btn.textContent='מכין קישור…'}
   netaServer.shareToken(p.key)
     .then(function(token){
@@ -2426,6 +2426,25 @@ function copyInviteLink(){
         });
     })
     .catch(function(e){done();ask('לא הצלחנו להכין קישור',(e&&e.message)||'נסה שוב.','הבנתי')});
+}
+
+/* מה שהצד השני יראה, מוצג למי ששולח — לפני שהוא שולח.
+   נבנה מאותם שדות ומאותם כללי ניסוח של openShared, ולא מטקסט שמתאר
+   אותם: משפט שמתאר מסך מתיישן ברגע שהמסך משתנה, וזה בדיוק מה שקרה כאן. */
+function previewInvite(){
+  const p=plantAt(cur);
+  const who=(liveAccount()&&netaServer.profile&&netaServer.profile.name)||'אתה';
+  const kid=(p&&p.kid)||'';
+  const year=p&&p.yr?p.yr:'';
+  const n=p&&p.who?p.who.length:0;
+  const head=who+' הזמין אותך להיות חלק'+(kid?(' מההשקעה ב'+kid):' ממשהו שהוא פתח');
+  const joined=n>1?(who+' ועוד '+(n-1)+' מהמשפחה כבר נטעו כאן')
+              :n===1?(who+' כבר נטע כאן'):'אתה הראשון שמצטרף';
+  ask('כך זה ייראה למי שיקבל',
+    head+'\n\n🌳 נטיעה שנפתחה לקראת '+year+'\n'+joined+
+    '\n\nשם הילד מוצג. היעד, התאריך המדויק והסכומים — לא.'+
+    '\n\nאם תזמין מישהו בשמו ותכתוב לו משפט, המשפט יופיע כאן מעל הכרטיס — והוא יפנה אליו בשם.',
+    'סגור');
 }
 
 /* מי שפתח קישור — עוד לפני שהוא נכנס לחשבון כלשהו. */
@@ -4567,7 +4586,7 @@ function inviteFor(key){
   const p=plantAt(key), others=p.who.filter(w=>w[1]!=='אתה');
   const pct=Math.round(p.now/p.end*100);
   return {
-    sub1:'שלח קישור. מי שיפתח אותו יוכל להשקיע ב'+p.kid+' בלי לראות כמה השקיעו אחרים.',
+    sub1:'מי שתזמין יוכל להשקיע ב'+p.kid+', בלי לראות כמה השקיעו אחרים.',
     title:'שותפים בעתיד של '+p.kid,
     sub2:p.date+' · '+pct+'% מהדרך',
     stats:p.who.map(w=>'<div class="stat"><span class="k">'+w[1]+'</span><span class="v">'+
