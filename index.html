@@ -197,7 +197,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .nc-id{flex:1;min-width:0}
 .nc-nm{font-weight:500;font-size:13.5px;line-height:1.32;letter-spacing:-.012em}
 .nc-meta{font-size:10.5px;color:var(--tx-3);line-height:1.3;margin-top:3px;white-space:nowrap}
-/* מעבר לשלוש הראשונות: הכרטיסים דוהים במקום להיעלם, כדי שהמסך לא יתמלא
+/* מעבר לשתיים הראשונות: הכרטיסים דוהים במקום להיעלם, כדי שהמסך לא יתמלא
    כשיש הרבה נטיעות. לחיצה על "הצג הכל" מחזירה את כולם לבהירות מלאה —
    הכרטיסים עצמם נשארים פעילים ולחיצים גם דהויים. */
 .declutter{position:relative}
@@ -590,7 +590,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '8f93e04';
+window.NETA_BUILD = '7b8c9fb';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4460,14 +4460,14 @@ function cardHTML(p){
         '<use href="#chev"/></svg></span>'+
     '</div></div>';
 }
-/* יותר משלוש נטיעות מציפות את המסך, אז מהרביעית ואילך הכרטיסים דוהים
+/* יותר משתי נטיעות מציפות את המסך, אז מהשלישית ואילך הכרטיסים דוהים
    במקום להיעלם — עדיין רואים שהן קיימות ולוחצים עליהן כרגיל, בלי
    שיתחרו על תשומת הלב. "הצג הכל" מחזיר את כולן לבהירות מלאה. */
 function gardenHTML(list){
-  if(list.length<=3)return list.map(cardHTML).join('');
-  return list.slice(0,3).map(cardHTML).join('')+
+  if(list.length<=2)return list.map(cardHTML).join('');
+  return list.slice(0,2).map(cardHTML).join('')+
     '<div class="declutter" id="declutter">'+
-      list.slice(3).map(cardHTML).join('')+
+      list.slice(2).map(cardHTML).join('')+
       '<div class="declutter-fade" onclick="revealPlantings()"><span>הצג הכל</span></div>'+
     '</div>';
 }
