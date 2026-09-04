@@ -344,14 +344,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .cbr.pend{opacity:.6}
 .cbp{font-size:10.5px;color:var(--tx-3);flex-shrink:0}
 
-/* טבלת "לאן זה מגיע" — סיכום צפי לכל הנטיעות המיועדות, בגיליון תחתון */
+/* טבלת "הצפי לעתיד" — סיכום צפי לכל הנטיעות המיועדות, בגיליון תחתון.
+   עמודת השם גמישה (minmax(0,1fr)) והמספרים לפי התוכן (auto) — כך שם
+   ארוך גולש לשורה שנייה במקום להיחתך, ושנת היעד לעולם לא נקטעת. */
 .tbl{margin-top:2px}
-.tbl .r{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:6px;padding:9px 0;border-bottom:1px solid var(--line);font-size:11.5px;align-items:baseline}
+.tbl .r{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:11.5px;align-items:baseline}
 .tbl .r.h{font-size:10px;letter-spacing:.06em;color:var(--tx-3);padding-top:2px}
 .tbl .r:last-child{border-bottom:none}
-.tbl .n{color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tbl .a{color:var(--tx-2);font-variant-numeric:tabular-nums;text-align:left}
-.tbl .b{color:var(--leaf);font-weight:600;font-variant-numeric:tabular-nums;text-align:left}
+.tbl .n{color:var(--tx);overflow-wrap:break-word;line-height:1.35}
+.tbl .a{color:var(--tx-2);font-variant-numeric:tabular-nums;text-align:left;white-space:nowrap}
+.tbl .b{color:var(--leaf);font-weight:600;font-variant-numeric:tabular-nums;text-align:left;white-space:nowrap}
 
 /* ===== redeem code ===== */
 .codebox{width:100%;font-family:inherit;font-size:25px;font-weight:600;letter-spacing:.3em;text-align:center;
@@ -553,7 +555,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '47481f6';
+window.NETA_BUILD = '7abc59d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -652,7 +654,7 @@ window.NETA_CONFIG = {
 
   <div class="hdr-row">
     <p class="eyebrow big">הנטיעות שלך</p>
-    <button class="hdr-link" id="proj-link" style="display:none" onclick="showProjectionSheet()">לאן זה מגיע ›</button>
+    <button class="hdr-link" id="proj-link" style="display:none" onclick="showProjectionSheet()">הצפי לעתיד ›</button>
   </div>
 
   <div id="garden"></div>
@@ -4400,7 +4402,7 @@ function cardHTML(p){
 }
 
 /* אותו סינון שקובע אם "יעד" מופיע על גבי כרטיס בודד — כאן משמש כדי
-   להחליט אם קישור "לאן זה מגיע" מוצג בכלל, ומה נכנס לטבלה שהוא פותח. */
+   להחליט אם קישור "הצפי לעתיד" מוצג בכלל, ומה נכנס לטבלה שהוא פותח. */
 function projectablePlantings(model){
   return ((model&&model.plantings)||[]).filter(function(p){
     return p.designated&&p.projection>p.accrued;
@@ -4409,7 +4411,7 @@ function projectablePlantings(model){
 function showProjectionSheet(){
   const rows=projectablePlantings(lastModel);
   if(!rows.length)return;
-  txt('sh-t','לאן זה מגיע');
+  txt('sh-t','הצפי לעתיד');
   document.getElementById('sh-b').innerHTML=
     'בקצב ההפקדות הנוכחי, לכל נטיעה בתאריך שלה:'+
     '<div class="tbl">'+
