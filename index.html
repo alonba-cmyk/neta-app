@@ -351,6 +351,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .cbr.ghost{opacity:.4;filter:saturate(.5);pointer-events:none}
 .cbr.pend{opacity:.6}
 .cbp{font-size:10.5px;color:var(--tx-3);flex-shrink:0}
+/* שורת "הזמן קרוב אחר" בתוך רשימת המשקיעים — לא קישור זעיר בשוליים,
+   אלא שורה מלאה באותו גובה בדיוק כמו שורות המשתתפים, כי זה ה-CTA
+   החשוב במסך הזה ולא אמור להיבלע בין השאר. */
+.cbr.add{cursor:pointer}
+.cbr.add .cba{background:var(--leaf-bg);border:1px solid var(--leaf-line);display:grid;place-items:center;
+  color:var(--leaf);font-size:15px;font-weight:600}
+.cbr.add .cbn{color:var(--leaf-soft);font-weight:500}
 
 /* טבלת "הצפי לעתיד" — סיכום צפי לכל הנטיעות המיועדות, בגיליון תחתון.
    עמודת השם גמישה (minmax(0,1fr)) והמספרים לפי התוכן (auto) — כך שם
@@ -563,7 +570,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f84edb8';
+window.NETA_BUILD = '8137983';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3109,9 +3116,13 @@ function paintDetail(key,p){
   if(lt)lt.style.display=p.lCount?'':'none';
   txt('d-lcount',p.lCount);
   txt('d-lett',p.lSub);
+  /* ההזמנה גרה כאן, לא בשורת הפעולות: מי שכבר משקיע נמצא באותה רשימה,
+     והזמנה היא בדיוק אותה פעולה — להצטרף אליהם. מוצגת רק כשמותר להזמין
+     בכלל (שלך ופתוחה לקרובים), אחרת זו רשימה של מישהו אחר. */
   document.getElementById('d-who').innerHTML=p.who.map(w=>
     '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+w[0]+'"/></svg></div>'+
-    '<span class="cbn">'+w[1]+'</span><span class="cbv">'+w[2]+'</span></div>').join('');
+    '<span class="cbn">'+w[1]+'</span><span class="cbv">'+w[2]+'</span></div>').join('')+
+    (p.mine&&p.shared ? inviteExtraRows(p)+investorInviteRow() : '');
   const solo=!p.shared&&p.who.length<2;
   document.getElementById('d-cbh').style.display=solo?'none':'';
   document.getElementById('d-who').style.display=solo?'none':'';
@@ -4795,49 +4806,58 @@ function buildLiveActions(p){
   if(pencil)pencil.style.display=p.mine?'':'none';
   if(!p.mine){
     acts.className='';
-    acts.innerHTML='<button class="btn" onclick="investIn(cur)">השקע עוד</button>';
+    acts.innerHTML=pairWithBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button>');
     note.textContent='את הנטיעה הזו פתח'+(p.co?'ו':'')+' '+(p.initiator||'קרוב')+
       '. ההזמנות אליה נשלחות ממי שפתח אותה, לא ממך.';
     return;
   }
   if(!p.designated){
-    acts.className='two';
-    acts.innerHTML='<button class="btn" onclick="investIn(cur)">הפקד לקופה</button>'+
-                   '<button class="btn ghost" onclick="designate()">ייעד את הקופה</button>';
+    acts.className='';
+    acts.innerHTML=twoPlusBack('<button class="btn" onclick="investIn(cur)">הפקד לקופה</button>'+
+                   '<button class="btn ghost" onclick="designate()">ייעד את הקופה</button>');
     note.textContent='הקופה רשומה על שמך ועדיין לא יועדה לאף אחד. קרובים לא יכולים להפקיד לתוכה עד שתייעד אותה.';
     return;
   }
   if(p.shared){
-    acts.className='two';
-    acts.innerHTML='<button class="btn" onclick="openInvite(cur)">הזמן קרובים</button>'+
-                   '<button class="btn ghost" onclick="investIn(cur)">השקע עוד</button>';
+    acts.className='';
+    acts.innerHTML=pairWithBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button>');
     note.textContent='הנטיעה פתוחה לקרובים. שליחת ההזמנה עצמה עדיין בפיתוח.';
     return;
   }
-  acts.className='two';
-  acts.innerHTML='<button class="btn" onclick="investIn(cur)">השקע עוד</button>'+
-                 '<button class="btn ghost" onclick="openToCircle()">פתח לקרובים</button>';
+  acts.className='';
+  acts.innerHTML=twoPlusBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button>'+
+                 '<button class="btn ghost" onclick="openToCircle()">פתח לקרובים</button>');
   note.textContent='הנטיעה הזו פרטית — רק אתה רואה אותה.';
+}
+/* חזרה מצטרפת לכל שורת פעולות באחת משתי דרכים: זוג עם כפתור בודד
+   (מקבלת מקום נקי, ghost, אותו כלל שהוא ‎.two>.btn.ghost:last-child‎
+   שכבר קובע ימין/שמאל), או קישור שקט מתחת לזוג שכבר משמעותי ואין לו
+   מקום לפנות. חוזרת בדיוק כמו הטאב התחתון "הנטיעות שלי". */
+function pairWithBack(primaryBtn){
+  return '<div class="two">'+primaryBtn+'<button class="btn ghost" onclick="go(0)">חזרה</button></div>';
+}
+function twoPlusBack(twoBtns){
+  return '<div class="two" style="margin-top:0">'+twoBtns+'</div>'+
+    '<button class="link" onclick="go(0)">חזרה</button>';
 }
 function buildActions(p){
   if(p.live){buildLiveActions(p);return}
   const acts=document.getElementById('d-acts'),note=document.getElementById('d-actnote');
-  const invite='<button class="btn" onclick="openInvite(cur)">הזמן קרובים</button>';
   const addPartnerLink='<a href="#" onclick="addPartner();return false" style="color:var(--leaf)">הוסף שותף/ה</a>';
   if(p.designated===false){
-    acts.className='two';
-    acts.innerHTML='<button class="btn" onclick="investIn(cur)">השקע עוד</button><button class="btn ghost" onclick="designate()">ייעד את הקופה</button>';
+    acts.className='';
+    acts.innerHTML=twoPlusBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button><button class="btn ghost" onclick="designate()">ייעד את הקופה</button>');
     note.style.display='block';
     note.innerHTML='הקופה רשומה על שמך ועדיין לא יועדה לאף אחד. קרובים לא יכולים להפקיד לתוכה עד שתייעד אותה.'+
       (p.co?'':' רוצה לבנות אותה עם עוד אדם אחד? '+addPartnerLink);
   }else if(p.mine&&p.shared){
-    acts.className='two';
-    acts.innerHTML='<button class="btn ghost" onclick="investIn(cur)">השקע עוד</button>'+invite;
+    acts.className='';
+    acts.innerHTML=pairWithBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button>');
     note.style.display=p.co?'none':'block';
     if(!p.co)note.innerHTML='רוצה לבנות אותה עם עוד אדם אחד, כבעלים שווה? '+addPartnerLink;
   }else{
     acts.className='';
-    acts.innerHTML='<button class="btn" onclick="investIn(cur)">השקע עוד</button>';
+    acts.innerHTML=pairWithBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button>');
     note.style.display='block';
     if(p.mine){
       note.innerHTML='הנטיעה הזו פרטית — '+(p.co?('רק אתה ו'+p.co+' רואים אותה'):'רק אתה רואה אותה')+'. <a href="#" onclick="openToCircle();return false" style="color:var(--leaf)">אפשר לפתוח אותה לקרובים</a>'+
@@ -4871,6 +4891,12 @@ function inviteExtraRows(p){
       '<span class="cbn">'+r.name+'<i>מהקרובים שלך · עדיין '+(r.g==='f'?'לא הצטרפה':'לא הצטרף')+'</i></span>'+
       '<span class="rx" onclick="quickInvite('+i+')">הזמן</span></div>';
   }).join('');
+}
+/* השורה הקבועה בתחתית "מי השקיע" — מי שלא ברשימת הקרובים השמורים,
+   או שרוצים פשוט לפתוח את מסך ההזמנה המלא. נשארת בכל מצב, כולל כשאין
+   אף קרוב שמור (השורות מעליה מוחשכות ולא לחיצות). */
+function investorInviteRow(){
+  return '<div class="cbr add" onclick="openInvite(cur)"><div class="cba">+</div><span class="cbn">הזמן קרוב אחר</span></div>';
 }
 /* הזמנה ישירה משורת "מי כבר שותף" — אותו נתיב שליחה בדיוק כמו מהקרובים
    שלי, בלי לעבור דרך הבחירה מהרשימה. */
