@@ -555,7 +555,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0a2d023';
+window.NETA_BUILD = 'b556ea4';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4915,16 +4915,27 @@ function investIn(key){
   goal={name:p.kid,type:p.name,icon:p.icon,dateLabel:p.date,years:p.yl};
   render();go(2);
 }
+/* ליד כל אחד מקצוות הציר, נקודת "כאן עכשיו" עלולה לשבת כמעט בדיוק על
+   גבי דיסקית הקצה — "נשתל <שנה>" או שנת היעד — והתווית שמתחתיה מתנגשת
+   בה. TAX_NUDGE הוא המרחק הקטן ביותר שהנקודה תוצג ממנו: קרוב לקצה
+   ההתחלה זה גם נותן תחושה עדינה של "כבר התחלנו", בלי לרמז על יותר
+   התקדמות משבאמת קיימת — המילוי הירוק עצמו (past/proj) ממשיך להציג את
+   האחוז המדויק, בלי הזחה. בטווח הזה, שנת דיסקית הקצה דוהה כדי לפנות
+   מקום במקום שהתווית תזוז ממקומה. */
+const TAX_NUDGE=7;
 function detail(y){
   const t=y/YL, amt=A0+(AF-A0)*t, grow=amt/AF*100;
   document.getElementById('d-stem').setAttribute('y2',150-(grow/100)*105);
   document.getElementById('d-l2').style.opacity=grow>=62?1:.15;
   document.getElementById('d-bud').style.opacity=grow>=88?1:0;
   const pos=T_NOW+T_SPAN*t;
-  document.getElementById('d-medal').style.right=pos+'%';
+  const shown=Math.max(TAX_NUDGE,Math.min(100-TAX_NUDGE,pos));
+  document.getElementById('d-medal').style.right=shown+'%';
   document.getElementById('d-proj').style.width=(T_SPAN*t)+'%';
   document.getElementById('d-num').textContent=(y===0?'':'כ-')+Math.round(amt).toLocaleString('he-IL')+' ₪';
   document.getElementById('d-lb').textContent=y===0?'נצבר עד כה':'צפי לנקודה זו';
+  document.getElementById('d-planted').style.opacity=pos<=TAX_NUDGE?.28:1;
+  document.getElementById('d-yr').style.opacity=pos>=100-TAX_NUDGE?.28:1;
   const left=YL-y;
   document.getElementById('d-when').textContent=left===0?'הרגע המיוחל':'עוד '+left+yrWord(left);
 }
