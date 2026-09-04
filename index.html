@@ -513,7 +513,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4f2bf24';
+window.NETA_BUILD = 'a1e4acf';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1440,6 +1440,9 @@ window.NETA_CONFIG = {
   <!-- הכרטיס לפני אימות. אין בו שם ילד ואין יעד — אלה בדיוק שני השדות
        שהאפיון אוסר לחשוף כאן, וקישור עובר בוואטסאפ. -->
   <div id="sl-card">
+    <!-- תצוגה מקדימה: אותו כרטיס בדיוק, בלי לצאת מהחשבון שלך. הבאנר
+         והכפתור החלופי הם ההבדל היחיד ממה שהנמען באמת רואה. -->
+    <p id="sl-preview-banner" style="display:none;text-align:center;font-size:11.5px;color:var(--leaf-soft);background:var(--leaf-bg);border:1px solid var(--leaf-line);border-radius:10px;padding:6px 10px;margin-bottom:14px">תצוגה מקדימה · כך זה נראה למי שמקבל את ההזמנה</p>
     <div class="center gap">
       <div class="pic" id="sl-face" style="width:52px;height:52px;border-radius:16px;overflow:hidden;margin:0 auto;background:var(--s2);border:1px solid var(--line)">
         <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent" id="sl-av"/></svg>
@@ -1465,8 +1468,11 @@ window.NETA_CONFIG = {
 
     <p class="fine gap" id="sl-fine">לאיזה רגע היא נועדה, ומתי בדיוק — יוצג רק אחרי שנוודא שהקישור הגיע אליך.</p>
 
-    <button class="btn gap-s" onclick="startJoin()">אני רוצה להצטרף</button>
-    <button class="btn ghost" style="margin-top:8px" onclick="leaveShared()">רק הצצתי</button>
+    <div id="sl-live-actions">
+      <button class="btn gap-s" onclick="startJoin()">אני רוצה להצטרף</button>
+      <button class="btn ghost" style="margin-top:8px" onclick="leaveShared()">רק הצצתי</button>
+    </div>
+    <button class="btn ghost" id="sl-preview-back" style="display:none" onclick="closePreviewInvite()">חזרה להזמנה</button>
   </div>
 
   <!-- הבקשה עלתה לבעל הנטיעה. לא נחסמנו — הועברנו. -->
@@ -2431,20 +2437,32 @@ function copyInviteLink(){
 /* מה שהצד השני יראה, מוצג למי ששולח — לפני שהוא שולח.
    נבנה מאותם שדות ומאותם כללי ניסוח של openShared, ולא מטקסט שמתאר
    אותם: משפט שמתאר מסך מתיישן ברגע שהמסך משתנה, וזה בדיוק מה שקרה כאן. */
+/* המסך עצמו, לא תיאור שלו — אותו paintSharedCard שהנמען האמיתי רואה,
+   מוזן מהנתונים המקומיים שכבר בידך במקום קריאה לטוקן שלא קיים כאן.
+   חוזרים להזמנה עם closePreviewInvite, לא עם leaveShared — זה היה
+   מוציא אותך מהחשבון שלך. */
 function previewInvite(){
   const p=plantAt(cur);
+  if(!p)return;
   const who=(liveAccount()&&netaServer.profile&&netaServer.profile.name)||'אתה';
-  const kid=(p&&p.kid)||'';
-  const year=p&&p.yr?p.yr:'';
-  const n=p&&p.who?p.who.length:0;
-  const head=who+' הזמין אותך להיות חלק'+(kid?(' מההשקעה ב'+kid):' ממשהו שהוא פתח');
-  const joined=n>1?(who+' ועוד '+(n-1)+' מהמשפחה כבר נטעו כאן')
-              :n===1?(who+' כבר נטע כאן'):'אתה הראשון שמצטרף';
-  ask('כך זה ייראה למי שיקבל',
-    head+'\n\n🌳 נטיעה שנפתחה לקראת '+year+'\n'+joined+
-    '\n\nשם הילד מוצג. היעד, התאריך המדויק והסכומים — לא.'+
-    '\n\nאם תזמין מישהו בשמו ותכתוב לו משפט, המשפט יופיע כאן מעל הכרטיס — והוא יפנה אליו בשם.',
-    'סגור');
+  const av=(liveAccount()&&netaServer.profile&&netaServer.profile.avatar_key)||'av-parent';
+  const pct=p.end?Math.round(p.now/p.end*100):0;
+  paintSharedCard({
+    inviter_name:who, inviter_avatar:av,
+    beneficiary_name:p.kid||'', target_year:p.yr||'',
+    participants:(p.who||[]).filter(function(w){return w[1]!=='אתה'}).length,
+    percent:pct, personal_note:null, invitee_name:null
+  });
+  document.getElementById('sl-preview-banner').style.display='';
+  document.getElementById('sl-live-actions').style.display='none';
+  document.getElementById('sl-preview-back').style.display='';
+  sharedState('card');
+}
+function closePreviewInvite(){
+  document.getElementById('sl-preview-banner').style.display='none';
+  document.getElementById('sl-live-actions').style.display='';
+  document.getElementById('sl-preview-back').style.display='none';
+  go(7);
 }
 
 /* מי שפתח קישור — עוד לפני שהוא נכנס לחשבון כלשהו. */
@@ -2465,35 +2483,45 @@ function sharedState(which){
 /* הכרטיס שלפני האימות. מה שהוא חושף — שם הנהנה, השנה, מי הזמין וכמה כבר
    נטעו — הוא החלטה מודעת שנרשמה ב-docs/open-decisions.md §10, לא ברירת
    מחדל. מה שהוא עדיין לא חושף: היעד, התאריך המדויק וכל סכום. */
+/* הציור של הכרטיס עצמו, בשימוש כפול: openShared מזין אותו מהשרת (טוקן
+   אמיתי), previewInvite מזין אותו מהנתונים המקומיים (בלי שום קריאה) —
+   כך שהתצוגה המקדימה היא בדיוק אותו קוד ציור, לא חיקוי שעלול להתפזר
+   ממנו. */
+function paintSharedCard(r){
+  const who=r.inviter_name||'מישהו';
+  const kid=r.beneficiary_name||'';
+  const you=r.invitee_name?(r.invitee_name+', '):'';
+  txt('sl-h', you+who+' הזמין אותך להיות חלק'+
+      (kid?(' מההשקעה ב'+kid):' ממשהו שהוא פתח'));
+
+  const av=document.getElementById('sl-av');
+  if(av)av.setAttribute('href','#'+(r.inviter_avatar||'av-parent'));
+
+  const note=document.getElementById('sl-note');
+  if(r.personal_note){
+    txt('sl-note-t','"'+r.personal_note+'"');
+    txt('sl-note-by','— '+who);
+    note.style.display='';
+  } else note.style.display='none';
+
+  txt('sl-title',kid?('נטיעה שנפתחה לקראת '+r.target_year)
+                   :('נטיעה שנפתחה לקראת '+r.target_year));
+  /* מספר, לא שמות: רשימת שמות מתחילה להיות פרופיל של משפחה. */
+  const n=Number(r.participants)||0;
+  txt('sl-meta', n>1 ? (who+' ועוד '+(n-1)+' מהמשפחה כבר נטעו כאן')
+              : n===1 ? (who+' כבר נטע כאן')
+              : 'אתה הראשון שמצטרף');
+  const pct=Number(r.percent)||0;
+  document.getElementById('sl-bar').style.width=Math.max(2,Math.min(100,pct))+'%';
+}
 function openShared(token){
   if(!netaServer)return false;
   netaServer.sharedSummary(token).then(function(r){
     if(!r){sharedState('dead');return}
-    const who=r.inviter_name||'מישהו';
-    const kid=r.beneficiary_name||'';
-    const you=r.invitee_name?(r.invitee_name+', '):'';
-    txt('sl-h', you+who+' הזמין אותך להיות חלק'+
-        (kid?(' מההשקעה ב'+kid):' ממשהו שהוא פתח'));
-
-    const av=document.getElementById('sl-av');
-    if(av)av.setAttribute('href','#'+(r.inviter_avatar||'av-parent'));
-
-    const note=document.getElementById('sl-note');
-    if(r.personal_note){
-      txt('sl-note-t','"'+r.personal_note+'"');
-      txt('sl-note-by','— '+who);
-      note.style.display='';
-    } else note.style.display='none';
-
-    txt('sl-title',kid?('נטיעה שנפתחה לקראת '+r.target_year)
-                     :('נטיעה שנפתחה לקראת '+r.target_year));
-    /* מספר, לא שמות: רשימת שמות מתחילה להיות פרופיל של משפחה. */
-    const n=Number(r.participants)||0;
-    txt('sl-meta', n>1 ? (who+' ועוד '+(n-1)+' מהמשפחה כבר נטעו כאן')
-                : n===1 ? (who+' כבר נטע כאן')
-                : 'אתה הראשון שמצטרף');
-    const pct=Number(r.percent)||0;
-    document.getElementById('sl-bar').style.width=Math.max(2,Math.min(100,pct))+'%';
+    paintSharedCard(r);
+    document.getElementById('sl-preview-banner').style.display='none';
+    document.getElementById('sl-live-actions').style.display='';
+    document.getElementById('sl-preview-back').style.display='none';
     sharedState('card');
   });
   return true;
