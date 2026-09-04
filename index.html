@@ -555,7 +555,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b556ea4';
+window.NETA_BUILD = '131d41e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4817,7 +4817,7 @@ function buildActions(p){
       (p.co?'':' רוצה לבנות אותה עם עוד אדם אחד? '+addPartnerLink);
   }else if(p.mine&&p.shared){
     acts.className='two';
-    acts.innerHTML=invite+'<button class="btn ghost" onclick="investIn(cur)">השקע עוד</button>';
+    acts.innerHTML='<button class="btn ghost" onclick="investIn(cur)">השקע עוד</button>'+invite;
     note.style.display=p.co?'none':'block';
     if(!p.co)note.innerHTML='רוצה לבנות אותה עם עוד אדם אחד, כבעלים שווה? '+addPartnerLink;
   }else{
