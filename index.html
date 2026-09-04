@@ -513,7 +513,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '2f49d09';
+window.NETA_BUILD = 'b3e1615';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -921,7 +921,7 @@ window.NETA_CONFIG = {
   </div>
   <p class="fine gap" id="inv-fine">אתה רואה סכומים מלאים כבעל הנטיעה. הקרובים רואים רק את ההשתתפות שלהם, אלא אם בחרו אחרת.</p>
   <button class="btn gap-s" id="inv-copy" onclick="copyInviteLink()">העתק קישור הזמנה</button>
-  <p class="fine gap">אפשר לשלוח את הקישור גם לקבוצת המשפחה. כל מי שייכנס דרכו יופיע אצלך לאישור, עם שמו — אף אחד לא מצטרף בלי שתראה מי.</p>
+  <p class="fine gap">זה קישור <b style="color:var(--tx-2)">פתוח</b>, ולכן אפשר לשלוח אותו גם לקבוצת המשפחה: כל מי שייכנס דרכו יופיע אצלך לאישור עם שמו, ואף אחד לא מצטרף בלי שתראה מי. כדי שמישהו יצורף מיד ובלי אישור — הזמן אותו בשמו מ<b style="color:var(--tx-2)">הקרובים שלי</b>, ואז הקישור נקשר לכתובת שלו.</p>
 
   <p class="eyebrow big">איך ההזמנה מאובטחת</p>
   <div class="card">
@@ -2519,7 +2519,7 @@ function introduceThen(next){
 /* הקישור הועבר הלאה: לא נחסמים — מבקשים אישור, בשם. */
 function askForAccess(token){
   sheetForm('נבקש אישור ממי שפתח את הנטיעה',
-    'הקישור לא נשלח אליך במקור, ולכן לא נשלח אליך קוד. מי שפתח את הנטיעה יראה מי ביקש ויחליט.'+
+    'לכתובת שאיתה נכנסת לא נשלחה הזמנה אישית — ייתכן שזה קישור פתוח, וייתכן שההזמנה נשלחה לכתובת אחרת שלך. כך או כך, מי שפתח את הנטיעה יראה מי ביקש ויחליט.'+
     '<label>שם מלא</label><input type="text" id="ja-name" placeholder="למשל: רחל לוי">'+
     '<label>מה הקשר שלך לילד</label><input type="text" id="ja-rel" placeholder="למשל: סבתא">',
     'שלח בקשה',
@@ -3090,8 +3090,31 @@ function sendInvite(r){
   r.chan=chanOf(r.contact)||'wa';
   r.status='invited';r.plant=pickedPlant||'';
   buildRelatives();
+
+  /* בחשבון אמיתי ההזמנה נרשמת, ורק אז יש למה להשוות את מי שפותח את
+     הקישור. הרשומה היא כל ההבדל בין "צורף מיד" ל"מחכה לאישורך". */
+  if(liveAccount()&&pickedPlant){
+    const key=pickedPlant;
+    netaServer.sendInvitation(key,r.name,r.contact,r.chan==='mail'?'email':'whatsapp')
+      .then(function(){return netaServer.shareToken(key)})
+      .then(function(token){personalInviteSheet(key,r,shareUrl(token))})
+      .catch(function(e){ask('ההזמנה לא נרשמה',(e&&e.message)||'נסה שוב.','הבנתי')});
+    return;
+  }
   if(pickedPlant)sentSheet(pickedPlant,r);
   else toast('הזמנה נשלחה ל'+r.name+' ב'+CHAN[r.chan]);
+}
+
+/* שליחת ההודעה עצמה עדיין בידיים שלך, ולכן הגיליון מוסר את הקישור ואינו
+   מצהיר שנשלח משהו. */
+function personalInviteSheet(key,r,url){
+  sheetForm('ההזמנה ל'+r.name+' נרשמה',
+    'העבר לה את הקישור ב'+CHAN[r.chan]+'. כשהיא תפתח אותו ותיכנס לנטע עם '+
+    attrText(r.contact)+' — היא תצורף ל'+nameOfPlanting(key)+' מיד, בלי שתצטרך לאשר.'+
+    '<label>הקישור</label><textarea readonly style="min-height:52px">'+attrText(url)+'</textarea>'+
+    '<p class="fine" style="margin-top:8px">מי שיפתח את אותו קישור עם כתובת אחרת יגיע אליך לאישור, בשמו.</p>',
+    'העתק וסגור',
+    function(){copyText(url).then(function(){toast('הקישור הועתק')},function(){})});
 }
 function buildRelatives(){
   const box=document.getElementById('rel-list');
@@ -3863,6 +3886,16 @@ function netaBackend(cfg){
                   'plantings(name,beneficiary_name,target_date)&author_id=eq.'+uid()+
                   '&order=created_at',{method:'GET'})
         .then(function(r){return r||[]}).catch(remember);
+    },
+
+    /* ההזמנה עצמה. בלי הרשומה הזו אין למה להשוות את מי שפותח את הקישור,
+       וכל אחד נופל לתור האישורים — זה מה שקרה עד עכשיו. */
+    sendInvitation:function(plantingId,name,contact,channel){
+      return call('/rest/v1/invitations',{method:'POST',
+        headers:{Prefer:'return=representation'},
+        body:JSON.stringify({planting_id:plantingId,invitee_name:name,
+                             contact:contact,channel:channel})})
+        .then(function(r){return (r&&r[0])||null}).catch(remember);
     },
 
     updatePlanting:function(id,fields){
