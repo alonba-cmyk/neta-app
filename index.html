@@ -197,17 +197,18 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .nc-id{flex:1;min-width:0}
 .nc-nm{font-weight:500;font-size:13.5px;line-height:1.32;letter-spacing:-.012em}
 .nc-meta{font-size:10.5px;color:var(--tx-3);line-height:1.3;margin-top:3px;white-space:nowrap}
-/* מעבר לשתיים הראשונות: הכרטיסים דוהים במקום להיעלם, כדי שהמסך לא יתמלא
-   כשיש הרבה נטיעות. לחיצה על "הצג הכל" מחזירה את כולם לבהירות מלאה —
-   הכרטיסים עצמם נשארים פעילים ולחיצים גם דהויים. */
+/* מעבר לשתיים הראשונות: רק כרטיס "הצצה" אחד נוסף מוצג, באותה דהייה
+   שמשמשת את .gsample במסכים ריקים — לא רק opacity, גם דוהה אל תוך
+   הרקע ופחות רווי. השאר לא מצוירים בכלל עד "הצג הכל". הכרטיס עצמו
+   נשאר לחיץ; רק התג "הצג הכל" תפוס לפעולת הגילוי. */
 .declutter{position:relative}
-.declutter .ncard{opacity:.35;transition:opacity .2s ease}
-.declutter.open .ncard{opacity:1}
-.declutter-fade{position:absolute;left:0;right:0;bottom:0;height:46px;
-  background:linear-gradient(to top,var(--bg),transparent);
-  display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;cursor:pointer}
-.declutter-fade span{font-size:10.5px;color:var(--tx-2);background:var(--s2);border:1px solid var(--line-2);
-  border-radius:999px;padding:3px 11px}
+.declutter .ncard{opacity:.34;filter:saturate(.45);transition:opacity .2s ease,filter .2s ease}
+.declutter.open .ncard{opacity:1;filter:none}
+.declutter-fade{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to bottom,transparent 18%,var(--bg) 92%);
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px}
+.declutter-fade span{pointer-events:auto;cursor:pointer;font-size:10.5px;color:var(--tx-2);background:var(--s2);
+  border:1px solid var(--line-2);border-radius:999px;padding:3px 11px}
 .declutter.open .declutter-fade{display:none}
 .nc-op{font-size:10.5px;color:var(--tx-3);margin-top:1px}
 .nc-avs{display:flex;margin-right:auto;flex-shrink:0}
@@ -590,7 +591,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd50a95e';
+window.NETA_BUILD = 'e981125';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1085,6 +1086,14 @@ window.NETA_CONFIG = {
 
   <p class="eyebrow">מה שאתה יכול לשנות בכל רגע</p>
   <div class="field"><label>שם הנטיעה</label><input type="text" id="e-name" value="בר המצווה של דניאל"></div>
+  <div class="field" id="e-sexfield">
+    <label>בן או בת</label>
+    <div class="chips" id="e-sex">
+      <button data-x="m" onclick="setEditSex(this,'m')">בן</button>
+      <button data-x="f" onclick="setEditSex(this,'f')">בת</button>
+    </div>
+    <p class="fine" style="margin-top:6px">קובע רק איך פונים אליו/אליה במסך הנטיעה — לא את זהות הנהנה.</p>
+  </div>
 
   <div class="card" id="e-letters">
     <div class="row gap-s"><span>✉</span><b style="font-size:13px">המכתב שלך</b></div>
@@ -2402,10 +2411,25 @@ function buildLiveEdit(p){
   const o=p.openedOn?new Date(p.openedOn+'T00:00:00'):null;
   txt('e-opened',o?(months[o.getMonth()]+' '+o.getFullYear()):'—');
   txt('e-bene',p.kid||'עדיין לא יועדה');
+  document.getElementById('e-sexfield').style.display=p.designated?'':'none';
+  editSex=p.sex||null;
+  document.querySelectorAll('#e-sex button').forEach(function(b){
+    b.classList.toggle('on',b.dataset.x===editSex);
+  });
+}
+let editSex=null;
+function setEditSex(el,x){
+  editSex=x;
+  [...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)});
 }
 function openEdit(){
   const p=plantAt(cur);
-  if(!p||!p.live){go(11);return}
+  /* השדה קיים רק לנטיעות אמיתיות — ההדגמה מציגה משפט קבוע לכל נטיעה,
+     ואין לה איפה לשמור בחירה כזו. */
+  if(!p||!p.live){
+    document.getElementById('e-sexfield').style.display='none';
+    go(11);return;
+  }
   buildLiveEdit(p);
   go(11);
 }
@@ -2423,6 +2447,7 @@ function saveLiveEdit(p){
   }
   const fields={name:name};
   if(picked&&picked!==p.targetDate)fields.target_date=picked;
+  if(p.designated&&editSex&&editSex!==(p.sex||null))fields.beneficiary_sex=editSex;
 
   /* גוף המכתב נשמר כטיוטה. החתימה היא פעולה נפרדת ומכוונת. */
   const body=(document.getElementById('e-letter').value||'').trim();
@@ -2431,7 +2456,7 @@ function saveLiveEdit(p){
     ? netaServer.saveLetter(p.key,body,false).then(function(row){liveLetter=row})
     : Promise.resolve();
 
-  if(name===p.name&&!fields.target_date){
+  if(name===p.name&&!fields.target_date&&!fields.beneficiary_sex){
     letter.then(function(){go(5);if(body!==had)toast('המכתב נשמר')})
       .catch(function(e){ask('המכתב לא נשמר',(e&&e.message)||'נסה שוב.','הבנתי')});
     return;
@@ -2900,6 +2925,7 @@ function plantingFromFlow(){
     occasion:occasionEnum(goal.type),
     designated:desig,
     beneficiary:goal.name,
+    sex:desig?beneSex:null,
     targetDate:cDate?cDate.value:null,
     targetYear:d?d.getFullYear():null,
     targetMonth:d?d.getMonth():null,
@@ -3036,24 +3062,26 @@ function nameOfPlanting(key){
 }
 
 /* מה שההפקדה בפועל מקרבת, לפי סוג הרגע — כפי שנבחר בהקמה. הכינוי כלפי
-   הנהנה תמיד "לו/ה": אין במסד את המגדר שלו, ולכן הוא נשאר חף מפועל מוטה —
-   עדיף משפט שנכון לכל ילד על ניחוש לפי השם. */
+   הנהנה הוא "לו" או "לה" לפי מה שנבחר בהקמה או בעריכה; נטיעה ישנה שאין
+   לה עדיין ערך שמור נשארת בצורה הכפולה "לו/ה", בלי לנחש לפי השם. */
+function himHer(sex){return sex==='f'?'לה':(sex==='m'?'לו':'לו/ה')}
 const OCCASION_CLAUSE={
-  bar_mitzvah:'יהיה לו/ה יום בלתי נשכח',
-  studies:'יהיה לו/ה קל יותר להתחיל את הלימודים',
-  army_trip:'יהיה לו/ה קל יותר לצאת לטיול הגדול אחרי הצבא',
-  first_car:'יהיה לו/ה קל יותר לקנות רכב ראשון',
-  apartment:'יהיה לו/ה קל יותר לחסוך לדירה',
-  wedding:'יהיה לו/ה קל יותר לממן את החתונה'
+  bar_mitzvah:function(px){return 'יהיה '+px+' יום בלתי נשכח'},
+  studies:function(px){return 'יהיה '+px+' קל יותר להתחיל את הלימודים'},
+  army_trip:function(px){return 'יהיה '+px+' קל יותר לצאת לטיול הגדול אחרי הצבא'},
+  first_car:function(px){return 'יהיה '+px+' קל יותר לקנות רכב ראשון'},
+  apartment:function(px){return 'יהיה '+px+' קל יותר לחסוך לדירה'},
+  wedding:function(px){return 'יהיה '+px+' קל יותר לממן את החתונה'}
 };
 /* המשפט מתחת לציר. */
-function liveLine(monthly,others,kid,designated,occasion){
+function liveLine(monthly,others,kid,designated,occasion,sex){
   const rate=monthly?monthly.toLocaleString('he-IL')+' ₪ בחודש':'';
   const to=kid?withPrep('ל',kid):'מי שתחליט';
   if(!designated)return monthly
     ? 'בקצב של '+rate+', הקופה ממשיכה לגדול — ועדיין לא יועדה לאף אחד'
     : 'הקופה רשומה על שמך וממתינה לייעוד';
-  const clause=OCCASION_CLAUSE[occasion]||'נבנה כאן משהו שמחכה לו/ה';
+  const px=himHer(sex);
+  const clause=OCCASION_CLAUSE[occasion]?OCCASION_CLAUSE[occasion](px):('נבנה כאן משהו שמחכה '+px);
   const names=others.length?listNames(others):'';
   if(monthly&&others.length)return 'בזכות '+rate+' שאתה מפקיד, ומה ש'+names+' הוסיפו '+to+', '+clause;
   if(monthly)             return 'בזכות '+rate+' שאתה מפקיד '+to+', '+clause;
@@ -3088,12 +3116,13 @@ function liveDetail(r){
     yl:Math.max(0,t.getFullYear()-new Date().getFullYear()),
     tNow:Math.max(0,Math.min(100,span>0?passed/span*100:0)),
     kid:desig?(r.beneficiary_name||''):'', designated:desig,
+    sex:r.beneficiary_sex||null,
     approver:r.approver||undefined, guardName:r.guardian_name||undefined,
     shared:!!r.open_to_relatives, mine:!!r.is_initiator,
     initiator:r.initiator_name||'',
     co:r.co_owner_name||undefined,
     who:who, monthly:monthly,
-    line:liveLine(monthly,others,desig?r.beneficiary_name:'',desig,r.occasion),
+    line:liveLine(monthly,others,desig?r.beneficiary_name:'',desig,r.occasion,r.beneficiary_sex),
     lCount:n?('ולא רק כסף, '+(n===1?'מכתב אחד חתום':n+' מכתבים חתומים')+
               (r.letter_authors&&r.letter_authors.length?' — מ'+listNames(r.letter_authors):'')):'',
     lSub:n?((n===1?'המכתב ייפתח ב':'המכתבים ייפתחו ב')+when+
@@ -4266,6 +4295,7 @@ function netaBackend(cfg){
         body:JSON.stringify({name:p.name,icon:p.icon,
           occasion:p.occasion,designated:p.designated,
           beneficiary_name:p.designated?p.beneficiary:null,
+          beneficiary_sex:p.designated?p.sex:null,
           target_date:p.targetDate,mode:p.mode,
           track_rate:p.mode==='keep'?null:p.rate,
           approver:p.designated?'self':null,
@@ -4460,20 +4490,25 @@ function cardHTML(p){
         '<use href="#chev"/></svg></span>'+
     '</div></div>';
 }
-/* יותר משתי נטיעות מציפות את המסך, אז מהשלישית ואילך הכרטיסים דוהים
-   במקום להיעלם — עדיין רואים שהן קיימות ולוחצים עליהן כרגיל, בלי
-   שיתחרו על תשומת הלב. "הצג הכל" מחזיר את כולן לבהירות מלאה. */
+/* יותר משתי נטיעות מציפות את המסך, אז רק כרטיס אחד נוסף — הצצה דהויה —
+   מצטרף לשתיים הראשונות. השאר לא נכנסים ל-DOM בכלל עד "הצג הכל", כדי
+   שלא ייראו כל הכרטיסים גם דהויים. הכרטיס המוצג נשאר לחיץ כרגיל. */
+let gardenHidden='';
 function gardenHTML(list){
-  if(list.length<=2)return list.map(cardHTML).join('');
+  if(list.length<=3){gardenHidden='';return list.map(cardHTML).join('')}
+  gardenHidden=list.slice(3).map(cardHTML).join('');
   return list.slice(0,2).map(cardHTML).join('')+
     '<div class="declutter" id="declutter">'+
-      list.slice(2).map(cardHTML).join('')+
+      cardHTML(list[2])+
       '<div class="declutter-fade" onclick="revealPlantings()"><span>הצג הכל</span></div>'+
     '</div>';
 }
 function revealPlantings(){
   const el=document.getElementById('declutter');
-  if(el)el.classList.add('open');
+  if(!el)return;
+  el.classList.add('open');
+  el.insertAdjacentHTML('beforeend',gardenHidden);
+  gardenHidden='';
 }
 
 /* אותו סינון שקובע אם "יעד" מופיע על גבי כרטיס בודד — כאן משמש כדי
