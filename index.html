@@ -319,6 +319,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .tax-start .disc{width:24px;height:24px;border-radius:50%;background:var(--leaf-bg);
   border:1.5px solid var(--leaf-line);display:grid;place-items:center}
 .tax-start .yr{font-size:10px;color:var(--tx-3);white-space:nowrap;line-height:1}
+/* העץ מגיב לגרירה בציר הזמן — אבל כצמיחה, לא כהבהוב: הגבעול מתארך דרך
+   stroke-dashoffset (אותה טכניקה כמו במסך הפתיחה) והעלים והניצן דוהים
+   פנימה. .snap מבטל את המעברים לרגע הכניסה למסך, כדי שהעץ יופיע במצבו
+   ולא יצמח או יתכווץ מהנטיעה שנפתחה לפניו. תחת prefers-reduced-motion
+   הכלל הגלובלי כבר מכבה את כל המעברים. */
+#d-stem{stroke-dasharray:105;transition:stroke-dashoffset .45s cubic-bezier(.22,.85,.3,1)}
+#d-l2,#d-bud{transition:opacity .45s ease}
+#d-art.snap #d-stem,#d-art.snap #d-l2,#d-art.snap #d-bud{transition:none}
 .d-line{font-size:12px;color:var(--tx-2);line-height:1.6;margin-top:30px;text-align:center;
   padding:0 6px;text-wrap:balance}
 .tax-when{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);
@@ -555,7 +563,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '131d41e';
+window.NETA_BUILD = 'f84edb8';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -890,10 +898,12 @@ window.NETA_CONFIG = {
     <div style="flex:1"><div class="title" style="font-size:14.5px" id="d-title">בר המצווה של דניאל</div><div class="meta" id="d-date" style="margin-top:3px">המועד המיוחל: אוגוסט 2032</div><div class="meta" id="d-owners" style="margin-top:3px;color:var(--leaf);display:none"></div></div>
     <button class="editbtn" onclick="openEdit()" aria-label="עריכת הנטיעה">✎</button>
   </div>
-  <svg width="146" height="166" viewBox="0 0 140 162" style="margin:2px auto 0;display:block">
+  <svg id="d-art" width="146" height="166" viewBox="0 0 140 162" style="margin:2px auto 0;display:block">
     <ellipse cx="70" cy="152" rx="54" ry="17" fill="var(--leaf)" opacity=".07"/>
     <ellipse cx="70" cy="152" rx="30" ry="5" fill="var(--s2)"/>
-    <line id="d-stem" x1="70" y1="150" x2="70" y2="103" stroke="var(--leaf)" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- הקו מצויר תמיד באורכו המלא (105); כמה ממנו נראה נקבע ב-stroke-dashoffset,
+         שאפשר להעביר בחלקות — בניגוד ל-y2, שקופץ. -->
+    <line id="d-stem" x1="70" y1="150" x2="70" y2="45" stroke="var(--leaf)" stroke-width="3.5" stroke-linecap="round" style="stroke-dashoffset:58"/>
     <g id="d-l1"><path d="M70 122 C 54 116, 46 101, 55 90 C 64 101, 68 111, 70 122" fill="var(--leaf)" opacity=".5"/><path d="M70 122 C 86 116, 94 101, 85 90 C 76 101, 72 111, 70 122" fill="var(--leaf)" opacity=".5"/></g>
     <g id="d-l2" style="opacity:.15"><path d="M70 96 C 49 88, 39 67, 51 54 C 62 68, 68 82, 70 96" fill="var(--leaf)"/><path d="M70 96 C 91 88, 101 67, 89 54 C 78 68, 72 82, 70 96" fill="var(--leaf)"/><path d="M66 89 C 53 82, 46 68, 54 58 C 61 68, 65 79, 66 89" fill="#A9D6AF" opacity=".45"/></g>
     <g id="d-bud" style="opacity:0"><circle cx="70" cy="44" r="14" fill="var(--sun)" opacity=".14"/><circle cx="70" cy="44" r="7.5" fill="var(--sun-bg)"/><circle cx="70" cy="44" r="3.4" fill="var(--sun)"/></g>
@@ -3112,7 +3122,12 @@ function paintDetail(key,p){
   document.getElementById('d-proj').style.right=T_NOW+'%';
   dTime.style.width=T_SPAN+'%';
   dTime.max=p.yl;dTime.value=0;
+  /* בכניסה העץ נוחת ישר במצבו — המעברים שמורים לגרירה בציר הזמן. */
+  const art=document.getElementById('d-art');
+  art.classList.add('snap');
   detail(0);
+  void art.getBoundingClientRect();
+  requestAnimationFrame(function(){art.classList.remove('snap')});
   go(5);
 }
 function enterRedeem(key){
@@ -4925,7 +4940,8 @@ function investIn(key){
 const TAX_NUDGE=7;
 function detail(y){
   const t=y/YL, amt=A0+(AF-A0)*t, grow=amt/AF*100;
-  document.getElementById('d-stem').setAttribute('y2',150-(grow/100)*105);
+  /* הקו מלא תמיד; מסתירים את החלק העליון שעוד לא "צמח". */
+  document.getElementById('d-stem').style.strokeDashoffset=105*(1-grow/100);
   document.getElementById('d-l2').style.opacity=grow>=62?1:.15;
   document.getElementById('d-bud').style.opacity=grow>=88?1:0;
   const pos=T_NOW+T_SPAN*t;
