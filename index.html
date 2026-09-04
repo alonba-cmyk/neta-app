@@ -52,6 +52,14 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 .gap{margin-bottom:14px}.gap-s{margin-bottom:8px}.gap-x{margin-bottom:3px}.center{text-align:center}
 
 .card{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:9px}
+/* מכתב חתום הוא פרט יפה, לא הישג מרכזי — אז הוא לא כרטיס צהוב מלא כמו
+   אזהרה. פס זהוב דק בצד מזכיר שהוא שייך למכתבים, בלי לצבוע את כל הרקע. */
+.letter-card{display:flex;align-items:center;gap:11px;background:var(--s1);border:1px solid var(--line);
+  border-radius:10px;padding:10px 12px;margin-top:16px;position:relative;overflow:hidden}
+.letter-card::before{content:'';position:absolute;top:0;right:0;bottom:0;width:3px;background:var(--sun)}
+.letter-card .ic{font-size:14px;color:var(--sun);flex-shrink:0}
+.letter-card b{font-size:12px;font-weight:500;display:block}
+.letter-card span:not(.ic){font-size:10.5px;color:var(--tx-3);display:block;margin-top:1px}
 .card.tap{cursor:pointer;transition:.15s}.card.tap:hover{border-color:var(--line-2)}
 .row{display:flex;align-items:center;gap:10px}
 .dot{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:15px;flex-shrink:0}
@@ -570,7 +578,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '17b4245';
+window.NETA_BUILD = '0211b1c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -949,9 +957,9 @@ window.NETA_CONFIG = {
   </div>
   <p class="fine gap" id="d-whofine">רק אתה רואה את הפילוח הזה, כבעל הנטיעה. הקרובים רואים זה את זה — בלי סכומים.</p>
 
-  <div class="card" id="d-letters" style="background:var(--sun-bg);border-color:var(--sun-line);margin-top:16px">
-    <div class="row gap-s"><span>✉</span><b style="font-size:13px" id="d-lcount">ולא רק כסף, 3 מכתבים חתומים — מסבתא, מדוד יוסי וממך</b></div>
-    <p class="sub" style="color:#C4AE84" id="d-lett">המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.</p>
+  <div class="letter-card" id="d-letters">
+    <span class="ic">✉</span>
+    <div><b id="d-lcount">ולא רק כסף, 3 מכתבים חתומים — מסבתא, מדוד יוסי וממך</b><span id="d-lett">המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.</span></div>
   </div>
 
   <div class="two" id="d-acts" style="margin-top:18px"></div>
@@ -4825,9 +4833,9 @@ function buildLiveActions(p){
     return;
   }
   acts.className='';
-  acts.innerHTML=twoPlusBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button>'+
-                 '<button class="btn ghost" onclick="openToCircle()">פתח לקרובים</button>');
-  note.textContent='הנטיעה הזו פרטית — רק אתה רואה אותה.';
+  acts.innerHTML=pairWithBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button>');
+  note.innerHTML='הנטיעה הזו פרטית — '+(p.co?('רק אתה ו'+p.co+' רואים אותה'):'רק אתה רואה אותה')+
+    (p.co?'':'. <a href="#" onclick="openToCircle();return false" style="color:var(--leaf)">אפשר לפתוח אותה לקרובים</a>');
 }
 /* חזרה מצטרפת לכל שורת פעולות באחת משתי דרכים: זוג עם כפתור בודד
    (מקבלת מקום נקי, ghost, אותו כלל שהוא ‎.two>.btn.ghost:last-child‎
