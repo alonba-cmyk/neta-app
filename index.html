@@ -552,7 +552,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '338d02c';
+window.NETA_BUILD = '0c086d2';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4352,7 +4352,7 @@ function cardHTML(p){
     ? 'המועד המיוחל: '+monthsShort[p.targetMonth]+' '+p.targetYear
     : 'עדיין לא יועדה · '+months[p.targetMonth]+' '+p.targetYear;
   const grow=(p.designated&&p.projection>p.accrued)
-    ? '<br>בקצב הזה יחכו כאן: כ-'+shekel(p.projection) : '';
+    ? '<br>בקצב הזה ייצבר: כ-'+shekel(p.projection) : '';
   return '<div class="ncard" onclick="openDetail(\''+p.key+'\')">'+
     '<div class="nc-top">'+
       '<div class="dot '+(p.designated?'g':'s')+'">'+p.icon+'</div>'+
