@@ -552,7 +552,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0e21993';
+window.NETA_BUILD = '1731382';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4344,18 +4344,21 @@ function shekel(agorot){
 
 /* הכרטיס חייב לענות על "מה המצב?", ולכן הסכום שנצבר גלוי בו.
    השם לעולם אינו נחתך — אין כאן ellipsis ואין overflow-wrap.
-   הצפי לעתיד אינו כאן — הוא בטבלת "לאן זה מגיע" מעל הרשימה, כדי
-   שהכרטיס יישאר נקי ולא יחזור על אותו מספר בכל שורה. */
+   הצפי לעתיד יושב כשורה שנייה באותו nc-meta, מתחת לתאריך — אותו class,
+   אותו צבע וגופן, כך שהכרטיס מוסיף פרט ולא נראה מבולגן. מוצג רק לקופה
+   שיועדה ורק כשיש לאן לצמוח. */
 function cardHTML(p){
   const when=p.designated
     ? 'המועד המיוחל: '+monthsShort[p.targetMonth]+' '+p.targetYear
     : 'עדיין לא יועדה · '+months[p.targetMonth]+' '+p.targetYear;
+  const grow=(p.designated&&p.projection>p.accrued)
+    ? '<br>בקצב הזה יחכו כאן: כ-'+shekel(p.projection) : '';
   return '<div class="ncard" onclick="openDetail(\''+p.key+'\')">'+
     '<div class="nc-top">'+
       '<div class="dot '+(p.designated?'g':'s')+'">'+p.icon+'</div>'+
       '<div class="nc-id">'+
         '<div class="nc-nm">'+p.name+'</div>'+
-        '<div class="nc-meta">'+when+'</div>'+
+        '<div class="nc-meta">'+when+grow+'</div>'+
       '</div>'+
       '<span class="peek"><span class="pk">נצבר</span>'+
         '<span class="pv">'+shekel(p.accrued)+'</span></span>'+
