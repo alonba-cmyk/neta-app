@@ -516,6 +516,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .wel li b{color:var(--leaf);font-weight:500;flex-shrink:0}
 .link{display:block;width:100%;text-align:center;font-family:inherit;font-size:12px;color:var(--tx-2);
   background:none;border:none;cursor:pointer;padding:12px 0;text-decoration:underline;text-underline-offset:3px}
+.link.danger{color:var(--rose)}
 .emptybtn{font-family:inherit;font-size:11px;padding:7px 12px;border-radius:8px;margin-top:9px;
   border:1px solid var(--line);background:transparent;color:var(--tx-3);cursor:pointer;transition:.15s}
 .emptybtn.on{background:var(--leaf-bg);border-color:var(--leaf-line);color:var(--leaf)}
@@ -552,7 +553,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0c086d2';
+window.NETA_BUILD = '47481f6';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3536,7 +3537,8 @@ function addRelative(){
       const r={av:pickedAv,name:n.trim(),rel:(rl||'').trim()||'קרוב משפחה',g:'m',status:'none',
                chan:chanOf(c)||'wa',contact:c,
                note:((document.getElementById('r-note')||{}).value||'').trim()};
-      const done=function(){
+      const done=function(saved){
+        if(saved&&saved.id)r.id=saved.id;
         relatives.push(r);
         if(c)sendInvite(r);
         else{buildRelatives();toast(r.name+' נוסף לקרובים שלך')}
@@ -3557,7 +3559,8 @@ function editRelative(i){
   sheetForm(r.name,
     '<label>שם</label><input type="text" id="r-name" value="'+r.name+'">'+
     '<label>הקשר לילדים</label><input type="text" id="r-rel" value="'+r.rel+'">'+
-    '<label>תמונה</label>'+avpickHTML(r.av),
+    '<label>תמונה</label>'+avpickHTML(r.av)+
+    '<button type="button" class="link danger" onclick="confirmRemoveRelative('+i+')">הסר קרוב</button>',
     'שמור',
     function(){
       const n=(document.getElementById('r-name')||{}).value;
@@ -3566,6 +3569,29 @@ function editRelative(i){
       if(rl&&rl.trim())r.rel=rl.trim();
       r.av=pickedAv;buildRelatives();toast('הפרטים נשמרו');
     });
+}
+/* "הסר" מנקה רק את רשימת הקיצורים שלך — לא נוגע בנטיעות שהקרוב כבר
+   משתתף או מוזמן אליהן. אלה שני דברים נפרדים, בדיוק כמו שם המוטב
+   מול שם הקרוב. */
+function confirmRemoveRelative(i){
+  const r=relatives[i];
+  ask('להסיר את '+r.name+'?',
+    'זה רק ינקה אותו/ה מרשימת הקרובים שלך — לא ישפיע על נטיעות שהוא/היא כבר משתתפים או מוזמנים אליהן.',
+    'הסר',function(){removeRelative(i)});
+}
+function removeRelative(i){
+  const r=relatives[i];
+  const done=function(){
+    relatives.splice(i,1);
+    buildRelatives();
+    toast(r.name+' '+(r.g==='f'?'הוסרה':'הוסר')+' מהקרובים שלך');
+  };
+  if(liveAccount()&&r.id){
+    netaServer.removeRelative(r.id).then(done)
+      .catch(function(e){ask('לא הצלחנו להסיר',(e&&e.message)||'לא הצלחנו להגיע לשרת.','הבנתי')});
+    return;
+  }
+  done();
 }
 function buildProfile(){
   /* בחשבון אמיתי הספירות מגיעות מהמודל שנטען, לא מ-plants{} שבקובץ. */
@@ -3627,7 +3653,7 @@ function loadAccountLists(){
   netaServer.loadRelatives().then(function(rows){
     relatives.length=0;
     rows.forEach(function(r){
-      relatives.push({av:r.avatar_key||'av-granny2',name:r.name,
+      relatives.push({id:r.id,av:r.avatar_key||'av-granny2',name:r.name,
                       rel:r.relation||'קרוב משפחה',g:'m',
                       status:'none',chan:r.channel==='email'?'mail':'wa',
                       contact:r.contact||''});
@@ -4002,6 +4028,11 @@ function netaBackend(cfg){
                              avatar_key:r.avatar,contact:r.contact||null,
                              channel:r.contact?r.channel:null})})
         .then(function(x){return x&&x[0]}).catch(remember);
+    },
+    /* מחיקה מוגבלת ל-id של הבעלים דרך ה-RLS של הטבלה — אין כאן צורך
+       לוודא בעלות בקוד, המסד כבר לא יאפשר למחוק שורה שאינה שלך. */
+    removeRelative:function(id){
+      return call('/rest/v1/relatives?id=eq.'+id,{method:'DELETE'}).catch(remember);
     },
 
     /* הבעלים אינו נשלח: הוא ברירת המחדל של העמודה במסד, שנגזרת מהטוקן.
