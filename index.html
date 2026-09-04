@@ -591,7 +591,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'e981125';
+window.NETA_BUILD = 'd666caf';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1075,6 +1075,7 @@ window.NETA_CONFIG = {
   <div class="card tap" onclick="pickMyFace()"><div class="row"><div class="pic" style="width:38px;height:38px;border-radius:12px;overflow:hidden;flex-shrink:0;background:var(--s2);border:1px solid var(--line)"><svg class="avsvg" viewBox="0 0 40 40" id="my-av"><use href="#av-parent"/></svg></div><div style="flex:1"><div class="title">התמונה שלי</div><div class="meta">מופיעה לך ולקרובים שהזמנת</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
   <div class="card tap" onclick="openPay()"><div class="row"><div class="dot g">💳</div><div style="flex:1"><div class="title">אמצעי תשלום</div><div class="meta" id="pf-pay-meta">הוראת קבע · 210 ₪ בכל חודש</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
   <div class="card tap" onclick="openLetters()"><div class="row"><div class="dot g">✉</div><div style="flex:1"><div class="title">המכתבים שלי</div><div class="meta" id="lett-meta">2 מכתבים חתומים · טיוטה אחת</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
+  <div class="card tap" id="pf-pwcard" style="display:none" onclick="openSetPassword()"><div class="row"><div class="dot g">🔑</div><div style="flex:1"><div class="title">סיסמה</div><div class="meta">כניסה מהירה בלי לחכות לקוד למייל</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
   <div class="card tap"><div class="row"><div class="dot g">🔐</div><div style="flex:1"><div class="title">אבטחה ואימות זהות</div><div class="meta">אימות מלא נדרש רק במועד הפדיון</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
   <div class="card tap"><div class="row"><div class="dot g">🔔</div><div style="flex:1"><div class="title">התראות</div><div class="meta">הפקדות, אבני דרך ומכתבים</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
   <div class="lock" style="text-align:right;margin-top:5px"><p class="sub" style="color:#C4AE84">הכספים מוחזקים ומנוהלים בגוף פיננסי מוסדר. נטע היא שכבת החוויה בלבד ואינה מחזיקה את הכסף.</p></div>
@@ -1375,13 +1376,20 @@ window.NETA_CONFIG = {
 <section class="screen" data-name="כניסה">
   <h2 class="gap-s">מה המספר שלך?</h2>
   <p class="sub gap">אותו מספר משמש לכניסה ולהזמנות שתשלח. אין סיסמה.</p>
+  <div class="chips" id="lg-method" style="display:none;margin-bottom:6px">
+    <button class="on" data-m="code" onclick="setLoginMethod('code')">קוד למייל</button>
+    <button data-m="password" onclick="setLoginMethod('password')">מייל וסיסמה</button>
+  </div>
   <div class="field"><label>טלפון נייד</label><input type="text" id="lg-phone" placeholder="050-0000000"></div>
+  <div class="field" id="lg-pwfield" style="display:none">
+    <label>סיסמה</label><input type="password" id="lg-pw" placeholder="הסיסמה שלך" autocomplete="current-password">
+  </div>
   <div id="lg-codebox" style="display:none">
     <div class="field"><label id="lg-codelbl">קוד אימות נשלח אליך</label><input type="text" id="lg-otp" placeholder="4 ספרות"></div>
     <button class="link" style="text-align:right;padding-top:0" onclick="toast('נשלח קוד חדש')">לא קיבלתי — שלח שוב</button>
   </div>
   <div class="two gap-s"><button class="btn" id="lg-cta" onclick="loginNext()">שלח קוד</button><button class="btn ghost" onclick="go(ONBO.welcome)">חזרה</button></div>
-  <p class="fine gap">אם כבר יש לך חשבון, תיכנס אליו. אם לא — ניצור אחד. אותו כפתור.</p>
+  <p class="fine gap" id="lg-fine">אם כבר יש לך חשבון, תיכנס אליו. אם לא — ניצור אחד. אותו כפתור.</p>
 </section>
 
 <!-- 23 HOW IT WORKS -->
@@ -1820,6 +1828,7 @@ function idNext(){
 }
 /* auth lives at the door, not in the middle of the flow */
 let userPhone='';
+let loginMethod='code';
 /* Apple ו-Google עדיין לא ממומשים. בהדגמה זה הצגה בלבד; בחשבון אמיתי
    כפתור שמצהיר שהוא מאמת אותך ולא מאמת כלום הוא הדבר המסוכן ביותר שיכול
    לשבת במסך כניסה — ולכן הוא נעלם שם עד שיהיה אמיתי. */
@@ -1871,10 +1880,29 @@ function loginPrep(){
   if(lbl)lbl.textContent='אימייל';
   const h=document.querySelector('[data-name="כניסה"] h2');
   if(h)h.textContent='מה האימייל שלך?';
-  const sub=document.querySelector('[data-name="כניסה"] .sub');
-  if(sub)sub.textContent='נשלח לך קוד חד-פעמי. אין סיסמה.';
   const otp=document.getElementById('lg-otp');
   if(otp){otp.placeholder='6 ספרות';otp.inputMode='numeric'}
+  const methodBox=document.getElementById('lg-method');
+  if(methodBox)methodBox.style.display='flex';
+  let saved='code';
+  try{saved=localStorage.getItem('neta.loginMethod')||'code'}catch(e){}
+  setLoginMethod(saved==='password'?'password':'code');
+}
+/* קוד למייל נשאר ברירת המחדל; סיסמה היא בחירה שנייה ואופציונלית, נזכרת
+   פר-מכשיר כדי שלא יצטרכו לבחור אותה מחדש בכל כניסה. */
+function setLoginMethod(m){
+  loginMethod=m;
+  try{localStorage.setItem('neta.loginMethod',m)}catch(e){}
+  document.querySelectorAll('#lg-method button').forEach(function(b){
+    b.classList.toggle('on',b.dataset.m===m);
+  });
+  const pwField=document.getElementById('lg-pwfield');
+  if(pwField)pwField.style.display=m==='password'?'':'none';
+  document.getElementById('lg-codebox').style.display='none';
+  txt('lg-cta',m==='password'?'כניסה':'שלח קוד');
+  txt('lg-fine',m==='password'
+    ? 'עדיין לא הגדרת סיסמה? היכנס עם קוד למייל, ותוכל להגדיר סיסמה מהפרופיל.'
+    : 'אם כבר יש לך חשבון, תיכנס אליו. אם לא — ניצור אחד. אותו כפתור.');
 }
 
 function loginBusy(on,label){
@@ -1885,6 +1913,7 @@ function loginBusy(on,label){
 }
 
 function loginNext(){
+  if(loginIsEmail()&&loginMethod==='password'){loginWithPassword();return}
   const box=document.getElementById('lg-codebox');
   const idField=(document.getElementById('lg-phone')||{}).value||'';
 
@@ -1944,6 +1973,32 @@ function loginNext(){
     .catch(function(e){
       loginBusy(false,'אשר והמשך');
       toast(e.message||'הקוד לא התקבל');
+    });
+}
+/* אותה נחיתה בדיוק כמו אחרי אימות קוד — הכניסה עם סיסמה היא רק דרך
+   נוספת להגיע לאותו סשן, לא זרימה נפרדת. */
+function loginWithPassword(){
+  const email=(document.getElementById('lg-phone')||{}).value||'';
+  const pw=(document.getElementById('lg-pw')||{}).value||'';
+  if(!email.trim()){toast('צריך אימייל');return}
+  if(email.indexOf('@')<0){toast('כתובת אימייל לא תקינה');return}
+  if(!pw){toast('צריך סיסמה');return}
+  userPhone=email.trim();
+  loginBusy(true,'נכנס…');
+  netaServer.signInWithPassword(userPhone,pw)
+    .then(function(){return netaServer.loadProfile()})
+    .then(function(prof){
+      const known=!!prof;
+      applyIdentity();
+      loginBusy(false,'כניסה');
+      txt('id-verified',userPhone+' אומת');
+      if(pendingInvite()&&finishJoin()){onbo=false;return}
+      if(known){onbo=false;setEmpty(false);go(0);buildHomeSummary();toast('ברוך שובך');return}
+      onboStart();
+    })
+    .catch(function(e){
+      loginBusy(false,'כניסה');
+      toast(e.message||'הכניסה נכשלה');
     });
 }
 /* ---- how-it-works story (screen ONBO.how) ---- */
@@ -3787,6 +3842,8 @@ function buildConnection(){
      כתיבה תידחה בהודעת הרשאות שלא מסגירה את הסיבה — וזו השורה שמסגירה. */
   const out=document.getElementById('pr-signout');
   if(out)out.style.display='';
+  const pwcard=document.getElementById('pf-pwcard');
+  if(pwcard)pwcard.style.display='';
   /* שתי שאלות שונות: מה שירות הזהות אומר, ומה המסד רואה. עד היום נבדקה
      רק הראשונה — והכשל ישב דווקא בשנייה. */
   Promise.all([netaServer.whoami(),netaServer.whoamiDb()]).then(function(r){
@@ -3848,6 +3905,25 @@ function editMyName(){
         });
     });
 }
+/* סיסמה היא דרך כניסה נוספת, לא תחליף לקוד — היא ניתנת להגדרה רק מתוך
+   חשבון שכבר נכנס עם קוד למייל פעם אחת, ולכן אין כאן "הסיסמה הנוכחית". */
+function openSetPassword(){
+  if(!liveAccount())return;
+  sheetForm('סיסמה',
+    'סיסמה מאפשרת כניסה מהירה, בלי לחכות לקוד במייל. אפשר להיכנס עם קוד גם אחרי שמגדירים סיסמה.'+
+    '<label>סיסמה חדשה</label><input type="password" id="pw-val" autocomplete="new-password">'+
+    '<label style="margin-top:10px">אימות הסיסמה</label><input type="password" id="pw-val2" autocomplete="new-password">',
+    'שמור',
+    function(){
+      const pw=(document.getElementById('pw-val')||{}).value||'';
+      const pw2=(document.getElementById('pw-val2')||{}).value||'';
+      if(pw.length<6){toast('הסיסמה קצרה מדי — לפחות 6 תווים');return false}
+      if(pw!==pw2){toast('הסיסמאות לא תואמות');return false}
+      netaServer.setPassword(pw)
+        .then(function(){toast('הסיסמה נשמרה')})
+        .catch(function(e){ask('הסיסמה לא נשמרה',(e&&e.message)||'נסה שוב.','הבנתי')});
+    });
+}
 /* ─── מקור הנתונים ───────────────────────────────────────────────────────
    מסך הבית קורא ממודל אחד, ולא משנה מאיפה הוא הגיע. שני מימושים:
    demoSource גוזר אותו מ-plants{} שבקובץ, supabaseSource מהמסד. בלי
@@ -3903,6 +3979,8 @@ function netaBackend(cfg){
     [/token has expired|invalid.*token|otp_expired/i,
      'הקוד פג או שאינו נכון. אפשר לבקש קוד חדש.'],
     [/invalid login credentials/i, 'הקוד לא נכון.'],
+    [/password.*(at least|should be|too short)|too short/i,
+     'הסיסמה קצרה מדי — לפחות 6 תווים.'],
     [/row-level security/i,
      'השרת לא זיהה מי שומר את הרשומה. כדאי להתנתק ולהיכנס מחדש.'],
     [/duplicate key|already exists/i, 'הרשומה הזו כבר קיימת.'],
@@ -3996,6 +4074,29 @@ function netaBackend(cfg){
       return send('/auth/v1/verify',{method:'POST',
         body:JSON.stringify({email:email,token:code,type:'email'})},false)
         .then(body).then(function(s){keep(s);return s});
+    },
+
+    /* "פרטי הכניסה שגויים" מכסה גם סיסמה לא נכונה וגם חשבון שמעולם לא
+       הוגדרה לו סיסמה — ובכוונה לא מבדילים ביניהם, כדי לא לחשוף אילו
+       כתובות רשומות. humanise() לא נקרא כאן: המיפוי הכללי שלו לאותה
+       שגיאה מתורגם ל"הקוד לא נכון", וזה נכון רק בזרימת ה-OTP. */
+    signInWithPassword:function(email,pw){
+      return send('/auth/v1/token?grant_type=password',{method:'POST',
+        body:JSON.stringify({email:email,password:pw})},false)
+        .then(function(r){
+          if(r.ok)return r.json();
+          return r.text().then(function(t){
+            let m='';try{const j=JSON.parse(t);m=j.msg||j.message||j.error_description||j.error_code||j.error||''}catch(e){}
+            throw new Error(/invalid login credentials/i.test(m)
+              ? 'האימייל או הסיסמה שגויים.'
+              : (humanise(m||t)||('שגיאה '+r.status)));
+          });
+        }).then(function(s){keep(s);return s});
+    },
+    /* ניתנת להגדרה רק מתוך חשבון שכבר מחובר — האסימון בכותרת כבר מוכיח
+       בעלות על המייל, ואין צורך בסיסמה נוכחית כי לרוב עדיין אין כזו. */
+    setPassword:function(pw){
+      return call('/auth/v1/user',{method:'PUT',body:JSON.stringify({password:pw})});
     },
 
     /* הפרופיל נוצר בכניסה הראשונה — auth מחזיק את האימייל, השם מגיע מהמסך. */
