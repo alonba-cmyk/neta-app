@@ -513,7 +513,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '33254a0';
+window.NETA_BUILD = '4f2bf24';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1166,7 +1166,7 @@ window.NETA_CONFIG = {
   <div id="req-list"></div>
   <div class="card" id="rel-list"></div>
   <button class="btn gap-s" onclick="addRelative()">+ הוסף קרוב</button>
-  <p class="fine gap">ההזמנה נשלחת בוואטסאפ או באימייל כקישור אישי, חד-פעמי, שנקשר למי שפתח אותו — קישור שהועבר הלאה לא יצרף אף אחד אחר. קרוב שהצטרף רואה רק את הנטיעות שצירפת אותו אליהן, ורק התקדמות — בלי סכומים.</p>
+  <p class="fine gap">ההזמנה היא קישור אישי, חד-פעמי, שנקשר למי שפתח אותו — קישור שהועבר הלאה לא יצרף אף אחד אחר. הזמנה במייל נשלחת אוטומטית; בוואטסאפ אתה שולח אותה בעצמך. קרוב שהצטרף רואה רק את הנטיעות שצירפת אותו אליהן, ורק התקדמות — בלי סכומים.</p>
   <button class="btn ghost" onclick="go(10)">חזרה לפרופיל</button>
 </section>
 
@@ -3168,10 +3168,19 @@ function sendInvite(r){
      הקישור. הרשומה היא כל ההבדל בין "צורף מיד" ל"מחכה לאישורך". */
   if(liveAccount()&&pickedPlant){
     const key=pickedPlant;
+    let invId=null;
     netaServer.sendInvitation(key,r.name,r.contact,
         r.chan==='mail'?'email':'whatsapp',r.note)
-      .then(function(inv){return netaServer.inviteToken(key,inv&&inv.id)})
-      .then(function(token){personalInviteSheet(key,r,shareUrl(token))})
+      .then(function(inv){invId=inv&&inv.id;return netaServer.inviteToken(key,invId)})
+      .then(function(token){
+        const url=shareUrl(token);
+        if(r.chan!=='mail'||!invId){personalInviteSheet(key,r,url,false);return}
+        /* המייל בפועל תלוי במפתח Resend שמוגדר בשרת — כשאין כזה, ה-Edge
+           Function מחזירה sent:false בלי שגיאה, והגיליון פשוט חוזר להציע
+           העברה ידנית של הקישור. */
+        return netaServer.sendInvitationEmail(invId)
+          .then(function(res){personalInviteSheet(key,r,url,!!(res&&res.sent))});
+      })
       .catch(function(e){ask('ההזמנה לא נרשמה',(e&&e.message)||'נסה שוב.','הבנתי')});
     return;
   }
@@ -3179,12 +3188,17 @@ function sendInvite(r){
   else toast('הזמנה נשלחה ל'+r.name+' ב'+CHAN[r.chan]);
 }
 
-/* שליחת ההודעה עצמה עדיין בידיים שלך, ולכן הגיליון מוסר את הקישור ואינו
-   מצהיר שנשלח משהו. */
-function personalInviteSheet(key,r,url){
+/* כשהמייל נשלח בפועל (emailed=true) הגיליון אומר זאת בגוף ראשון — זו
+   עובדה, לא הבטחה. בכל מקרה אחר (וואטסאפ, או שמייל לא יצא) שליחת ההודעה
+   עצמה נשארת בידיים שלך, והגיליון מוסר את הקישור בלי להצהיר שנשלח משהו. */
+function personalInviteSheet(key,r,url,emailed){
+  const openLine=emailed
+    ? 'ההזמנה נשלחה למייל של '+r.name+' — קישור אישי אליה בלבד'+
+      (r.note?', ונושא את מה שכתבת':'')+'. אפשר גם להעתיק את הקישור ולשלוח אותו בעצמך, כגיבוי.'
+    : 'הקישור הזה אישי לה: הוא פונה אליה בשם'+(r.note?' ונושא את מה שכתבת':'')+
+      '. העבר לה אותו ב'+CHAN[r.chan]+'.';
   sheetForm('ההזמנה ל'+r.name+' נרשמה',
-    'הקישור הזה אישי לה: הוא פונה אליה בשם'+(r.note?' ונושא את מה שכתבת':'')+
-    '. העבר לה אותו ב'+CHAN[r.chan]+', וכשהיא תיכנס לנטע עם '+
+    openLine+' וכשהיא תיכנס לנטע עם '+
     attrText(r.contact)+' — היא תצורף ל'+nameOfPlanting(key)+' מיד, בלי שתצטרך לאשר.'+
     '<label>הקישור</label><textarea readonly style="min-height:52px">'+attrText(url)+'</textarea>'+
     '<p class="fine" style="margin-top:8px">מי שיפתח את אותו קישור עם כתובת אחרת יגיע אליך לאישור, בשמו.</p>',
@@ -4045,6 +4059,15 @@ function netaBackend(cfg){
         headers:{Prefer:'return=representation'},
         body:JSON.stringify({token:t,planting_id:plantingId,invitation_id:invitationId})})
         .then(function(rows){return (rows&&rows[0]&&rows[0].token)||t}).catch(remember);
+    },
+    /* השליחה עצמה. Edge Function אחת, בלי מפתח שירות — היא מזדהה בדיוק
+       כמו כל קריאה אחרת, ולכן לא רואה הזמנות שאינן שלה. תשובה שאינה
+       {sent:true} לא נזרקת כשגיאה: היעד לא נשלח והמסך יודע להציע קישור
+       להעתקה במקום זה, לא לקרוס. */
+    sendInvitationEmail:function(invitationId){
+      return call('/functions/v1/send-invitation',{method:'POST',
+        body:JSON.stringify({invitation_id:invitationId})})
+        .then(function(r){return r||{sent:false}}).catch(function(){return {sent:false}});
     },
 
     updatePlanting:function(id,fields){
