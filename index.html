@@ -591,7 +591,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd666caf';
+window.NETA_BUILD = '5faa712';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1382,7 +1382,9 @@ window.NETA_CONFIG = {
   </div>
   <div class="field"><label>טלפון נייד</label><input type="text" id="lg-phone" placeholder="050-0000000"></div>
   <div class="field" id="lg-pwfield" style="display:none">
-    <label>סיסמה</label><input type="password" id="lg-pw" placeholder="הסיסמה שלך" autocomplete="current-password">
+    <label>סיסמה</label><input type="password" id="lg-pw" placeholder="הסיסמה שלך" autocomplete="current-password"
+      autocapitalize="off" autocorrect="off" spellcheck="false">
+    <button type="button" class="link" style="padding-top:6px" onclick="togglePwVisible('lg-pw',this)">הצג סיסמה</button>
   </div>
   <div id="lg-codebox" style="display:none">
     <div class="field"><label id="lg-codelbl">קוד אימות נשלח אליך</label><input type="text" id="lg-otp" placeholder="4 ספרות"></div>
@@ -3905,14 +3907,25 @@ function editMyName(){
         });
     });
 }
+/* מקלדות מובייל מתנהגות לפעמים אחרת משדה לשדה — אות ראשונה שמוגדלת
+   אוטומטית, למשל — ובלי דרך לראות מה בפועל הוקלד, טעות כזו מתגלה רק
+   אחרי כישלון כניסה. שינוי type הוא הדרך הפשוטה ביותר לתת לראות. */
+function togglePwVisible(id,btn){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const show=el.type==='password';
+  el.type=show?'text':'password';
+  btn.textContent=show?'הסתר סיסמה':'הצג סיסמה';
+}
 /* סיסמה היא דרך כניסה נוספת, לא תחליף לקוד — היא ניתנת להגדרה רק מתוך
    חשבון שכבר נכנס עם קוד למייל פעם אחת, ולכן אין כאן "הסיסמה הנוכחית". */
 function openSetPassword(){
   if(!liveAccount())return;
   sheetForm('סיסמה',
     'סיסמה מאפשרת כניסה מהירה, בלי לחכות לקוד במייל. אפשר להיכנס עם קוד גם אחרי שמגדירים סיסמה.'+
-    '<label>סיסמה חדשה</label><input type="password" id="pw-val" autocomplete="new-password">'+
-    '<label style="margin-top:10px">אימות הסיסמה</label><input type="password" id="pw-val2" autocomplete="new-password">',
+    '<label>סיסמה חדשה</label><input type="password" id="pw-val" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">'+
+    '<label style="margin-top:10px">אימות הסיסמה</label><input type="password" id="pw-val2" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">'+
+    '<button type="button" class="link" style="padding-top:8px" onclick="togglePwVisible(\'pw-val\',this);togglePwVisible(\'pw-val2\',this)">הצג סיסמה</button>',
     'שמור',
     function(){
       const pw=(document.getElementById('pw-val')||{}).value||'';
