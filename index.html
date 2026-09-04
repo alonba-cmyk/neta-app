@@ -68,6 +68,27 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 .two>.btn:first-child{order:2}
 .two>.btn.ghost:last-child{order:1}
 
+/* שתי דרכי הזמנה, כבחירות שאפשר לסרוק — כרטיס לכל דרך במקום כפתור מלא
+   ופסקה מתחתיו. */
+.choice{display:flex;gap:11px;border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:9px}
+.choice.primary{border-color:var(--leaf-line);background:var(--leaf-bg);cursor:pointer}
+.choice-icon{flex-shrink:0;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+  font-size:14px;background:var(--s2)}
+.choice.primary .choice-icon{background:rgba(127,192,136,.16)}
+.choice-body{flex:1;min-width:0}
+.choice-body b{display:block;font-size:12.5px;font-weight:500;margin-bottom:3px}
+.choice-body p{font-size:10.5px;color:var(--tx-3);line-height:1.5;margin-bottom:9px}
+.choice-cta{font-family:inherit;font-size:11px;font-weight:500;padding:6px 13px;border-radius:8px;
+  cursor:pointer;border:1px solid var(--line-2);background:transparent;color:var(--tx)}
+.choice.primary .choice-cta{border:none;background:var(--leaf);color:#0E1A10}
+
+/* תצוגה מקדימה: פעולה עזר, לא הפעולה הראשית של המסך — לכן שקטה. */
+.preview-row{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.preview-row .fine{flex:1;margin:0}
+.btn-preview{flex-shrink:0;font-family:inherit;font-size:10.5px;font-weight:500;color:var(--tx-2);
+  background:transparent;border:1px solid var(--line-2);border-radius:999px;padding:6px 12px;cursor:pointer}
+.btn-preview:hover{border-color:var(--tx-2)}
+
 label{display:block;font-size:11px;color:var(--tx-3);margin-bottom:6px}
 input[type=text],input[type=date],select,textarea{width:100%;font-family:inherit;font-size:13.5px;padding:10px 11px;
   border:1px solid var(--line);border-radius:9px;background:var(--s1);color:var(--tx)}
@@ -311,6 +332,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .cbv{font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--leaf-soft)}
 .cbn b{display:block;font-size:12.5px;font-weight:500}
 .cbn i{display:block;font-style:normal;font-size:10.5px;color:var(--tx-2);margin-top:2px}
+.cbr .rx{font-family:inherit;font-size:10.5px;padding:5px 11px;border-radius:999px;cursor:pointer;
+  flex-shrink:0;background:var(--leaf-bg);border:1px solid var(--leaf-line);color:var(--leaf)}
+/* דמויות דוגמה מוחשכות, כשאין עדיין אף קרוב שמור — אותו עיקרון בדיוק כמו
+   .gsample במסכים ריקים, אבל בלי דהיית הגרדיאנט: כאן זו שורה בתוך רשימה
+   אמיתית, לא מסך שלם. */
+.cbr.ghost{opacity:.4;filter:saturate(.5);pointer-events:none}
 .cbr.pend{opacity:.6}
 .cbp{font-size:10.5px;color:var(--tx-3);flex-shrink:0}
 
@@ -513,7 +540,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'fbcc21b';
+window.NETA_BUILD = '697ec0a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -910,26 +937,42 @@ window.NETA_CONFIG = {
   <h2 class="gap-s">הזמן את הקרובים</h2>
   <p class="sub gap" id="inv-sub1">מי שתזמין יוכל להשקיע בדניאל, בלי לראות כמה השקיעו אחרים.</p>
   <div class="card center" style="background:var(--leaf-bg);border-color:#2A4530">
-    <div style="font-size:22px">🌳</div><b style="display:block;margin:6px 0 4px;font-size:14px" id="inv-title">שותפים בעתיד של דניאל</b>
+    <div style="font-size:22px" id="inv-icon">🌳</div><b style="display:block;margin:6px 0 4px;font-size:14px" id="inv-title">שותפים בעתיד של דניאל</b>
     <p class="sub" style="color:#A8CBAC" id="inv-sub2">אוגוסט 2032 · 44% מהדרך</p>
-    <a href="#" class="link" style="display:inline-block;margin-top:8px;font-size:11.5px;color:var(--leaf-soft);border-bottom:1px dashed var(--leaf-line);padding-bottom:2px" onclick="previewInvite();return false">כך זה ייראה למי שיקבל ←</a>
   </div>
+
+  <div class="preview-row">
+    <p class="fine">מה יראה מי שתזמין?</p>
+    <button class="btn-preview" onclick="previewInvite()">👁 תצוגה מקדימה</button>
+  </div>
+
+  <p class="eyebrow" style="margin-top:0">מי כבר שותף</p>
   <div class="card" id="inv-stats">
-    <div class="stat"><span class="k">סבתא רחל</span><span class="v">השתתפה</span></div>
-    <div class="stat"><span class="k">דוד יוסי</span><span class="v">השתתף</span></div>
-    <div class="stat"><span class="k">אתה</span><span class="v">8,200 ₪</span></div>
+    <div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></div><span class="cbn">סבתא רחל</span><span class="cbv">השתתפה</span></div>
+    <div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></div><span class="cbn">דוד יוסי</span><span class="cbv">השתתף</span></div>
+    <div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></div><span class="cbn">אתה</span><span class="cbv">8,200 ₪</span></div>
   </div>
   <p class="fine gap" id="inv-fine">אתה רואה סכומים מלאים כבעל הנטיעה. הקרובים רואים רק את ההשתתפות שלהם, אלא אם בחרו אחרת.</p>
 
   <!-- שתי דרכים, וכל אחת נושאת את ההסבר של עצמה. סעיף אבטחה כללי מתחת
        לשניהם הוא בדיוק מה שייצר כאן משפט שלא היה נכון לאחד מהם. -->
   <p class="eyebrow big">שתי דרכים להזמין</p>
-  <button class="btn" onclick="openRelatives()">הזמן קרוב בשמו</button>
-  <p class="fine gap">בוחרים אדם מ<b style="color:var(--tx-2)">הקרובים שלי</b>, כותבים לו משפט, והקישור נקשר לכתובת שלו. הוא <b style="color:var(--tx-2)">מצטרף מיד</b>, בלי שתצטרך לאשר.</p>
-
-  <button class="btn ghost gap-s" id="inv-copy" onclick="copyInviteLink()">העתק קישור פתוח</button>
-  <p class="fine gap">קישור בלי נמען — מתאים לקבוצת המשפחה. כל מי שייכנס דרכו <b style="color:var(--tx-2)">יופיע אצלך לאישור עם שמו</b>, ואף אחד לא מצטרף בלי שתראה מי.</p>
-
+  <div class="choice primary" onclick="openRelatives()">
+    <div class="choice-icon">👤</div>
+    <div class="choice-body">
+      <b>הזמן קרוב בשמו</b>
+      <p>בוחרים מהקרובים שלכם וכותבים משפט אישי — מצטרף מיד, בלי לאשר.</p>
+      <span class="choice-cta">הזמן קרוב</span>
+    </div>
+  </div>
+  <div class="choice">
+    <div class="choice-icon">🔗</div>
+    <div class="choice-body">
+      <b>קישור פתוח לקרובים</b>
+      <p>מתאים לקבוצה. כל מי שנכנס דרכו מגיע אליכם לאישור, בשמו.</p>
+      <button class="choice-cta" id="inv-copy" onclick="copyInviteLink()">העתק קישור</button>
+    </div>
+  </div>
 
   <button class="btn ghost gap-s" onclick="go(0)">חזרה לנטיעות שלי</button>
 </section>
@@ -2697,10 +2740,11 @@ function sheetConfirm(){const f=sheetFn;if(f&&f()===false)return;sheetClose()}
 function openInvite(key){
   const d=typeof key==='string'?inviteFor(key):key;
   document.getElementById('inv-sub1').textContent=d.sub1;
+  document.getElementById('inv-icon').textContent=d.icon||'🌳';
   document.getElementById('inv-title').textContent=d.title;
   document.getElementById('inv-sub2').textContent=d.sub2;
   document.getElementById('inv-stats').innerHTML=d.stats;
-  txt('inv-fine',d.fine||'אתה רואה סכומים מלאים כבעל הנטיעה. הקרובים רואים רק את ההשתתפות שלהם, אלא אם בחרו אחרת.');
+  txt('inv-fine','אתה רואה סכומים מלאים כבעל הנטיעה. הקרובים רואים רק את ההשתתפות שלהם, אלא אם בחרו אחרת.');
   go(7);
 }
 /* copy on the payment + aha screens follows the planting being deposited into */
@@ -4708,17 +4752,53 @@ function buildActions(p){
     }
   }
 }
+/* מי כבר שותף, ומה מוצע מתחת לזה — לא נגזר מהמצב של הנטיעה בלבד, אלא גם
+   מפנקס הקרובים שלך: אין קרוב שמור בכלל הוא בדיוק הרגע שהעידוד הכי נחוץ
+   (דמויות דוגמה מוחשכות, לא פונקציונליות — אותו עיקרון כמו מסכים ריקים
+   אחרים). יש קרוב שעוד לא בנטיעה הזו — שורה אמיתית עם כפתור שמזמין אותו
+   בפועל. וכשכולם שכבר שמורים אצלך כבר שותפים — אין מה להוסיף בכוח. */
+function inviteExtraRows(p){
+  if(!relatives.length){
+    return [['av-granny','סבתא רחל'],['av-uncle','דוד יוסי']].map(function(g){
+      return '<div class="cbr ghost"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+g[0]+'"/></svg></div>'+
+        '<span class="cbn">'+g[1]+'</span><span class="rx">הזמן</span></div>';
+    }).join('');
+  }
+  const inNames=p.who.map(function(w){return w[1]});
+  const idxs=[];
+  relatives.forEach(function(r,i){
+    if(r.contact&&inNames.indexOf(r.name)<0)idxs.push(i);
+  });
+  return idxs.slice(0,2).map(function(i){
+    const r=relatives[i];
+    return '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+(r.av||'av-granny2')+'"/></svg></div>'+
+      '<span class="cbn">'+r.name+'<i>מהקרובים שלך · עדיין '+(r.g==='f'?'לא הצטרפה':'לא הצטרף')+'</i></span>'+
+      '<span class="rx" onclick="quickInvite('+i+')">הזמן</span></div>';
+  }).join('');
+}
+/* הזמנה ישירה משורת "מי כבר שותף" — אותו נתיב שליחה בדיוק כמו מהקרובים
+   שלי, בלי לעבור דרך הבחירה מהרשימה. */
+function quickInvite(i){
+  const r=relatives[i];
+  if(!r||!r.contact){toast('חסרים פרטי קשר');return}
+  pickedPlant=cur;
+  sendInvite(r);
+}
 /* an invite card built from the planting itself — never from a fixed one */
 function inviteFor(key){
   const p=plantAt(key), others=p.who.filter(w=>w[1]!=='אתה');
   const pct=Math.round(p.now/p.end*100);
+  const joined=p.who.map(function(w){
+    return '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+(w[0]||'av-parent')+'"/></svg></div>'+
+      '<span class="cbn">'+w[1]+(w[1]==='אתה'&&!others.length?' <span class="tag">ראשון/ה 🌱</span>':'')+'</span>'+
+      '<span class="cbv">'+(w[1]==='אתה'?w[2]:(w[3]==='f'?'השתתפה':w[3]==='m'?'השתתף':VERB.participated))+'</span></div>';
+  }).join('');
   return {
+    icon:p.icon||'🌳',
     sub1:'מי שתזמין יוכל להשקיע ב'+p.kid+', בלי לראות כמה השקיעו אחרים.',
-    title:'שותפים בעתיד של '+p.kid,
+    title:p.name,
     sub2:p.date+' · '+pct+'% מהדרך',
-    stats:p.who.map(w=>'<div class="stat"><span class="k">'+w[1]+'</span><span class="v">'+
-      (w[1]==='אתה'?w[2]:(w[3]==='f'?'השתתפה':w[3]==='m'?'השתתף':VERB.participated))+'</span></div>').join(''),
-    fine:others.length?null:'עוד אף אחד לא הצטרף — אתה הראשון. ברגע שקרוב ישקיע, הוא יופיע כאן.'
+    stats:joined+inviteExtraRows(p)
   };
 }
 function openToCircle(){
