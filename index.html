@@ -578,7 +578,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b8cde68';
+window.NETA_BUILD = 'c3c6016';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3023,17 +3023,28 @@ function nameOfPlanting(key){
   return live?live.name:'הנטיעה';
 }
 
-/* המשפט מתחת לציר. אין במסד את המגדר של הנהנה, ולכן הוא נשאר חף מפועל
-   מוטה — עדיף משפט שנכון לכל ילד על ניחוש לפי השם. */
-function liveLine(monthly,others,kid,designated){
+/* מה שההפקדה בפועל מקרבת, לפי סוג הרגע — כפי שנבחר בהקמה. הכינוי כלפי
+   הנהנה תמיד "לו/ה": אין במסד את המגדר שלו, ולכן הוא נשאר חף מפועל מוטה —
+   עדיף משפט שנכון לכל ילד על ניחוש לפי השם. */
+const OCCASION_CLAUSE={
+  bar_mitzvah:'יהיה לו/ה יום בלתי נשכח',
+  studies:'יהיה לו/ה קל יותר להתחיל את הלימודים',
+  army_trip:'יהיה לו/ה קל יותר לצאת לטיול הגדול אחרי הצבא',
+  first_car:'יהיה לו/ה קל יותר לקנות רכב ראשון',
+  apartment:'יהיה לו/ה קל יותר לחסוך לדירה',
+  wedding:'יהיה לו/ה קל יותר לממן את החתונה'
+};
+/* המשפט מתחת לציר. */
+function liveLine(monthly,others,kid,designated,occasion){
   const rate=monthly?monthly.toLocaleString('he-IL')+' ₪ בחודש':'';
   const to=kid?withPrep('ל',kid):'מי שתחליט';
   if(!designated)return monthly
     ? 'בקצב של '+rate+', הקופה ממשיכה לגדול — ועדיין לא יועדה לאף אחד'
     : 'הקופה רשומה על שמך וממתינה לייעוד';
+  const clause=OCCASION_CLAUSE[occasion]||'נבנה כאן משהו שמחכה לו/ה';
   const names=others.length?listNames(others):'';
-  if(monthly&&others.length)return 'בזכות '+rate+' שאתה מפקיד, ומה ש'+names+' הוסיפו, נבנה כאן משהו ש'+'מחכה '+to;
-  if(monthly)             return 'בזכות '+rate+' שאתה מפקיד, נבנה כאן משהו שמחכה '+to;
+  if(monthly&&others.length)return 'בזכות '+rate+' שאתה מפקיד, ומה ש'+names+' הוסיפו '+to+', '+clause;
+  if(monthly)             return 'בזכות '+rate+' שאתה מפקיד '+to+', '+clause;
   if(others.length)       return 'מה שאתה ו'+names+' הפקדתם מחכה '+to;
   return 'מה שהפקדת מחכה '+to;
 }
@@ -3070,7 +3081,7 @@ function liveDetail(r){
     initiator:r.initiator_name||'',
     co:r.co_owner_name||undefined,
     who:who, monthly:monthly,
-    line:liveLine(monthly,others,desig?r.beneficiary_name:'',desig),
+    line:liveLine(monthly,others,desig?r.beneficiary_name:'',desig,r.occasion),
     lCount:n?('ולא רק כסף, '+(n===1?'מכתב אחד חתום':n+' מכתבים חתומים')+
               (r.letter_authors&&r.letter_authors.length?' — מ'+listNames(r.letter_authors):'')):'',
     lSub:n?((n===1?'המכתב ייפתח ב':'המכתבים ייפתחו ב')+when+
@@ -4269,6 +4280,8 @@ const netaServer=window.NETA_CONFIG?netaBackend(window.NETA_CONFIG):null;
 
 /* ההקמה מדברת עברית והמסד מדבר enum. התרגום יושב במקום אחד. */
 const OCCASION_ENUM={'בר/בת מצווה':'bar_mitzvah','לימודים':'studies',
+                     'טיול אחרי צבא':'army_trip','רכב ראשון':'first_car',
+                     'דירה':'apartment','חתונה':'wedding',
                      'קופת הפתעות':'open_fund'};
 function occasionEnum(t){return OCCASION_ENUM[t]||'other'}
 const MODE_ENUM={keep:'keep',safe:'guaranteed',market:'market'};
