@@ -49,12 +49,17 @@ body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse
 .home-indicator span{width:130px;height:5px;border-radius:3px;background:var(--tx-3);opacity:.55}
 .screen{display:none;animation:f .2s ease}
 .screen.on{display:block;flex:1 0 auto}
-/* מסך דליל מתמרכז אנכית במקום להיצמד לראש המסך. מרווחים אוטומטיים ולא
-   justify-content:center — כשהתוכן גבוה מהמסך, auto נכבה מעצמו והתוכן
-   חוזר להתחיל מלמעלה, בלי לחתוך את החלק העליון כמו שמרכוז flex עושה. */
-.screen.on.center-v{display:flex;flex-direction:column}
-.screen.on.center-v>:first-child{margin-top:auto}
-.screen.on.center-v>:last-child{margin-bottom:auto}
+/* מסך דליל מתמרכז אנכית במקום להיצמד לראש המסך, ו-safe הוא העיקר:
+   כשהתוכן גבוה מהמסך המרכוז נכבה מעצמו והתוכן חוזר להתחיל מלמעלה,
+   בלי לחתוך את החלק העליון כמו שמרכוז flex רגיל עושה.
+
+   קודם זה נעשה במרווחי auto על הילד הראשון והאחרון, וזה נשבר בדיוק
+   באותה מלכודת שמתועדת ב-CLAUDE.md: ‎:last-child‎ מצביע על אלמנט
+   שקיים ב-DOM, גם כשה-JS הסתיר אותו. במסך "קישור לנטיעה" יש ארבעה
+   פאנלים אחים ושלושה מהם display:none, ולכן ה-margin-bottom:auto נחת
+   על פאנל שאינו מצויר — כל המרווח הפנוי הצטבר למעלה והתוכן נדבק
+   לתחתית המסך. גל ראתה את זה באייפון. */
+.screen.on.center-v{display:flex;flex-direction:column;justify-content:safe center}
 @keyframes f{from{opacity:0}to{opacity:1}}
 
 h1{font-size:20px;font-weight:500;letter-spacing:-.02em}
@@ -700,7 +705,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '52d03ac';
+window.NETA_BUILD = '23b9ab5';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1580,7 +1585,17 @@ window.NETA_CONFIG = {
     <button class="link" style="text-align:right;padding-top:0" onclick="toast('נשלח קוד חדש')">לא קיבלתי? שלח שוב</button>
   </div>
   <button class="btn" id="lg-cta" onclick="loginNext()">שלח קוד</button>
-  <p class="fine" id="lg-fine">אם כבר יש לך חשבון, תיכנס אליו. אם לא, ניצור אחד. אותו כפתור.</p>
+  <!-- מי שמגיע דרך קישור מדלג על מסך הפתיחה ונוחת כאן ישר, ולכן עד
+       עכשיו לא ראה בכלל שאפשר להיכנס עם גוגל. אותם כפתורים בדיוק,
+       ואותה פונקציה ששומרת את טוקן ההזמנה לפני היציאה. -->
+  <div id="lg-social-wrap">
+    <div class="orline">או</div>
+    <div class="social">
+      <button onclick="socialIn('Apple')"><svg width="13" height="15" viewBox="0 0 14 17" fill="currentColor"><path d="M11.6 9c0-2 1.6-2.9 1.7-3-.9-1.4-2.4-1.5-2.9-1.6-1.2-.1-2.4.7-3 .7s-1.6-.7-2.6-.7C3.5 4.4 2.2 5.2 1.5 6.5.1 9 1.1 12.8 2.5 14.9c.7 1 1.5 2.1 2.5 2.1s1.3-.6 2.5-.6 1.5.6 2.6.6 1.7-1 2.4-2c.7-1.1 1-2.2 1-2.3 0 0-1.9-.7-1.9-2.7zM9.7 3.2c.5-.7.9-1.6.8-2.5-.8 0-1.8.5-2.4 1.2-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.4-1.1z"/></svg>Apple</button>
+      <button onclick="socialIn('Google')"><svg width="14" height="14" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.6 9.2c0-.6-.1-1.2-.2-1.8H9v3.4h4.8a4.1 4.1 0 01-1.8 2.7v2.2h2.9c1.7-1.6 2.7-3.9 2.7-6.5z"/><path fill="#34A853" d="M9 18c2.4 0 4.5-.8 6-2.2l-2.9-2.2c-.8.5-1.8.9-3.1.9-2.4 0-4.4-1.6-5.1-3.8H.9v2.3A9 9 0 009 18z"/><path fill="#FBBC05" d="M3.9 10.7a5.4 5.4 0 010-3.4V5H.9a9 9 0 000 8l3-2.3z"/><path fill="#EA4335" d="M9 3.6c1.3 0 2.5.5 3.4 1.3l2.6-2.6A9 9 0 00.9 5l3 2.3C4.6 5.2 6.6 3.6 9 3.6z"/></svg>Google</button>
+    </div>
+  </div>
+  <p class="fine" id="lg-fine" style="margin-top:12px">אם כבר יש לך חשבון, תיכנס אליו. אם לא, ניצור אחד. אותו כפתור.</p>
   <!-- הסיסמה חיה כאן ולא בדלת: רק מי שהגדיר אחת בפרופיל מחפש אותה. -->
   <button class="link" id="lg-pwlink" style="display:none" onclick="usePassword()">יש לי סיסמה</button>
   <button class="link backlink" onclick="go(ONBO.welcome)">חזרה</button>
@@ -1779,7 +1794,8 @@ window.NETA_CONFIG = {
 
     <div id="sl-live-actions">
       <button class="btn gap-s" onclick="startJoin()">אני רוצה להצטרף</button>
-      <button class="btn ghost" style="margin-top:8px" onclick="leaveShared()">רק הצצתי</button>
+      <!-- "רק הצצתי" תיאר מה המשתמשת עשתה, לא מה יקרה כשתלחץ. -->
+      <button class="btn ghost" style="margin-top:8px" onclick="leaveShared()">בפעם אחרת</button>
     </div>
   </div>
 
@@ -1862,7 +1878,10 @@ const topbars={
   9:['מה קרה לאחרונה','הרגעים הקטנים של הנתינה במשפחה'],
   10:['אלון','מלווה 2 נטיעות · שותף ב-2 נוספות']
 };
-const NOCHROME=[19,20,21,23,25];
+/* מסכים שאין בהם סרגל תחתון. 22 ו-26 נוספו אחרי שגל, שהגיעה דרך קישור
+   ולא הייתה רשומה בכלל, ראתה את הסרגל, לחצה עליו והגיעה לנתוני ההדגמה
+   של מישהו אחר. מסך שנפתח לפני שיש חשבון לא מציג ניווט לחשבון. */
+const NOCHROME=[19,20,21,22,23,25,26];
 const REVIEW=24;
 function go(i){
   if(i===ONBO.welcome)playSplash();
@@ -2176,21 +2195,23 @@ function hideTestRig(){
 /* מסתיר רק את מי שלא מחובר. קו ה"או" נעלם רק אם לא נשאר אף ספק. */
 function hideUnbuiltSignIn(){
   if(!netaServer)return;
-  const scr=document.querySelector('[data-name="פתיחה"]');
-  if(!scr)return;
-  let live=0,row=null;
-  scr.querySelectorAll('[onclick^="socialIn"]').forEach(function(b){
-    row=b.parentNode;
-    const m=(b.getAttribute('onclick')||'').match(/socialIn\('([^']+)'\)/);
-    const ready=!!(m&&OAUTH_READY[m[1]]);
-    b.style.display=ready?'':'none';
-    if(ready)live++;
+  ['פתיחה','כניסה'].forEach(function(name){
+    const scr=document.querySelector('[data-name="'+name+'"]');
+    if(!scr)return;
+    let live=0,row=null;
+    scr.querySelectorAll('[onclick^="socialIn"]').forEach(function(b){
+      row=b.parentNode;
+      const m=(b.getAttribute('onclick')||'').match(/socialIn\('([^']+)'\)/);
+      const ready=!!(m&&OAUTH_READY[m[1]]);
+      b.style.display=ready?'':'none';
+      if(ready)live++;
+    });
+    if(row){
+      row.style.display=live?'':'none';
+      const or=row.previousElementSibling;
+      if(or&&or.classList.contains('orline'))or.style.display=live?'':'none';
+    }
   });
-  if(row){
-    row.style.display=live?'':'none';
-    const or=row.previousElementSibling;
-    if(or&&or.classList.contains('orline'))or.style.display=live?'':'none';
-  }
 }
 /* אימייל בשלב הזה ולא טלפון: SMS דורש ספק חיצוני בתשלום, והמסך והזרימה
    זהים לחלוטין. המעבר לטלפון הוא החלפת נקודת קצה, לא עיצוב מחדש. */
