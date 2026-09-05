@@ -666,7 +666,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b7c4f0e';
+window.NETA_BUILD = '273bfed';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1197,8 +1197,12 @@ window.NETA_CONFIG = {
           onclick="netaServer.signOutAndReload()">התנתק והיכנס מחדש</button>
   <p class="eyebrow" style="margin-top:22px">הגדרות</p>
   <div class="card tap" onclick="openRelatives()"><div class="row"><div class="dot g"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-kin"/></svg></div><div style="flex:1"><div class="title">הקרובים שלי</div><div class="meta" id="rel-meta">4 קרובים · אחת ממתינה להצטרפות</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
-  <div class="card tap" onclick="editMyName()"><div class="row"><div class="dot g"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-name"/></svg></div><div style="flex:1"><div class="title">השם שלי</div><div class="meta" id="pf-name">אלון</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
-  <div class="card tap" onclick="pickMyFace()"><div class="row"><div class="pic" style="width:38px;height:38px;border-radius:12px;overflow:hidden;flex-shrink:0;background:var(--s2);border:1px solid var(--line)"><svg class="avsvg" viewBox="0 0 40 40" id="my-av"><use href="#av-parent"/></svg></div><div style="flex:1"><div class="title">התמונה שלי</div><div class="meta">מופיעה לך ולקרובים שהזמנת</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
+  <!-- שם ותמונה בשורה אחת. הם עונים על אותה שאלה, "איך אני מופיע
+       לאחרים", והאפליקציה כבר מתייחסת אליהם כך: "נעים להכיר" ו"מי אתה"
+       מבקשים את שניהם יחד בטופס אחד. הפיצול לשתי שורות כאן סתר החלטה
+       שכבר התקבלה במקום אחר.
+       ic-name מתאר את שניהם ממילא: כרטיס עם פרצוף ועם שורות שם. -->
+  <div class="card tap" onclick="editMyIdentity()"><div class="row"><div class="dot g"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-name"/></svg></div><div style="flex:1"><div class="title">השם והתמונה שלי</div><div class="meta" id="pf-name">אלון</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
   <div class="card tap" onclick="openPay()"><div class="row"><div class="dot g"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-card"/></svg></div><div style="flex:1"><div class="title">אמצעי תשלום</div><div class="meta" id="pf-pay-meta">הוראת קבע · 210 ₪ בכל חודש</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
   <div class="card tap" onclick="openLetters()"><div class="row"><div class="dot g"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-letter"/></svg></div><div style="flex:1"><div class="title">המכתבים שלי</div><div class="meta" id="lett-meta">2 מכתבים חתומים · טיוטה אחת</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
   <div class="card tap" id="pf-pwcard" style="display:none" onclick="openSetPassword()"><div class="row"><div class="dot g"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-key"/></svg></div><div style="flex:1"><div class="title">סיסמה</div><div class="meta">כניסה מהירה בלי לחכות לקוד למייל</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
@@ -4069,17 +4073,6 @@ function chooseAv(el,a){
   pickedAv=a;
   [...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)});
 }
-function pickMyFace(){
-  const now=(liveAccount()&&netaServer.profile&&netaServer.profile.avatar_key)||'av-parent';
-  pickedAv=now;
-  sheetForm('התמונה שלך','בחר תמונה שתופיע לך ולקרובים שהזמנת.'+avpickHTML(now),'שמור',function(){
-    if(pickedAv===now)return;
-    if(!liveAccount()){applyMyAvatar(pickedAv);toast('התמונה עודכנה');return}
-    netaServer.updateAvatar(pickedAv)
-      .then(function(){applyMyAvatar(pickedAv);toast('התמונה עודכנה')})
-      .catch(function(e){ask('התמונה לא נשמרה',(e&&e.message)||'נסה שוב.','הבנתי')});
-  });
-}
 function addRelative(){
   pickedAv='av-granny2';
   sheetForm('הוסף קרוב',
@@ -4288,7 +4281,7 @@ function setMyName(name){
   if(tb){txt('tb-t',tb[0]);txt('tb-s',tb[1]);}
 }
 function applyMyAvatar(av){
-  document.querySelectorAll('.topbar .me use, .hdr .me use, #my-av use').forEach(function(u){
+  document.querySelectorAll('.topbar .me use, .hdr .me use').forEach(function(u){
     u.setAttribute('href','#'+av);
   });
 }
@@ -4307,24 +4300,43 @@ function attrText(v){
 
 /* השם שקרובים רואים לצד ההשקעות. הכתובת שאיתה נכנסים היא דבר אחר לגמרי:
    היא חיה ב-auth.users, היא מפתח הכניסה, ואין לה מסלול שינוי כאן. */
-function editMyName(){
-  const now=liveAccount()?((netaServer.profile&&netaServer.profile.name)||'')
-                         :(topbars[10][0]||'');
-  sheetForm('השם שלי',
-    'זה השם שקרובים שהזמנת רואים לצד ההשקעות שלך. כתובת הכניסה שלך לא משתנה.'+
-    '<label>שם מלא</label><input type="text" id="nm-val" value="'+attrText(now)+'">',
+/* גיליון אחד לשם ולתמונה, כמו ב"נעים להכיר" וב"מי אתה". שומר רק את מה
+   שהשתנה בפועל: מי שנכנס לשנות שם לא ישלח בקשת אווטאר מיותרת, ולהפך.
+   שתי הבקשות רצות במקביל, וההודעה מנוסחת לפי מה שבאמת נשמר. */
+function editMyIdentity(){
+  const nowName=liveAccount()?((netaServer.profile&&netaServer.profile.name)||'')
+                             :(topbars[10][0]||'');
+  const nowAv=(liveAccount()&&netaServer.profile&&netaServer.profile.avatar_key)||'av-parent';
+  pickedAv=nowAv;
+  sheetForm('השם והתמונה שלי',
+    'כך אתה מופיע לקרובים שהזמנת, לצד ההשקעות שלך. כתובת הכניסה שלך לא משתנה.'+
+    '<label>שם מלא</label><input type="text" id="nm-val" value="'+attrText(nowName)+'">'+
+    '<label>תמונה</label>'+avpickHTML(nowAv),
     'שמור',
     function(){
       const name=((document.getElementById('nm-val')||{}).value||'').trim();
       if(!name){toast('השם לא יכול להישאר ריק');return false}
       if(name.length>80){toast('השם ארוך מדי');return false}
-      if(name===now)return;
-      if(!liveAccount()){setMyName(name);toast('השם עודכן');return}
-      netaServer.updateName(name)
-        .then(function(){setMyName(name);toast('השם עודכן')})
-        .catch(function(e){
-          ask('השם לא נשמר',(e&&e.message)||'לא הצלחנו להגיע לשרת. אפשר לנסות שוב.','הבנתי');
-        });
+      const av=pickedAv;
+      const nameChanged=name!==nowName, avChanged=av!==nowAv;
+      if(!nameChanged&&!avChanged)return;
+      const said=nameChanged&&avChanged?'השם והתמונה עודכנו'
+               :nameChanged?'השם עודכן':'התמונה עודכנה';
+      if(!liveAccount()){
+        if(nameChanged)setMyName(name);
+        if(avChanged)applyMyAvatar(av);
+        toast(said);return;
+      }
+      Promise.all([
+        nameChanged?netaServer.updateName(name):Promise.resolve(),
+        avChanged?netaServer.updateAvatar(av):Promise.resolve()
+      ]).then(function(){
+        if(nameChanged)setMyName(name);
+        if(avChanged)applyMyAvatar(av);
+        toast(said);
+      }).catch(function(e){
+        ask('לא נשמר',(e&&e.message)||'לא הצלחנו להגיע לשרת. אפשר לנסות שוב.','הבנתי');
+      });
     });
 }
 /* מקלדות מובייל מתנהגות לפעמים אחרת משדה לשדה — אות ראשונה שמוגדלת
