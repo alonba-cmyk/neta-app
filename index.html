@@ -436,6 +436,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .chips button{font-family:inherit;font-size:11.5px;padding:8px 13px;border-radius:11px;cursor:pointer;
   background:var(--s2);border:1px solid var(--line);color:var(--tx-2);transition:.15s;text-align:right}
 .chips button.on{background:var(--leaf-bg);border-color:var(--leaf-line);color:var(--leaf)}
+/* עיצוב "כניסה" ו"פתיחת חשבון" בלבד — לא הקלאסים הגלובליים, כדי לא
+   להזיז 25 מסכים אחרים ששותפים אותם קלאסים. */
+[data-name="כניסה"] h2,[data-name="כניסה"] .sub,[data-name="כניסה"] #lg-fine,
+[data-name="פתיחת חשבון"] h2,[data-name="פתיחת חשבון"] .sub{text-align:center}
+[data-name="כניסה"] .scr-icon{font-size:22px;text-align:center;margin-bottom:8px}
+[data-name="כניסה"] .chips{justify-content:center}
+[data-name="כניסה"] .chips button{border-radius:20px}
 #c-terms{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 #c-terms button{text-align:center;padding:9px 4px;font-size:11px;white-space:nowrap}
 .chk{display:flex;align-items:flex-start;gap:9px;margin-top:11px;cursor:pointer;font-size:12px;
@@ -591,7 +598,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '08e12cb';
+window.NETA_BUILD = '25fdf71';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1374,8 +1381,9 @@ window.NETA_CONFIG = {
 
 <!-- 22 SIGN IN -->
 <section class="screen" data-name="כניסה">
+  <div class="scr-icon">🌱</div>
   <h2 class="gap-s">מה המספר שלך?</h2>
-  <p class="sub gap">אותו מספר משמש לכניסה ולהזמנות שתשלח. אין סיסמה.</p>
+  <p class="sub gap" id="lg-sub">אותו מספר משמש לכניסה ולהזמנות שתשלח. אין סיסמה.</p>
   <div class="chips" id="lg-method" style="display:none;margin-bottom:6px">
     <button class="on" data-m="code" onclick="setLoginMethod('code')">קוד למייל</button>
     <button data-m="password" onclick="setLoginMethod('password')">מייל וסיסמה</button>
@@ -1901,6 +1909,7 @@ function loginPrep(){
   if(lbl)lbl.textContent='אימייל';
   const h=document.querySelector('[data-name="כניסה"] h2');
   if(h)h.textContent='מה האימייל שלך?';
+  txt('lg-sub','אותו מייל משמש לכניסה ולהזמנות שתשלח. אין סיסמה.');
   const otp=document.getElementById('lg-otp');
   if(otp){otp.placeholder='6 ספרות';otp.inputMode='numeric'}
   const methodBox=document.getElementById('lg-method');
