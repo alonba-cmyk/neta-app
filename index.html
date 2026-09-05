@@ -98,7 +98,11 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 .btn-preview:hover{border-color:var(--tx-2)}
 
 label{display:block;font-size:11px;color:var(--tx-3);margin-bottom:6px}
-input[type=text],input[type=date],select,textarea{width:100%;font-family:inherit;font-size:13.5px;padding:10px 11px;
+/* email ו-password נכללים במפורש: loginPrep מחליף את שדה הכניסה ל-type=email,
+   ובלי השורה הזו הוא נשר מהעיצוב וקיבל את ברירת המחדל של הדפדפן — שדה אפור,
+   צר, בלי פינות. אותו דבר קרה לשדות הסיסמה. */
+input[type=text],input[type=email],input[type=password],input[type=date],select,textarea{
+  width:100%;font-family:inherit;font-size:13.5px;padding:10px 11px;
   border:1px solid var(--line);border-radius:9px;background:var(--s1);color:var(--tx)}
 textarea{min-height:74px;resize:vertical;line-height:1.6}
 input:focus,select:focus,textarea:focus{outline:1px solid var(--leaf);outline-offset:0;border-color:var(--leaf)}
@@ -441,8 +445,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="כניסה"] h2,[data-name="כניסה"] .sub,[data-name="כניסה"] #lg-fine,
 [data-name="פתיחת חשבון"] h2,[data-name="פתיחת חשבון"] .sub{text-align:center}
 [data-name="כניסה"] .scr-icon{font-size:22px;text-align:center;margin-bottom:8px}
-[data-name="כניסה"] .chips{justify-content:center}
-[data-name="כניסה"] .chips button{border-radius:20px}
+[data-name="כניסה"] .chips{justify-content:center;margin:2px 0 14px}
+[data-name="כניסה"] .chips button{border-radius:20px;font-size:10.5px;padding:6px 12px}
+[data-name="כניסה"] #lg-cta,[data-name="פתיחת חשבון"] #id-cta{margin-bottom:10px}
+[data-name="כניסה"] .backlink,[data-name="פתיחת חשבון"] .backlink{margin-top:2px}
 #c-terms{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 #c-terms button{text-align:center;padding:9px 4px;font-size:11px;white-space:nowrap}
 .chk{display:flex;align-items:flex-start;gap:9px;margin-top:11px;cursor:pointer;font-size:12px;
@@ -598,7 +604,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '25fdf71';
+window.NETA_BUILD = 'fc577e6';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1398,8 +1404,9 @@ window.NETA_CONFIG = {
     <div class="field"><label id="lg-codelbl">קוד אימות נשלח אליך</label><input type="text" id="lg-otp" placeholder="4 ספרות"></div>
     <button class="link" style="text-align:right;padding-top:0" onclick="toast('נשלח קוד חדש')">לא קיבלתי — שלח שוב</button>
   </div>
-  <div class="two gap-s"><button class="btn" id="lg-cta" onclick="loginNext()">שלח קוד</button><button class="btn ghost" onclick="go(ONBO.welcome)">חזרה</button></div>
-  <p class="fine gap" id="lg-fine">אם כבר יש לך חשבון, תיכנס אליו. אם לא — ניצור אחד. אותו כפתור.</p>
+  <button class="btn" id="lg-cta" onclick="loginNext()">שלח קוד</button>
+  <p class="fine" id="lg-fine">אם כבר יש לך חשבון, תיכנס אליו. אם לא — ניצור אחד. אותו כפתור.</p>
+  <button class="link backlink" onclick="go(ONBO.welcome)">חזרה</button>
 </section>
 
 <!-- 23 HOW IT WORKS -->
@@ -1486,8 +1493,10 @@ window.NETA_CONFIG = {
      דרך ה-KYC של הגוף הפיננסי המנהל — נטע לא מאחסנת ולא מעבדת מסמכי זיהוי.
      כשיהיה גוף מנהל בפועל, השדה יחזור במקום ובצורה שהוא ידרוש. -->
   <div class="verified gap-s"><div class="vi">✓</div><div><b id="id-verified">המספר אומת</b><p>לשם אנחנו שולחים אישורי הפקדה, והתראות על כל שינוי בנטיעה.</p></div></div>
-  <div class="two gap"><button class="btn" id="id-cta" onclick="idNext()">אשר והמשך</button><button class="btn ghost" onclick="go(1)">חזרה</button></div>
-  <p class="fine gap">אימות זהות מלא נדרש רק במועד הפדיון, ומתבצע מול הגוף הפיננסי המנהל.</p>
+  <!-- אין "חזרה": המסך הזה מגיע מיד אחרי אימות, ואין לאן לחזור ממנו.
+       (הכפתור הקודם הוביל למסך ההקמה — יעד שנשאר מהזרימה הישנה.) -->
+  <button class="btn" id="id-cta" onclick="idNext()">אשר והמשך</button>
+  <p class="fine">אימות זהות מלא נדרש רק במועד הפדיון, ומתבצע מול הגוף הפיננסי המנהל.</p>
 </section>
 
 <!-- 21 ONBOARDING DONE -->
@@ -1909,7 +1918,7 @@ function loginPrep(){
   if(lbl)lbl.textContent='אימייל';
   const h=document.querySelector('[data-name="כניסה"] h2');
   if(h)h.textContent='מה האימייל שלך?';
-  txt('lg-sub','אותו מייל משמש לכניסה ולהזמנות שתשלח. אין סיסמה.');
+  txt('lg-sub','אותו מייל משמש לכניסה ולהזמנות שתשלח.');
   const otp=document.getElementById('lg-otp');
   if(otp){otp.placeholder='6 ספרות';otp.inputMode='numeric'}
   const methodBox=document.getElementById('lg-method');
