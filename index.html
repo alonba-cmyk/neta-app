@@ -705,7 +705,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '23b9ab5';
+window.NETA_BUILD = '156d53b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1790,6 +1790,12 @@ window.NETA_CONFIG = {
       </div>
     </div>
 
+    <!-- הרגע שבו מחליטים, ולכן המקום היחיד שבו המשפט הזה משנה משהו.
+         בלי לנקוב ברגע שהנטיעה נועדה לו: זה "היעד", והוא אסור לפני
+         אימות (docs/open-decisions.md §10, ובדיקה ב-permissions.sql
+         מקבעת שהוא אינו מוחזר). מה שכן מותר — השם, שכבר מוצג — מספיק
+         כדי שהמשפט יהיה על ילד ולא על מוצר. -->
+    <p class="sub center" id="sl-why" style="margin:2px 0 10px;color:var(--leaf-soft)"></p>
     <p class="fine gap" id="sl-fine">לאיזה רגע היא נועדה, ומתי בדיוק, יוצג רק אחרי שנוודא שהקישור הגיע אליך.</p>
 
     <div id="sl-live-actions">
@@ -3033,6 +3039,19 @@ function paintSharedCard(r,pre){
   const pct=Number(r.percent)||0;
   const bar=document.getElementById(q+'bar');
   if(bar)bar.style.width=Math.max(2,Math.min(100,pct))+'%';
+
+  /* מה שגל ביקשה: משפט שאומר שפעולה קטנה משנה משהו. הוא נאמר על הילד
+     ובשמו, אבל לא על הרגע שלו — ולכן "נקודת הפתיחה" ולא "הלימודים".
+     הסכום הוא ההמחשה הגנרית שכבר משמשת במסך הריק בבית, ואינו נתון של
+     הנטיעה הזאת. */
+  const why=document.getElementById(q+'why');
+  if(why){
+    why.innerHTML=kid
+      ? ('סכום קטן בכל חודש, לאורך שנים, משנה ל'+kid+' את נקודת הפתיחה.'+
+         '<br><span style="color:var(--tx-3)">100 ₪ בחודש הופכים לכ-23,500 ₪ בתוך 13 שנה.</span>')
+      : ('סכום קטן בכל חודש, לאורך שנים, משנה נקודת פתיחה.'+
+         '<br><span style="color:var(--tx-3)">100 ₪ בחודש הופכים לכ-23,500 ₪ בתוך 13 שנה.</span>');
+  }
 }
 function openShared(token){
   if(!netaServer)return false;
