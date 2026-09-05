@@ -615,7 +615,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7c3fdcf';
+window.NETA_BUILD = '527635d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1049,8 +1049,8 @@ window.NETA_CONFIG = {
     <div class="choice-icon">🔗</div>
     <div class="choice-body">
       <b>קישור פתוח לקרובים</b>
-      <p>מתאים לקבוצה. כל מי שנכנס דרכו מגיע אליכם לאישור, בשמו.</p>
-      <button class="choice-cta" id="inv-copy" onclick="copyInviteLink()">העתק קישור</button>
+      <p>מתאים לקבוצה. פעיל 24 שעות מרגע ההעתקה ומצרף מיד — כל מי שנכנס מופיע לכם בשמו בפעילות. אחרי כן הוא מבקש אישור.</p>
+      <button class="choice-cta" id="inv-copy" onclick="copyInviteLink()">העתק קישור פתוח</button>
     </div>
   </div>
 
@@ -1641,6 +1641,19 @@ window.NETA_CONFIG = {
     </div>
     <p class="fine gap">עד שיאשר, לא ייחשף לך שום פרט על הילד. אם הוא מכיר אותך, שווה גם פשוט לומר לו שביקשת.</p>
     <button class="btn gap-s" onclick="leaveShared()">בינתיים, פתח נטיעה משלך</button>
+  </div>
+
+  <!-- חלון שנסגר. שונה מקישור מת בשני דברים, ולכן מסך נפרד: הקישור היה
+       אמיתי, ויש פעולה — הבקשה מגיעה לבעל הנטיעה ומחזירה אותך פנימה. -->
+  <div id="sl-expired" style="display:none">
+    <div class="center gap">
+      <div style="font-size:26px;opacity:.65">⏳</div>
+      <h2 style="margin:8px 0 4px">הקישור הזה כבר לא בתוקף</h2>
+      <p class="sub">קישור פתוח חי 24 שעות מהרגע שנשלח, כדי שלא ימשיך לצרף אנשים אחרי שהאירוע נגמר.</p>
+    </div>
+    <p class="fine gap">אפשר לבקש להצטרף בכל זאת — מי שפתח את הנטיעה יראה מי ביקש, ויחליט.</p>
+    <button class="btn" onclick="requestSheet(pendingInvite(),'expired')">בקש להצטרף</button>
+    <button class="btn ghost gap-s" onclick="leaveShared()">לא עכשיו</button>
   </div>
 
   <!-- קישור שבוטל אינו מעיד שהוא היה קיים. -->
@@ -2761,6 +2774,11 @@ function copyText(t){
     ok?res():rej(new Error('לא הצלחנו להעתיק'));
   });
 }
+/* ההעתקה היא גם פתיחת החלון, ובכוונה: הרגע שבו אתה מוסר את הקישור הוא
+   הרגע שבו הוא אמור להיות חי. פקד נפרד "הפעל ל-24 שעות" היה טקס שני על
+   אותה פעולה, ומי שישכח אותו יחלק קישור שאינו מצרף איש.
+   העתקה חוזרת מאריכה את החלון מעכשיו — אותה סמנטיקה, בלי הפתעה. */
+const LINK_HOURS=24;
 function copyInviteLink(){
   const p=plantAt(cur);
   if(!liveAccount()||!p||!p.live){toast('הקישור הועתק');return}
@@ -2769,15 +2787,23 @@ function copyInviteLink(){
   if(btn){btn.disabled=true;btn.style.opacity='.55';btn.textContent='מכין קישור…'}
   netaServer.shareToken(p.key)
     .then(function(token){
-      const url=shareUrl(token);
-      return copyText(url).then(function(){done();toast('הקישור הועתק')},
-        function(){
-          /* אם ההעתקה נחסמה, עדיף להראות את הקישור מאשר לטעון שהועתק. */
-          done();
-          sheetForm('קישור ההזמנה',
-            'הדפדפן לא איפשר העתקה אוטומטית. אפשר להעתיק מכאן.'+
-            '<textarea readonly style="min-height:52px">'+attrText(url)+'</textarea>',
-            'סגור',function(){});
+      /* אם פתיחת החלון נכשלה, הקישור עדיין תקף — הוא פשוט שולח לתור
+         האישורים. זו נסיגה לחוויה הקודמת, לא כישלון, ולכן לא נעצור כאן. */
+      return netaServer.openLinkWindow(p.key,LINK_HOURS)
+        .then(function(){return true},function(){return false})
+        .then(function(windowed){
+          const url=shareUrl(token);
+          return copyText(url).then(
+            function(){done();toast(windowed?('הקישור הועתק · פעיל '+LINK_HOURS+' שעות'):'הקישור הועתק')},
+            function(){
+              /* אם ההעתקה נחסמה, עדיף להראות את הקישור מאשר לטעון שהועתק. */
+              done();
+              sheetForm('קישור ההזמנה',
+                (windowed?('הקישור מצרף מיד את מי שנכנס דרכו, ב-'+LINK_HOURS+' השעות הקרובות. '):'')+
+                'הדפדפן לא איפשר העתקה אוטומטית. אפשר להעתיק מכאן.'+
+                '<textarea readonly style="min-height:52px">'+attrText(url)+'</textarea>',
+                'סגור',function(){});
+            });
         });
     })
     .catch(function(e){done();ask('לא הצלחנו להכין קישור',(e&&e.message)||'נסה שוב.','הבנתי')});
@@ -2823,7 +2849,7 @@ const SHARED_SCREEN=function(){
   return screens.findIndex(function(x){return x.dataset.name==='קישור לנטיעה'});
 };
 function sharedState(which){
-  ['sl-card','sl-asked','sl-dead'].forEach(function(id){
+  ['sl-card','sl-asked','sl-dead','sl-expired'].forEach(function(id){
     const el=document.getElementById(id);
     if(el)el.style.display=(id==='sl-'+which)?'':'none';
   });
@@ -2906,6 +2932,9 @@ function finishJoin(){
   netaServer.redeemInvite(t).then(function(r){
     const status=(r&&r.status)||'dead_link';
     if(status==='dead_link'){dropInvite();sharedState('dead');return}
+    /* הטוקן **נשמר** כאן, בניגוד ל-dead_link: הכפתור במסך הזה מבקש
+       גישה על אותו קישור, וקישור שפג לא בוטל — הבקשה עליו עוברת. */
+    if(status==='expired'){sharedState('expired');return}
     if(status==='not_invited'){askForAccess(t,!!r.has_pending_invite);return}
     dropInvite();
     history.replaceState(null,'',location.pathname);
@@ -2976,9 +3005,16 @@ function askForAccess(token,waiting){
   }
   requestSheet(token);
 }
-function requestSheet(token){
+/* why מבדיל בין שתי סיבות שונות לאותה בקשה, ולכן בין שני משפטים: קישור
+   פתוח שלא נשלח אליך אישית, לעומת קישור שהחלון שלו נסגר. משפט אחד לשניהם
+   היה נכון רק לאחד. */
+function requestSheet(token,why){
+  if(!token){sharedState('dead');return}
   sheetForm('נבקש אישור ממי שפתח את הנטיעה',
-    'זה קישור פתוח — לא נשלחה דרכו הזמנה אישית לאף אחד. מי שפתח את הנטיעה יראה מי ביקש, ויחליט.'+
+    (why==='expired'
+      ? 'החלון של הקישור נסגר, ולכן הוא כבר לא מצרף לבד. '
+      : 'זה קישור פתוח — לא נשלחה דרכו הזמנה אישית לאף אחד. ')+
+    'מי שפתח את הנטיעה יראה מי ביקש, ויחליט.'+
     '<label>שם מלא</label><input type="text" id="ja-name" placeholder="למשל: רחל לוי">'+
     '<label>מה הקשר שלך לילד</label><input type="text" id="ja-rel" placeholder="למשל: סבתא">',
     'שלח בקשה',
@@ -4559,10 +4595,16 @@ function netaBackend(cfg){
     },
     /* קישור השיתוף. אותו קישור פעיל לכל נטיעה — יצירת אחד חדש בכל לחיצה
        הייתה מותירה מאחור קישורים שאי אפשר לבטל כי אף אחד לא יודע שהם קיימים.
-       הטוקן נוצר בדפדפן מ-crypto, בתבנית שה-CHECK במסד דורש. */
+       הטוקן נוצר בדפדפן מ-crypto, בתבנית שה-CHECK במסד דורש.
+
+       invitation_id=is.null אינו קישוט: באותה טבלה יושבים גם הקישורים
+       האישיים, ובנטיעה שהוזמנו אליה כמה קרובים השאילתה בלי הסינון הזה
+       יכלה להחזיר את הקישור האישי של אחד מהם — ואז "העתק קישור פתוח"
+       היה מוסר לקבוצה קישור שנשלח לאדם אחד. */
     shareToken:function(plantingId){
       return call('/rest/v1/share_links?select=token&planting_id=eq.'+plantingId+
-                  '&revoked_at=is.null&limit=1',{method:'GET'})
+                  '&invitation_id=is.null&revoked_at=is.null'+
+                  '&order=created_at.asc&limit=1',{method:'GET'})
         .then(function(r){
           if(r&&r[0])return r[0].token;
           const a=new Uint8Array(24);crypto.getRandomValues(a);
@@ -4573,6 +4615,11 @@ function netaBackend(cfg){
             body:JSON.stringify({token:t,planting_id:plantingId})})
             .then(function(rows){return (rows&&rows[0]&&rows[0].token)||t});
         }).catch(remember);
+    },
+    /* חלון החיים של הקישור הפתוח. בתוכו הוא מצרף מיד, אחריו הוא מציע
+       לבקש חדש. מי שפותח את החלון הוא היוזם בלבד — הבדיקה במסד, לא כאן. */
+    openLinkWindow:function(plantingId,hours){
+      return rpc('open_link_window',{p_planting:plantingId,p_hours:hours});
     },
     /* מה שמי שפותח את הקישור רואה: שם, מועד ואחוז. הפונקציה במסד פתוחה
        לקריאה ללא התחברות, וזו בדיוק מטרתה — אין בה סכום ואין שם תורם. */
