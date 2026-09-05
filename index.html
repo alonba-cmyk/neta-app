@@ -549,13 +549,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    וזה בדיוק הלקח שנרשם באפיון על תוכן שתלוי באנימציה כדי להיראות. */
 @keyframes wmIn{from{opacity:0;transform:translateY(11px)}to{opacity:1;transform:none}}
 @keyframes wmLeafIn{from{opacity:0;transform:translateY(9px) scale(.55)}to{opacity:1;transform:none}}
-.wordmark{position:relative;display:inline-block;padding-top:26px}
+.wordmark{position:relative;display:inline-block;padding-top:10px}
 .wm-word{display:block;font-size:76px;font-weight:800;letter-spacing:-.05em;line-height:.9;
   color:var(--tx);animation:wmIn .72s cubic-bezier(.22,.9,.3,1) both}
-/* המיקום כוונן מול הגליף ולא לפי מספר עגול: ב-top:-2px הגבעול נגע
-   בכתף של האות ע ונקרא כהתנגשות. -16px נותנים רווח קטן שמספיק כדי
-   להפריד בלי לנתק, ו-padding-top על המכל מפנה לו את המקום מלמעלה. */
-.wm-leaf{position:absolute;top:-16px;left:-14px;color:var(--leaf);display:block;
+/* הערכים לקוחים מהמוקאפ שאושר, ולא כוונו מחדש: שם הגבעול יושב על
+   הכתף של האות ע ונקרא כנעילה אחת. כשהרחקתי אותו כדי למנוע "התנגשות"
+   הוא נראה מנותק ומרחף, וזה היה גרוע יותר מהחפיפה. */
+.wm-leaf{position:absolute;top:-12px;left:-6px;color:var(--leaf);display:block;
   animation:wmLeafIn .55s cubic-bezier(.3,1.45,.5,1) .4s both}
 /* שורת ההסבר מתחת לכותרת. המשפט ארוך: 456px בשורה אחת, כלומר 228px
    הם המינימום לשתי שורות. 290px נותנים מרווח של 27% מעליו, ולכן הוא
@@ -654,7 +654,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '680b742';
+window.NETA_BUILD = '0c17943';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1477,7 +1477,7 @@ window.NETA_CONFIG = {
              אלון אחרי שראה אותו לצד כל החלופות. -->
         <div class="wordmark">
           <span class="wm-word">נטע</span>
-          <svg class="wm-leaf" width="34" height="39" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg>
+          <svg class="wm-leaf" width="30" height="34" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg>
         </div>
         <p class="claim" style="margin:11px auto 0">הכסף גדל בזמן שהם גדלים</p>
         <!-- הכותרת היא המטאפורה, והשורה הזו היא ההסבר. היא מוסיפה את שתי
