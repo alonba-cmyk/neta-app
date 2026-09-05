@@ -515,12 +515,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    וזו אותה מלכודת שמתועדת ב-CLAUDE.md. אותה התנגשות קיימת גם במסך
    הפעילות ולא נגעתי בה, כי לא היא שנבדקה כאן. */
 #home-empty p,#kin-empty p{max-width:290px}
-#home-empty .fine{font-size:10.5px;line-height:1.5;max-width:290px}
+#home-empty .fine{max-width:290px}
 .es .art{margin-bottom:16px;color:var(--leaf)}
 .es h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
 .es p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin-top:10px;max-width:27ch}
 .es .btn{margin-top:18px}
-.es .fine{margin-top:11px;max-width:31ch}
+/* font-size חוזר לכאן במפורש, וזה לא כפילות: .fine קובע 10.5px, אבל
+   .es p (מחלקה+אלמנט) גובר עליו בספציפיות וקבע 12.5px — כלומר הערת
+   השוליים הוצגה בדיוק בגודל הפסקה הראשית, בבית ובפעילות כאחד. הסלקטור
+   הזה (שתי מחלקות) גובר על שניהם ומחזיר את הגודל שתוכנן. */
+.es .fine{margin-top:11px;max-width:31ch;font-size:10.5px;line-height:1.5}
 .es .strip{margin-top:17px;width:100%;background:var(--s1);border:1px solid var(--line);
   border-radius:13px;padding:12px 13px;text-align:right}
 .es .strip b{display:block;font-size:11.5px;font-weight:500}
@@ -650,7 +654,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0cbe81c';
+window.NETA_BUILD = 'b8fd1c1';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -880,7 +884,7 @@ window.NETA_CONFIG = {
   <p class="hint" id="freq-stop-hint" style="margin:-2px 0 10px">אפשר לעצור את ההפקדה בכל רגע.</p>
   <div id="panel-m" class="field"><div class="row"><input type="range" id="amt-m" min="20" max="1000" step="10" value="100"><b id="out-m" style="min-width:62px;text-align:left;font-size:13.5px">100 ₪</b></div></div>
   <div id="panel-l" class="field" style="display:none"><div class="row"><input type="range" id="amt-l" min="100" max="30000" step="100" value="1000"><b id="out-l" style="min-width:74px;text-align:left;font-size:13.5px">1,000 ₪</b></div></div>
-  <div class="hero" id="hero"><p class="hero-label" id="hero-label">בחר למטה מה יקרה לכסף עד אז</p><p class="hero-label" id="hero-mid" style="display:none"></p><p class="hero-num" id="hero-num">—</p><p class="hero-sub" id="hero-sub"></p></div>
+  <div class="hero" id="hero"><p class="hero-label" id="hero-label">בחר למטה מה יקרה לכסף עד אז</p><p class="hero-label" id="hero-mid" style="display:none"></p><p class="hero-num" id="hero-num">·</p><p class="hero-sub" id="hero-sub"></p></div>
 
   <p class="eyebrow" id="eb-term" style="margin-top:20px">2 · מתי תרצה לקצור את הפירות?</p>
   <div class="chips" id="c-terms">
@@ -1674,8 +1678,8 @@ window.NETA_CONFIG = {
 
     <div class="card center" style="background:var(--leaf-bg);border-color:var(--leaf-line)">
       <div class="brandmark"><svg width="34" height="40" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
-      <b style="display:block;margin:6px 0 4px;font-size:14px" id="sl-title">—</b>
-      <p class="sub" style="color:var(--leaf-soft)" id="sl-meta">—</p>
+      <b style="display:block;margin:6px 0 4px;font-size:14px" id="sl-title">·</b>
+      <p class="sub" style="color:var(--leaf-soft)" id="sl-meta">·</p>
       <div style="margin-top:12px;height:6px;border-radius:3px;background:var(--s2);overflow:hidden">
         <div id="sl-bar" style="height:100%;width:0;background:var(--leaf);border-radius:3px"></div>
       </div>
@@ -2320,7 +2324,7 @@ function setFreq(f){freq=f;document.querySelectorAll('.pill[data-f]').forEach(b=
 function setMode(m){mode=m;document.querySelectorAll('.opt[data-m]').forEach(el=>el.classList.toggle('on',el.dataset.m===m));document.getElementById('safe-block').style.display=m==='safe'?'block':'none';document.getElementById('market-block').style.display=m==='market'?'block':'none';if(m==='safe'){setTrack(document.querySelector('.trk[data-r="0.035"]'));return}if(m==='market'){setTrack(document.querySelector('.trk[data-r="0.06"]'));return}render()}
 function setTrack(el){rate=parseFloat(el.dataset.r);document.querySelectorAll('.trk').forEach(t=>t.classList.toggle('on',t===el));render()}
 function fvCalc(v,r){const y=goal.years;if(r===0)return freq==='m'?v*y*12:v;if(freq==='m'){const m=r/12,n=y*12;return v*((Math.pow(1+m,n)-1)/m)}return v*Math.pow(1+r,y)}
-function render(){const v=freq==='m'?+amtM.value:+amtL.value;if(freq==='m')document.getElementById('out-m').textContent=v.toLocaleString('he-IL')+' ₪';else document.getElementById('out-l').textContent=v.toLocaleString('he-IL')+' ₪';const label=document.getElementById('hero-label'),mid=document.getElementById('hero-mid'),num=document.getElementById('hero-num'),sub=document.getElementById('hero-sub'),fine=document.getElementById('fine');if(mode===null){label.textContent='בחרו למטה מה יקרה לכסף עד אז';mid.style.display='none';num.textContent='—';num.classList.add('idle');sub.textContent='';fine.textContent='';document.getElementById('amt-sticky-txt').textContent='';return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);const approx=mode==='market'?'כ-':'';num.textContent=approx+Math.round(total).toLocaleString('he-IL')+' ₪';document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+approx+Math.round(total).toLocaleString('he-IL')+' ₪';if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();ahaCopy();document.getElementById('aha-sub').innerHTML='בחרת להשקיע <b style="color:var(--tx)">'+v.toLocaleString('he-IL')+' ₪</b> '+(freq==='m'?'כל חודש':'היום')+', שיהפכו עד '+goal.dateLabel+' לכ-<b style="color:var(--leaf)">'+approx+Math.round(total).toLocaleString('he-IL')+' ₪</b>';const assume=freq==='m'?'בהנחה שההפקדה נמשכת עד אז. ':'';
+function render(){const v=freq==='m'?+amtM.value:+amtL.value;if(freq==='m')document.getElementById('out-m').textContent=v.toLocaleString('he-IL')+' ₪';else document.getElementById('out-l').textContent=v.toLocaleString('he-IL')+' ₪';const label=document.getElementById('hero-label'),mid=document.getElementById('hero-mid'),num=document.getElementById('hero-num'),sub=document.getElementById('hero-sub'),fine=document.getElementById('fine');if(mode===null){label.textContent='בחרו למטה מה יקרה לכסף עד אז';mid.style.display='none';num.textContent='·';num.classList.add('idle');sub.textContent='';fine.textContent='';document.getElementById('amt-sticky-txt').textContent='';return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);const approx=mode==='market'?'כ-':'';num.textContent=approx+Math.round(total).toLocaleString('he-IL')+' ₪';document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+approx+Math.round(total).toLocaleString('he-IL')+' ₪';if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();ahaCopy();document.getElementById('aha-sub').innerHTML='בחרת להשקיע <b style="color:var(--tx)">'+v.toLocaleString('he-IL')+' ₪</b> '+(freq==='m'?'כל חודש':'היום')+', שיהפכו עד '+goal.dateLabel+' לכ-<b style="color:var(--leaf)">'+approx+Math.round(total).toLocaleString('he-IL')+' ₪</b>';const assume=freq==='m'?'בהנחה שההפקדה נמשכת עד אז. ':'';
   fine.textContent=assume+(mode==='keep'?'הסכום נשמר כפי שהוא ואינו חשוף לשוק. שימו לב שערכו הריאלי עשוי להישחק עם הזמן בשל אינפלציה.':mode==='safe'?'הקרן והריבית מובטחות על ידי הגוף הפיננסי המנהל. התנאים המדויקים, לרבות סכומי מינימום, נקבעים על ידו.':'התשואות להמחשה בלבד ומבוססות על נתוני עבר. הערך עשוי לרדת. אינן מהוות הבטחת תשואה או ייעוץ השקעות.');}
 document.querySelectorAll('.opt[data-m]').forEach(el=>el.onclick=()=>{
   modeTouched=true;setMode(el.dataset.m);
@@ -2485,7 +2489,7 @@ function cStepGo(n){
 /* the wizard produces one true review, right before the lock — not a recap at every step along the way */
 const TRACK_LABELS={0.02:'פיקדון גמיש · כ-2% בשנה',0.035:'פיקדון נעול · כ-3.5% בשנה',
   0.06:'מאוזן · כ-6% בשנה',0.08:'עוקב מדד · כ-8% בשנה',0.09:'נועז · כ-9% בשנה'};
-function trackLabel(){return mode==='keep'?'יישמר כמו שהוא (ללא ריבית)':(TRACK_LABELS[rate]||'—');}
+function trackLabel(){return mode==='keep'?'יישמר כמו שהוא (ללא ריבית)':(TRACK_LABELS[rate]||'·');}
 function opennessLabel(){return shareMode==='open'?'פתוחה לאנשים אחרים':'פרטית';}
 function paySummary(){
   const head=document.getElementById('py-headrow');
@@ -2706,7 +2710,7 @@ function buildLiveEdit(p){
   document.getElementById('e-date').value=p.targetDate||'';
   txt('e-datewarn','דחיית המועד אפשרית, והקדמתו לא, מי שכבר השקיע עשה זאת מתוך הבנה שהכסף ייפתח ב'+p.date+'. כל שינוי יישלח אליו בהתראה.');
   const o=p.openedOn?new Date(p.openedOn+'T00:00:00'):null;
-  txt('e-opened',o?(months[o.getMonth()]+' '+o.getFullYear()):'—');
+  txt('e-opened',o?(months[o.getMonth()]+' '+o.getFullYear()):'·');
   txt('e-bene',p.kid||'עדיין לא יועדה');
   document.getElementById('e-sexfield').style.display=p.designated?'':'none';
   editSex=p.sex||null;
@@ -3237,7 +3241,7 @@ let pendingPay=null;
 function methodLabel(){
   if(paySaved!==null)return (pays[paySaved]||{}).t||'אמצעי שמור';
   const names={hora:'הוראת קבע מהבנק','card-rec':'חיוב כרטיס אשראי',card:'כרטיס אשראי',bit:'Bit',transfer:'העברה בנקאית'};
-  return names[payPick]||'—';
+  return names[payPick]||'·';
 }
 function toReview(){
   pendingPay=null;
