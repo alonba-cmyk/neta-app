@@ -649,7 +649,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'fb562a2';
+window.NETA_BUILD = 'f2850fc';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1127,7 +1127,7 @@ window.NETA_CONFIG = {
     </div>
   </div>
 
-  <button class="btn gap-s" onclick="openRelatives()">שלח לקרוב מהרשימה</button>
+  <button class="btn gap-s" onclick="openRelatives(7)">שלח לקרוב מהרשימה</button>
   <button class="btn ghost" style="margin-top:8px" id="inv-copy" onclick="copyInviteLink()">העתק קישור פתוח</button>
   <p class="fine" style="margin-top:9px">הזמנה בשם נשלחת לאדם אחד ומצרפת אותו מיד. הקישור הפתוח פעיל 24 שעות, מצרף מיד, וכל מי שנכנס דרכו מופיע לכם בשמו בפעילות.</p>
 
@@ -1137,7 +1137,7 @@ window.NETA_CONFIG = {
   <p class="eyebrow" id="inv-quick-h" style="display:none;margin-top:22px">הזמנה מהירה מהקרובים שלך</p>
   <div class="card" id="inv-stats" style="display:none"></div>
 
-  <button class="btn ghost gap-s" onclick="go(0)">חזרה לנטיעות שלי</button>
+  <button class="btn ghost gap-s" id="inv-back" onclick="backFromInvite()">חזרה לנטיעה</button>
 </section>
 
 <!-- 8 REDEEM -->
@@ -1399,7 +1399,7 @@ window.NETA_CONFIG = {
   <div class="card" id="rel-list"></div>
   <button class="btn gap-s" onclick="addRelative()">+ הוסף קרוב</button>
   <p class="fine gap">ההזמנה היא קישור אישי, חד-פעמי, שנקשר למי שפתח אותו, קישור שהועבר הלאה לא יצרף אף אחד אחר. הזמנה במייל נשלחת אוטומטית; בוואטסאפ אתה שולח אותה בעצמך. קרוב שהצטרף רואה רק את הנטיעות שצירפת אותו אליהן, ורק התקדמות, בלי סכומים.</p>
-  <button class="btn ghost" onclick="go(10)">חזרה לפרופיל</button>
+  <button class="btn ghost" id="rel-back" onclick="backFromRelatives()">חזרה לפרופיל</button>
 </section>
 
 
@@ -1410,7 +1410,7 @@ window.NETA_CONFIG = {
   <div id="pm-list"></div>
   <button class="btn ghost gap-s" onclick="addPay()">+ הוסף אמצעי תשלום</button>
   <p class="fine gap">ההפקדות עוברות ישירות לחשבונות הנעולים אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף ואינה שומרת את פרטי הכרטיס.</p>
-  <button class="btn ghost" onclick="go(10)">חזרה לפרופיל</button>
+  <button class="btn ghost" id="rel-back" onclick="backFromRelatives()">חזרה לפרופיל</button>
 </section>
 
 <!-- 17 MY LETTERS / המכתבים שלי -->
@@ -1419,7 +1419,7 @@ window.NETA_CONFIG = {
   <p class="sub gap">מה שכתבת לילדים, ומתי הם ייפתחו.</p>
   <div class="card" id="lt-list"></div>
   <p class="fine gap">מכתב ניתן לעריכה עד המועד המיוחל, החתימה קובעת מי יקרא ומתי, לא מקפיאה את התוכן. אחרי שהוא נפתח, הוא נשאר של הילד לתמיד, גם אם הכסף נמשך.</p>
-  <button class="btn ghost" onclick="go(10)">חזרה לפרופיל</button>
+  <button class="btn ghost" id="rel-back" onclick="backFromRelatives()">חזרה לפרופיל</button>
 </section>
 
 
@@ -3175,7 +3175,15 @@ function openInvite(key){
   const has=!!(d.quick&&d.quick.length);
   quick.style.display=has?'':'none';
   qh.style.display=has?'':'none';
+  /* אותו כלל כמו במסך הקרובים: חוזרים לנטיעה שההזמנה שייכת לה, ולא
+     לבית. כשאין נטיעה טעונה הכיתוב אומר את האמת ומוביל לבית. */
+  const bk=document.getElementById('inv-back');
+  if(bk)bk.textContent=plantAt(cur)?'חזרה לנטיעה':'חזרה לנטיעות שלי';
   go(7);
+}
+function backFromInvite(){
+  if(cur&&plantAt(cur)){openDetail(cur);return}
+  go(0);
 }
 /* copy on the payment + aha screens follows the planting being deposited into */
 function ahaCopy(){
@@ -3937,7 +3945,18 @@ function relMeta(){
     (q?' · '+(q===1?'בקשה אחת ממתינה לאישורך':q+' בקשות ממתינות לאישורך'):
       (pend?' · '+pend+' ממתינים להצטרפות':' · כולם באפליקציה')));
 }
-function openRelatives(){buildRequests();buildRelatives();go(15)}
+/* "הקרובים שלי" נפתח משני מקומות: מהפרופיל, ומכפתור "שלח לקרוב
+   מהרשימה" שבמסך ההזמנה. כפתור החזרה שלו היה קבוע על הפרופיל, ולכן
+   מי שהגיע דרך ההזמנה נזרק למסך שלא היה בו מעולם. עכשיו הוא זוכר
+   מאיפה נכנס, וגם הכיתוב על הכפתור משתנה בהתאם. */
+let relBack=10;
+function openRelatives(from){
+  relBack=(from==null?10:from);
+  const b=document.getElementById('rel-back');
+  if(b)b.textContent=(relBack===7?'חזרה להזמנה':'חזרה לפרופיל');
+  buildRequests();buildRelatives();go(15);
+}
+function backFromRelatives(){go(relBack)}
 /* המשפט האישי. האזהרה יושבת מתחת לשדה ברגע הכתיבה, ולא בהגדרות ולא
    בעזרה — זה הרגע היחיד שבו היא משנה משהו. */
 function noteHTML(){
