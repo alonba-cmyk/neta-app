@@ -613,7 +613,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '8d4f12a';
+window.NETA_BUILD = '48113bb';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -731,7 +731,7 @@ window.NETA_CONFIG = {
 </section>
 
 <!-- 1 CREATE -->
-<section class="screen" data-name="הקמה">
+<section class="screen center-v" data-name="הקמה">
 
   <div id="cp-0">
   <h2 class="gap-x">נטיעה חדשה</h2>
@@ -874,7 +874,7 @@ window.NETA_CONFIG = {
 </section>
 
 <!-- 3 PAYMENT -->
-<section class="screen" data-name="תשלום">
+<section class="screen center-v" data-name="תשלום">
   <div class="row gap"><div class="dot g" id="pay-icon">🎂</div><div><div class="title">איך תעביר את ההפקדה?</div><div class="meta" id="pay-meta">הפקדה חודשית · עבור דניאל</div></div></div>
 
   <div id="pay-saved" class="stack gap" style="display:none"></div>
@@ -897,7 +897,7 @@ window.NETA_CONFIG = {
 </section>
 
 <!-- 4 AHA -->
-<section class="screen" data-name="רגע ההשקעה">
+<section class="screen center-v" data-name="רגע ההשקעה">
   <div class="center">
     <svg width="120" height="140" viewBox="0 0 140 160" style="margin:4px auto 0;display:block">
       <ellipse cx="70" cy="150" rx="36" ry="6" fill="var(--s2)"/>
@@ -1191,7 +1191,7 @@ window.NETA_CONFIG = {
 </section>
 
 <!-- 12 CODE ENTRY -->
-<section class="screen" data-name="הזנת קוד">
+<section class="screen center-v" data-name="הזנת קוד">
   <div class="center gap">
     <div style="font-size:30px">🌳</div>
     <h2 style="margin:11px 0 5px" id="rc-h">הגיע היום שלך</h2>
@@ -1322,7 +1322,7 @@ window.NETA_CONFIG = {
 
 
 <!-- 18 NEW PLANTING, DAY TWO -->
-<section class="screen" data-name="נטיעה · יום 2">
+<section class="screen center-v" data-name="נטיעה · יום 2">
   <div class="row gap" style="align-items:flex-start">
     <div class="dot g" style="width:40px;height:40px;font-size:17px">🎂</div>
     <div style="flex:1"><div class="title" style="font-size:14.5px">בר המצווה של איתי</div><div class="meta" style="margin-top:3px">המועד המיוחל: אוגוסט 2039</div></div>
@@ -1356,6 +1356,8 @@ window.NETA_CONFIG = {
 
 
 <!-- 19 WELCOME -->
+<!-- בלי center-v: #splash כבר פורש את עצמו לגובה המלא (min-height:100% עם
+     בלוק flex:1 שממרכז את הסמל) — המרכוז החיצוני לא היה משנה בו כלום. -->
 <section class="screen" data-name="פתיחה">
   <div id="splash" class="grow" style="display:flex;flex-direction:column;min-height:100%">
     <div style="flex:1;display:grid;place-items:center;text-align:center">
@@ -1509,7 +1511,7 @@ window.NETA_CONFIG = {
 </section>
 
 <!-- 21 ONBOARDING DONE -->
-<section class="screen" data-name="סיום הרשמה">
+<section class="screen center-v" data-name="סיום הרשמה">
   <div class="center">
     <svg width="112" height="132" viewBox="10 6 40 57" style="color:var(--leaf);margin:6px auto 0;display:block" aria-hidden="true"><use href="#sprout-art"/></svg>
     <h2 style="margin:14px 0 6px">נטעת את הראשונה</h2>
@@ -1525,7 +1527,7 @@ window.NETA_CONFIG = {
 </section>
 
 <!-- 24 REVIEW — the last screen before an irreversible commitment -->
-<section class="screen" data-name="סיכום ואישור">
+<section class="screen center-v" data-name="סיכום ואישור">
   <h2 class="gap-x">לפני שנועלים</h2>
   <p class="sub gap">מכאן הכסף נרשם ונעול עד המועד. זה הרגע לבדוק.</p>
 
@@ -1553,7 +1555,7 @@ window.NETA_CONFIG = {
 </section>
 
 <!-- 25 PARTNER INVITE (the receiving side — what a co-owner sees when they open the link) -->
-<section class="screen" data-name="הזמנה לשותפות">
+<section class="screen center-v" data-name="הזמנה לשותפות">
   <div class="center gap">
     <div style="font-size:26px">🌱</div>
     <h2 style="margin:8px 0 4px">אלון הזמין אותך</h2>
@@ -1579,7 +1581,7 @@ window.NETA_CONFIG = {
 </section>
 
 <!-- 26 SHARED LINK (what someone who opens the link sees, before signing in) -->
-<section class="screen" data-name="קישור לנטיעה">
+<section class="screen center-v" data-name="קישור לנטיעה">
 
   <!-- הכרטיס לפני אימות. אין בו שם ילד ואין יעד — אלה בדיוק שני השדות
        שהאפיון אוסר לחשוף כאן, וקישור עובר בוואטסאפ. -->
