@@ -442,6 +442,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   padding:16px 18px 20px;transform:translateY(100%);transition:transform .26s cubic-bezier(.22,.8,.3,1);
   max-height:86%;overflow-y:auto;scrollbar-width:none}
 .sheet::-webkit-scrollbar{display:none}
+/* 86% הם אחוז מגובה המסגרת, שגבוהה מהחלון בנייד — גיליון ארוך היה
+   יכול לגלוש מעל הקצה העליון גם אחרי הגלילה. dvh מודד את החלון עצמו.
+   בנפרד מהשורה שמעל ולא במקומה: דפדפן בלי dvh היה פוסל את ההצהרה
+   כולה ונשאר בלי תקרה בכלל. */
+@supports (height:1dvh){.sheet{max-height:min(86%,78dvh)}}
 .chips{display:flex;gap:7px;flex-wrap:wrap;margin:4px 0 2px}
 .chips button{font-family:inherit;font-size:11.5px;padding:8px 13px;border-radius:11px;cursor:pointer;
   background:var(--s2);border:1px solid var(--line);color:var(--tx-2);transition:.15s;text-align:right}
@@ -626,7 +631,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'c178217';
+window.NETA_BUILD = '6cb3bbf';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3103,7 +3108,25 @@ function ask(title,body,okLabel,fn,altLabel,altFn){
   document.getElementById('sh-acts').innerHTML=fn
     ? '<div class="two"><button class="btn" onclick="sheetConfirm()">'+okLabel+'</button><button class="btn ghost" onclick="sheetAltGo()">'+(altLabel||'ביטול')+'</button></div>'
     : '<button class="btn" onclick="sheetClose()">'+okLabel+'</button>';
-  document.getElementById('scrim').classList.add('on');
+  sheetShow();
+}
+/* מסגרת המכשיר נשארת ביחס קבוע 390:844 (החלטה מהאפיון — קשירה לגובה
+   החלון מועכת אותה), ולכן בדפדפן נייד תחתית המסגרת יושבת מתחת לקצה
+   הנראה. הגיליון נצמד לתחתית הזו — וכך "להתנתק?" הופיע מבצבץ בשוליים
+   כשהכפתורים שלו 134px מתחת לקצה המסך, כלומר בלי דרך לאשר או לבטל.
+
+   התיקון אינו בגיליון אלא בגלילה: ברגע הפתיחה מביאים את תחתית המסגרת
+   אל תחתית החלון. גוללים אל ה-scrim ולא אל ה-.sheet עצמו, כי הגיליון
+   מתחיל את חייו ב-translateY(100%) — מדידה שלו באותו רגע מחזירה מיקום
+   שהוא כבר לא יהיה בו, והדף היה נגלל רחוק מדי. גלילה מיידית ולא חלקה:
+   הגיליון ממילא מונפש פנימה, ושתי תנועות בו-זמנית נראות רועדות.
+
+   כל שלושת המקומות שפותחים גיליון עוברים דרך כאן. זה לא היה באג של
+   "להתנתק?" אלא של כל גיליון באפליקציה, והוא פשוט התגלה שם. */
+function sheetShow(){
+  const sc=document.getElementById('scrim');
+  sc.classList.add('on');
+  if(sc.scrollIntoView)sc.scrollIntoView({block:'end',behavior:'auto'});
 }
 function sheetAltGo(){const f=sheetAlt;sheetClose();if(f)f()}
 function sheetForm(title,html,okLabel,fn){
@@ -3112,7 +3135,7 @@ function sheetForm(title,html,okLabel,fn){
   sheetFn=fn||null;
   document.getElementById('sh-acts').innerHTML=
     '<div class="two"><button class="btn" onclick="sheetConfirm()">'+okLabel+'</button><button class="btn ghost" onclick="sheetClose()">ביטול</button></div>';
-  document.getElementById('scrim').classList.add('on');
+  sheetShow();
 }
 function sheetClose(){document.getElementById('scrim').classList.remove('on');sheetFn=null;sheetAlt=null}
 function sheetConfirm(){const f=sheetFn;if(f&&f()===false)return;sheetClose()}
@@ -5034,7 +5057,7 @@ function showProjectionSheet(){
     '</div>';
   sheetFn=null;sheetAlt=null;
   document.getElementById('sh-acts').innerHTML='<button class="btn" onclick="sheetClose()">סגור</button>';
-  document.getElementById('scrim').classList.add('on');
+  sheetShow();
 }
 
 /* ─── הדגם שבתחתית מסך ריק ────────────────────────────────────────────
