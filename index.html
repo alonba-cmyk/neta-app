@@ -591,7 +591,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '452b069';
+window.NETA_BUILD = '08e12cb';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1360,7 +1360,7 @@ window.NETA_CONFIG = {
       </div>
     </div>
     <div>
-      <button class="btn" onclick="beginSignIn()">המשך עם טלפון</button>
+      <button class="btn" onclick="beginSignIn()">המשך עם אימייל</button>
       <div class="orline">או</div>
       <div class="social">
         <button onclick="socialIn('Apple')"><svg width="13" height="15" viewBox="0 0 14 17" fill="currentColor"><path d="M11.6 9c0-2 1.6-2.9 1.7-3-.9-1.4-2.4-1.5-2.9-1.6-1.2-.1-2.4.7-3 .7s-1.6-.7-2.6-.7C3.5 4.4 2.2 5.2 1.5 6.5.1 9 1.1 12.8 2.5 14.9c.7 1 1.5 2.1 2.5 2.1s1.3-.6 2.5-.6 1.5.6 2.6.6 1.7-1 2.4-2c.7-1.1 1-2.2 1-2.3 0 0-1.9-.7-1.9-2.7zM9.7 3.2c.5-.7.9-1.6.8-2.5-.8 0-1.8.5-2.4 1.2-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.4-1.1z"/></svg>Apple</button>
@@ -3372,6 +3372,16 @@ function buildRequests(){
   box.innerHTML=requests.map(function(q,i){
     /* בקשה אמיתית מגיעה עם שם הנטיעה מהשרת; בהדגמה היא מפנה ל-plants{}. */
     const where=q.plantName||(plants[q.plant]&&plants[q.plant].name)||'הנטיעה';
+    /* הצעה (מ"ספרי למישהו") היא לא בקשת גישה: אף אחד עוד לא ראה כלום,
+       ואין כאן כלום לאשר — רק שם שקרוב הביא. לכן כרטיס וכפתורים שונים. */
+    if(q.kind==='suggestion'){
+      return '<div class="req"><div class="rq-h">'+
+        '<div class="ra"><svg viewBox="0 0 40 40"><use href="#av-friend"/></svg></div>'+
+        '<b>'+q.name+'</b><span>'+q.when+'</span></div>'+
+        '<p>הצעה מ'+q.by+' להזמין את <b>'+q.name+'</b> ל'+where+'.</p>'+
+        '<div class="rq-a"><button class="ok" onclick="sendSuggested('+i+')">שלח הזמנה</button>'+
+        '<button class="no" onclick="declineSuggested('+i+')">לא עכשיו</button></div></div>';
+    }
     return '<div class="req"><div class="rq-h">'+
       '<div class="ra"><svg viewBox="0 0 40 40"><use href="#'+(q.av||'av-friend')+'"/></svg></div>'+
       '<b>'+q.name+'</b><span>'+q.when+'</span></div>'+
@@ -3384,11 +3394,17 @@ function buildRequests(){
    ממתין לו — וההכרעה נכתבת לשרת. */
 function loadRequests(){
   if(!liveAccount())return Promise.resolve();
-  return netaServer.pendingRequests().then(function(rows){
+  return Promise.all([netaServer.pendingRequests(),netaServer.pendingSuggestions()]).then(function(res){
+    const rows=res[0]||[],sugg=res[1]||[];
     requests.length=0;
     rows.forEach(function(r){
-      requests.push({id:r.id,name:r.name,plantName:r.planting_name,
+      requests.push({kind:'access',id:r.id,name:r.name,plantName:r.planting_name,
                      why:r.reason||'',when:agoText(r.requested_at),av:'av-friend'});
+    });
+    sugg.forEach(function(s){
+      requests.push({kind:'suggestion',id:s.id,name:s.name,contact:s.contact,channel:s.channel,
+                     plantingId:s.planting_id,plantName:s.planting_name,by:s.suggested_by_name,
+                     when:agoText(s.created_at)});
     });
     buildRequests();relMeta();
   }).catch(function(){});
@@ -3414,6 +3430,37 @@ function answerReq(i,ok){
   }
   requests.splice(i,1);
   buildRequests();buildRelatives();
+}
+/* "שלח הזמנה" על הצעה פותח את אותו גיליון הזמנה קיים, ממולא מראש — אין
+   מנגנון שליחה נפרד לבנות. ה-invited_by נשאר של בעל הנטיעה: מהרגע הזה
+   זו הזמנה רגילה שלו, לא של מי שהציע. */
+function sendSuggested(i){
+  const q=requests[i];
+  pickedPlant=q.plantingId;
+  sheetForm('הזמנת '+q.name,
+    '<label>שם</label><input type="text" id="r-name" value="'+q.name+'">'+
+    '<label>לאן לשלוח</label>'+contactHTML(q.contact)+noteHTML(),
+    'שלח הזמנה',
+    function(){
+      const n=(document.getElementById('r-name')||{}).value;
+      if(!n||!n.trim()){toast('צריך שם');return false}
+      const c=((document.getElementById('r-contact')||{}).value||'').trim();
+      if(!c){toast('צריך טלפון או אימייל כדי לשלוח');return false}
+      const r={av:'av-friend',name:n.trim(),rel:'קרוב משפחה',g:'m',status:'none',
+               chan:chanOf(c)||'wa',contact:c,
+               note:((document.getElementById('r-note')||{}).value||'').trim()};
+      const ok=sendInvite(r);
+      if(ok===false)return false;
+      if(liveAccount())netaServer.resolveSuggestion(q.id,'sent').catch(function(){});
+      requests.splice(i,1);buildRequests();relMeta();
+    });
+}
+function declineSuggested(i){
+  const q=requests[i];
+  if(!liveAccount()){requests.splice(i,1);buildRequests();relMeta();return}
+  netaServer.resolveSuggestion(q.id,'declined')
+    .then(function(){requests.splice(i,1);buildRequests();relMeta();toast('ההצעה נדחתה')})
+    .catch(function(e){ask('לא הצלחנו להשלים את הפעולה',(e&&e.message)||'נסה שוב.','הבנתי')});
 }
 function sentSheet(k,r){
   ask('ההזמנה נשלחה ל'+r.name,
@@ -3661,6 +3708,27 @@ function copyRelativeLink(i){
         });
     })
     .catch(function(e){ask('לא הצלחנו להביא את הקישור',(e&&e.message)||'נסה שוב.','הבנתי')});
+}
+/* קרוב אינו מזמין (SPEC.md, כלל ④) — זה לא משתנה. מה שכן: קרוב שכבר
+   משתתף יכול להציע שם, ובעל הנטיעה מחליט אם ומתי לשלוח הזמנה אמיתית.
+   ההצעה עצמה לא יוצרת קישור ולא שולחת שום דבר. */
+function suggestSomeone(plantingId){
+  sheetForm('ספרי למישהו',
+    'מי שפתח את הנטיעה יראה את זה ויחליט אם לשלוח הזמנה. שום דבר לא נשלח עד אז.'+
+    '<label>שם</label><input type="text" id="sg-name" placeholder="למשל: דוד יוסי">'+
+    '<label>איך ליצור איתו קשר</label>'+contactHTML(''),
+    'שלחי',
+    function(){
+      const n=(document.getElementById('sg-name')||{}).value;
+      if(!n||!n.trim()){toast('צריך שם');return false}
+      const c=((document.getElementById('r-contact')||{}).value||'').trim();
+      if(!c){toast('צריך טלפון או אימייל כדי לשלוח');return false}
+      if(!liveAccount()){toast('ההצעה נשלחה');return}
+      const chan=chanOf(c)==='mail'?'email':'whatsapp';
+      netaServer.suggestRelative(plantingId,n.trim(),c,chan)
+        .then(function(){toast('ההצעה שלך נשלחה')})
+        .catch(function(e){ask('ההצעה לא נשלחה',(e&&e.message)||'נסה שוב.','הבנתי')});
+    });
 }
 function inviteRelative(i){
   const r=relatives[i];
@@ -4385,6 +4453,18 @@ function netaBackend(cfg){
     resolveRequest:function(id,approve){
       return rpc('resolve_request',{p_id:id,p_approve:approve}).catch(remember);
     },
+    /* "ספרי למישהו": הצעה של קרוב, לא הזמנה — אין לה קישור ולא ערוץ
+       אימות. בעל הנטיעה מחליט אם ומתי היא הופכת להזמנה אמיתית. */
+    suggestRelative:function(plantingId,name,contact,channel){
+      return rpc('suggest_relative',{p_planting:plantingId,p_name:name,
+        p_contact:contact,p_channel:channel}).catch(remember);
+    },
+    pendingSuggestions:function(){
+      return rpc('pending_suggestions').then(function(r){return r||[]}).catch(remember);
+    },
+    resolveSuggestion:function(id,status){
+      return rpc('resolve_suggestion',{p_id:id,p_status:status}).catch(remember);
+    },
     /* מה שקרוב פתח וצירף אותי אליו. הסכום שחוזר הוא שלי בלבד. */
     plantingsImIn:function(){
       /* תשובה שאינה מערך פירושה שהקריאה נכשלה בצורה שלא נתפסה — ומערך
@@ -5064,8 +5144,9 @@ function buildLiveActions(p){
   if(!p.mine){
     acts.className='';
     acts.innerHTML=pairWithBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button>');
-    note.textContent='את הנטיעה הזו פתח'+(p.co?'ו':'')+' '+(p.initiator||'קרוב')+
-      '. ההזמנות אליה נשלחות ממי שפתח אותה, לא ממך.';
+    note.innerHTML='את הנטיעה הזו פתח'+(p.co?'ו':'')+' '+(p.initiator||'קרוב')+
+      '. ההזמנות אליה נשלחות ממי שפתח אותה, לא ממך. '+
+      '<a href="#" onclick="suggestSomeone(cur);return false" style="color:var(--leaf)">ספרי למישהו</a>';
     return;
   }
   if(!p.designated){
@@ -5122,7 +5203,8 @@ function buildActions(p){
         (p.co?'':' · '+addPartnerLink);
     }else{
       const o=p.who[0],f=o[3]==='f';
-      note.textContent='את הנטיעה הזו פתח'+(f?'ה':'')+' '+o[1]+'. ההזמנות אליה נשלחות '+(f?'ממנה':'ממנו')+', לא ממך.';
+      note.innerHTML='את הנטיעה הזו פתח'+(f?'ה':'')+' '+o[1]+'. ההזמנות אליה נשלחות '+(f?'ממנה':'ממנו')+', לא ממך. '+
+        '<a href="#" onclick="suggestSomeone(cur);return false" style="color:var(--leaf)">ספרי למישהו</a>';
     }
   }
 }
