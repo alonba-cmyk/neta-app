@@ -497,6 +497,19 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #kin-ghost .card{padding:4px 12px}
 #kin-ghost:after{background:linear-gradient(to bottom,transparent 62%,var(--bg) 99%)}
 #kin-ghost .cbr.pend{opacity:1}
+/* המסך הריק של הבית בלבד, ולא .es הגלובלי שמשרת עוד שני מסכים.
+
+   רוחב: 27ch נתנו לפסקה 190px, והיא נשברה לשלוש שורות. שתי שורות
+   דורשות 218px, אבל 223px נמדדו כאן כשתי שורות ואצל אלון יצאו שלוש,
+   כי דפדפן נייד יכול להגדיל טקסט לפי הגדרת הנגישות של המשתמש. לכן לא
+   הרוחב המינימלי אלא 290px: נבדק ששתי השורות מחזיקות גם בהגדלה של 130%.
+
+   גודל: .fine קובע 10.5px, אבל .es p (מחלקה+אלמנט) גובר עליו בספציפיות
+   וקבע 12.5px. כלומר הערת השוליים הוצגה בדיוק בגודל של הפסקה הראשית,
+   וזו אותה מלכודת שמתועדת ב-CLAUDE.md. אותה התנגשות קיימת גם במסך
+   הפעילות ולא נגעתי בה, כי לא היא שנבדקה כאן. */
+#home-empty p{max-width:290px}
+#home-empty .fine{font-size:10.5px;line-height:1.5;max-width:290px}
 .es .art{margin-bottom:16px;color:var(--leaf)}
 .es h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
 .es p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin-top:10px;max-width:27ch}
@@ -631,7 +644,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0e26307';
+window.NETA_BUILD = '71d9e28';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -742,12 +755,15 @@ window.NETA_CONFIG = {
     <div class="art"><svg width="66" height="78" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
     <h3>שיהיה להם ממה להתחיל</h3>
     <!-- "אתה קובע מתי היא נפתחת" ירד: ברגע הזה המשתמש עוד לא יודע מה זו
-         נטיעה, ולכן עוד לא הגיע לשאלה מי שולט במועד — פרט השליטה שייך
-         לזרימת ההקמה, שם הוא נבחר במסך ייעודי. בלעדיו הפסקה יוצאת 3
-         שורות במקום 4 (נמדד: 62px מול 83px ברוחב 215px). -->
-    <p>נטיעה היא הפקדה חודשית קטנה שמחכה לרגע אחד: בר מצווה, לימודים, דירה ראשונה.</p>
+         נטיעה, ולכן עוד לא הגיע לשאלה מי שולט במועד. פרט השליטה שייך
+         לזרימת ההקמה, שם הוא נבחר במסך ייעודי.
+
+         נקודתיים ולא פסיק: מה שבא אחריהן הוא רשימת דוגמאות, ופסיק היה
+         נבלע בין הפסיקים של הרשימה עצמה. אז המשפט נקרא כרשימה של
+         ארבעה פריטים במקום הגדרה ושלוש דוגמאות. -->
+    <p>נטיעה היא השקעה חודשית קטנה שמחכה לרגע אחד: בר מצווה, לימודים, דירה ראשונה.</p>
     <button class="btn" onclick="startCreate()">פתח את הנטיעה הראשונה</button>
-    <p class="fine">100 ₪ בחודש היום יהפכו לכ-23,500 ₪ בעוד 13 שנה. אפשר לשנות את הסכום בכל עת.</p>
+    <p class="fine">100 ₪ בחודש יהפכו לכ-23,500 ₪ בעוד 13 שנה. אפשר לשנות בכל עת.</p>
     <div class="gsample" id="home-ghost" aria-hidden="true"></div>
   </div>
 </section>
