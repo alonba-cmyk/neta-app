@@ -210,17 +210,24 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .nc-meta{font-size:10.5px;color:var(--tx-3);line-height:1.3;margin-top:3px;white-space:nowrap}
 /* מעבר לשתיים הראשונות: רק כרטיס "הצצה" אחד נוסף מוצג, באותה דהייה
    שמשמשת את .gsample במסכים ריקים — לא רק opacity, גם דוהה אל תוך
-   הרקע ופחות רווי. השאר לא מצוירים בכלל עד "הצג הכל". הכרטיס עצמו
-   נשאר לחיץ; רק התג "הצג הכל" תפוס לפעולת הגילוי. */
-.declutter{position:relative}
+   הרקע ופחות רווי. השאר לא מצוירים בכלל עד שמבקשים. */
+.declutter{position:relative;margin-bottom:9px}
 .declutter .ncard{opacity:.34;filter:saturate(.45);transition:opacity .2s ease,filter .2s ease}
 .declutter.open .ncard{opacity:1;filter:none}
-.declutter-fade{position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(to bottom,transparent 18%,var(--bg) 92%);
-  display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px}
-.declutter-fade span{pointer-events:auto;cursor:pointer;font-size:10.5px;color:var(--tx-2);background:var(--s2);
-  border:1px solid var(--line-2);border-radius:999px;padding:3px 11px}
-.declutter.open .declutter-fade{display:none}
+/* הדהייה עוצרת מעל שורת הגילוי ולא מכסה אותה. קודם התג ישב על גבי
+   הטקסט של הכרטיס עצמו — שם ובלון סכום שנקראו מבעד לכיתוב — וזה מה
+   שיצר את העומס. */
+.declutter-fade{position:absolute;top:0;left:0;right:0;bottom:36px;pointer-events:none;
+  background:linear-gradient(to bottom,transparent 12%,var(--bg) 86%)}
+/* שורה שקטה ולא כפתור: מיד מתחתיה יושב "פתח נטיעה חדשה", ושני
+   כפתורים זה מתחת לזה מתחרים על אותה תשומת לב. היא גם נוקבת במספר,
+   כי "עוד 3 נטיעות" אומר מה מקבלים ו"הצג הכל" רק מבקש ללחוץ. */
+.declutter-more{display:flex;align-items:center;justify-content:center;gap:6px;
+  width:100%;height:36px;background:none;border:none;font-family:inherit;
+  font-size:11.5px;color:var(--tx-2);cursor:pointer;transition:color .15s}
+.declutter-more:hover{color:var(--leaf)}
+.declutter-more .chev{transform:rotate(-90deg)}
+.declutter.open .declutter-fade,.declutter.open .declutter-more{display:none}
 .nc-op{font-size:10.5px;color:var(--tx-3);margin-top:1px}
 .nc-avs{display:flex;margin-right:auto;flex-shrink:0}
 .nc-av{width:27px;height:27px;border-radius:8px;border:2px solid var(--s1);overflow:hidden;background:var(--s2);flex-shrink:0}
@@ -394,13 +401,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .cbr.ghost{opacity:.4;filter:saturate(.5);pointer-events:none}
 .cbr.pend{opacity:.6}
 .cbp{font-size:10.5px;color:var(--tx-3);flex-shrink:0}
-/* שורת "הזמן קרוב אחר" בתוך רשימת המשקיעים — לא קישור זעיר בשוליים,
-   אלא שורה מלאה באותו גובה בדיוק כמו שורות המשתתפים, כי זה ה-CTA
-   החשוב במסך הזה ולא אמור להיבלע בין השאר. */
-.cbr.add{cursor:pointer}
-.cbr.add .cba{background:var(--leaf-bg);border:1px solid var(--leaf-line);display:grid;place-items:center;
-  color:var(--leaf);font-size:15px;font-weight:600}
-.cbr.add .cbn{color:var(--leaf-soft);font-weight:500}
 
 /* טבלת "הצפי לעתיד" — סיכום צפי לכל הנטיעות המיועדות, בגיליון תחתון.
    עמודת השם גמישה (minmax(0,1fr)) והמספרים לפי התוכן (auto) — כך שם
@@ -660,7 +660,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '2b900a9';
+window.NETA_BUILD = '87de9d4';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3561,7 +3561,7 @@ function paintDetail(key,p){
   document.getElementById('d-who').innerHTML=p.who.map(w=>
     '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+w[0]+'"/></svg></div>'+
     '<span class="cbn">'+w[1]+'</span><span class="cbv">'+w[2]+'</span></div>').join('')+
-    (p.mine&&p.shared ? inviteExtraRows(p)+investorInviteRow() : '');
+    (p.mine&&p.shared ? inviteExtraRows(p) : '');
   const solo=!p.shared&&p.who.length<2;
   document.getElementById('d-cbh').style.display=solo?'none':'';
   document.getElementById('d-who').style.display=solo?'none':'';
@@ -5087,7 +5087,7 @@ function cardHTML(p){
     '</div></div>';
 }
 /* יותר משתי נטיעות מציפות את המסך, אז רק כרטיס אחד נוסף — הצצה דהויה —
-   מצטרף לשתיים הראשונות. השאר לא נכנסים ל-DOM בכלל עד "הצג הכל", כדי
+   מצטרף לשתיים הראשונות. השאר לא נכנסים ל-DOM בכלל עד שמבקשים, כדי
    שלא ייראו כל הכרטיסים גם דהויים. הכרטיס המוצג נשאר לחיץ כרגיל. */
 let gardenHidden='';
 function gardenHTML(list){
@@ -5096,7 +5096,11 @@ function gardenHTML(list){
   return list.slice(0,2).map(cardHTML).join('')+
     '<div class="declutter" id="declutter">'+
       cardHTML(list[2])+
-      '<div class="declutter-fade" onclick="revealPlantings()"><span>הצג הכל</span></div>'+
+      '<div class="declutter-fade"></div>'+
+      '<button class="declutter-more" onclick="revealPlantings()">עוד '+
+        (list.length-2)+' נטיעות'+
+        '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>'+
+      '</button>'+
     '</div>';
 }
 function revealPlantings(){
@@ -5500,7 +5504,7 @@ function buildLiveActions(p){
   if(pencil)pencil.style.display=p.mine?'':'none';
   if(!p.mine){
     acts.className='';
-    acts.innerHTML=backOnly();
+    acts.innerHTML=actionsFor(p);
     note.innerHTML='את הנטיעה הזו פתח'+(p.co?'ו':'')+' '+(p.initiator||'קרוב')+
       '. ההזמנות אליה נשלחות ממי שפתח אותה, לא ממך. '+
       '<a href="#" onclick="suggestSomeone(cur);return false" style="color:var(--leaf)">ספרי למישהו</a>';
@@ -5514,12 +5518,12 @@ function buildLiveActions(p){
   }
   if(p.shared){
     acts.className='';
-    acts.innerHTML=backOnly();
+    acts.innerHTML=actionsFor(p);
     note.style.display='none';
     return;
   }
   acts.className='';
-  acts.innerHTML=backOnly();
+  acts.innerHTML=actionsFor(p);
   note.innerHTML=p.co?('פרטית, רק אתה ו'+p.co+' רואים אותה')
     :'הנטיעה הזאת פרטית, <a href="#" onclick="openToCircle();return false" style="color:var(--leaf)">פתח אותה לקרובים</a>';
 }
@@ -5530,11 +5534,18 @@ function buildLiveActions(p){
 function pairWithBack(primaryBtn){
   return '<div class="two">'+primaryBtn+'<button class="btn ghost" onclick="go(0)">חזרה</button></div>';
 }
-/* מאז ש"השקע עוד" עלה לשורת הסכום שהוא משנה, ברוב המצבים לא נשארת
-   פעולה ראשית בתחתית המסך — ואז "חזרה" היא קישור שקט ולא כפתור
-   ברוחב חצי, בדיוק כמו הכלל שכתוב אצלנו. */
-function backOnly(){
-  return '<button class="link" onclick="go(0)">חזרה</button>';
+/* "השקע עוד" עלה לשורת הסכום שהוא משנה, וההזמנה ירדה מתוך כרטיס
+   המשתתפים לכאן. שם היא הייתה שורה ברשימה של אנשים — פעולה כללית
+   שמתחזה לפריט — וכשורה היא לא נראתה לחיצה. בשורת הפעולות היא
+   הכפתור הראשי היחיד, וזה גם מה שהיא: הפעולה שמזיזה את הנטיעה
+   קדימה, כי הוראת הקבע כבר רצה מעצמה.
+
+   מי שאינו היוזם, ונטיעה שאינה פתוחה לקרובים, אינם מזמינים — ואז
+   נשארת "חזרה" לבדה, ברוחב מלא ולא בחצי, כי אין לה עם מי לחלוק. */
+function actionsFor(p){
+  return (p.mine&&p.shared&&p.designated!==false)
+    ? pairWithBack('<button class="btn" onclick="openInvite(cur)">הזמן קרוב</button>')
+    : '<button class="btn ghost" onclick="go(0)">חזרה</button>';
 }
 function buildActions(p){
   txt('d-invest',p.designated===false?'הפקד לקופה':'השקע עוד');
@@ -5549,12 +5560,12 @@ function buildActions(p){
       (p.co?'':' רוצה לבנות אותה עם עוד אדם אחד? '+addPartnerLink);
   }else if(p.mine&&p.shared){
     acts.className='';
-    acts.innerHTML=backOnly();
+    acts.innerHTML=actionsFor(p);
     note.style.display=p.co?'none':'block';
     if(!p.co)note.innerHTML='רוצה לבנות אותה עם עוד אדם אחד, כבעלים שווה? '+addPartnerLink;
   }else{
     acts.className='';
-    acts.innerHTML=backOnly();
+    acts.innerHTML=actionsFor(p);
     note.style.display='block';
     if(p.mine){
       note.innerHTML=(p.co?'פרטית, רק אתה ו'+p.co+' רואים אותה. ':'הנטיעה הזאת פרטית, ')+
@@ -5598,9 +5609,6 @@ function inviteExtraRows(p){
 /* השורה הקבועה בתחתית "מי השקיע" — מי שלא ברשימת הקרובים השמורים,
    או שרוצים פשוט לפתוח את מסך ההזמנה המלא. נשארת בכל מצב, כולל כשאין
    אף קרוב שמור (השורות מעליה מוחשכות ולא לחיצות). */
-function investorInviteRow(){
-  return '<div class="cbr add" onclick="openInvite(cur)"><div class="cba">+</div><span class="cbn">הזמן קרוב אחר</span></div>';
-}
 /* הזמנה ישירה משורת "מי כבר שותף" — אותו נתיב שליחה בדיוק כמו מהקרובים
    שלי, בלי לעבור דרך הבחירה מהרשימה. */
 function quickInvite(i){
