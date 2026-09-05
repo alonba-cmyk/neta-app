@@ -615,7 +615,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'fefcb42';
+window.NETA_BUILD = '8dfce4c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1951,11 +1951,23 @@ let loginMethod='code';
 /* Apple ו-Google עדיין לא ממומשים. בהדגמה זה הצגה בלבד; בחשבון אמיתי
    כפתור שמצהיר שהוא מאמת אותך ולא מאמת כלום הוא הדבר המסוכן ביותר שיכול
    לשבת במסך כניסה — ולכן הוא נעלם שם עד שיהיה אמיתי. */
+/* ספקים שמחוברים בפועל ב-Supabase. כפתור שמופיע ואינו מאמת הוא הדבר
+   המסוכן ביותר במסך כניסה — ולכן הרשימה הזו היא מקור האמת גם להצגה
+   (hideUnbuiltSignIn) וגם לפעולה. Apple ייכנס כשיהיה חשבון מפתחים. */
+const OAUTH_READY={Google:true};
 function socialIn(w){
   if(netaServer){
-    ask('עוד לא זמין',
-        'כניסה עם '+w+' תתווסף בהמשך. בינתיים הכניסה היא באימייל וקוד חד-פעמי.',
-        'הבנתי');
+    if(!OAUTH_READY[w]){
+      ask('עוד לא זמין',
+          'כניסה עם '+w+' תתווסף בהמשך. בינתיים הכניסה היא באימייל וקוד חד-פעמי.',
+          'הבנתי');
+      return;
+    }
+    /* היציאה לגוגל טוענת את הדף מחדש, ולכן טוקן הזמנה שעדיין יושב בכתובת
+       נשמר קודם — אחרת מי שהגיע דרך קישור יאבד אותו באמצע. */
+    const t=sharedTokenInUrl();
+    if(t)keepInvite(t);
+    netaServer.oauth(w.toLowerCase());
     return;
   }
   userPhone='';toast('התחברות עם '+w);
@@ -1975,16 +1987,24 @@ function hideTestRig(){
 }
 
 /* בחשבון אמיתי הכפתורים והמפריד "או" יורדים מהמסך לגמרי. */
+/* מסתיר רק את מי שלא מחובר. קו ה"או" נעלם רק אם לא נשאר אף ספק. */
 function hideUnbuiltSignIn(){
   if(!netaServer)return;
   const scr=document.querySelector('[data-name="פתיחה"]');
   if(!scr)return;
+  let live=0,row=null;
   scr.querySelectorAll('[onclick^="socialIn"]').forEach(function(b){
-    const row=b.parentNode;
-    row.style.display='none';
-    const or=row.previousElementSibling;
-    if(or&&or.classList.contains('orline'))or.style.display='none';
+    row=b.parentNode;
+    const m=(b.getAttribute('onclick')||'').match(/socialIn\('([^']+)'\)/);
+    const ready=!!(m&&OAUTH_READY[m[1]]);
+    b.style.display=ready?'':'none';
+    if(ready)live++;
   });
+  if(row){
+    row.style.display=live?'':'none';
+    const or=row.previousElementSibling;
+    if(or&&or.classList.contains('orline'))or.style.display=live?'':'none';
+  }
 }
 /* אימייל בשלב הזה ולא טלפון: SMS דורש ספק חיצוני בתשלום, והמסך והזרימה
    זהים לחלוטין. המעבר לטלפון הוא החלפת נקודת קצה, לא עיצוב מחדש. */
@@ -4538,6 +4558,14 @@ function netaBackend(cfg){
     redeemInvite:function(token){
       return rpc('redeem_invite',{p_token:token})
         .then(function(r){return (r&&r[0])||null}).catch(remember);
+    },
+    /* יציאה לספק חיצוני. החזרה מגיעה עם הטוקנים ב-hash, ו-fromUrlHash שבראש
+       המפעל כבר קולט אותם ומנקה את הכתובת — ולכן אין כאן שום דבר לטפל בו
+       אחרי החזרה. redirect_to חייב להתאים לרשימת ה-Redirect URLs בפרויקט. */
+    oauth:function(provider){
+      const back=location.origin+location.pathname+location.search;
+      location.href=base+'/auth/v1/authorize?provider='+encodeURIComponent(provider)+
+        '&redirect_to='+encodeURIComponent(back);
     },
     requestAccess:function(token,name,relation){
       return rpc('request_access',{p_token:token,p_name:name,p_relation:relation})
