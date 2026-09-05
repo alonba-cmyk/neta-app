@@ -197,6 +197,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* הפריט השלישי נושא איתו את הנקודה שמפרידה אותו, כדי שהסתרתו לא
    תשאיר נקודה תלויה בסוף השורה בחשבון שאין בו צפי. */
 .s-meta .grp{display:flex;align-items:center;gap:8px}
+/* בהגדלת טקסט השורה נשברת בכל ניסוח — שלושה פריטים ומספר בן שש
+   ספרות לא נכנסים ל-309 פיקסלים. מה שאסור להשאיר זו הנקודה המפרידה
+   שנתלית בראש השורה השנייה. */
+.s-meta .grp.nodot>i{display:none}
 .s-meta b{color:var(--tx-2);font-weight:600;font-variant-numeric:tabular-nums}
 .s-meta i{width:3px;height:3px;border-radius:50%;background:var(--line-2);font-style:normal;flex-shrink:0}
 .ncard{background:var(--s1);border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:9px;
@@ -668,7 +672,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '829c4f6';
+window.NETA_BUILD = '2e6740c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -803,7 +807,7 @@ window.NETA_CONFIG = {
         </svg>
       </div>
     </div>
-    <div class="s-meta"><span><b id="s-cnt">2</b> השקעות בעתידם</span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span><span class="grp" id="s-fut-grp"><i></i><span>צפוי <b id="s-fut"></b></span></span></div>
+    <div class="s-meta"><span><b id="s-cnt">2</b> השקעות</span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span><span class="grp" id="s-fut-grp"><i></i><span>צפוי <b id="s-fut"></b></span></span></div>
   </div>
 
   <div class="hdr-row">
@@ -5126,6 +5130,19 @@ function projectablePlantings(model){
     return p.designated&&p.projection>p.accrued;
   });
 }
+/* הנקודה המפרידה שייכת לפריט שאחריה, ולכן כשהוא יורד שורה היא יורדת
+   איתו ונתלית בראשה. הבדיקה היא על המיקום בפועל ולא על אורך הטקסט,
+   ולכן היא נכונה בכל גודל טקסט, בכל שפה ובכל אורך מספר. */
+function tidyMetaRow(){
+  const m=document.querySelector('#home-full .s-meta'),
+        g=document.getElementById('s-fut-grp');
+  if(!m||!g||g.style.display==='none')return;
+  requestAnimationFrame(function(){
+    const first=m.firstElementChild;
+    if(first)g.classList.toggle('nodot',g.offsetTop>first.offsetTop);
+  });
+}
+addEventListener('resize',tidyMetaRow);
 /* הסכום העתידי המצטבר. שורת הסטטיסטיקה וטבלת "הצפי לעתיד" חייבות
    להסכים, ולכן שתיהן סוכמות בדיוק את אותה רשימה — אחרת המשתמש רואה
    מספר אחד בכותרת ומחבר מספר אחר מהטבלה.
@@ -5338,6 +5355,7 @@ function buildHomeSummary(){
     if(futGrp){
       futGrp.style.display=proj.length?'':'none';
       txt('s-fut','כ-'+shekel(projectedTotal(proj)));
+      tidyMetaRow();
     }
     if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();loadPeople();}
     buildFeed();buildConnection();
