@@ -450,7 +450,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    להזיז 25 מסכים אחרים ששותפים אותם קלאסים. */
 [data-name="כניסה"] h2,[data-name="כניסה"] .sub,[data-name="כניסה"] #lg-fine,
 [data-name="פתיחת חשבון"] h2,[data-name="פתיחת חשבון"] .sub{text-align:center}
-[data-name="כניסה"] .scr-icon{font-size:22px;text-align:center;margin-bottom:8px}
+/* סמל הנבט של האפליקציה (#sprout-art), לא אמוג'י — אותו סמל כמו במסך
+   הפתיחה, בסרגל התחתון ובסיום ההרשמה. */
+[data-name="כניסה"] .scr-icon{text-align:center;margin-bottom:10px;color:var(--leaf)}
+[data-name="כניסה"] .scr-icon svg{display:block;margin:0 auto}
 [data-name="כניסה"] .chips{justify-content:center;margin:2px 0 14px}
 [data-name="כניסה"] .chips button{border-radius:20px;font-size:10.5px;padding:6px 12px}
 [data-name="כניסה"] #lg-cta,[data-name="פתיחת חשבון"] #id-cta{margin-bottom:10px}
@@ -610,7 +613,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd9889b9';
+window.NETA_BUILD = '8d4f12a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1393,7 +1396,7 @@ window.NETA_CONFIG = {
 
 <!-- 22 SIGN IN -->
 <section class="screen center-v" data-name="כניסה">
-  <div class="scr-icon">🌱</div>
+  <div class="scr-icon"><svg width="40" height="47" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
   <h2 class="gap-s">מה המספר שלך?</h2>
   <p class="sub gap" id="lg-sub">אותו מספר משמש לכניסה ולהזמנות שתשלח. אין סיסמה.</p>
   <div class="chips" id="lg-method" style="display:none;margin-bottom:6px">
