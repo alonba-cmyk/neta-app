@@ -591,7 +591,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '5faa712';
+window.NETA_BUILD = '9a293a1';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1470,9 +1470,10 @@ window.NETA_CONFIG = {
 
 <!-- 20 IDENTITY -->
 <section class="screen" data-name="פתיחת חשבון">
-  <h2 class="gap-s">כדי לשמור את הנטיעה</h2>
-  <p class="sub gap" id="id-sub">כבר אימתנו אותך. נשאר רק השם שעל שמו ייפתח החשבון.</p>
-  <div class="field"><label>שם מלא</label><input type="text" id="id-name" value="אלון ברדויד"></div>
+  <h2 class="gap-s">מי אתה?</h2>
+  <p class="sub gap" id="id-sub">כבר אימתנו אותך. זה השם שיופיע לך ולקרובים שתזמין.</p>
+  <div class="field"><label>שם מלא</label><input type="text" id="id-name" placeholder="השם המלא שלך"></div>
+  <div class="field"><label>תמונה</label><div id="id-avpick"></div></div>
   <!-- שדה תעודת הזהות הוסר. אימות זהות מלא נדרש רק במועד הפדיון, ומתבצע
      דרך ה-KYC של הגוף הפיננסי המנהל — נטע לא מאחסנת ולא מעבדת מסמכי זיהוי.
      כשיהיה גוף מנהל בפועל, השדה יחזור במקום ובצורה שהוא ידרוש. -->
@@ -1806,23 +1807,41 @@ function resumeOnbo(){onbo=true;document.getElementById('resume-card').style.dis
 /* the empty home carries the pitch and the number — a new account lands there and starts the flow by choice.
    go(0) clears onbo (leaving a flow by tab cancels it), so the flag is re-set after it. */
 function onboStart(){setEmpty(true);go(0);onbo=true;}
+/* משתמש חדש עובר "מי אתה" לפני מסך הבית, לא אחריו — אם עוד לא עשה זאת.
+   idDone נשאר false עד ששלב הזהות אכן הושלם, כך שחזרה לכאן (לדוגמה אחרי
+   ריענון) לא מדלגת עליו בטעות. */
+function afterVerifiedNewUser(){
+  if(onbo&&!idDone){go(ONBO.identity);return}
+  onboStart();
+}
 function onboDone(){onboEnd()}
 function onboEnd(){onbo=false;setEmpty(false);document.getElementById('resume-card').style.display='none';go(0)}
 function idNext(){
   const n=(document.getElementById('id-name')||{}).value;
   if(!n||!n.trim()){toast('צריך שם מלא');return}
+  /* נקרא מה-DOM ולא מ-pickedAv הגלובלי: אותו משתנה משמש כל בוררי התמונה
+     באפליקציה, ובורר הזה יושב על מסך קבוע ולא בגיליון חד-פעמי — ניווט
+     דרך מסך אחר שפותח בורר תמונה משלו היה עלול לדרוס את מה שנבחר כאן. */
+  const avBtn=document.querySelector('#id-avpick button.on');
+  const av=avBtn?avBtn.dataset.av:'av-parent';
 
   /* תעודת הזהות נדרשת ע"י הגוף הפיננסי, לא ע"י נטע — ולכן היא לא נשמרת
-     כאן. המסד מחזיק שם בלבד. */
+     כאן. המסד מחזיק שם ותמונה בלבד. */
+  /* היעד אחרי "מי אתה": מסך הבית הריק כשזו הכרות ראשונה מיד אחרי הכניסה,
+     ותשלום כשהמסך הזה נפתח כבר בתוך הוויזארד (creating) — הדרך היחידה
+     שהוא עוד נפתח משם היא מי שהתחיל ליצור נטיעה ולא סיפק שם/תמונה קודם. */
   if(!netaServer||!netaServer.signedIn()){
-    idDone=true;toast('החשבון נפתח על שמך');openPayment();return;
+    idDone=true;toast('החשבון נפתח על שמך');
+    if(creating){openPayment()}else{onboStart()}
+    return;
   }
   const b=document.getElementById('id-cta');
   if(b){b.disabled=true;b.style.opacity='.55'}
-  netaServer.ensureProfile(n.trim()).then(function(){
+  netaServer.ensureProfile(n.trim(),av).then(function(){
     if(b){b.disabled=false;b.style.opacity=''}
     applyIdentity();
-    idDone=true;toast('החשבון נפתח על שמך');openPayment();
+    idDone=true;toast('החשבון נפתח על שמך');
+    if(creating){openPayment()}else{onboStart()}
   }).catch(function(e){
     if(b){b.disabled=false;b.style.opacity=''}
     toast(e.message||'לא הצלחנו לפתוח את החשבון');
@@ -1948,7 +1967,7 @@ function loginNext(){
   if(!netaServer){
     txt('id-verified','המספר '+userPhone+' אומת');
     box.style.display='none';txt('lg-cta','שלח קוד');
-    if(onbo){onboStart();return}
+    if(onbo){afterVerifiedNewUser();return}
     toast('ברוך שובך, אלון');go(0);
     return;
   }
@@ -1967,10 +1986,11 @@ function loginNext(){
       if(pendingInvite()&&finishJoin()){onbo=false;return}
       /* מי שכבר יש לו פרופיל לא עובר שוב בפתיחת החשבון. */
       if(known){onbo=false;setEmpty(false);go(0);buildHomeSummary();toast('ברוך שובך');return}
-      /* משתמש חדש נוחת על מסך הבית הריק ולא על טופס — מסך הבית הוא הפיץ'
-         של המוצר, וקפיצה ישר לטופס מדלגת על הטיעון החזק ביותר שיש לו.
+      /* משתמש חדש עובר קודם "מי אתה", ורק אז נוחת על מסך הבית הריק ולא
+         על טופס ההקמה — מסך הבית הוא הפיץ' של המוצר, וקפיצה ישר לטופס
+         מדלגת על הטיעון החזק ביותר שיש לו.
          (SPEC: "אחרי האימות — נחיתה על מסך הבית הריק, לא על טופס ההקמה") */
-      onboStart();
+      afterVerifiedNewUser();
     })
     .catch(function(e){
       loginBusy(false,'אשר והמשך');
@@ -1996,7 +2016,7 @@ function loginWithPassword(){
       txt('id-verified',userPhone+' אומת');
       if(pendingInvite()&&finishJoin()){onbo=false;return}
       if(known){onbo=false;setEmpty(false);go(0);buildHomeSummary();toast('ברוך שובך');return}
-      onboStart();
+      afterVerifiedNewUser();
     })
     .catch(function(e){
       loginBusy(false,'כניסה');
@@ -3650,7 +3670,7 @@ function inviteRelative(i){
 let pickedAv='av-parent',pickAvTarget=null;
 function avpickHTML(sel){
   return '<div class="avpick">'+AVATARS.map(function(a){
-    return '<button class="'+(a===sel?'on':'')+'" onclick="chooseAv(this,\''+a+'\')">'+
+    return '<button class="'+(a===sel?'on':'')+'" data-av="'+a+'" onclick="chooseAv(this,\''+a+'\')">'+
       '<svg viewBox="0 0 40 40"><use href="#'+a+'"/></svg></button>';
   }).join('')+'</div>';
 }
@@ -3659,11 +3679,14 @@ function chooseAv(el,a){
   [...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)});
 }
 function pickMyFace(){
-  pickedAv='av-parent';
-  sheetForm('התמונה שלך','בחר תמונה שתופיע לך ולקרובים שהזמנת.'+avpickHTML('av-parent'),'שמור',function(){
-    document.querySelector('#my-av use').setAttribute('href','#'+pickedAv);
-    document.querySelectorAll('.topbar .me use, .hdr .me use').forEach(function(u){u.setAttribute('href','#'+pickedAv)});
-    toast('התמונה עודכנה');
+  const now=(liveAccount()&&netaServer.profile&&netaServer.profile.avatar_key)||'av-parent';
+  pickedAv=now;
+  sheetForm('התמונה שלך','בחר תמונה שתופיע לך ולקרובים שהזמנת.'+avpickHTML(now),'שמור',function(){
+    if(pickedAv===now)return;
+    if(!liveAccount()){applyMyAvatar(pickedAv);toast('התמונה עודכנה');return}
+    netaServer.updateAvatar(pickedAv)
+      .then(function(){applyMyAvatar(pickedAv);toast('התמונה עודכנה')})
+      .catch(function(e){ask('התמונה לא נשמרה',(e&&e.message)||'נסה שוב.','הבנתי')});
   });
 }
 function addRelative(){
@@ -3873,9 +3896,15 @@ function setMyName(name){
   const tb=cur?topbars[[...screens].indexOf(cur)]:null;
   if(tb){txt('tb-t',tb[0]);txt('tb-s',tb[1]);}
 }
+function applyMyAvatar(av){
+  document.querySelectorAll('.topbar .me use, .hdr .me use, #my-av use').forEach(function(u){
+    u.setAttribute('href','#'+av);
+  });
+}
 function applyIdentity(){
   if(!liveAccount())return;
   setMyName((netaServer.profile&&netaServer.profile.name)||'');
+  applyMyAvatar((netaServer.profile&&netaServer.profile.avatar_key)||'av-parent');
 }
 
 /* ערך שנכנס לתוך מרכאות ב-HTML. השם מגיע מהמשתמש, ובלי זה גרש בשם
@@ -4113,16 +4142,31 @@ function netaBackend(cfg){
     },
 
     /* הפרופיל נוצר בכניסה הראשונה — auth מחזיק את האימייל, השם מגיע מהמסך. */
-    ensureProfile:function(name){
+    ensureProfile:function(name,avatar){
       const self=this;
       return needUid().then(function(u){
+        const body={id:u,name:name};
+        if(avatar)body.avatar_key=avatar;
         return call('/rest/v1/profiles?on_conflict=id',{method:'POST',
         headers:{Prefer:'resolution=merge-duplicates,return=representation'},
         /* כאן המזהה כן נשלח — הוא מפתח ה-on_conflict, ובלעדיו אין על מה
            למזג. ברירת המחדל תופסת רק בהוספה חדשה. */
-        body:JSON.stringify({id:u,name:name})});
+        body:JSON.stringify(body)});
       })
-        .then(function(r){self.profile=(r&&r[0])||{id:uid(),name:name};return self.profile});
+        .then(function(r){self.profile=(r&&r[0])||{id:uid(),name:name,avatar_key:avatar};return self.profile});
+    },
+    /* הרשאת עדכון על name ו-avatar_key בלבד (0012) — לכן זו פעולה נפרדת
+       מ-updateName, לא פרמטר נוסף לה: שתי הקריאות משנות עמודה אחרת בכל
+       פעם, ואין ביניהן תלות. */
+    updateAvatar:function(av){
+      const self=this;
+      return call('/rest/v1/profiles?id=eq.'+uid(),{method:'PATCH',
+        headers:{Prefer:'return=representation'},
+        body:JSON.stringify({avatar_key:av})})
+        .then(function(rows){
+          if(rows&&rows[0])self.profile=rows[0];
+          return self.profile;
+        }).catch(remember);
     },
     signOutAndReload:function(){
       /* כניסה מחדש עולה מייל, והמכסה החינמית קטנה. לא פעולה שנעשית בהיסח. */
@@ -5242,6 +5286,7 @@ function setEmpty(on){
 }
 document.getElementById('empty-btn').onclick=function(){setEmpty(!isEmpty)};
 
+document.getElementById('id-avpick').innerHTML=avpickHTML('av-parent');
 loginPrep();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();applyTabSources();buildGhosts();
 /* סשן שמור מהכניסה הקודמת — טוענים את הפרופיל לפני שהמסך נצבע. */
 if(liveAccount()){netaServer.loadProfile().then(applyIdentity).then(buildHomeSummary).catch(function(){});}
