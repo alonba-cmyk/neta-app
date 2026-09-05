@@ -563,6 +563,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .grow .mote{transform-origin:center;opacity:0;animation:mote 5s ease-out infinite}
 .grow .m2{animation-delay:1.6s}.grow .m3{animation-delay:3.2s}
 .brandname{font-size:38px;font-weight:600;letter-spacing:-.02em;line-height:1;margin-top:16px}
+/* שורת ההסבר מתחת לכותרת. המשפט ארוך: 456px בשורה אחת, כלומר 228px
+   הם המינימום לשתי שורות. 290px נותנים מרווח של 27% מעליו, ולכן הוא
+   מחזיק שתי שורות גם כשהמשתמש מגדיל טקסט ב-115%. בהגדלה של 130% הוא
+   עובר לשלוש, וזה בסדר כאן: מתחת לכפתור הראשי נשארים 150px פנויים.
+   רוחב גדול מזה היה נוגע בשולי המסך ויוצר פסקה רחבה מהכותרת שמעליה. */
+.claim-sub{font-size:12.5px;color:var(--tx-2);line-height:1.6;max-width:290px;margin:9px auto 0}
 .orline{display:flex;align-items:center;gap:11px;margin:14px 0 11px;color:var(--tx-3);font-size:10.5px}
 .orline::before,.orline::after{content:"";flex:1;height:1px;background:var(--line)}
 .social{display:flex;gap:8px}
@@ -660,7 +666,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '29e1f92';
+window.NETA_BUILD = 'b7c4f0e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1492,6 +1498,11 @@ window.NETA_CONFIG = {
         </svg>
         <div class="brandname">נטע</div>
         <p class="claim" style="margin:11px auto 0">הכסף גדל בזמן שהם גדלים</p>
+        <!-- הכותרת היא המטאפורה, והשורה הזו היא ההסבר. היא מוסיפה את שתי
+             העובדות שהמטאפורה לא אומרת: שזה סכום קטן בכל חודש ולא סכום
+             גדול בבת אחת, ושמי שקוצר אינו מי שנוטע. "המועד המיוחל" ולא
+             "הרגע המיוחל" מפני שזה המונח שחוזר בכל האפליקציה. -->
+        <p class="claim-sub">משקיעים קצת בכל חודש בעתיד של היקרים שלכם, והם קוצרים את הפירות במועד המיוחל.</p>
       </div>
     </div>
     <div>
