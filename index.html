@@ -268,12 +268,32 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .nc-who{font-size:11px;color:var(--tx-2);margin-top:16px;line-height:1.55}
 
 /* feed (activity) */
-.feed{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}
-.feed:last-child{border-bottom:none}
-.feed .fi{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:14px;flex-shrink:0;background:var(--leaf-bg)}
-.feed .fi.s{background:var(--sun-bg)}
-.feed .ft{font-size:12.5px;line-height:1.45}
-.feed .fw{font-size:10.5px;color:var(--tx-3);margin-top:2px}
+/* הפיד היה רשימת משפטים שלמים, וכולם באותו מבנה: פועל, סכום, שם נטיעה.
+   הסכום — הנתון היחיד שמשתנה — ישב באמצע המשפט, במקום הכי פחות סָריק,
+   ותווית הזמן חזרה על כל שורה במקום לקבץ אותן.
+
+   עכשיו: הזמן הוא כותרת קטע, הסכום הוא עמודה מיושרת בקצה, ובמקום נבט
+   ירוק אחיד — אייקון הנטיעה למה שאתה עשית, ופרצוף הקרוב למה שהוא עשה.
+   זה ההבדל בין פיד של חשבון בנק לפיד של גינה משפחתית. */
+.fday{display:flex;align-items:center;gap:9px;margin:16px 0 3px;font-size:10px;letter-spacing:.1em;color:var(--tx-3)}
+.fday:first-child{margin-top:2px}
+.fday:after{content:"";flex:1;height:1px;background:var(--line)}
+.fr{display:flex;align-items:center;gap:11px;padding:10px 0;cursor:pointer}
+.fr+.fr{border-top:1px solid var(--rule)}
+.fic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;flex-shrink:0;background:var(--leaf-bg)}
+.fic.s{background:var(--sun-bg);color:var(--sun)}
+/* פרצוף הקרוב, ועליו תג קטן שאומר לאיזו נטיעה — בלעדיו רואים מי ולא לאן. */
+.fav{position:relative;width:34px;height:34px;flex-shrink:0}
+.fav .avsvg{border-radius:10px;overflow:hidden}
+.fbadge{position:absolute;bottom:-4px;left:-5px;width:18px;height:18px;border-radius:6px;background:var(--bg);
+  border:1px solid var(--line);display:grid;place-items:center;font-size:9px}
+.fx{flex:1;min-width:0}
+.fn{font-size:12.5px;font-weight:500;line-height:1.35}
+.fs{font-size:10.5px;color:var(--tx-3);margin-top:2px}
+.fs.oth{color:var(--leaf-soft)}
+.fa{font-size:13.5px;font-weight:600;color:var(--leaf);font-variant-numeric:tabular-nums;flex-shrink:0;white-space:nowrap}
+.fa.oth{color:var(--leaf-soft)}
+.fa.let{font-size:11px;font-weight:500;color:var(--sun-soft)}
 
 /* ===== edit screen ===== */
 .sw{position:relative;width:38px;height:22px;border-radius:11px;background:var(--s2);border:1px solid var(--line-2);
@@ -680,7 +700,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '46a8c2f';
+window.NETA_BUILD = '52d03ac';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1191,8 +1211,10 @@ window.NETA_CONFIG = {
 <!-- 9 ACTIVITY / פעילות -->
 <section class="screen" data-name="פעילות">
   <div id="act-full">
-  <div class="card" id="feed"></div>
-  <div class="note">כאן תראו כל הפקדה חדשה, כל אבן דרך וכל מכתב שמצטרף, <b>הלב הפועם של הגינה המשפחתית.</b></div>
+  <!-- בלי כרטיס עוטף: הוא הקיף רשימה שלמה ולא הוסיף לה גבול שיש לו
+       משמעות. בלי הערת ההסבר שהייתה כאן — היא הסבירה למשתמש מה הוא
+       רואה אחרי שכבר ראה, ומקומה במצב הריק, שם היא כבר קיימת. -->
+  <div id="feed"></div>
   </div><!-- /act-full -->
 
   <div class="es" id="act-empty" style="display:none">
@@ -4643,7 +4665,8 @@ function netaBackend(cfg){
       return call('/rest/v1/rpc/activity_feed',{method:'POST',
         body:JSON.stringify({p_limit:30})}).catch(remember).then(function(rows){
         return (rows||[]).map(function(r){
-          return {kind:r.kind,actor:r.actor_name,name:r.planting_name,
+          return {kind:r.kind,actor:r.actor_name,avatar:r.actor_avatar,
+                  key:r.planting_id,name:r.planting_name,
                   icon:r.planting_icon,isMe:r.is_me,years:r.years,
                   amount:r.amount_agorot==null?null:Number(r.amount_agorot),
                   at:r.occurred_at};
@@ -5288,30 +5311,52 @@ const VERB={invested:'השקיע/ה',deposited:'הפקיד/ה',
             attached:'צירף/ה',  joined:'הצטרף/ה',
             participated:'השתתף/ה'};
 
+/* השורה נושאת שלושה דברים ולא משפט אחד: מי, מה, וכמה. הכותרת היא תמיד
+   שם הנטיעה — זה מה שמאפשר לסרוק את הרשימה ולמצוא נטיעה — והשורה
+   שמתחתיה אומרת מי עשה את זה. */
 function feedRowHTML(e){
-  let icon='🌱',cls='',text='';
+  const mine=!!e.isMe;
+  let sub='',amount='',cls='',glyph=e.icon||'🌱',title=e.name;
+  /* חלוקה קבועה בכל סוגי השורות: הכותרת אומרת לאן, השורה מתחתיה אומרת
+     מי, והעמודה בקצה אומרת מה. כך אפשר לסרוק כל עמודה בנפרד, ואף שורה
+     אינה חוזרת על עצמה בשני מקומות. */
+  sub=mine?'אתה':who(e.actor);
   if(e.kind==='contribution'){
-    const amt=e.amount!=null?(' '+shekel(e.amount)):'';
-    /* בלי סכום הפועל משתנה: "השקיע ב" ולא "הפקיד — ב". */
-    text=e.isMe
-      ? (e.amount!=null?('הפקדת'+amt+' '+withPrep('ל',e.name))
-                       :('השקעת '+withPrep('ב',e.name)))
-      : (e.amount!=null?(who(e.actor)+' '+VERB.deposited+amt+' '+withPrep('ב',e.name))
-                       :(who(e.actor)+' '+VERB.invested+' '+withPrep('ב',e.name)));
+    /* בלי סכום נשארת רק עצם ההשתתפות — כך רואה קרוב את קרוב אחר. */
+    amount=e.amount!=null
+      ? '<div class="fa'+(mine?'':' oth')+'">'+shekel(e.amount)+'</div>'
+      : '<div class="fa let">השתתפות</div>';
   }else if(e.kind==='letter_signed'){
-    icon='✉';cls=' s';
-    text=(e.isMe?'צירפת מכתב שייפתח ':who(e.actor)+' '+VERB.attached+' מכתב שייפתח ')
-        +withPrep('ב',e.name);
+    cls=' s';glyph='✉';title='מכתב '+withPrep('ל',e.name);
+    amount='<div class="fa let">מכתב</div>';
   }else if(e.kind==='relative_joined'){
-    icon='👥';
-    text=(e.isMe?'הצטרפת ':who(e.actor)+' '+VERB.joined+' ')+withPrep('ל',e.name);
+    glyph='👥';
+    amount='<div class="fa let">הצטרפות</div>';
   }else{
-    icon=e.icon||'🌱';
-    text=e.name+', כבר '+yearsWord(e.years)+' של נטיעה';
+    amount='<div class="fa let">'+yearsWord(e.years)+'</div>';
+    sub='אבן דרך';
   }
-  return '<div class="feed"><div class="fi'+cls+'">'+icon+'</div><div>'+
-         '<div class="ft">'+text+'</div>'+
-         '<div class="fw">'+agoText(e.at)+'</div></div></div>';
+  /* רגע של קרוב נושא את פניו, ועליו תג הנטיעה. רגע שלך נושא את אייקון
+     הנטיעה עצמה — אין טעם להראות לך את הפרצוף שלך שוב ושוב. */
+  const badge=(!mine&&e.avatar&&e.kind!=='anniversary')
+    ? '<div class="fav"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+e.avatar+'"/></svg>'+
+      '<span class="fbadge">'+(e.icon||'🌱')+'</span></div>'
+    : '<div class="fic'+cls+'">'+glyph+'</div>';
+  const open=e.key?' onclick="openDetail(\''+e.key+'\')"':'';
+  return '<div class="fr"'+open+'>'+badge+
+    '<div class="fx"><div class="fn">'+title+'</div>'+
+    '<div class="fs'+(mine?'':' oth')+'">'+sub+'</div></div>'+amount+'</div>';
+}
+/* תווית הזמן חזרה על שמונה שורות לשלושה ערכים. עכשיו היא כותרת קטע,
+   ונאמרת פעם אחת לכל יום. */
+function feedHTML(rows){
+  let out='',last=null;
+  rows.forEach(function(e){
+    const w=agoText(e.at);
+    if(w!==last){out+='<div class="fday"><span>'+w+'</span></div>';last=w}
+    out+=feedRowHTML(e);
+  });
+  return out;
 }
 
 /* הטופס מקבל טקסט חופשי. המסד מבקש סוג מתוך שלושה, וארבע ספרות אחרונות
@@ -5333,7 +5378,7 @@ function buildFeed(){
   return src.feed().then(function(rows){
     const box=document.getElementById('feed');
     if(!box)return;
-    box.innerHTML=rows.map(feedRowHTML).join('');
+    box.innerHTML=feedHTML(rows);
     box.style.display=rows.length?'':'none';
   }).catch(function(){});
 }
