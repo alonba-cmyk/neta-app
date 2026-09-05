@@ -11,9 +11,16 @@
   --bg:#141613;--s1:#1C1F1B;--s2:#242822;--line:#33382F;--line-2:#454B40;
   --tx:#EDEFE9;--tx-2:#9BA396;--tx-3:#6B7266;
   --leaf:#7FC088;--leaf-2:#5FA36A;--leaf-soft:#A8CBAC;--leaf-bg:#1B2A1D;--leaf-line:#2A4530;
-  --sun:#D9B25F;--sun-bg:#2A2318;--sun-line:#3D3520;
+  --sun:#D9B25F;--sun-2:#BE9748;--sun-soft:#E5CB96;--sun-bg:#2A2318;--sun-line:#3D3520;
   --rose:#D99BA6;--rose-bg:#2A1F22;
 }
+/* כלל הצבע של הסכומים, אחרי שהצטבר בלגן: ירוק הוא כסף שקיים — נצבר,
+   הופקד, יש אותו — וזהב הוא כסף שצפוי. עד כה תחזית הופיעה אפורה בשני
+   מקומות, ירוקה בשלושה וזהובה באחד, כך שירוק אמר גם "קיים" וגם "יהיה".
+
+   הכלל חל על ערכים מוצגים, לא על כיתובים: השורה "בקצב הזה ייצבר: כ-X"
+   בכרטיס בבית נשארת אפורה, כי היא משפט תומך ולא מספר שמציגים. אחרת
+   יהיה זהב על כל כרטיס במסך והדגש יאבד את משמעותו. */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse 70% 55% at 50% 20%,#1A1D18,#0C0D0B 65%);
   color:var(--tx);display:flex;flex-direction:column;align-items:center;padding:10px 10px 24px;
@@ -202,6 +209,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שנתלית בראש השורה השנייה. */
 .s-meta .grp.nodot>i{display:none}
 .s-meta b{color:var(--tx-2);font-weight:600;font-variant-numeric:tabular-nums}
+.s-meta b.fut{color:var(--sun-soft)}
 .s-meta i{width:3px;height:3px;border-radius:50%;background:var(--line-2);font-style:normal;flex-shrink:0}
 .ncard{background:var(--s1);border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:9px;
   transition:border-color .16s;cursor:pointer}
@@ -245,7 +253,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .nc-sums .k{display:block;font-size:10px;color:var(--tx-3);margin-bottom:3px}
 .nc-sums .v{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
 .nc-sums .v.now{color:var(--leaf)}
-.nc-sums .v.end{color:var(--tx-2);font-weight:500;font-size:15px}
+.nc-sums .v.end{color:var(--sun-soft);font-weight:500;font-size:15px}
 .nc-sums .t{text-align:left}
 .nc-track{display:flex;align-items:flex-start;gap:9px;margin-top:22px}
 .nc-track .rail{position:relative;flex:1;height:4px;background:var(--s2);border-radius:2px;margin-top:10px}
@@ -418,7 +426,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .tbl .r:last-child{border-bottom:none}
 .tbl .n{color:var(--tx);overflow-wrap:break-word;line-height:1.35}
 .tbl .a{color:var(--tx-2);font-variant-numeric:tabular-nums;text-align:left;white-space:nowrap}
-.tbl .b{color:var(--leaf);font-weight:600;font-variant-numeric:tabular-nums;text-align:left;white-space:nowrap}
+.tbl .b{color:var(--sun-soft);font-weight:600;font-variant-numeric:tabular-nums;text-align:left;white-space:nowrap}
 /* טבלה בלי שורת סיכום מבקשת מהקורא לחבר בראש חמישה מספרים בני שש
    ספרות. השורה הזאת עושה את זה במקומו. */
 .tbl .r.tot{border-bottom:none;border-top:1px solid var(--line-2);margin-top:3px;padding-top:11px}
@@ -672,7 +680,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '2e6740c';
+window.NETA_BUILD = '46a8c2f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -807,7 +815,7 @@ window.NETA_CONFIG = {
         </svg>
       </div>
     </div>
-    <div class="s-meta"><span><b id="s-cnt">2</b> השקעות</span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span><span class="grp" id="s-fut-grp"><i></i><span>צפוי <b id="s-fut"></b></span></span></div>
+    <div class="s-meta"><span><b id="s-cnt">2</b> השקעות</span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span><span class="grp" id="s-fut-grp"><i></i><span>צפוי <b class="fut" id="s-fut"></b></span></span></div>
   </div>
 
   <div class="hdr-row">
@@ -1656,7 +1664,7 @@ window.NETA_CONFIG = {
   <div class="card gap">
     <div class="stat"><span class="k" id="ob-k">מופקד כל חודש</span><span class="v" id="ob-amt">100 ₪</span></div>
     <div class="stat"><span class="k" id="ob-whenk">ההפקדה הראשונה</span><span class="v" id="ob-when">1 בספטמבר</span></div>
-    <div class="stat"><span class="k" id="ob-endk">בקצב הזה ייצבר</span><span class="v" style="color:var(--leaf)" id="ob-end">כ-23,500 ₪</span></div>
+    <div class="stat"><span class="k" id="ob-endk">בקצב הזה ייצבר</span><span class="v" style="color:var(--sun-soft)" id="ob-end">כ-23,500 ₪</span></div>
   </div>
   <div class="verified gap-s"><div class="vi">✓</div><div><b id="ob-okt">הוראת הקבע פעילה</b><p id="ob-okp">מכאן זה קורה מעצמו. אפשר לעצור או לשנות בכל רגע, מהפרופיל.</p></div></div>
   <button class="btn gap" id="ob-cta" onclick="onboDone()">לנטיעות שלי</button>
