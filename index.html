@@ -631,7 +631,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6cb3bbf';
+window.NETA_BUILD = '0e26307';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -745,7 +745,7 @@ window.NETA_CONFIG = {
          נטיעה, ולכן עוד לא הגיע לשאלה מי שולט במועד — פרט השליטה שייך
          לזרימת ההקמה, שם הוא נבחר במסך ייעודי. בלעדיו הפסקה יוצאת 3
          שורות במקום 4 (נמדד: 62px מול 83px ברוחב 215px). -->
-    <p>נטיעה היא הפקדה חודשית קטנה שמחכה לרגע אחד — בר מצווה, לימודים, דירה ראשונה.</p>
+    <p>נטיעה היא הפקדה חודשית קטנה שמחכה לרגע אחד: בר מצווה, לימודים, דירה ראשונה.</p>
     <button class="btn" onclick="startCreate()">פתח את הנטיעה הראשונה</button>
     <p class="fine">100 ₪ בחודש היום יהפכו לכ-23,500 ₪ בעוד 13 שנה. אפשר לשנות את הסכום בכל עת.</p>
     <div class="gsample" id="home-ghost" aria-hidden="true"></div>
@@ -800,8 +800,8 @@ window.NETA_CONFIG = {
     <p class="eyebrow">מי יאשר את הפדיון כשיגיע המועד?</p>
     <div class="stack gap">
       <div class="opt ben on" data-b="self"><b id="c-selfb">דניאל עצמו</b><p id="c-selfp">קוד פדיון יישלח אליו במועד שקבעת, ישירות ולא דרכך.</p><p class="fine" id="c-selfhint" style="display:none;margin-top:6px"></p></div>
-      <div class="opt ben" data-b="guardian"><b>מי שאני קובע היום</b><p id="c-guardp">הכסף משתחרר בתאריך שקבעת לידי מי שתסמן — אך נשאר רשום על שם הנהנה, והמורשה מקבל אותו עבורו.</p></div>
-      <div class="opt ben" data-b="later"><b>אחליט בהמשך</b><p>אפשר לקבוע זאת בכל שלב עד המועד — כל שינוי כזה נשלח בהתראה לכל מי שהשקיע.</p></div>
+      <div class="opt ben" data-b="guardian"><b>מי שאני קובע היום</b><p id="c-guardp">הכסף משתחרר בתאריך שקבעת לידי מי שתסמן, אך נשאר רשום על שם הנהנה, והמורשה מקבל אותו עבורו.</p></div>
+      <div class="opt ben" data-b="later"><b>אחליט בהמשך</b><p>אפשר לקבוע זאת בכל שלב עד המועד, כל שינוי כזה נשלח בהתראה לכל מי שהשקיע.</p></div>
     </div>
   </div>
   <div class="field" id="c-codefield">
@@ -835,12 +835,12 @@ window.NETA_CONFIG = {
   <h2 class="gap-x">פתוחה לאנשים אחרים או פרטית?</h2>
   <p class="sub gap">אפשר לשנות את זה בכל שלב.</p>
   <div class="stack gap">
-    <div class="opt shr on" data-s="private"><b>פרטית</b><p>רק מי שתזמין אישית — יכול להיות רק אתה, או גם בן/בת זוג. אף אחד אחר לא יכול להצטרף בלי הזמנה שלך.</p></div>
-    <div class="opt shr" data-s="open" id="shr-open"><b>פתוחה לאנשים אחרים</b><p>כל מי שתזמין יכול להצטרף ולהשקיע — קרובים, חברים, כל מי שתרצה. כל אחד רואה רק את ההשתתפות שלו, אלא אם בחר אחרת.</p></div>
+    <div class="opt shr on" data-s="private"><b>פרטית</b><p>רק מי שתזמין אישית, יכול להיות רק אתה, או גם בן/בת זוג. אף אחד אחר לא יכול להצטרף בלי הזמנה שלך.</p></div>
+    <div class="opt shr" data-s="open" id="shr-open"><b>פתוחה לאנשים אחרים</b><p>כל מי שתזמין יכול להצטרף ולהשקיע: קרובים, חברים, כל מי שתרצה. כל אחד רואה רק את ההשתתפות שלו, אלא אם בחר אחרת.</p></div>
   </div>
-  <p class="fine gap" id="c-sharenote" style="display:none">קופה שעדיין לא יועדה רשומה על שמך, ולכן אחרים לא יכולים להפקיד לתוכה — כסף שהם ייתנו יישאר בשליטתך, ולא הובטח לאיש. אפשר לפתוח אותה ברגע שתייעד אותה.</p>
+  <p class="fine gap" id="c-sharenote" style="display:none">קופה שעדיין לא יועדה רשומה על שמך, ולכן אחרים לא יכולים להפקיד לתוכה, כסף שהם ייתנו יישאר בשליטתך, ולא הובטח לאיש. אפשר לפתוח אותה ברגע שתייעד אותה.</p>
   <button class="btn ghost gap-s" id="c-designbtn" style="display:none" onclick="backToName()">בחר עבור מי</button>
-  <p class="fine gap">רוצה לבנות את זה עם עוד אדם אחד, כבעלים שווה ולא כמשקיע? אפשר להוסיף שותף/ה בכל שלב — גם אחרי ההקמה, מהנטיעה עצמה.</p>
+  <p class="fine gap">רוצה לבנות את זה עם עוד אדם אחד, כבעלים שווה ולא כמשקיע? אפשר להוסיף שותף/ה בכל שלב, גם אחרי ההקמה, מהנטיעה עצמה.</p>
 
   <div class="two gap"><button class="btn" onclick="toAmount()">המשך</button><button class="btn ghost" onclick="shareBack()">חזרה</button></div>
   </div><!-- /cp-2 -->
@@ -909,7 +909,7 @@ window.NETA_CONFIG = {
   <div id="pay-onetime" class="stack gap" style="display:none">
     <p class="eyebrow">בחר את הדרך הכי נוחה לך</p>
     <div class="opt pay on" data-p="card"><b>כרטיס אשראי</b><p>חיוב מיידי, מאושר תוך רגע.</p></div>
-    <div class="opt pay" data-p="bit"><div class="row" style="gap:6px"><b>Bit</b><span class="tag">מושלם למתנה</span></div><p>שולחים כמו לכל מתנה למשפחה — מהיר ופשוט.</p></div>
+    <div class="opt pay" data-p="bit"><div class="row" style="gap:6px"><b>Bit</b><span class="tag">מושלם למתנה</span></div><p>שולחים כמו לכל מתנה למשפחה, מהיר ופשוט.</p></div>
     <div class="opt pay" data-p="transfer"><b>העברה בנקאית</b><p>פרטי חשבון להעברה, מאובטחים דרך הגוף הפיננסי המנהל.</p></div>
   </div>
 
@@ -950,7 +950,7 @@ window.NETA_CONFIG = {
 
   <button class="btn dash" id="tp-open" style="margin-top:8px" onclick="openTellParents()"><span id="tp-open-txt">🎉 רוצה לשתף מישהו שישמח לראות שנטעת עבור דניאל?</span></button>
   <div class="note" id="tp-form" style="text-align:right;display:none">
-    <p class="sub gap-s" id="tp-form-sub" style="color:#C6E3C9">יראו בדיוק כמה נטעת, ויוכלו לחזור מתי שבא להם ולראות איך זה גדל — בלי גישה לכסף עצמו.</p>
+    <p class="sub gap-s" id="tp-form-sub" style="color:#C6E3C9">יראו בדיוק כמה נטעת, ויוכלו לחזור מתי שבא להם ולראות איך זה גדל, בלי גישה לכסף עצמו.</p>
     <div class="field" style="margin-bottom:0"><label>לאן לשלוח</label><input type="text" id="tp-contact" placeholder="050-0000000 או name@mail.com" oninput="tpChanHint()">
       <p class="hint" id="tp-hint">הקישור יישלח בוואטסאפ אם תזין מספר, ובאימייל אם תזין כתובת.</p></div>
     <div class="two" style="margin-top:12px">
@@ -1012,11 +1012,11 @@ window.NETA_CONFIG = {
     <div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></div><span class="cbn">סבתא רחל</span><span class="cbv">4,300 ₪</span></div>
     <div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></div><span class="cbn">דוד יוסי</span><span class="cbv">2,200 ₪</span></div>
   </div>
-  <p class="fine gap" id="d-whofine">רק אתה רואה את הפילוח הזה, כבעל הנטיעה. הקרובים רואים זה את זה — בלי סכומים.</p>
+  <p class="fine gap" id="d-whofine">רק אתה רואה את הפילוח הזה, כבעל הנטיעה. הקרובים רואים זה את זה, בלי סכומים.</p>
 
   <div class="letter-card" id="d-letters">
     <span class="ic">✉</span>
-    <div><b id="d-lcount">ולא רק כסף, 3 מכתבים חתומים — מסבתא, מדוד יוסי וממך</b><span id="d-lett">המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.</span></div>
+    <div><b id="d-lcount">ולא רק כסף, 3 מכתבים חתומים: מסבתא, מדוד יוסי וממך</b><span id="d-lett">המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.</span></div>
   </div>
 
   <div class="two" id="d-acts" style="margin-top:18px"></div>
@@ -1028,7 +1028,7 @@ window.NETA_CONFIG = {
   <h2 class="gap-s">למי מזמינים קרובים?</h2>
   <p class="sub gap">בחר את הנטיעה שאליה תרצה להזמין את המשפחה</p>
   <div id="ip-list"></div>
-  <p class="fine gap" style="margin-top:4px" id="ip-fine">מוצגות רק הנטיעות שאתה היוזם שלהן — קרוב שפתח נטיעה הוא זה שמזמין אליה.</p>
+  <p class="fine gap" style="margin-top:4px" id="ip-fine">מוצגות רק הנטיעות שאתה היוזם שלהן, קרוב שפתח נטיעה הוא זה שמזמין אליה.</p>
   <button class="btn ghost" onclick="openPeople()">חזרה</button>
 </section>
 
@@ -1061,7 +1061,7 @@ window.NETA_CONFIG = {
     <div class="choice-icon">👤</div>
     <div class="choice-body">
       <b>הזמן קרוב בשמו</b>
-      <p>בוחרים מהקרובים שלכם וכותבים משפט אישי — מצטרף מיד, בלי לאשר.</p>
+      <p>בוחרים מהקרובים שלכם וכותבים משפט אישי, מצטרף מיד, בלי לאשר.</p>
       <span class="choice-cta">הזמן קרוב</span>
     </div>
   </div>
@@ -1069,7 +1069,7 @@ window.NETA_CONFIG = {
     <div class="choice-icon">🔗</div>
     <div class="choice-body">
       <b>קישור פתוח לקרובים</b>
-      <p>מתאים לקבוצה. פעיל 24 שעות מרגע ההעתקה ומצרף מיד — כל מי שנכנס מופיע לכם בשמו בפעילות. אחרי כן הוא מבקש אישור.</p>
+      <p>מתאים לקבוצה. פעיל 24 שעות מרגע ההעתקה ומצרף מיד, כל מי שנכנס מופיע לכם בשמו בפעילות. אחרי כן הוא מבקש אישור.</p>
       <button class="choice-cta" id="inv-copy" onclick="copyInviteLink()">העתק קישור פתוח</button>
     </div>
   </div>
@@ -1090,7 +1090,7 @@ window.NETA_CONFIG = {
 <section class="screen" data-name="פעילות">
   <div id="act-full">
   <div class="card" id="feed"></div>
-  <div class="note">כאן תראו כל הפקדה חדשה, כל אבן דרך וכל מכתב שמצטרף — <b>הלב הפועם של הגינה המשפחתית.</b></div>
+  <div class="note">כאן תראו כל הפקדה חדשה, כל אבן דרך וכל מכתב שמצטרף, <b>הלב הפועם של הגינה המשפחתית.</b></div>
   </div><!-- /act-full -->
 
   <div class="es" id="act-empty" style="display:none">
@@ -1137,14 +1137,14 @@ window.NETA_CONFIG = {
       <button data-x="m" onclick="setEditSex(this,'m')">בן</button>
       <button data-x="f" onclick="setEditSex(this,'f')">בת</button>
     </div>
-    <p class="fine" style="margin-top:6px">קובע רק איך פונים אליו/אליה במסך הנטיעה — לא את זהות הנהנה.</p>
+    <p class="fine" style="margin-top:6px">קובע רק איך פונים אליו/אליה במסך הנטיעה, לא את זהות הנהנה.</p>
   </div>
 
   <div class="card" id="e-letters">
     <div class="row gap-s"><span>✉</span><b style="font-size:13px">המכתב שלך</b></div>
     <p class="fine gap-s" id="e-lstat">נחתם במרץ 2024 · דניאל יקרא אותו באוגוסט 2032</p>
     <textarea id="e-letter" style="min-height:64px">דניאל, ביום שתקרא את זה כבר תהיה גדול. רצינו שתדע שחשבנו עליך הרבה לפני.</textarea>
-    <p class="fine" style="margin-top:7px">רק אתה יכול לערוך את המכתב שלך, וזה אפשרי עד למועד המיוחל. אף אחד אחר לא רואה אותו — גם לא שאר המשקיעים.</p>
+    <p class="fine" style="margin-top:7px">רק אתה יכול לערוך את המכתב שלך, וזה אפשרי עד למועד המיוחל. אף אחד אחר לא רואה אותו, גם לא שאר המשקיעים.</p>
     <button class="btn ghost" id="e-sign" style="display:none;margin-top:10px" onclick="signLetter()">חתום על המכתב</button>
   </div>
 
@@ -1152,7 +1152,7 @@ window.NETA_CONFIG = {
   <p class="eyebrow" style="margin-top:20px">מי רואה את הנטיעה</p>
   <div class="card">
     <div class="setrow"><div class="st"><b>קישור השיתוף פעיל</b><p>כשהוא כבוי, קישורים קיימים מפסיקים לעבוד</p></div><div class="sw on" onclick="this.classList.toggle('on')" role="switch"></div></div>
-    <div class="setrow"><div class="st"><b>הקרובים רואים זה את זה</b><p>מי שהשקיע יראה מי עוד משתתף — לעולם בלי סכומים</p></div><div class="sw on" onclick="this.classList.toggle('on')" role="switch"></div></div>
+    <div class="setrow"><div class="st"><b>הקרובים רואים זה את זה</b><p>מי שהשקיע יראה מי עוד משתתף, לעולם בלי סכומים</p></div><div class="sw on" onclick="this.classList.toggle('on')" role="switch"></div></div>
     <div class="setrow"><div class="st"><b>עדכון כשמישהו מצטרף</b><p>התראה כשקרוב חדש משקיע בדניאל</p></div><div class="sw on" onclick="this.classList.toggle('on')" role="switch"></div></div>
   </div>
 
@@ -1164,7 +1164,7 @@ window.NETA_CONFIG = {
     <div class="person"><div class="pa"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></div><span class="pn">סבתא רחל</span><button class="px" onclick="toast('הגישה של סבתא רחל תוסר')">הסר גישה</button></div>
     <div class="person"><div class="pa"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></div><span class="pn">דוד יוסי</span><button class="px" onclick="toast('הגישה של דוד יוסי תוסר')">הסר גישה</button></div>
   </div>
-  <p class="fine gap">הסרת גישה מפסיקה צפייה בהמשך — היא לא מוחקת ולא מחזירה כסף שכבר הושקע. כל מי שהשקיע מחליט בעצמו אם הסכום שלו גלוי לאחרים; זו בחירה שלו, לא שלך.</p>
+  <p class="fine gap">הסרת גישה מפסיקה צפייה בהמשך, היא לא מוחקת ולא מחזירה כסף שכבר הושקע. כל מי שהשקיע מחליט בעצמו אם הסכום שלו גלוי לאחרים; זו בחירה שלו, לא שלך.</p>
 
   </div><!-- /e-access -->
 
@@ -1173,14 +1173,14 @@ window.NETA_CONFIG = {
     <label>המועד המיוחל</label>
     <input type="date" id="e-date" value="2032-08-01">
   </div>
-  <div class="warn" id="e-datewarn">דחיית המועד אפשרית, והקדמתו לא — סבתא ודוד יוסי השקיעו מתוך הבנה שהכסף ייפתח באוגוסט 2032. כל שינוי יישלח אליהם בהתראה.</div>
+  <div class="warn" id="e-datewarn">דחיית המועד אפשרית, והקדמתו לא, סבתא ודוד יוסי השקיעו מתוך הבנה שהכסף ייפתח באוגוסט 2032. כל שינוי יישלח אליהם בהתראה.</div>
 
   <div id="e-approver">
   <p class="eyebrow" style="margin-top:20px">מי יאשר את הפדיון</p>
   <div class="stack gap">
     <div class="opt eb-approve on" data-eb="self" onclick="setEditApprover(this,'self')"><b>דניאל עצמו</b><p>קוד פדיון יישלח אליו במועד שקבעת, ישירות ולא דרכך.</p></div>
-    <div class="opt eb-approve" data-eb="guardian" onclick="setEditApprover(this,'guardian')"><b>מי שאני קובע היום</b><p>הכסף משתחרר בתאריך שקבעת לידי מי שתסמן — אך נשאר רשום על שם הנהנה, והמורשה מקבל אותו עבורו.</p></div>
-    <div class="opt eb-approve" data-eb="later" onclick="setEditApprover(this,'later')"><b>אחליט בהמשך</b><p>אפשר לקבוע זאת בכל שלב עד המועד — כל שינוי כזה נשלח בהתראה לכל מי שהשקיע.</p></div>
+    <div class="opt eb-approve" data-eb="guardian" onclick="setEditApprover(this,'guardian')"><b>מי שאני קובע היום</b><p>הכסף משתחרר בתאריך שקבעת לידי מי שתסמן, אך נשאר רשום על שם הנהנה, והמורשה מקבל אותו עבורו.</p></div>
+    <div class="opt eb-approve" data-eb="later" onclick="setEditApprover(this,'later')"><b>אחליט בהמשך</b><p>אפשר לקבוע זאת בכל שלב עד המועד, כל שינוי כזה נשלח בהתראה לכל מי שהשקיע.</p></div>
   </div>
 
   <div class="field" id="e-codefield" style="margin-top:16px;margin-bottom:6px">
@@ -1195,7 +1195,7 @@ window.NETA_CONFIG = {
     <div class="warn" id="e-guardwarn">שינוי המורשה נרשם ביומן הנטיעה, נשלח בהתראה לכל מי שהשקיע, ונכנס לתוקף רק אחרי 7 ימים.</div>
   </div>
 
-  <p class="fine" id="e-laterp" style="display:none;margin-top:10px">עדיין לא נקבע מי יאשר — אפשר לקבוע זאת בכל שלב עד המועד.</p>
+  <p class="fine" id="e-laterp" style="display:none;margin-top:10px">עדיין לא נקבע מי יאשר, אפשר לקבוע זאת בכל שלב עד המועד.</p>
   </div><!-- /e-approver -->
 
   <p class="eyebrow" style="margin-top:20px">קבוע ולא ניתן לשינוי כאן</p>
@@ -1204,7 +1204,7 @@ window.NETA_CONFIG = {
     <div class="stat"><span class="k">הנהנה</span><span class="v" id="e-bene">דניאל</span></div>
   </div>
   <div class="lock" style="text-align:right">
-    <p class="sub" style="color:#C4AE84">מועד הפתיחה הוא עובדה שנרשמה ואינו משתנה. שינוי זהות הנהנה הוא פעולה משפטית בחשבון נעול, ומתבצע מול הגוף הפיננסי המנהל בלבד — לא באפליקציה.</p>
+    <p class="sub" style="color:#C4AE84">מועד הפתיחה הוא עובדה שנרשמה ואינו משתנה. שינוי זהות הנהנה הוא פעולה משפטית בחשבון נעול, ומתבצע מול הגוף הפיננסי המנהל בלבד, לא באפליקציה.</p>
     <button class="btn ghost" style="margin-top:10px" onclick="toast('פנייה נשלחה לגוף הפיננסי המנהל')">בקש שינוי מול הגוף המנהל</button>
   </div>
 
@@ -1223,14 +1223,14 @@ window.NETA_CONFIG = {
   <div class="field" style="margin-top:20px">
     <label>קוד הפדיון</label>
     <input class="codebox" id="rcode" value="NETA-4K9M" maxlength="9" aria-label="קוד הפדיון">
-    <p class="fine" style="margin-top:8px">הקוד נשלח אליך ישירות במועד המיוחל, לכתובת שנרשמה כשהנטיעה נפתחה. הוא חד־פעמי ותקף ל־90 יום.</p>
+    <p class="fine" style="margin-top:8px">הקוד נשלח אליך ישירות במועד המיוחל, לכתובת שנרשמה כשהנטיעה נפתחה. הוא חד-פעמי ותקף ל-90 יום.</p>
   </div>
 
   <button class="btn gap" onclick="go(8)">פתח את הנטיעה שלי</button>
 
   <div class="lock" style="text-align:right">
     <b style="display:block;margin-bottom:5px;font-size:12.5px">הקוד לא מעביר כסף בעצמו</b>
-    <p class="sub" style="color:#C4AE84">הוא פותח את התהליך ומזהה איזו נטיעה נפדית. שחרור הכסף בפועל מתבצע רק לאחר אימות זהות מלא מול הגוף הפיננסי המנהל, ורק לחשבון שעל שמך. אם הקוד הגיע לידיים לא נכונות — הוא לא מספיק כדי לקחת את הכסף.</p>
+    <p class="sub" style="color:#C4AE84">הוא פותח את התהליך ומזהה איזו נטיעה נפדית. שחרור הכסף בפועל מתבצע רק לאחר אימות זהות מלא מול הגוף הפיננסי המנהל, ורק לחשבון שעל שמך. אם הקוד הגיע לידיים לא נכונות, הוא לא מספיק כדי לקחת את הכסף.</p>
   </div>
 
   <p class="fine center" style="margin-top:14px">לא קיבלת קוד? <b style="color:var(--leaf)">שלח שוב</b></p>
@@ -1249,7 +1249,7 @@ window.NETA_CONFIG = {
   <p class="eyebrow">בחר מה לעשות</p>
   <div class="stack gap">
     <div class="opt dest on" data-d="bank"><b>העברה לחשבון הבנק שלי</b><p>הכסף עובר במלואו לחשבון שעל שמך, תוך 3 ימי עסקים.</p></div>
-    <div class="opt dest" data-d="part"><div class="row" style="gap:6px"><b>חלק עכשיו, השאר ממשיך לגדול</b><span class="tag">אפשר לפצל</span></div><p>מושכים חלק מהסכום, והיתרה נשארת מושקעת על שמך — עכשיו כבר בחשבון שלך.</p></div>
+    <div class="opt dest" data-d="part"><div class="row" style="gap:6px"><b>חלק עכשיו, השאר ממשיך לגדול</b><span class="tag">אפשר לפצל</span></div><p>מושכים חלק מהסכום, והיתרה נשארת מושקעת על שמך, עכשיו כבר בחשבון שלך.</p></div>
     <div class="opt dest" data-d="keep"><b>להשאיר הכול ולהמשיך להשקיע</b><p>הנטיעה עוברת לבעלותך המלאה ואפשר למשוך ממנה בכל רגע.</p></div>
   </div>
 
@@ -1257,12 +1257,12 @@ window.NETA_CONFIG = {
     <p class="eyebrow">פרטי החשבון</p>
     <div class="field" style="margin-bottom:9px"><label>בנק וסניף</label><input type="text" value="לאומי · 800"></div>
     <div class="field" style="margin-bottom:9px"><label>מספר חשבון</label><input type="text" value="12-345678"></div>
-    <div class="warn" id="rt-warn" style="margin-bottom:14px">החשבון חייב להיות על שמך, דניאל. העברה לחשבון של אדם אחר — כולל הורה או קרוב — לא תאושר. זו ההגנה שמבטיחה שהכסף שנשתל עבורך יגיע דווקא אליך.</div>
+    <div class="warn" id="rt-warn" style="margin-bottom:14px">החשבון חייב להיות על שמך, דניאל. העברה לחשבון של אדם אחר, כולל הורה או קרוב, לא תאושר. זו ההגנה שמבטיחה שהכסף שנשתל עבורך יגיע דווקא אליך.</div>
   </div>
 
   <div class="card" style="background:var(--sun-bg);border-color:var(--sun-line)">
     <div class="row gap-s"><span>✉</span><b style="font-size:13px">3 המכתבים שלך נפתחים עכשיו</b></div>
-    <p class="sub" style="color:#C4AE84">הם ייפתחו יחד עם אישור הפדיון, ויישארו שלך לתמיד — גם אם תבחר למשוך את הכסף.</p>
+    <p class="sub" style="color:#C4AE84">הם ייפתחו יחד עם אישור הפדיון, ויישארו שלך לתמיד, גם אם תבחר למשוך את הכסף.</p>
   </div>
 
   <button class="btn" style="margin-top:14px" onclick="toast('הפדיון אושר · המכתבים נפתחים')">אשר את הפדיון</button>
@@ -1294,7 +1294,7 @@ window.NETA_CONFIG = {
 
   <p class="eyebrow big">הקרובים שלך</p>
   <div class="card" id="pp-list"></div>
-  <p class="fine gap">כמה כל אחד השקיע מופיע בתוך הנטיעה עצמה. הקרובים רואים זה את זה — בלי סכומים.</p>
+  <p class="fine gap">כמה כל אחד השקיע מופיע בתוך הנטיעה עצמה. הקרובים רואים זה את זה, בלי סכומים.</p>
   <button class="btn gap-s" onclick="openInvitePicker()">הזמן קרוב</button>
   <p class="fine" style="margin-top:8px">בלחיצה תבחר לאיזו נטיעה ההזמנה שייכת.</p>
   </div><!-- /kin-full -->
@@ -1315,7 +1315,7 @@ window.NETA_CONFIG = {
          הכפתור אינו ghost: זו הפעולה היחידה במסך, וכפתור משני יחיד
          מבקש לבחור בין פעולה אחת לכלום. -->
     <h3>כאן יופיע מה שאחרים נטעו<br>עבור היקרים לכם</h3>
-    <p>הזמינו את מי שקרוב לילד — וגם קרוב שיצטרף לנטיעה שלכם יופיע כאן.</p>
+    <p>הזמינו את הקרובים שלכם והשקיעו ביחד או לחוד בעתיד של היקרים שלכם.</p>
     <button class="btn" onclick="openInvitePicker()">הזמן קרוב</button>
     <div class="gsample tall" id="kin-ghost" aria-hidden="true"></div>
   </div>
@@ -1331,7 +1331,7 @@ window.NETA_CONFIG = {
   <div id="req-list"></div>
   <div class="card" id="rel-list"></div>
   <button class="btn gap-s" onclick="addRelative()">+ הוסף קרוב</button>
-  <p class="fine gap">ההזמנה היא קישור אישי, חד-פעמי, שנקשר למי שפתח אותו — קישור שהועבר הלאה לא יצרף אף אחד אחר. הזמנה במייל נשלחת אוטומטית; בוואטסאפ אתה שולח אותה בעצמך. קרוב שהצטרף רואה רק את הנטיעות שצירפת אותו אליהן, ורק התקדמות — בלי סכומים.</p>
+  <p class="fine gap">ההזמנה היא קישור אישי, חד-פעמי, שנקשר למי שפתח אותו, קישור שהועבר הלאה לא יצרף אף אחד אחר. הזמנה במייל נשלחת אוטומטית; בוואטסאפ אתה שולח אותה בעצמך. קרוב שהצטרף רואה רק את הנטיעות שצירפת אותו אליהן, ורק התקדמות, בלי סכומים.</p>
   <button class="btn ghost" onclick="go(10)">חזרה לפרופיל</button>
 </section>
 
@@ -1339,7 +1339,7 @@ window.NETA_CONFIG = {
 <!-- 16 PAYMENT METHODS / אמצעי תשלום -->
 <section class="screen" data-name="אמצעי תשלום">
   <h2 class="gap-s">אמצעי תשלום</h2>
-  <p class="sub gap" id="pm-sub">כאן מנוהלות ההפקדות החוזרות שלך — <b style="color:var(--tx)">210 ₪ בכל חודש</b>.</p>
+  <p class="sub gap" id="pm-sub">כאן מנוהלות ההפקדות החוזרות שלך, <b style="color:var(--tx)">210 ₪ בכל חודש</b>.</p>
   <div id="pm-list"></div>
   <button class="btn ghost gap-s" onclick="addPay()">+ הוסף אמצעי תשלום</button>
   <p class="fine gap">ההפקדות עוברות ישירות לחשבונות הנעולים אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף ואינה שומרת את פרטי הכרטיס.</p>
@@ -1351,7 +1351,7 @@ window.NETA_CONFIG = {
   <h2 class="gap-s">המכתבים שלי</h2>
   <p class="sub gap">מה שכתבת לילדים, ומתי הם ייפתחו.</p>
   <div class="card" id="lt-list"></div>
-  <p class="fine gap">מכתב ניתן לעריכה עד המועד המיוחל — החתימה קובעת מי יקרא ומתי, לא מקפיאה את התוכן. אחרי שהוא נפתח, הוא נשאר של הילד לתמיד, גם אם הכסף נמשך.</p>
+  <p class="fine gap">מכתב ניתן לעריכה עד המועד המיוחל, החתימה קובעת מי יקרא ומתי, לא מקפיאה את התוכן. אחרי שהוא נפתח, הוא נשאר של הילד לתמיד, גם אם הכסף נמשך.</p>
   <button class="btn ghost" onclick="go(10)">חזרה לפרופיל</button>
 </section>
 
@@ -1455,10 +1455,10 @@ window.NETA_CONFIG = {
   </div>
   <div id="lg-codebox" style="display:none">
     <div class="field"><label id="lg-codelbl">קוד אימות נשלח אליך</label><input type="text" id="lg-otp" placeholder="4 ספרות"></div>
-    <button class="link" style="text-align:right;padding-top:0" onclick="toast('נשלח קוד חדש')">לא קיבלתי — שלח שוב</button>
+    <button class="link" style="text-align:right;padding-top:0" onclick="toast('נשלח קוד חדש')">לא קיבלתי? שלח שוב</button>
   </div>
   <button class="btn" id="lg-cta" onclick="loginNext()">שלח קוד</button>
-  <p class="fine" id="lg-fine">אם כבר יש לך חשבון, תיכנס אליו. אם לא — ניצור אחד. אותו כפתור.</p>
+  <p class="fine" id="lg-fine">אם כבר יש לך חשבון, תיכנס אליו. אם לא, ניצור אחד. אותו כפתור.</p>
   <!-- הסיסמה חיה כאן ולא בדלת: רק מי שהגדיר אחת בפרופיל מחפש אותה. -->
   <button class="link" id="lg-pwlink" style="display:none" onclick="usePassword()">יש לי סיסמה</button>
   <button class="link backlink" onclick="go(ONBO.welcome)">חזרה</button>
@@ -1505,7 +1505,7 @@ window.NETA_CONFIG = {
           </svg>
         </div>
         <h2>קרובים ואוהבים<br>מצטרפים לנטיעה</h2>
-        <p>סבתא רחל, דוד יוסי, חברה קרובה — כל אחד יכול להצטרף ולהוסיף משלו, בלי שאף אחד יראה כמה השקיעו אחרים.</p>
+        <p>סבתא רחל, דוד יוסי, חברה קרובה. כל אחד יכול להצטרף ולהוסיף משלו, בלי שאף אחד יראה כמה השקיעו אחרים.</p>
         <div class="how-art"><div class="how-crowd">
           <span class="how-you"><svg viewBox="0 0 40 40"><use href="#av-parent"/></svg></span>
           <span><svg viewBox="0 0 40 40"><use href="#av-granny"/></svg></span>
@@ -1525,7 +1525,7 @@ window.NETA_CONFIG = {
           </svg>
         </div>
         <h2>מה שנטעתם היום,<br>הופך לרגע שלו</h2>
-        <p>בר/בת מצווה, לימודים, דירה ראשונה — או מה שהוא יבחר.</p>
+        <p>בר/בת מצווה, לימודים, דירה ראשונה, או מה שהוא יבחר.</p>
         <div class="how-occasions" aria-hidden="true">🎂 🎓 🏠 💍</div>
         <div class="how-aha">
           <p class="how-aha-line">אחרי שלוש עשרה שנה</p>
@@ -1603,7 +1603,7 @@ window.NETA_CONFIG = {
   <div class="center gap">
     <div class="brandmark"><svg width="40" height="47" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
     <h2 style="margin:8px 0 4px">אלון הזמין אותך</h2>
-    <p class="sub" id="pi-sub">להיות שותף/ה שווה — לא רק להשקיע</p>
+    <p class="sub" id="pi-sub">להיות שותף/ה שווה, לא רק להשקיע</p>
   </div>
 
   <div class="card center" style="background:var(--leaf-bg);border-color:#2A4530">
@@ -1615,7 +1615,7 @@ window.NETA_CONFIG = {
   <p class="eyebrow big">מה זה אומר בפועל</p>
   <div class="card">
     <div style="padding:9px 0;border-bottom:1px solid var(--line)"><b style="font-size:12.5px">שניכם מפקידים</b><p class="fine" style="margin-top:3px">אין "בעלים" אחד ו"משקיע" אחר</p></div>
-    <div style="padding:9px 0;border-bottom:1px solid var(--line)"><b style="font-size:12.5px">שניכם רואים הכל</b><p class="fine" style="margin-top:3px">כולל כל הפקדה, מכל אחד — לא רק את שלך</p></div>
+    <div style="padding:9px 0;border-bottom:1px solid var(--line)"><b style="font-size:12.5px">שניכם רואים הכל</b><p class="fine" style="margin-top:3px">כולל כל הפקדה, מכל אחד, לא רק את שלך</p></div>
     <div style="padding:9px 0"><b style="font-size:12.5px">כל שינוי מהותי</b><p class="fine" style="margin-top:3px">דורש הסכמה של שניכם</p></div>
   </div>
   <p class="fine gap">זה שונה מהזמנה רגילה לקרוב: קרוב רואה רק את מה שהוא השקיע ולא יכול לשנות כלום. שותפות היא בעלות משותפת אמיתית, לא השתתפות.</p>
@@ -1656,7 +1656,7 @@ window.NETA_CONFIG = {
       </div>
     </div>
 
-    <p class="fine gap" id="sl-fine">לאיזה רגע היא נועדה, ומתי בדיוק — יוצג רק אחרי שנוודא שהקישור הגיע אליך.</p>
+    <p class="fine gap" id="sl-fine">לאיזה רגע היא נועדה, ומתי בדיוק, יוצג רק אחרי שנוודא שהקישור הגיע אליך.</p>
 
     <div id="sl-live-actions">
       <button class="btn gap-s" onclick="startJoin()">אני רוצה להצטרף</button>
@@ -1670,7 +1670,7 @@ window.NETA_CONFIG = {
     <div class="center gap">
       <div style="font-size:26px">✋</div>
       <h2 style="margin:8px 0 4px">הבקשה נשלחה</h2>
-      <p class="sub">מי שפתח את הנטיעה יראה מי ביקש, לאיזו נטיעה ומתי — ויחליט.</p>
+      <p class="sub">מי שפתח את הנטיעה יראה מי ביקש, לאיזו נטיעה ומתי, ויחליט.</p>
     </div>
     <p class="fine gap">עד שיאשר, לא ייחשף לך שום פרט על הילד. אם הוא מכיר אותך, שווה גם פשוט לומר לו שביקשת.</p>
     <button class="btn gap-s" onclick="leaveShared()">בינתיים, פתח נטיעה משלך</button>
@@ -1684,7 +1684,7 @@ window.NETA_CONFIG = {
       <h2 style="margin:8px 0 4px">הקישור הזה כבר לא בתוקף</h2>
       <p class="sub">קישור פתוח חי 24 שעות מהרגע שנשלח, כדי שלא ימשיך לצרף אנשים אחרי שהאירוע נגמר.</p>
     </div>
-    <p class="fine gap">אפשר לבקש להצטרף בכל זאת — מי שפתח את הנטיעה יראה מי ביקש, ויחליט.</p>
+    <p class="fine gap">אפשר לבקש להצטרף בכל זאת, מי שפתח את הנטיעה יראה מי ביקש, ויחליט.</p>
     <button class="btn" onclick="requestSheet(pendingInvite(),'expired')">בקש להצטרף</button>
     <button class="btn ghost gap-s" onclick="leaveShared()">לא עכשיו</button>
   </div>
@@ -1725,10 +1725,10 @@ window.NETA_CONFIG = {
 
 </div><!-- /device -->
 
-<div class="devlabel">תצוגת בדיקה — לא חלק מהאפליקציה</div>
+<div class="devlabel">תצוגת בדיקה, לא חלק מהאפליקציה</div>
 <div class="nav" id="nav"></div>
-<button class="emptybtn" id="empty-btn">מצב ריק — אפליקציה בלי נתונים</button>
-<button class="emptybtn" onclick="onboOpen()">התחל אונבורדינג — משתמש חדש</button>
+<button class="emptybtn" id="empty-btn">מצב ריק, אפליקציה בלי נתונים</button>
+<button class="emptybtn" onclick="onboOpen()">התחל אונבורדינג, משתמש חדש</button>
 <button class="emptybtn" onclick="onboAbandon()">נטש באמצע ההרשמה</button>
 </div><!-- /wrap -->
 
@@ -1787,7 +1787,7 @@ function setSex(el,x){
 function beneCopy(){
   txt('cp1-sub','זה החלק שקובע שהכסף באמת יגיע למי שנטעת '+bs('עבורו','עבורה')+'.');
   txt('c-selfp','קוד פדיון יישלח '+bs('אליו','אליה')+' במועד שקבעת, ישירות ולא דרכך.');
-  txt('c-guardp','הכסף משתחרר בתאריך שקבעת לידי מי שתסמן — אך נשאר רשום על שם הנהנה, והמורשה מקבל אותו '+bs('עבורו','עבורה')+'.');
+  txt('c-guardp','הכסף משתחרר בתאריך שקבעת לידי מי שתסמן, אך נשאר רשום על שם הנהנה, והמורשה מקבל אותו '+bs('עבורו','עבורה')+'.');
   txt('c-acctfine','חשבון היעד יצטרך להיות על '+bs('שמו','שמה')+'. העברה לחשבון של אדם אחר לא תאושר.');
 }
 /* ties the projected total to what the occasion actually is, not just the date it lands on —
@@ -1814,7 +1814,7 @@ function yrWord(y){return (y===1||y>=11)?' שנה':' שנים';}
 function dateNote(){
   if(!cDate.value){txt('c-datehint','');return}
   const d=new Date(cDate.value),y=yearsUntil(cDate.value);
-  txt('c-datehint','נפתחת ב'+months[d.getMonth()]+' '+d.getFullYear()+' — עוד '+y+yrWord(y)+'.');
+  txt('c-datehint','נפתחת ב'+months[d.getMonth()]+' '+d.getFullYear()+', עוד '+y+yrWord(y)+'.');
 }
 function setTerm(el,yrs){
   [...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)});
@@ -1907,7 +1907,7 @@ function doorNext(){
      גם מספר והענף הזה יהפוך למסלול אמיתי במקום להסבר. */
   if(chanOf(v)==='wa'){
     ask('כניסה עם מספר טלפון עוד לא זמינה',
-        'בקרוב אפשר יהיה להיכנס גם עם מספר. בינתיים הכניסה היא באימייל — '+
+        'בקרוב אפשר יהיה להיכנס גם עם מספר. בינתיים הכניסה היא באימייל, '+
         'אותו קוד חד-פעמי, רק לתיבה שלך.','הבנתי');
     return;
   }
@@ -2118,7 +2118,7 @@ function setLoginMethod(m){
   txt('lg-cta',m==='password'?'כניסה':'שלח קוד');
   txt('lg-fine',m==='password'
     ? 'עדיין לא הגדרת סיסמה? היכנס עם קוד למייל, ותוכל להגדיר סיסמה מהפרופיל.'
-    : 'אם כבר יש לך חשבון, תיכנס אליו. אם לא — ניצור אחד. אותו כפתור.');
+    : 'אם כבר יש לך חשבון, תיכנס אליו. אם לא, ניצור אחד. אותו כפתור.');
 }
 
 function loginBusy(on,label){
@@ -2562,7 +2562,7 @@ function checkBene(){
   if(selfHint){
     const short=t && yearsUntil(t)<3;
     selfHint.style.display=short?'block':'none';
-    if(short)selfHint.textContent='אם עד אז '+dispNm+' עדיין '+bs('יהיה קטין','תהיה קטינה')+' — אפשר לעדכן את זה למי שתבחר, בכל שלב עד המועד.';
+    if(short)selfHint.textContent='אם עד אז '+dispNm+' עדיין '+bs('יהיה קטין','תהיה קטינה')+', אפשר לעדכן את זה למי שתבחר, בכל שלב עד המועד.';
   }
 }
 document.querySelectorAll('.opt.dest').forEach(el=>el.onclick=()=>{
@@ -2600,7 +2600,7 @@ function applyPlantDate(iso){
   txt('d-yr',yr);
   txt('ip-date','המועד המיוחל: '+label);
   txt('e-lstat','נחתם במרץ 2024 · '+kid+' יקרא אותו ב'+label);
-  txt('e-datewarn','דחיית המועד אפשרית, והקדמתו לא — סבתא ודוד יוסי השקיעו מתוך הבנה שהכסף ייפתח ב'+label+'. כל שינוי יישלח אליהם בהתראה.');
+  txt('e-datewarn','דחיית המועד אפשרית, והקדמתו לא, סבתא ודוד יוסי השקיעו מתוך הבנה שהכסף ייפתח ב'+label+'. כל שינוי יישלח אליהם בהתראה.');
   txt('e-codewarn','לכאן יישלח הקוד ב'+label+', ישירות ל'+kid+'. שינוי הכתובת נרשם ביומן הנטיעה, נשלח בהתראה לכל מי שהשקיע, ונכנס לתוקף רק אחרי 7 ימים.');
   plants.danielBar.date=label;plants.danielBar.yr=yr;
   applyLetter(plantLetter);
@@ -2610,7 +2610,7 @@ function applyLetter(v){
   const kid=childOf(plantName), d=new Date(plantDate), label=months[d.getMonth()]+' '+d.getFullYear();
   const mine=plantLetter.trim().length>0, n=mine?3:2;
   const from=mine?'מסבתא, מדוד יוסי וממך':'מסבתא ומדוד יוסי';
-  const head='ולא רק כסף, '+n+' מכתבים חתומים — '+from;
+  const head='ולא רק כסף, '+n+' מכתבים חתומים: '+from;
   const when='המכתבים ייפתחו ב'+label+', יחד עם '+kid+'.';
   txt('d-lcount',head);txt('d-lett',when);
   plants.danielBar.lCount=head;plants.danielBar.lSub=when;
@@ -2639,7 +2639,7 @@ const EDIT_UNWIRED=['e-visibility','e-access','e-approver'];
 /* המכתב של הנטיעה הפתוחה, כפי שהגיע מהשרת. null = עוד לא נכתב. */
 let liveLetter=null;
 function letterStatus(p){
-  if(!liveLetter||!liveLetter.signed_at)return 'טיוטה — עוד לא נחתם. ייפתח ב'+p.date+'.';
+  if(!liveLetter||!liveLetter.signed_at)return 'טיוטה, עוד לא נחתם. ייפתח ב'+p.date+'.';
   const d=new Date(liveLetter.signed_at);
   return 'נחתם ב'+months[d.getMonth()]+' '+d.getFullYear()+
          (p.kid?' · '+p.kid+' יקרא אותו ב'+p.date:' · ייפתח ב'+p.date);
@@ -2657,7 +2657,7 @@ function signLetter(){
   const p=plantAt(cur);
   if(!p||!p.live)return;
   const body=(document.getElementById('e-letter').value||'').trim();
-  if(!body){toast('אין עדיין מה לחתום — המכתב ריק');return}
+  if(!body){toast('אין עדיין מה לחתום, המכתב ריק');return}
   ask('לחתום על המכתב?',
     'אחרי החתימה אפשר עדיין לתקן אותו עד המועד המיוחל, אבל הוא נספר ככתוב ומוצג לך ולנטיעה כמכתב חתום. לא ניתן לבטל חתימה.',
     'חתום',
@@ -2679,7 +2679,7 @@ function buildLiveEdit(p){
   txt('e-meta',p.name);
   document.getElementById('e-name').value=p.name;
   document.getElementById('e-date').value=p.targetDate||'';
-  txt('e-datewarn','דחיית המועד אפשרית, והקדמתו לא — מי שכבר השקיע עשה זאת מתוך הבנה שהכסף ייפתח ב'+p.date+'. כל שינוי יישלח אליו בהתראה.');
+  txt('e-datewarn','דחיית המועד אפשרית, והקדמתו לא, מי שכבר השקיע עשה זאת מתוך הבנה שהכסף ייפתח ב'+p.date+'. כל שינוי יישלח אליו בהתראה.');
   const o=p.openedOn?new Date(p.openedOn+'T00:00:00'):null;
   txt('e-opened',o?(months[o.getMonth()]+' '+o.getFullYear()):'—');
   txt('e-bene',p.kid||'עדיין לא יועדה');
@@ -2908,7 +2908,7 @@ function paintSharedCard(r){
   const note=document.getElementById('sl-note');
   if(r.personal_note){
     txt('sl-note-t','"'+r.personal_note+'"');
-    txt('sl-note-by','— '+who);
+    txt('sl-note-by',who);
     note.style.display='';
   } else note.style.display='none';
 
@@ -3031,7 +3031,7 @@ function askForAccess(token,waiting){
   if(waiting){
     ask('נכנסת עם כתובת אחרת',
       (mine?('נכנסת עם '+mine+'. '):'')+
-      'ההזמנה לנטיעה הזו נשלחה לכתובת אחרת — אם היא שלך, הכי מהיר להיכנס איתה, וההצטרפות תהיה מיידית.',
+      'ההזמנה לנטיעה הזו נשלחה לכתובת אחרת, אם היא שלך, הכי מהיר להיכנס איתה, וההצטרפות תהיה מיידית.',
       'היכנס עם כתובת אחרת', switchAccount,
       'בקש אישור בכל זאת', function(){requestSheet(token)});
     return;
@@ -3046,7 +3046,7 @@ function requestSheet(token,why){
   sheetForm('נבקש אישור ממי שפתח את הנטיעה',
     (why==='expired'
       ? 'החלון של הקישור נסגר, ולכן הוא כבר לא מצרף לבד. '
-      : 'זה קישור פתוח — לא נשלחה דרכו הזמנה אישית לאף אחד. ')+
+      : 'זה קישור פתוח, לא נשלחה דרכו הזמנה אישית לאף אחד. ')+
     'מי שפתח את הנטיעה יראה מי ביקש, ויחליט.'+
     '<label>שם מלא</label><input type="text" id="ja-name" placeholder="למשל: רחל לוי">'+
     '<label>מה הקשר שלך לילד</label><input type="text" id="ja-rel" placeholder="למשל: סבתא">',
@@ -3165,13 +3165,13 @@ function ahaCopy(){
   txt('pay-fine','ההפקדה עוברת ישירות לחשבון הנעול על שם '+nm+', אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.');
   txt('lo-txt','✉ רוצה לצרף מכתב שייפתח ב'+dl+'?');
   txt('tp-open-txt','🎉 רוצה לשתף מישהו שישמח לראות שנטעת עבור '+nm+'?');
-  txt('tp-form-sub','יראו בדיוק כמה נטעת, ויוכלו לחזור מתי שבא להם ולראות איך זה גדל — בלי גישה לכסף עצמו.');
+  txt('tp-form-sub','יראו בדיוק כמה נטעת, ויוכלו לחזור מתי שבא להם ולראות איך זה גדל, בלי גישה לכסף עצמו.');
   txt('tp-done-txt','יראו בדיוק כמה נטעת, ויוכלו לחזור ולראות איך זה גדל.');
   txt('lf-txt','המכתב ייחתם עכשיו וייפתח על ידי '+nm+' רק ב'+dl+', יחד עם מה שהשקעת '+bs('עבורו','עבורה')+'.');
   txt('ld-txt','תלוי על העץ עד '+dl+'. רק '+nm+' יוכל לפתוח אותו.');
   const lt=document.getElementById('letter');if(lt)lt.placeholder=nm+', ביום שתקרא את זה...';
   const el=document.getElementById('aha-note');
-  if(isNewPlant){el.innerHTML='זו הנטיעה הראשונה עבור <b>'+nm+'</b> — אתה פותח אותה';return}
+  if(isNewPlant){el.innerHTML='זו הנטיעה הראשונה עבור <b>'+nm+'</b>, אתה פותח אותה';return}
   let p=null;try{p=plantAt(cur);}catch(e){}
   if(!p){el.innerHTML='עד כה השקעת עבור <b>'+nm+'</b>';return}
   const others=p.who.filter(w=>w[1]!=='אתה').map(w=>w[1]);
@@ -3340,7 +3340,7 @@ const plants={
   danielBar:{icon:'🎂',name:'בר המצווה של דניאל',date:'אוגוסט 2032',yr:2032,planted:2019,
     now:15600,end:35300,yl:6,tNow:53.8,kid:'דניאל',approver:'self',shared:true,mine:true,
     who:[['av-parent','אתה','9,100 ₪','m'],['av-granny','סבתא רחל','4,300 ₪','f'],['av-uncle','דוד יוסי','2,200 ₪','m']],
-    lCount:'ולא רק כסף, 3 מכתבים חתומים — מסבתא, מדוד יוסי וממך',lSub:'המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.',
+    lCount:'ולא רק כסף, 3 מכתבים חתומים: מסבתא, מדוד יוסי וממך',lSub:'המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.',
     line:'בזכות 150 ₪ בחודש ממך, מסבתא ומדוד יוסי, דניאל מתקרב ליום הגדול שלו'},
   noaStudy:{icon:'🎓',name:'הלימודים של נועה',date:'ספטמבר 2038',yr:2038,planted:2024,
     now:4200,end:21200,yl:12,tNow:14.3,kid:'נועה',approver:'guardian',guardName:'מיכל',shared:false,mine:true,co:'מיכל',
@@ -3355,7 +3355,7 @@ const plants={
   openFund:{icon:'🎁',name:'קופת הפתעות',date:'יוני 2035',yr:2035,planted:2025,
     now:3400,end:12800,yl:9,tNow:11.1,kid:'מי שאחליט',shared:false,mine:true,designated:false,
     who:[['av-parent','אתה','3,400 ₪','m']],
-    lCount:'ולא רק כסף — עוד לא נכתב מכתב',lSub:'אפשר לצרף מכתב ברגע שתייעד את הקופה.',
+    lCount:'ולא רק כסף, עוד לא נכתב מכתב',lSub:'אפשר לצרף מכתב ברגע שתייעד את הקופה.',
     line:'בזכות 30 ₪ בחודש שאתה מפקיד, יש כאן משהו שמחכה לרגע הנכון'},
   noaHome:{icon:'🏠',name:'הדירה של נועה',date:'יוני 2045',yr:2045,planted:2021,
     now:5400,end:59200,yl:19,tNow:20.8,kid:'נועה',shared:true,mine:false,
@@ -3400,7 +3400,7 @@ function liveLine(monthly,others,kid,designated,occasion,sex){
   const rate=monthly?monthly.toLocaleString('he-IL')+' ₪ בחודש':'';
   const to=kid?withPrep('ל',kid):'מי שתחליט';
   if(!designated)return monthly
-    ? 'בקצב של '+rate+', הקופה ממשיכה לגדול — ועדיין לא יועדה לאף אחד'
+    ? 'בקצב של '+rate+', הקופה ממשיכה לגדול, ועדיין לא יועדה לאף אחד'
     : 'הקופה רשומה על שמך וממתינה לייעוד';
   const px=himHer(sex);
   const clause=OCCASION_CLAUSE[occasion]?OCCASION_CLAUSE[occasion](px):('נבנה כאן משהו שמחכה '+px);
@@ -3446,7 +3446,7 @@ function liveDetail(r){
     who:who, monthly:monthly,
     line:liveLine(monthly,others,desig?r.beneficiary_name:'',desig,r.occasion,r.beneficiary_sex),
     lCount:n?('ולא רק כסף, '+(n===1?'מכתב אחד חתום':n+' מכתבים חתומים')+
-              (r.letter_authors&&r.letter_authors.length?' — מ'+listNames(r.letter_authors):'')):'',
+              (r.letter_authors&&r.letter_authors.length?', מ'+listNames(r.letter_authors):'')):'',
     lSub:n?((n===1?'המכתב ייפתח ב':'המכתבים ייפתחו ב')+when+
             (r.beneficiary_name?', יחד עם '+r.beneficiary_name:'')+'.'):''
   };
@@ -3528,7 +3528,7 @@ function enterRedeem(key){
   const p=plantAt(cur);
   if(p.approver==='later'){
     ask('עדיין לא נקבע מי יאשר את הפדיון',
-      'לפני שממשיכים צריך לקבוע מי יפעל בשם '+p.kid+' ברגע הזה — אפשר לעשות את זה בעריכת הנטיעה.',
+      'לפני שממשיכים צריך לקבוע מי יפעל בשם '+p.kid+' ברגע הזה, אפשר לעשות את זה בעריכת הנטיעה.',
       'עבור להגדרות', function(){openEdit()});
     return;
   }
@@ -3542,7 +3542,7 @@ function populateRedeem(p){
   const guardian=p.approver==='guardian';
   txt('rc-h',guardian?('הגיע היום של '+p.kid):'הגיע היום שלך');
   txt('rc-sub',guardian
-    ?('את/ה מורשה/ית לפתוח את מה שנטעו עבור '+p.kid+' — הזן/י את הקוד שקיבלת.')
+    ?('את/ה מורשה/ית לפתוח את מה שנטעו עבור '+p.kid+', הזן/י את הקוד שקיבלת.')
     :'מישהו שתל עבורך משהו לפני שנים. הזן את הקוד שקיבלת כדי לפתוח אותו.');
   txt('rd-icon',p.icon);
   txt('rd-h',guardian?('הגיע היום המיוחל של '+p.kid):('הגיע היום, '+p.kid));
@@ -3560,7 +3560,7 @@ function populateRedeem(p){
     :(p.kid+' · אומת מול הגוף הפיננסי המנהל'));
   txt('rt-warn',guardian
     ?('החשבון חייב להיות על שם '+p.guardName+', המורשה/ית הרשום/ה. העברה לחשבון אחר לא תאושר.')
-    :('החשבון חייב להיות על שמך, '+p.kid+'. העברה לחשבון של אדם אחר — כולל הורה או קרוב — לא תאושר. זו ההגנה שמבטיחה שהכסף שנשתל עבורך יגיע דווקא אליך.'));
+    :('החשבון חייב להיות על שמך, '+p.kid+'. העברה לחשבון של אדם אחר, כולל הורה או קרוב, לא תאושר. זו ההגנה שמבטיחה שהכסף שנשתל עבורך יגיע דווקא אליך.'));
 }
 /* the people tab aggregates across all plantings, so it can never drift from them */
 function stripHe(t){return t.charAt(0)==='ה'?t.slice(1):t}
@@ -3700,7 +3700,7 @@ function declineSuggested(i){
 }
 function sentSheet(k,r){
   ask('ההזמנה נשלחה ל'+r.name,
-    'כש'+r.name+' תפתח את הקישור, יישלח קוד אימות חד-פעמי ל'+r.contact+' — ורק מי ששולט בו יוכל להצטרף ל'+nameOfPlanting(k)+'. אין קוד שאתה צריך למסור.\n\nאם מישהו אחר ינסה להיכנס דרך הקישור, הבקשה תגיע אליך לאישור עם שמו.',
+    'כש'+r.name+' תפתח את הקישור, יישלח קוד אימות חד-פעמי ל'+r.contact+', ורק מי ששולט בו יוכל להצטרף ל'+nameOfPlanting(k)+'. אין קוד שאתה צריך למסור.\n\nאם מישהו אחר ינסה להיכנס דרך הקישור, הבקשה תגיע אליך לאישור עם שמו.',
     'הבנתי');
 }
 function sendInvite(r){
@@ -3738,13 +3738,13 @@ function sendInvite(r){
    עצמה נשארת בידיים שלך, והגיליון מוסר את הקישור בלי להצהיר שנשלח משהו. */
 function personalInviteSheet(key,r,url,emailed){
   const openLine=emailed
-    ? 'ההזמנה נשלחה למייל של '+r.name+' — קישור אישי אליה בלבד'+
+    ? 'ההזמנה נשלחה למייל של '+r.name+', קישור אישי אליה בלבד'+
       (r.note?', ונושא את מה שכתבת':'')+'. אפשר גם להעתיק את הקישור ולשלוח אותו בעצמך, כגיבוי.'
     : 'הקישור הזה אישי לה: הוא פונה אליה בשם'+(r.note?' ונושא את מה שכתבת':'')+
       '. העבר לה אותו ב'+CHAN[r.chan]+'.';
   sheetForm('ההזמנה ל'+r.name+' נרשמה',
     openLine+' וכשהיא תיכנס לנטע עם '+
-    attrText(r.contact)+' — היא תצורף ל'+nameOfPlanting(key)+' מיד, בלי שתצטרך לאשר.'+
+    attrText(r.contact)+', היא תצורף ל'+nameOfPlanting(key)+' מיד, בלי שתצטרך לאשר.'+
     '<label>הקישור</label><textarea readonly style="min-height:52px">'+attrText(url)+'</textarea>'+
     '<p class="fine" style="margin-top:8px">מי שיפתח את אותו קישור עם כתובת אחרת יגיע אליך לאישור, בשמו.</p>',
     'העתק וסגור',
@@ -3757,7 +3757,7 @@ function buildRelatives(){
     box.innerHTML='<div class="es" style="min-height:0;padding:22px 4px"><div class="art" style="color:var(--leaf-2);opacity:.6">'+
       '<svg width="52" height="52" viewBox="0 0 24 24"><use href="#ic-person"/></svg></div>'+
       '<h3 style="font-size:15.5px">מי עוד נוטע איתך?</h3>'+
-      '<p>שמור כאן את סבתא, את הדוד ואת מי שקרוב — ותוכל לצרף אותם לכל נטיעה בלחיצה אחת, בלי להקליד פרטים מחדש.</p></div>';
+      '<p>שמור כאן את סבתא, את הדוד ואת מי שקרוב, ותוכל לצרף אותם לכל נטיעה בלחיצה אחת, בלי להקליד פרטים מחדש.</p></div>';
     relMeta();return;
   }
   box.style.border='';box.style.background='';box.style.padding='';
@@ -3783,7 +3783,7 @@ const pays=[
   {t:'הוראת קבע · בנק לאומי',n:'חשבון ····4471',state:'live',
    note:'מממנת את בר המצווה של דניאל (150 ₪) ואת הלימודים של נועה (60 ₪).'},
   {t:'ויזה ····8302',n:'תוקף 11/26',state:'warn',
-   note:'כרטיס גיבוי — משמש רק אם הוראת הקבע נכשלת. פג בעוד פחות משלושה חודשים; כרטיס שפג תוקפו לא יוכל לגבות.'}
+   note:'כרטיס גיבוי, משמש רק אם הוראת הקבע נכשלת. פג בעוד פחות משלושה חודשים; כרטיס שפג תוקפו לא יוכל לגבות.'}
 ];
 function buildPays(){
   if(!pays.length){
@@ -3820,7 +3820,7 @@ function swapPay(i){
       const n=(document.getElementById('pay-n')||{}).value,e=(document.getElementById('pay-e')||{}).value;
       if(!n||!n.trim()){toast('צריך מספר כדי לעדכן');return false}
       p.n=n.trim()+(e&&e.trim()?' · תוקף '+e.trim():'');
-      if(p.state==='warn'){p.state='off';p.note='כרטיס גיבוי — משמש רק אם הוראת הקבע נכשלת.'}
+      if(p.state==='warn'){p.state='off';p.note='כרטיס גיבוי, משמש רק אם הוראת הקבע נכשלת.'}
       buildPays();toast('אמצעי התשלום עודכן');
     });
 }
@@ -3833,7 +3833,7 @@ function addPay(){
       const t=(document.getElementById('pay-t')||{}).value,n=(document.getElementById('pay-n')||{}).value;
       if(!t||!t.trim()||!n||!n.trim()){toast('צריך סוג ומספר');return false}
       const row={t:t.trim(),n:n.trim(),state:'off',
-                 note:'אמצעי גיבוי — עדיין לא מממן הפקדה קבועה.'};
+                 note:'אמצעי גיבוי, עדיין לא מממן הפקדה קבועה.'};
       if(liveAccount()){
         netaServer.addPayment({label:row.t,last4:lastFour(row.n),
                                kind:payKind(row.t),isDefault:!pays.length})
@@ -3850,7 +3850,7 @@ const letters=[
    body:'דניאל, ביום שתקרא את זה כבר תהיה גדול ממני בכמה דברים. התחלנו לשתול את זה כשהיית בן שש.'},
   {kid:'נועה',plant:'הלימודים של נועה',signed:'נחתם בינואר 2025',opens:'ספטמבר 2038',draft:false,
    body:'נועה, בחרנו ללמוד יחד איתך עוד לפני שידעת מה תרצי ללמוד.'},
-  {kid:'דניאל',plant:'הגיוס של דניאל',signed:'טיוטה — עוד לא נחתם',opens:'מרץ 2030',draft:true,body:''}
+  {kid:'דניאל',plant:'הגיוס של דניאל',signed:'טיוטה, עוד לא נחתם',opens:'מרץ 2030',draft:true,body:''}
 ];
 function buildLetters(){
   const lbox=document.getElementById('lt-list');
@@ -3916,7 +3916,7 @@ function noteHTML(){
   return '<label>משפט אישי · לא חובה</label>'+
     '<textarea id="r-note" maxlength="240" style="min-height:58px" '+
     'placeholder="פתחתי משהו קטן לעתיד, ישמח אותי אם תהיה חלק."></textarea>'+
-    '<p class="fine" style="margin-top:6px;color:#C9A2AC">מה שתכתוב כאן יראה כל מי שיפתח את הקישור — גם אם הוא הועבר הלאה.</p>';
+    '<p class="fine" style="margin-top:6px;color:#C9A2AC">מה שתכתוב כאן יראה כל מי שיפתח את הקישור, גם אם הוא הועבר הלאה.</p>';
 }
 /* הקישור האישי של קרוב שכבר הוזמן. */
 function copyRelativeLink(i){
@@ -4057,7 +4057,7 @@ function editRelative(i){
 function confirmRemoveRelative(i){
   const r=relatives[i];
   ask('להסיר את '+r.name+'?',
-    'זה רק ינקה אותו/ה מרשימת הקרובים שלך — לא ישפיע על נטיעות שהוא/היא כבר משתתפים או מוזמנים אליהן.',
+    'זה רק ינקה אותו/ה מרשימת הקרובים שלך, לא ישפיע על נטיעות שהוא/היא כבר משתתפים או מוזמנים אליהן.',
     'הסר',function(){removeRelative(i)});
 }
 function removeRelative(i){
@@ -4112,7 +4112,7 @@ function loadLetters(){
       letters.push({kid:kid||'הקופה',plant:pl.name||'הנטיעה',opens:opens,
                     draft:!r.signed_at,body:r.body||'',planting:r.planting_id,
                     signed:sd?('נחתם ב'+months[sd.getMonth()]+' '+sd.getFullYear())
-                            :'טיוטה — עוד לא נחתם'});
+                            :'טיוטה, עוד לא נחתם'});
     });
     buildLetters();
   }).catch(function(){});
@@ -4127,7 +4127,7 @@ function loadAccountLists(){
       pays.push({t:m.label,n:m.last4?('····'+m.last4):'',
                  state:m.is_default?'live':'off',
                  note:m.is_default?'מממן את ההפקדות הקבועות שלך.'
-                                  :'אמצעי נוסף — לא מממן הפקדה קבועה.'});
+                                  :'אמצעי נוסף, לא מממן הפקדה קבועה.'});
     });
     buildPays();
   }).catch(function(){});
@@ -4186,7 +4186,7 @@ function buildConnection(){
      רק הראשונה — והכשל ישב דווקא בשנייה. */
   Promise.all([netaServer.whoami(),netaServer.whoamiDb()]).then(function(r){
     const u=r[0],db=r[1];
-    if(!u||!u.id){el.textContent=t+' · השרת לא מזהה את החיבור — צריך להיכנס שוב';return}
+    if(!u||!u.id){el.textContent=t+' · השרת לא מזהה את החיבור, צריך להיכנס שוב';return}
     if(!db){el.textContent=t+' · המסד לא ענה';return}
     const ok=db.db_uid===u.id;
     el.textContent=t+' · מסד: '+(db.db_role||'?')+
@@ -4272,7 +4272,7 @@ function openSetPassword(){
     function(){
       const pw=(document.getElementById('pw-val')||{}).value||'';
       const pw2=(document.getElementById('pw-val2')||{}).value||'';
-      if(pw.length<6){toast('הסיסמה קצרה מדי — לפחות 6 תווים');return false}
+      if(pw.length<6){toast('הסיסמה קצרה מדי, לפחות 6 תווים');return false}
       if(pw!==pw2){toast('הסיסמאות לא תואמות');return false}
       netaServer.setPassword(pw)
         .then(function(){toast('הסיסמה נשמרה')})
@@ -4330,12 +4330,12 @@ function netaBackend(cfg){
      מתורגמות; השאר עוברות כמו שהן, כי הודעה גולמית עדיפה על ניחוש. */
   const SERVER_SAYS=[
     [/email rate limit|over_email_send_rate/i,
-     'נשלחו יותר מדי מיילים בזמן קצר. השירות החינמי של Supabase מגביל לכמה מיילים בשעה — צריך להמתין, או לחבר שירות מייל משלך.'],
+     'נשלחו יותר מדי מיילים בזמן קצר. השירות החינמי של Supabase מגביל לכמה מיילים בשעה, צריך להמתין, או לחבר שירות מייל משלך.'],
     [/token has expired|invalid.*token|otp_expired/i,
      'הקוד פג או שאינו נכון. אפשר לבקש קוד חדש.'],
     [/invalid login credentials/i, 'הקוד לא נכון.'],
     [/password.*(at least|should be|too short)|too short/i,
-     'הסיסמה קצרה מדי — לפחות 6 תווים.'],
+     'הסיסמה קצרה מדי, לפחות 6 תווים.'],
     [/row-level security/i,
      'השרת לא זיהה מי שומר את הרשומה. כדאי להתנתק ולהיכנס מחדש.'],
     [/duplicate key|already exists/i, 'הרשומה הזו כבר קיימת.'],
@@ -4488,7 +4488,7 @@ function netaBackend(cfg){
     signOutAndReload:function(){
       /* כניסה מחדש עולה מייל, והמכסה החינמית קטנה. לא פעולה שנעשית בהיסח. */
       ask('להתנתק?',
-          'כדי להיכנס שוב יישלח אליך קוד במייל. השירות החינמי מגביל לכמה מיילים בשעה, אז אם שלחת כמה לאחרונה — ייתכן שתצטרך להמתין.',
+          'כדי להיכנס שוב יישלח אליך קוד במייל. השירות החינמי מגביל לכמה מיילים בשעה, אז אם שלחת כמה לאחרונה, ייתכן שתצטרך להמתין.',
           'התנתק', function(){drop();location.reload()}, 'הישאר מחובר');
     },
     /* השם נשמר, לא רק העובדה שהפרופיל קיים — הכותרות והפרופיל צריכים אותו,
@@ -5182,7 +5182,7 @@ function feedRowHTML(e){
     text=(e.isMe?'הצטרפת ':who(e.actor)+' '+VERB.joined+' ')+withPrep('ל',e.name);
   }else{
     icon=e.icon||'🌱';
-    text=e.name+' — כבר '+yearsWord(e.years)+' של נטיעה';
+    text=e.name+', כבר '+yearsWord(e.years)+' של נטיעה';
   }
   return '<div class="feed"><div class="fi'+cls+'">'+icon+'</div><div>'+
          '<div class="ft">'+text+'</div>'+
@@ -5270,7 +5270,7 @@ function buildLivePeople(list){
   txt('pp-eyebrow',rows.length?'הפקדת בנטיעות של קרובים':'');
   txt('pp-num',rows.length?shekel(mine):'');
   txt('pp-label',rows.length
-    ?'זה הסכום שהפקדת עד כה בנטיעות שקרובים פתחו. כמה הפקידו אחרים — לא מוצג, ולא יוצג.'
+    ?'זה הסכום שהפקדת עד כה בנטיעות שקרובים פתחו. כמה הפקידו אחרים, לא מוצג, ולא יוצג.'
     :'');
   const names=[];
   rows.forEach(function(p){if(p.initiator_name&&names.indexOf(p.initiator_name)<0)names.push(p.initiator_name)});
@@ -5378,7 +5378,7 @@ function designate(){
 function addPartner(){
   const p=plantAt(cur);
   sheetForm('הוסף שותף/ה ל'+p.name,
-    'שניכם תהיו רשומים כבעלים שווים — שניכם מפקידים, שניכם רואים הכל, וכל שינוי מהותי דורש הסכמה של שניכם.'+
+    'שניכם תהיו רשומים כבעלים שווים, שניכם מפקידים, שניכם רואים הכל, וכל שינוי מהותי דורש הסכמה של שניכם.'+
     '<label>שם מלא</label><input type="text" id="pt-name" placeholder="שם השותף/ה">',
     'שלח הזמנה',
     function(){
@@ -5402,7 +5402,7 @@ function addPartner(){
    contributor invite: the whole point of a partner is that it's not "just investing" */
 function openPartnerInvite(key,name){
   const p=plantAt(key);
-  txt('pi-sub','להיות שותף/ה שווה ב'+p.name+' — לא רק להשקיע');
+  txt('pi-sub','להיות שותף/ה שווה ב'+p.name+', לא רק להשקיע');
   txt('pi-icon',p.icon);
   txt('pi-title',p.name);
   txt('pi-meta','המועד המיוחל: '+p.date+' · נצבר עד כה '+p.now.toLocaleString('he-IL')+' ₪');
@@ -5447,7 +5447,7 @@ function buildLiveActions(p){
   }
   acts.className='';
   acts.innerHTML=pairWithBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button>');
-  note.innerHTML=p.co?('פרטית — רק אתה ו'+p.co+' רואים אותה')
+  note.innerHTML=p.co?('פרטית, רק אתה ו'+p.co+' רואים אותה')
     :'הנטיעה הזאת פרטית, <a href="#" onclick="openToCircle();return false" style="color:var(--leaf)">פתח אותה לקרובים</a>';
 }
 /* חזרה מצטרפת לכל שורת פעולות באחת משתי דרכים: זוג עם כפתור בודד
@@ -5481,7 +5481,7 @@ function buildActions(p){
     acts.innerHTML=pairWithBack('<button class="btn" onclick="investIn(cur)">השקע עוד</button>');
     note.style.display='block';
     if(p.mine){
-      note.innerHTML=(p.co?'פרטית — רק אתה ו'+p.co+' רואים אותה. ':'הנטיעה הזאת פרטית, ')+
+      note.innerHTML=(p.co?'פרטית, רק אתה ו'+p.co+' רואים אותה. ':'הנטיעה הזאת פרטית, ')+
         '<a href="#" onclick="openToCircle();return false" style="color:var(--leaf)">פתח אותה לקרובים</a>'+
         (p.co?'':' · '+addPartnerLink);
     }else{
@@ -5553,7 +5553,7 @@ function inviteFor(key){
 function openToCircle(){
   const p=plantAt(cur);
   ask('לפתוח את "'+p.name+'" לקרובים?',
-    'מרגע שקרוב מקבל גישה אי אפשר לבטל את מה שכבר ראה. הסכומים שלך לא ייחשפו — קרובים רואים התקדמות בלבד.',
+    'מרגע שקרוב מקבל גישה אי אפשר לבטל את מה שכבר ראה. הסכומים שלך לא ייחשפו, קרובים רואים התקדמות בלבד.',
     'פתח לקרובים',
     function(){
       if(!p.live){p.shared=true;openInvite(inviteFor(cur));return}
@@ -5652,7 +5652,7 @@ function setEmpty(on){
   });
   document.getElementById('act-next').style.display=on?'none':'';
   if(on){txt('pr-mine',0);txt('pr-theirs',0);txt('pr-sum','0 ₪');}else{buildProfile();}
-  txt('pm-sub',on?'כאן תחבר את ההפקדה החוזרת ותנהל אותה לאורך השנים.':'כאן מנוהלות ההפקדות החוזרות שלך — 210 ₪ בכל חודש.');
+  txt('pm-sub',on?'כאן תחבר את ההפקדה החוזרת ותנהל אותה לאורך השנים.':'כאן מנוהלות ההפקדות החוזרות שלך, 210 ₪ בכל חודש.');
   topbars[10][1]=on?'הצטרפת היום':'מלווה 2 נטיעות · שותף ב-2 נוספות';
   relatives.length=0;letters.length=0;requests.length=0;pays.length=0;
   /* נתוני ההדגמה חוזרים רק כשאין חשבון אמיתי מאחורי המסך. בלי התנאי הזה
