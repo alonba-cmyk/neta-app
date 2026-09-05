@@ -615,7 +615,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '74ef514';
+window.NETA_BUILD = 'fefcb42';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1386,7 +1386,15 @@ window.NETA_CONFIG = {
       </div>
     </div>
     <div>
-      <button class="btn" onclick="beginSignIn()">המשך עם אימייל</button>
+      <!-- identifier-first: הדלת מבקשת את הכתובת, ורק אחריה נקבעת השיטה.
+           בורר "קוד / סיסמה" ירד מכאן למסך שאחרי — סיסמה היא תוספת מרצון,
+           ולהציע אותה למי שאין לו היא הצעת מסלול שאי אפשר לבחור בו. -->
+      <p class="fine" id="w-hint" style="display:none;text-align:center;margin-bottom:9px"></p>
+      <div class="field" style="margin-bottom:0">
+        <input type="text" id="w-id" placeholder="you@example.com" autocomplete="email"
+          autocapitalize="off" autocorrect="off" spellcheck="false"
+          onkeydown="if(event.key==='Enter')doorNext()"></div>
+      <button class="btn" id="w-cta" style="margin-top:9px" onclick="doorNext()">המשך</button>
       <div class="orline">או</div>
       <div class="social">
         <button onclick="socialIn('Apple')"><svg width="13" height="15" viewBox="0 0 14 17" fill="currentColor"><path d="M11.6 9c0-2 1.6-2.9 1.7-3-.9-1.4-2.4-1.5-2.9-1.6-1.2-.1-2.4.7-3 .7s-1.6-.7-2.6-.7C3.5 4.4 2.2 5.2 1.5 6.5.1 9 1.1 12.8 2.5 14.9c.7 1 1.5 2.1 2.5 2.1s1.3-.6 2.5-.6 1.5.6 2.6.6 1.7-1 2.4-2c.7-1.1 1-2.2 1-2.3 0 0-1.9-.7-1.9-2.7zM9.7 3.2c.5-.7.9-1.6.8-2.5-.8 0-1.8.5-2.4 1.2-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.4-1.1z"/></svg>Apple</button>
@@ -1406,7 +1414,7 @@ window.NETA_CONFIG = {
     <button class="on" data-m="code" onclick="setLoginMethod('code')">קוד למייל</button>
     <button data-m="password" onclick="setLoginMethod('password')">מייל וסיסמה</button>
   </div>
-  <div class="field"><label>טלפון נייד</label><input type="text" id="lg-phone" placeholder="050-0000000"></div>
+  <div class="field" id="lg-idfield"><label>טלפון נייד</label><input type="text" id="lg-phone" placeholder="050-0000000"></div>
   <div class="field" id="lg-pwfield" style="display:none">
     <label>סיסמה</label><input type="password" id="lg-pw" placeholder="הסיסמה שלך" autocomplete="current-password"
       autocapitalize="off" autocorrect="off" spellcheck="false">
@@ -1418,6 +1426,8 @@ window.NETA_CONFIG = {
   </div>
   <button class="btn" id="lg-cta" onclick="loginNext()">שלח קוד</button>
   <p class="fine" id="lg-fine">אם כבר יש לך חשבון, תיכנס אליו. אם לא — ניצור אחד. אותו כפתור.</p>
+  <!-- הסיסמה חיה כאן ולא בדלת: רק מי שהגדיר אחת בפרופיל מחפש אותה. -->
+  <button class="link" id="lg-pwlink" style="display:none" onclick="usePassword()">יש לי סיסמה</button>
   <button class="link backlink" onclick="go(ONBO.welcome)">חזרה</button>
 </section>
 
@@ -1814,7 +1824,66 @@ function playSplash(){
    בלי להתחבר לא ימצא אפליקציה ריקה. */
 function beginSignIn(){
   onbo=true;idDone=false;
+  loginAsVerify(false);
   go(ONBO.login);
+}
+
+/* ─── הדלת ───────────────────────────────────────────────────────────────
+   identifier-first: הכתובת נמסרת פעם אחת במסך הפתיחה, ומסך הכניסה משמש
+   מכאן ואילך לאימות בלבד. מי שמגיע דרך קישור הזמנה נוחת ישירות על מסך
+   הכניסה, ולכן הוא חייב להמשיך לתפקד גם כמסך זהות — משם שני המצבים. */
+function loginAsVerify(on){
+  const live=!!netaServer;
+  const el=function(id){return document.getElementById(id)};
+  const m=el('lg-method');   if(m)m.style.display=on?'none':(live?'flex':'none');
+  const idf=el('lg-idfield');if(idf)idf.style.display=on?'none':'';
+  const pl=el('lg-pwlink');  if(pl)pl.style.display=(on&&live)?'':'none';
+  const sub=el('lg-sub');    if(sub)sub.style.display=on?'none':'';
+  const fine=el('lg-fine');  if(fine)fine.style.display=on?'none':'';
+  const h=document.querySelector('[data-name="כניסה"] h2');
+  if(h&&live)h.textContent=on?'הזן את הקוד':'מה האימייל שלך?';
+}
+
+/* מי שהגדיר סיסמה בעבר במכשיר הזה — מזכירים לו, כדי שלא ייצור בטעות
+   חשבון שני בשיטה אחרת. "קוד" הוא ברירת המחדל ואין טעם להכריז עליו. */
+function doorHint(){
+  const h=document.getElementById('w-hint');
+  if(!h||!netaServer)return;
+  let saved='';try{saved=localStorage.getItem('neta.loginMethod')||''}catch(e){}
+  if(saved==='password'){h.textContent='נכנסת לאחרונה עם סיסמה';h.style.display=''}
+  else h.style.display='none';
+}
+
+function doorNext(){
+  const v=((document.getElementById('w-id')||{}).value||'').trim();
+  if(!v){toast('צריך אימייל');return}
+  /* אותו זיהוי ערוץ שכבר משמש בהזמנת קרובים. כשיהיה ספק SMS, השדה יקבל
+     גם מספר והענף הזה יהפוך למסלול אמיתי במקום להסבר. */
+  if(chanOf(v)==='wa'){
+    ask('כניסה עם מספר טלפון עוד לא זמינה',
+        'בקרוב אפשר יהיה להיכנס גם עם מספר. בינתיים הכניסה היא באימייל — '+
+        'אותו קוד חד-פעמי, רק לתיבה שלך.','הבנתי');
+    return;
+  }
+  onbo=true;idDone=false;
+  const f=document.getElementById('lg-phone');
+  if(f)f.value=v;
+  loginAsVerify(true);
+  go(ONBO.login);
+  loginNext();
+}
+
+/* מעבר לסיסמה מתוך מסך האימות: הכתובת כבר הוקלדה, ולכן היא חוזרת להיראות
+   עם הערך שבתוכה — ולא נמסרת מחדש. */
+function usePassword(){
+  loginAsVerify(false);
+  setLoginMethod('password');
+  const h=document.querySelector('[data-name="כניסה"] h2');
+  if(h)h.textContent='הסיסמה שלך';
+  const sub=document.getElementById('lg-sub');
+  if(sub)sub.style.display='none';
+  const pw=document.getElementById('lg-pw');
+  if(pw)pw.focus();
 }
 
 function onboOpen(){
@@ -5422,7 +5491,7 @@ function setEmpty(on){
 document.getElementById('empty-btn').onclick=function(){setEmpty(!isEmpty)};
 
 document.getElementById('id-avpick').innerHTML=avpickHTML('av-parent');
-loginPrep();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();applyTabSources();buildGhosts();
+loginPrep();doorHint();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();applyTabSources();buildGhosts();
 /* סשן שמור מהכניסה הקודמת — טוענים את הפרופיל לפני שהמסך נצבע. */
 if(liveAccount()){netaServer.loadProfile().then(applyIdentity).then(buildHomeSummary).catch(function(){});}
 buildHomeSummary();buildProfile();buildRequests();buildRelatives();buildPays();buildLetters();
