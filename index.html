@@ -660,7 +660,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '8beb150';
+window.NETA_BUILD = '29e1f92';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1498,7 +1498,6 @@ window.NETA_CONFIG = {
       <!-- identifier-first: הדלת מבקשת את הכתובת, ורק אחריה נקבעת השיטה.
            בורר "קוד / סיסמה" ירד מכאן למסך שאחרי — סיסמה היא תוספת מרצון,
            ולהציע אותה למי שאין לו היא הצעת מסלול שאי אפשר לבחור בו. -->
-      <p class="fine" id="w-hint" style="display:none;text-align:center;margin-bottom:9px"></p>
       <div class="field" style="margin-bottom:0">
         <input type="text" id="w-id" placeholder="you@example.com" autocomplete="email"
           autocapitalize="off" autocorrect="off" spellcheck="false"
@@ -1968,14 +1967,6 @@ function loginAsVerify(on){
 
 /* מי שהגדיר סיסמה בעבר במכשיר הזה — מזכירים לו, כדי שלא ייצור בטעות
    חשבון שני בשיטה אחרת. "קוד" הוא ברירת המחדל ואין טעם להכריז עליו. */
-function doorHint(){
-  const h=document.getElementById('w-hint');
-  if(!h||!netaServer)return;
-  let saved='';try{saved=localStorage.getItem('neta.loginMethod')||''}catch(e){}
-  if(saved==='password'){h.textContent='נכנסת לאחרונה עם סיסמה';h.style.display=''}
-  else h.style.display='none';
-}
-
 function doorNext(){
   const v=((document.getElementById('w-id')||{}).value||'').trim();
   if(!v){toast('צריך אימייל');return}
@@ -5744,7 +5735,7 @@ function setEmpty(on){
 document.getElementById('empty-btn').onclick=function(){setEmpty(!isEmpty)};
 
 document.getElementById('id-avpick').innerHTML=avpickHTML('av-parent');
-loginPrep();doorHint();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();applyTabSources();buildGhosts();
+loginPrep();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();applyTabSources();buildGhosts();
 /* סשן שמור מהכניסה הקודמת — טוענים את הפרופיל לפני שהמסך נצבע. */
 if(liveAccount()){netaServer.loadProfile().then(applyIdentity).then(buildHomeSummary).catch(function(){});}
 buildHomeSummary();buildProfile();buildRequests();buildRelatives();buildPays();buildLetters();
