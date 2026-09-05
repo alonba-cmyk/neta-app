@@ -591,7 +591,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '9a293a1';
+window.NETA_BUILD = '452b069';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2761,7 +2761,7 @@ function finishJoin(){
     dropInvite();
     history.replaceState(null,'',location.pathname);
     /* חשבון חדש עדיין בלי שם — בלעדיו הוא מופיע לבעל הנטיעה כשורה ריקה. */
-    introduceThen(function(){
+    introduceThen(r.planting_id,function(){
       setEmpty(false);
       buildHomeSummary();
       openDetail(r.planting_id);
@@ -2773,20 +2773,29 @@ function finishJoin(){
   return true;
 }
 
-/* שם, פעם אחת. הכתובת כבר אומתה בכניסה, ואין כאן טופס הרשמה שני. */
-function introduceThen(next){
+/* "מי אתה", פעם אחת. הכתובת כבר אומתה בכניסה, ואין כאן טופס הרשמה שני —
+   זה אותו רכיב משותף עם פתיחת חשבון בהרשמה ישירה (שם+תמונה), ובתוספת
+   שדה קרבה שקיים רק כאן: יש כבר נטיעה קונקרטית להתייחס אליה. */
+function introduceThen(plantingId,next){
   if(!netaServer)return next();
   netaServer.loadProfile().then(function(prof){
     if(prof&&prof.name){applyIdentity();return next()}
+    pickedAv='av-parent';
     sheetForm('נעים להכיר',
       'איך שייקרא לך אצל מי שהזמין אותך, ואיך זה יופיע לילד ביום שהנטיעה נפתחת.'+
-      '<label>שם</label><input type="text" id="jn-name" placeholder="למשל: סבתא רחל">',
+      '<label>שם</label><input type="text" id="jn-name" placeholder="למשל: סבתא רחל">'+
+      '<label>תמונה</label>'+avpickHTML('av-parent')+
+      (plantingId?'<label>מה את/ה לילד</label><input type="text" id="jn-rel" placeholder="למשל: סבתא">':''),
       'המשך',
       function(){
         const n=((document.getElementById('jn-name')||{}).value||'').trim();
         if(!n){toast('צריך שם');return false}
-        netaServer.ensureProfile(n).then(function(){
-          applyIdentity();next();
+        const av=pickedAv;
+        netaServer.ensureProfile(n,av).then(function(){
+          applyIdentity();
+          const rel=plantingId?((document.getElementById('jn-rel')||{}).value||'').trim():'';
+          if(plantingId&&rel){netaServer.setMyRelation(plantingId,rel).catch(function(){}).then(next)}
+          else next();
         }).catch(function(e){ask('השם לא נשמר',(e&&e.message)||'נסה שוב.','הבנתי')});
       });
   });
@@ -4362,6 +4371,13 @@ function netaBackend(cfg){
     requestAccess:function(token,name,relation){
       return rpc('request_access',{p_token:token,p_name:name,p_relation:relation})
         .catch(remember);
+    },
+    /* "מה את לדניאל" — נכתב ע"י המוזמן/ת על עצמו/ה, אחרי שהצטרף/ה. עמודה
+       יחידה מותרת בכתיבה (0023), ו-RLS מגביל לשורת ההזמנה שהתקבלה שלו/ה
+       בלבד — אין צורך להעביר invitation_id, planting_id מספיק. */
+    setMyRelation:function(plantingId,relation){
+      return call('/rest/v1/invitations?planting_id=eq.'+plantingId+'&state=eq.accepted',
+        {method:'PATCH',body:JSON.stringify({relation:relation})}).catch(remember);
     },
     pendingRequests:function(){
       return rpc('pending_requests').then(function(r){return r||[]}).catch(remember);
