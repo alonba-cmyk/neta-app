@@ -615,7 +615,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '8dfce4c';
+window.NETA_BUILD = '2373e2c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1908,6 +1908,23 @@ function onboStart(){setEmpty(true);go(0);onbo=true;}
 /* משתמש חדש עובר "מי אתה" לפני מסך הבית, לא אחריו — אם עוד לא עשה זאת.
    idDone נשאר false עד ששלב הזהות אכן הושלם, כך שחזרה לכאן (לדוגמה אחרי
    ריענון) לא מדלגת עליו בטעות. */
+/* נחיתה של מי שכבר מחובר בטעינת הדף. עד כה היא שלחה ישר למסך הבית בלי
+   לבדוק אם קיים פרופיל — ולכן מי שנכנס בפעם הראשונה דרך ספק חיצוני נחת
+   על בית עם "שלום" בלי שם. גוגל כבר מסרה את השם, ואין טעם לבקש אותו שוב
+   בטופס: פותחים את הפרופיל מהנתונים שלה. כשאין שם — נשאר "מי אתה". */
+function landSignedIn(){
+  go(0);
+  if(!netaServer)return;
+  netaServer.loadProfile().then(function(prof){
+    if(prof&&prof.name){applyIdentity();return null}
+    return netaServer.providerName().then(function(n){
+      if(!n){onbo=true;idDone=false;go(ONBO.identity);return null}
+      return netaServer.ensureProfile(n).then(function(){
+        idDone=true;applyIdentity();return buildHomeSummary();
+      });
+    });
+  }).catch(function(){});
+}
 function afterVerifiedNewUser(){
   if(onbo&&!idDone){go(ONBO.identity);return}
   onboStart();
@@ -4562,6 +4579,16 @@ function netaBackend(cfg){
     /* יציאה לספק חיצוני. החזרה מגיעה עם הטוקנים ב-hash, ו-fromUrlHash שבראש
        המפעל כבר קולט אותם ומנקה את הכתובת — ולכן אין כאן שום דבר לטפל בו
        אחרי החזרה. redirect_to חייב להתאים לרשימת ה-Redirect URLs בפרויקט. */
+    /* השם שהספק החיצוני כבר מסר עלינו. whoami ממילא נקרא ושומר את אובייקט
+       המשתמש, כולל user_metadata — אין כאן קריאה נוספת לשרת.
+       התמונה של גוגל אינה נלקחת: profiles.avatar_key מחזיק מפתח מתוך סט
+       האיורים שלנו, לא כתובת חיצונית. */
+    providerName:function(){
+      return whoami().then(function(u){
+        const m=(u&&u.user_metadata)||{};
+        return String(m.name||m.full_name||m.given_name||'').trim();
+      }).catch(function(){return ''});
+    },
     oauth:function(provider){
       const back=location.origin+location.pathname+location.search;
       location.href=base+'/auth/v1/authorize?provider='+encodeURIComponent(provider)+
@@ -5534,7 +5561,8 @@ if(sharedToken&&liveAccount()){
 } else if(!sharedToken||!openShared(sharedToken)){
   /* וסבב כניסה שנקטע באמצע חוזר לאותה נקודה. */
   if(liveAccount()&&pendingInvite()&&finishJoin()){}
-  else go(liveAccount()?0:ONBO.welcome);
+  else if(liveAccount())landSignedIn();
+  else go(ONBO.welcome);
 }
 </script>
 </body>
