@@ -615,7 +615,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f69d16b';
+window.NETA_BUILD = '7c3fdcf';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1918,16 +1918,25 @@ function onboStart(){setEmpty(true);go(0);onbo=true;}
    זאת מכאן; מה שבשליטתנו הוא הפרופיל, וזה מה שהאפליקציה מתייחסת אליו
    כ"חשבון". מי שנוטש כאן יחזור ל"מי אתה" בכניסה הבאה. */
 function landSignedIn(){
-  go(0);
-  if(!netaServer)return;
+  if(!netaServer){go(0);return}
+  /* מסך הבית מסומן on כבר ב-HTML, ולכן הוא נראה לפני שידוע אם בכלל יש
+     פרופיל — ואז הוא מוחלף ב"מי אתה" והמסך קופץ. מסתירים עד שההחלטה
+     ידועה. הטיימר הוא רשת ביטחון: אם השרת לא עונה, עדיף מסך בית מלא
+     תוכן ישן מאשר אפליקציה שנשארת ריקה לנצח. */
+  const stage=document.querySelector('.stage');
+  let shown=false;
+  const show=function(){if(shown)return;shown=true;if(stage)stage.style.visibility=''};
+  if(stage)stage.style.visibility='hidden';
+  const bail=setTimeout(function(){go(0);show()},4000);
+  const done=function(){clearTimeout(bail);show()};
   netaServer.loadProfile().then(function(prof){
-    if(prof&&prof.name){applyIdentity();return null}
+    if(prof&&prof.name){go(0);applyIdentity();done();return null}
     return netaServer.providerName().then(function(n){
       const f=document.getElementById('id-name');
       if(f&&n&&!f.value)f.value=n;
-      onbo=true;idDone=false;go(ONBO.identity);
+      onbo=true;idDone=false;go(ONBO.identity);done();
     });
-  }).catch(function(){});
+  }).catch(function(){go(0);done()});
 }
 function afterVerifiedNewUser(){
   if(onbo&&!idDone){go(ONBO.identity);return}
