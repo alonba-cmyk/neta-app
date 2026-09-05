@@ -454,6 +454,8 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הפתיחה, בסרגל התחתון ובסיום ההרשמה. */
 [data-name="כניסה"] .scr-icon{text-align:center;margin-bottom:10px;color:var(--leaf)}
 [data-name="כניסה"] .scr-icon svg{display:block;margin:0 auto}
+.brandmark{color:var(--leaf);line-height:0}
+.brandmark svg{display:block;margin:0 auto}
 [data-name="כניסה"] .chips{justify-content:center;margin:2px 0 14px}
 [data-name="כניסה"] .chips button{border-radius:20px;font-size:10.5px;padding:6px 12px}
 [data-name="כניסה"] #lg-cta,[data-name="פתיחת חשבון"] #id-cta{margin-bottom:10px}
@@ -613,7 +615,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '48113bb';
+window.NETA_BUILD = '97efd48';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1193,7 +1195,7 @@ window.NETA_CONFIG = {
 <!-- 12 CODE ENTRY -->
 <section class="screen center-v" data-name="הזנת קוד">
   <div class="center gap">
-    <div style="font-size:30px">🌳</div>
+    <div class="brandmark"><svg width="46" height="54" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
     <h2 style="margin:11px 0 5px" id="rc-h">הגיע היום שלך</h2>
     <p class="sub" id="rc-sub">מישהו שתל עבורך משהו לפני שנים.<br>הזן את הקוד שקיבלת כדי לפתוח אותו.</p>
   </div>
@@ -1557,7 +1559,7 @@ window.NETA_CONFIG = {
 <!-- 25 PARTNER INVITE (the receiving side — what a co-owner sees when they open the link) -->
 <section class="screen center-v" data-name="הזמנה לשותפות">
   <div class="center gap">
-    <div style="font-size:26px">🌱</div>
+    <div class="brandmark"><svg width="40" height="47" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
     <h2 style="margin:8px 0 4px">אלון הזמין אותך</h2>
     <p class="sub" id="pi-sub">להיות שותף/ה שווה — לא רק להשקיע</p>
   </div>
@@ -1604,7 +1606,7 @@ window.NETA_CONFIG = {
     </div>
 
     <div class="card center" style="background:var(--leaf-bg);border-color:var(--leaf-line)">
-      <div style="font-size:22px">🌳</div>
+      <div class="brandmark"><svg width="34" height="40" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
       <b style="display:block;margin:6px 0 4px;font-size:14px" id="sl-title">—</b>
       <p class="sub" style="color:var(--leaf-soft)" id="sl-meta">—</p>
       <div style="margin-top:12px;height:6px;border-radius:3px;background:var(--s2);overflow:hidden">
@@ -4251,12 +4253,16 @@ function netaBackend(cfg){
     ensureProfile:function(name,avatar){
       const self=this;
       return needUid().then(function(u){
-        const body={id:u,name:name};
+        /* המזהה לא נשלח, וזו לא קוסמטיקה: upsert מתרגם לכל עמודה שנשלחה
+           גם SET ב-ON CONFLICT DO UPDATE, ו-postgres בודק הרשאת UPDATE על
+           כל העמודות ברשימה — גם כשהשורה חדשה והענף הזה לא רץ. ל-0012 יש
+           הרשאת עדכון על name ו-avatar_key בלבד, ולכן שליחת id הפילה כל
+           הרשמה חדשה ב-"permission denied for table profiles".
+           id ממילא מוגדר במסד כ-DEFAULT auth.uid(), והוא נכתב משם. */
+        const body={name:name};
         if(avatar)body.avatar_key=avatar;
         return call('/rest/v1/profiles?on_conflict=id',{method:'POST',
         headers:{Prefer:'resolution=merge-duplicates,return=representation'},
-        /* כאן המזהה כן נשלח — הוא מפתח ה-on_conflict, ובלעדיו אין על מה
-           למזג. ברירת המחדל תופסת רק בהוספה חדשה. */
         body:JSON.stringify(body)});
       })
         .then(function(r){self.profile=(r&&r[0])||{id:uid(),name:name,avatar_key:avatar};return self.profile});
@@ -4975,7 +4981,10 @@ function buildHomeSummary(){
     txt('s-you',shekel(s.invested));
     txt('s-cnt',s.count);
     txt('s-mon',shekel(s.monthly));
-    txt('s-label','זה הסכום שנטעת עד כה עבור העתיד של '+s.kids.join(' ו'));
+    /* בלי שמות — המשפט נגמר ב"של " באוויר. קורה לכל חשבון חדש. */
+    txt('s-label',s.kids.length
+      ? 'זה הסכום שנטעת עד כה עבור העתיד של '+s.kids.join(' ו')
+      : 'זה הסכום שנטעת עד כה');
     document.getElementById('garden').innerHTML=gardenHTML(model.plantings);
     const projLink=document.getElementById('proj-link');
     if(projLink)projLink.style.display=projectablePlantings(model).length?'':'none';
