@@ -192,8 +192,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .s-eyebrow{font-size:10px;letter-spacing:.1em;color:var(--tx-3);margin-bottom:7px}
 .s-num{font-size:33px;font-weight:600;color:var(--leaf);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
 .s-label{font-size:12.5px;color:var(--tx-2);margin-top:8px;line-height:1.5}
-.s-meta{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--tx-3);margin-top:14px;
-  padding-top:12px;border-top:1px solid var(--line)}
+.s-meta{display:flex;flex-wrap:wrap;gap:8px;row-gap:5px;align-items:center;font-size:11px;
+  color:var(--tx-3);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+/* הפריט השלישי נושא איתו את הנקודה שמפרידה אותו, כדי שהסתרתו לא
+   תשאיר נקודה תלויה בסוף השורה בחשבון שאין בו צפי. */
+.s-meta .grp{display:flex;align-items:center;gap:8px}
 .s-meta b{color:var(--tx-2);font-weight:600;font-variant-numeric:tabular-nums}
 .s-meta i{width:3px;height:3px;border-radius:50%;background:var(--line-2);font-style:normal;flex-shrink:0}
 .ncard{background:var(--s1);border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:9px;
@@ -412,6 +415,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .tbl .n{color:var(--tx);overflow-wrap:break-word;line-height:1.35}
 .tbl .a{color:var(--tx-2);font-variant-numeric:tabular-nums;text-align:left;white-space:nowrap}
 .tbl .b{color:var(--leaf);font-weight:600;font-variant-numeric:tabular-nums;text-align:left;white-space:nowrap}
+/* טבלה בלי שורת סיכום מבקשת מהקורא לחבר בראש חמישה מספרים בני שש
+   ספרות. השורה הזאת עושה את זה במקומו. */
+.tbl .r.tot{border-bottom:none;border-top:1px solid var(--line-2);margin-top:3px;padding-top:11px}
+.tbl .r.tot .n{font-weight:500}
+.tbl .r.tot .b{font-size:13px}
 
 /* ===== redeem code ===== */
 .codebox{width:100%;font-family:inherit;font-size:25px;font-weight:600;letter-spacing:.3em;text-align:center;
@@ -660,7 +668,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '87de9d4';
+window.NETA_BUILD = '829c4f6';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -795,7 +803,7 @@ window.NETA_CONFIG = {
         </svg>
       </div>
     </div>
-    <div class="s-meta"><span><b id="s-cnt">2</b> השקעות בעתידם</span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span></div>
+    <div class="s-meta"><span><b id="s-cnt">2</b> השקעות בעתידם</span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span><span class="grp" id="s-fut-grp"><i></i><span>צפוי <b id="s-fut"></b></span></span></div>
   </div>
 
   <div class="hdr-row">
@@ -5118,6 +5126,16 @@ function projectablePlantings(model){
     return p.designated&&p.projection>p.accrued;
   });
 }
+/* הסכום העתידי המצטבר. שורת הסטטיסטיקה וטבלת "הצפי לעתיד" חייבות
+   להסכים, ולכן שתיהן סוכמות בדיוק את אותה רשימה — אחרת המשתמש רואה
+   מספר אחד בכותרת ומחבר מספר אחר מהטבלה.
+
+   מה שנסכם כאן הוא סה"כ הנטיעות, לא חלקו של המשתמש בהן: my_plantings
+   מחזיר רק נטיעות שהוא פתח, אבל accrued ו-projection שלהן כוללים גם
+   את מה שקרובים הפקידו. לכן הניסוח "יחכו להם" ולא "יהיו לך". */
+function projectedTotal(rows){
+  return rows.reduce(function(sum,p){return sum+Number(p.projection||0)},0);
+}
 function showProjectionSheet(){
   const rows=projectablePlantings(lastModel);
   if(!rows.length)return;
@@ -5131,6 +5149,11 @@ function showProjectionSheet(){
           '<span class="a">'+shekel(p.accrued)+'</span>'+
           '<span class="b">כ-'+shekel(p.projection)+'</span></div>';
       }).join('')+
+      (rows.length>1
+        ? '<div class="r tot"><span class="n">סך הכול</span>'+
+          '<span class="a">'+shekel(rows.reduce(function(t,p){return t+Number(p.accrued||0)},0))+'</span>'+
+          '<span class="b">כ-'+shekel(projectedTotal(rows))+'</span></div>'
+        : '')+
     '</div>';
   sheetFn=null;sheetAlt=null;
   document.getElementById('sh-acts').innerHTML='<button class="btn" onclick="sheetClose()">סגור</button>';
@@ -5308,8 +5331,14 @@ function buildHomeSummary(){
       ? 'זה הסכום שנטעת עד כה עבור העתיד של '+s.kids.join(' ו')
       : 'זה הסכום שנטעת עד כה');
     document.getElementById('garden').innerHTML=gardenHTML(model.plantings);
+    const proj=projectablePlantings(model);
     const projLink=document.getElementById('proj-link');
-    if(projLink)projLink.style.display=projectablePlantings(model).length?'':'none';
+    if(projLink)projLink.style.display=proj.length?'':'none';
+    const futGrp=document.getElementById('s-fut-grp');
+    if(futGrp){
+      futGrp.style.display=proj.length?'':'none';
+      txt('s-fut','כ-'+shekel(projectedTotal(proj)));
+    }
     if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();loadPeople();}
     buildFeed();buildConnection();
     return model;
