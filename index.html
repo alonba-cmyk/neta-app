@@ -103,11 +103,6 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 .choice.primary .choice-cta{border:none;background:var(--leaf);color:#0E1A10}
 
 /* תצוגה מקדימה: פעולה עזר, לא הפעולה הראשית של המסך — לכן שקטה. */
-.preview-row{display:flex;align-items:center;gap:8px;margin-bottom:16px}
-.preview-row .fine{flex:1;margin:0}
-.btn-preview{flex-shrink:0;font-family:inherit;font-size:10.5px;font-weight:500;color:var(--tx-2);
-  background:transparent;border:1px solid var(--line-2);border-radius:999px;padding:6px 12px;cursor:pointer}
-.btn-preview:hover{border-color:var(--tx-2)}
 
 label{display:block;font-size:11px;color:var(--tx-3);margin-bottom:6px}
 /* email ו-password נכללים במפורש: loginPrep מחליף את שדה הכניסה ל-type=email,
@@ -654,7 +649,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0c17943';
+window.NETA_BUILD = 'fb562a2';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1104,45 +1099,43 @@ window.NETA_CONFIG = {
 
 <!-- 7 INVITE / מעגל -->
 <section class="screen" data-name="הזמנה">
-  <h2 class="gap-s">הזמן את הקרובים</h2>
-  <p class="sub gap" id="inv-sub1">מי שתזמין יוכל להשקיע בדניאל, בלי לראות כמה השקיעו אחרים.</p>
-  <div class="card center" style="background:var(--leaf-bg);border-color:#2A4530">
-    <div style="font-size:22px" id="inv-icon">🌳</div><b style="display:block;margin:6px 0 4px;font-size:14px" id="inv-title">שותפים בעתיד של דניאל</b>
-    <p class="sub" style="color:#A8CBAC" id="inv-sub2">אוגוסט 2032 · 44% מהדרך</p>
-  </div>
+  <!-- המסך נבנה מחדש סביב ההזמנה עצמה. קודם הוא ענה שלוש פעמים על
+       "איפה אני" (כרטיס סיכום, קישור לתצוגה מקדימה, ורשימת משתתפים)
+       ורק אחר כך על "מה לעשות", והכפתור בתחתיתו חזר על אותה מילה שכבר
+       נלחצה במסך הנטיעה ובמסך הבחירה.
 
-  <div class="preview-row">
-    <p class="fine">מה יראה מי שתזמין?</p>
-    <button class="btn-preview" onclick="previewInvite()">👁 תצוגה מקדימה</button>
-  </div>
+       עכשיו: הכותרת נוקבת בעצם ולא בפעולה, ההזמנה מצוירת כאן בדיוק כפי
+       שהנמען יראה אותה, ושתי הפעולות יושבות עליה. התצוגה המקדימה כבר
+       אינה מסך אחר שצריך לחזור ממנו, אלא המסך הזה. -->
+  <h2 class="gap-s" id="inv-h2">ההזמנה</h2>
+  <p class="sub gap" id="inv-sub1">כך היא תיראה למי שיקבל אותה.</p>
 
-  <p class="eyebrow" style="margin-top:0">מי כבר שותף</p>
-  <div class="card" id="inv-stats">
-    <div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></div><span class="cbn">סבתא רחל</span><span class="cbv">השתתפה</span></div>
-    <div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></div><span class="cbn">דוד יוסי</span><span class="cbv">השתתף</span></div>
-    <div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></div><span class="cbn">אתה</span><span class="cbv">8,200 ₪</span></div>
-  </div>
-  <p class="fine gap" id="inv-fine">אתה רואה סכומים מלאים כבעל הנטיעה. הקרובים רואים רק את ההשתתפות שלהם, אלא אם בחרו אחרת.</p>
-
-  <!-- שתי דרכים, וכל אחת נושאת את ההסבר של עצמה. סעיף אבטחה כללי מתחת
-       לשניהם הוא בדיוק מה שייצר כאן משפט שלא היה נכון לאחד מהם. -->
-  <p class="eyebrow big">שתי דרכים להזמין</p>
-  <div class="choice primary" onclick="openRelatives()">
-    <div class="choice-icon">👤</div>
-    <div class="choice-body">
-      <b>הזמן קרוב בשמו</b>
-      <p>בוחרים מהקרובים שלכם וכותבים משפט אישי, מצטרף מיד, בלי לאשר.</p>
-      <span class="choice-cta">הזמן קרוב</span>
+  <div class="card" style="border-color:var(--leaf-line)">
+    <div class="center">
+      <div class="pic" style="width:48px;height:48px;border-radius:15px;overflow:hidden;margin:0 auto;background:var(--s2);border:1px solid var(--line)">
+        <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent" id="iv-av"/></svg>
+      </div>
+      <b style="display:block;font-size:14.5px;line-height:1.35;margin:10px 0 0" id="iv-h">·</b>
+    </div>
+    <div class="card center" style="background:var(--leaf-bg);border-color:var(--leaf-line);margin:13px 0 0">
+      <div class="brandmark"><svg width="30" height="35" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
+      <b style="display:block;margin:6px 0 4px;font-size:13.5px" id="iv-title">·</b>
+      <p class="sub" style="color:var(--leaf-soft)" id="iv-meta">·</p>
+      <div style="margin-top:12px;height:6px;border-radius:3px;background:var(--s2);overflow:hidden">
+        <div id="iv-bar" style="height:100%;width:0;background:var(--leaf);border-radius:3px"></div>
+      </div>
     </div>
   </div>
-  <div class="choice">
-    <div class="choice-icon">🔗</div>
-    <div class="choice-body">
-      <b>קישור פתוח לקרובים</b>
-      <p>מתאים לקבוצה. פעיל 24 שעות מרגע ההעתקה ומצרף מיד, כל מי שנכנס מופיע לכם בשמו בפעילות. אחרי כן הוא מבקש אישור.</p>
-      <button class="choice-cta" id="inv-copy" onclick="copyInviteLink()">העתק קישור פתוח</button>
-    </div>
-  </div>
+
+  <button class="btn gap-s" onclick="openRelatives()">שלח לקרוב מהרשימה</button>
+  <button class="btn ghost" style="margin-top:8px" id="inv-copy" onclick="copyInviteLink()">העתק קישור פתוח</button>
+  <p class="fine" style="margin-top:9px">הזמנה בשם נשלחת לאדם אחד ומצרפת אותו מיד. הקישור הפתוח פעיל 24 שעות, מצרף מיד, וכל מי שנכנס דרכו מופיע לכם בשמו בפעילות.</p>
+
+  <!-- מי שכבר השקיע מוצג במסך הנטיעה שממנו הגעת, ולכן ירד מכאן. מה
+       שנשאר הוא החצי השני של אותה רשימה, שאינו כפילות אלא קיצור דרך:
+       קרובים שכבר בפנקס ועוד לא הוזמנו לנטיעה הזו. -->
+  <p class="eyebrow" id="inv-quick-h" style="display:none;margin-top:22px">הזמנה מהירה מהקרובים שלך</p>
+  <div class="card" id="inv-stats" style="display:none"></div>
 
   <button class="btn ghost gap-s" onclick="go(0)">חזרה לנטיעות שלי</button>
 </section>
@@ -1698,9 +1691,6 @@ window.NETA_CONFIG = {
   <!-- הכרטיס לפני אימות. אין בו שם ילד ואין יעד — אלה בדיוק שני השדות
        שהאפיון אוסר לחשוף כאן, וקישור עובר בוואטסאפ. -->
   <div id="sl-card">
-    <!-- תצוגה מקדימה: אותו כרטיס בדיוק, בלי לצאת מהחשבון שלך. הבאנר
-         והכפתור החלופי הם ההבדל היחיד ממה שהנמען באמת רואה. -->
-    <p id="sl-preview-banner" style="display:none;text-align:center;font-size:11.5px;color:var(--leaf-soft);background:var(--leaf-bg);border:1px solid var(--leaf-line);border-radius:10px;padding:6px 10px;margin-bottom:14px">תצוגה מקדימה · כך זה נראה למי שמקבל את ההזמנה</p>
     <div class="center gap">
       <div class="pic" id="sl-face" style="width:52px;height:52px;border-radius:16px;overflow:hidden;margin:0 auto;background:var(--s2);border:1px solid var(--line)">
         <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent" id="sl-av"/></svg>
@@ -1730,7 +1720,6 @@ window.NETA_CONFIG = {
       <button class="btn gap-s" onclick="startJoin()">אני רוצה להצטרף</button>
       <button class="btn ghost" style="margin-top:8px" onclick="leaveShared()">רק הצצתי</button>
     </div>
-    <button class="btn ghost" id="sl-preview-back" style="display:none" onclick="closePreviewInvite()">חזרה להזמנה</button>
   </div>
 
   <!-- הבקשה עלתה לבעל הנטיעה. לא נחסמנו — הועברנו. -->
@@ -2902,36 +2891,10 @@ function copyInviteLink(){
     .catch(function(e){done();ask('לא הצלחנו להכין קישור',(e&&e.message)||'נסה שוב.','הבנתי')});
 }
 
-/* מה שהצד השני יראה, מוצג למי ששולח — לפני שהוא שולח.
-   נבנה מאותם שדות ומאותם כללי ניסוח של openShared, ולא מטקסט שמתאר
-   אותם: משפט שמתאר מסך מתיישן ברגע שהמסך משתנה, וזה בדיוק מה שקרה כאן. */
-/* המסך עצמו, לא תיאור שלו — אותו paintSharedCard שהנמען האמיתי רואה,
-   מוזן מהנתונים המקומיים שכבר בידך במקום קריאה לטוקן שלא קיים כאן.
-   חוזרים להזמנה עם closePreviewInvite, לא עם leaveShared — זה היה
-   מוציא אותך מהחשבון שלך. */
-function previewInvite(){
-  const p=plantAt(cur);
-  if(!p)return;
-  const who=(liveAccount()&&netaServer.profile&&netaServer.profile.name)||'אתה';
-  const av=(liveAccount()&&netaServer.profile&&netaServer.profile.avatar_key)||'av-parent';
-  const pct=p.end?Math.round(p.now/p.end*100):0;
-  paintSharedCard({
-    inviter_name:who, inviter_avatar:av,
-    beneficiary_name:p.kid||'', target_year:p.yr||'',
-    participants:(p.who||[]).filter(function(w){return w[1]!=='אתה'}).length,
-    percent:pct, personal_note:null, invitee_name:null
-  });
-  document.getElementById('sl-preview-banner').style.display='';
-  document.getElementById('sl-live-actions').style.display='none';
-  document.getElementById('sl-preview-back').style.display='';
-  sharedState('card');
-}
-function closePreviewInvite(){
-  document.getElementById('sl-preview-banner').style.display='none';
-  document.getElementById('sl-live-actions').style.display='';
-  document.getElementById('sl-preview-back').style.display='none';
-  go(7);
-}
+/* התצוגה המקדימה כמסך נפרד ירדה. היא הייתה לוקחת את בעל הנטיעה למסך
+   "קישור לנטיעה", מחליפה שם את הכפתורים, ומחזירה אותו עם "חזרה
+   להזמנה". עכשיו מסך ההזמנה מצייר את הכרטיס בעצמו דרך אותו
+   paintSharedCard, ולכן אין לאן לצאת ואין ממה לחזור. */
 
 /* מי שפתח קישור — עוד לפני שהוא נכנס לחשבון כלשהו. */
 function sharedTokenInUrl(){
@@ -2952,44 +2915,48 @@ function sharedState(which){
    נטעו — הוא החלטה מודעת שנרשמה ב-docs/open-decisions.md §10, לא ברירת
    מחדל. מה שהוא עדיין לא חושף: היעד, התאריך המדויק וכל סכום. */
 /* הציור של הכרטיס עצמו, בשימוש כפול: openShared מזין אותו מהשרת (טוקן
-   אמיתי), previewInvite מזין אותו מהנתונים המקומיים (בלי שום קריאה) —
-   כך שהתצוגה המקדימה היא בדיוק אותו קוד ציור, לא חיקוי שעלול להתפזר
-   ממנו. */
-function paintSharedCard(r){
+   אמיתי), ומסך ההזמנה מזין אותו מהנתונים המקומיים שכבר בידו (בלי שום
+   קריאה לשרת). כך בעל הנטיעה רואה בדיוק את אותו קוד ציור שהנמען יראה,
+   ולא חיקוי שעלול להתפזר ממנו. */
+/* אותו ציור משרת שני מסכים: את הנמען שפותח קישור (תחילית sl), ואת
+   בעל הנטיעה שרואה במסך ההזמנה מה בדיוק הוא שולח (תחילית iv). תחילית
+   ולא העתק שני, כי עותק שני של הכרטיס היה מתיישן ברגע שאחד מהם משתנה,
+   ואז הבעלים היה רואה משהו אחר ממה שהנמען מקבל. */
+function paintSharedCard(r,pre){
+  const q=(pre||'sl')+'-';
   const who=r.inviter_name||'מישהו';
   const kid=r.beneficiary_name||'';
   const you=r.invitee_name?(r.invitee_name+', '):'';
-  txt('sl-h', you+who+' הזמין אותך להיות חלק'+
+  txt(q+'h', you+who+' הזמין אותך להיות חלק'+
       (kid?(' מההשקעה ב'+kid):' ממשהו שהוא פתח'));
 
-  const av=document.getElementById('sl-av');
+  const av=document.getElementById(q+'av');
   if(av)av.setAttribute('href','#'+(r.inviter_avatar||'av-parent'));
 
-  const note=document.getElementById('sl-note');
-  if(r.personal_note){
-    txt('sl-note-t','"'+r.personal_note+'"');
-    txt('sl-note-by',who);
-    note.style.display='';
-  } else note.style.display='none';
+  const note=document.getElementById(q+'note');
+  if(note){
+    if(r.personal_note){
+      txt(q+'note-t','"'+r.personal_note+'"');
+      txt(q+'note-by',who);
+      note.style.display='';
+    } else note.style.display='none';
+  }
 
-  txt('sl-title',kid?('נטיעה שנפתחה לקראת '+r.target_year)
-                   :('נטיעה שנפתחה לקראת '+r.target_year));
+  txt(q+'title','נטיעה שנפתחה לקראת '+r.target_year);
   /* מספר, לא שמות: רשימת שמות מתחילה להיות פרופיל של משפחה. */
   const n=Number(r.participants)||0;
-  txt('sl-meta', n>1 ? (who+' ועוד '+(n-1)+' מהמשפחה כבר נטעו כאן')
+  txt(q+'meta', n>1 ? (who+' ועוד '+(n-1)+' מהמשפחה כבר נטעו כאן')
               : n===1 ? (who+' כבר נטע כאן')
               : 'אתה הראשון שמצטרף');
   const pct=Number(r.percent)||0;
-  document.getElementById('sl-bar').style.width=Math.max(2,Math.min(100,pct))+'%';
+  const bar=document.getElementById(q+'bar');
+  if(bar)bar.style.width=Math.max(2,Math.min(100,pct))+'%';
 }
 function openShared(token){
   if(!netaServer)return false;
   netaServer.sharedSummary(token).then(function(r){
     if(!r){sharedState('dead');return}
     paintSharedCard(r);
-    document.getElementById('sl-preview-banner').style.display='none';
-    document.getElementById('sl-live-actions').style.display='';
-    document.getElementById('sl-preview-back').style.display='none';
     sharedState('card');
   });
   return true;
@@ -3201,12 +3168,13 @@ function sheetClose(){document.getElementById('scrim').classList.remove('on');sh
 function sheetConfirm(){const f=sheetFn;if(f&&f()===false)return;sheetClose()}
 function openInvite(key){
   const d=typeof key==='string'?inviteFor(key):key;
-  document.getElementById('inv-sub1').textContent=d.sub1;
-  document.getElementById('inv-icon').textContent=d.icon||'🌳';
-  document.getElementById('inv-title').textContent=d.title;
-  document.getElementById('inv-sub2').textContent=d.sub2;
-  document.getElementById('inv-stats').innerHTML=d.stats;
-  txt('inv-fine','אתה רואה סכומים מלאים כבעל הנטיעה. הקרובים רואים רק את ההשתתפות שלהם, אלא אם בחרו אחרת.');
+  txt('inv-h2','ההזמנה ל'+d.title);
+  paintSharedCard(d.card,'iv');
+  const quick=document.getElementById('inv-stats'), qh=document.getElementById('inv-quick-h');
+  quick.innerHTML=d.quick||'';
+  const has=!!(d.quick&&d.quick.length);
+  quick.style.display=has?'':'none';
+  qh.style.display=has?'':'none';
   go(7);
 }
 /* copy on the payment + aha screens follows the planting being deposited into */
@@ -5602,20 +5570,26 @@ function quickInvite(i){
   sendInvite(r);
 }
 /* an invite card built from the planting itself — never from a fixed one */
+/* רשימת מי שכבר השקיע ירדה מכאן: היא מוצגת במסך הנטיעה שממנו מגיעים,
+   ולכן הייתה כפילות. נשאר רק החצי השני שלה, שהוא קיצור דרך לפעולה. */
 function inviteFor(key){
-  const p=plantAt(key), others=p.who.filter(w=>w[1]!=='אתה');
-  const pct=Math.round(p.now/p.end*100);
-  const joined=p.who.map(function(w){
-    return '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+(w[0]||'av-parent')+'"/></svg></div>'+
-      '<span class="cbn">'+w[1]+(w[1]==='אתה'&&!others.length?' <span class="tag">ראשון/ה 🌱</span>':'')+'</span>'+
-      '<span class="cbv">'+(w[1]==='אתה'?w[2]:(w[3]==='f'?'השתתפה':w[3]==='m'?'השתתף':VERB.participated))+'</span></div>';
-  }).join('');
+  const p=plantAt(key);
+  const pct=p.end?Math.round(p.now/p.end*100):0;
+  /* השם שלך ולא "אתה": הכרטיס הזה מנוסח בגוף שני אל הנמען ("X הזמין
+     אותך"), ולכן ברירת מחדל של "אתה" ייצרה "אתה הזמין אותך". בהדגמה
+     נופלים לשם שבכותרת הפרופיל, שהוא השם שהמשתמש רואה בכל מקום אחר. */
+  const who=(liveAccount()&&netaServer.profile&&netaServer.profile.name)||topbars[10][0]||'אלון';
+  const av=(liveAccount()&&netaServer.profile&&netaServer.profile.avatar_key)||'av-parent';
   return {
-    icon:p.icon||'🌳',
-    sub1:'מי שתזמין יוכל להשקיע ב'+p.kid+', בלי לראות כמה השקיעו אחרים.',
     title:p.name,
-    sub2:p.date+' · '+pct+'% מהדרך',
-    stats:joined+inviteExtraRows(p)
+    /* participants הוא מספר המשקיעים כולם, כולל אותך, בדיוק כמו
+       share_link_summary שסופר contributor_id ייחודיים. ספירת "אחרים"
+       בלבד הייתה מציגה לנמען מספר קטן באחד ממה שהוא באמת. */
+    card:{inviter_name:who, inviter_avatar:av,
+          beneficiary_name:p.kid||'', target_year:p.yr||'',
+          participants:(p.who||[]).length,
+          percent:pct, personal_note:null, invitee_name:null},
+    quick:inviteExtraRows(p)
   };
 }
 function openToCircle(){
