@@ -615,7 +615,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '2373e2c';
+window.NETA_BUILD = 'f69d16b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1908,20 +1908,24 @@ function onboStart(){setEmpty(true);go(0);onbo=true;}
 /* משתמש חדש עובר "מי אתה" לפני מסך הבית, לא אחריו — אם עוד לא עשה זאת.
    idDone נשאר false עד ששלב הזהות אכן הושלם, כך שחזרה לכאן (לדוגמה אחרי
    ריענון) לא מדלגת עליו בטעות. */
-/* נחיתה של מי שכבר מחובר בטעינת הדף. עד כה היא שלחה ישר למסך הבית בלי
-   לבדוק אם קיים פרופיל — ולכן מי שנכנס בפעם הראשונה דרך ספק חיצוני נחת
-   על בית עם "שלום" בלי שם. גוגל כבר מסרה את השם, ואין טעם לבקש אותו שוב
-   בטופס: פותחים את הפרופיל מהנתונים שלה. כשאין שם — נשאר "מי אתה". */
+/* נחיתה של מי שכבר מחובר בטעינת הדף. בלי בדיקת פרופיל, מי שנכנס בפעם
+   הראשונה דרך ספק חיצוני נחת על מסך הבית עם "שלום" בלי שם.
+   אין פרופיל — אין חשבון, וממשיכים ל"מי אתה" גם כשהספק כבר מסר שם:
+   הפרופיל הוא שם *ותמונה*, והשם שגוגל מחזיקה הוא שם החשבון שלה, לא
+   בהכרח השם שאדם רוצה שקרוביו והילד יראו. מה שכן — הוא ממלא את השדה
+   מראש, כך שמי שבא מגוגל מאשר במקום להקליד.
+   הערה: רשומת ההזדהות עצמה נוצרת אצל הספק ברגע האישור ואי אפשר למנוע
+   זאת מכאן; מה שבשליטתנו הוא הפרופיל, וזה מה שהאפליקציה מתייחסת אליו
+   כ"חשבון". מי שנוטש כאן יחזור ל"מי אתה" בכניסה הבאה. */
 function landSignedIn(){
   go(0);
   if(!netaServer)return;
   netaServer.loadProfile().then(function(prof){
     if(prof&&prof.name){applyIdentity();return null}
     return netaServer.providerName().then(function(n){
-      if(!n){onbo=true;idDone=false;go(ONBO.identity);return null}
-      return netaServer.ensureProfile(n).then(function(){
-        idDone=true;applyIdentity();return buildHomeSummary();
-      });
+      const f=document.getElementById('id-name');
+      if(f&&n&&!f.value)f.value=n;
+      onbo=true;idDone=false;go(ONBO.identity);
     });
   }).catch(function(){});
 }
