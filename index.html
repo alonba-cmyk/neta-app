@@ -42,6 +42,12 @@ body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse
 .home-indicator span{width:130px;height:5px;border-radius:3px;background:var(--tx-3);opacity:.55}
 .screen{display:none;animation:f .2s ease}
 .screen.on{display:block;flex:1 0 auto}
+/* מסך דליל מתמרכז אנכית במקום להיצמד לראש המסך. מרווחים אוטומטיים ולא
+   justify-content:center — כשהתוכן גבוה מהמסך, auto נכבה מעצמו והתוכן
+   חוזר להתחיל מלמעלה, בלי לחתוך את החלק העליון כמו שמרכוז flex עושה. */
+.screen.on.center-v{display:flex;flex-direction:column}
+.screen.on.center-v>:first-child{margin-top:auto}
+.screen.on.center-v>:last-child{margin-bottom:auto}
 @keyframes f{from{opacity:0}to{opacity:1}}
 
 h1{font-size:20px;font-weight:500;letter-spacing:-.02em}
@@ -604,7 +610,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'fc577e6';
+window.NETA_BUILD = 'd9889b9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1386,7 +1392,7 @@ window.NETA_CONFIG = {
 </section>
 
 <!-- 22 SIGN IN -->
-<section class="screen" data-name="כניסה">
+<section class="screen center-v" data-name="כניסה">
   <div class="scr-icon">🌱</div>
   <h2 class="gap-s">מה המספר שלך?</h2>
   <p class="sub gap" id="lg-sub">אותו מספר משמש לכניסה ולהזמנות שתשלח. אין סיסמה.</p>
@@ -1484,7 +1490,7 @@ window.NETA_CONFIG = {
 </section>
 
 <!-- 20 IDENTITY -->
-<section class="screen" data-name="פתיחת חשבון">
+<section class="screen center-v" data-name="פתיחת חשבון">
   <h2 class="gap-s">מי אתה?</h2>
   <p class="sub gap" id="id-sub">כבר אימתנו אותך. זה השם שיופיע לך ולקרובים שתזמין.</p>
   <div class="field"><label>שם מלא</label><input type="text" id="id-name" placeholder="השם המלא שלך"></div>
