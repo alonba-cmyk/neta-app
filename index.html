@@ -32,8 +32,11 @@ body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse
   border:1px solid var(--line);background:transparent;color:var(--tx-3);cursor:pointer;transition:.15s}
 .nav button.on{background:var(--s2);color:var(--tx);border-color:var(--line-2)}
 
-.device{position:relative;width:min(390px,94vw,(100dvh - 26px)*390/844);
-  aspect-ratio:390/844;height:auto;background:var(--bg);
+/* הרוחב נקבע מהרוחב בלבד. הגובה הוא שנחתך אל החלון כשאין מקום —
+   max-height גובר על היחס, המסגרת מתקצרת, והסרגל התחתון נשאר בפנים.
+   ניסיון קודם הגביל את הרוחב לפי הגובה, וכל האפליקציה התכווצה. */
+.device{position:relative;width:min(390px,94vw);
+  aspect-ratio:390/844;height:auto;max-height:calc(100dvh - 22px);background:var(--bg);
   border-radius:46px;border:9px solid #060704;box-shadow:0 40px 70px -25px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.03) inset;
   display:flex;flex-direction:column;overflow:hidden}
 .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:118px;height:24px;
@@ -798,7 +801,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1b6b23f';
+window.NETA_BUILD = '0aaf83b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
