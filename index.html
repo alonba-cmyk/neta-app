@@ -669,8 +669,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .how-tap{position:absolute;top:0;bottom:0;z-index:9;cursor:pointer;
   -webkit-tap-highlight-color:transparent;
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-.how-tap.prev{left:0;width:32%}
-.how-tap.next{right:0;width:68%}
+/* כיוון עברי: קדימה הוא שמאלה, כמו זרימת הקריאה. מוגדר בתכונות לוגיות
+   ולא ב-left/right, כך שהצד נגזר מכיוון הכתיבה ולא מקובע פיזית —
+   inset-inline-start ב-RTL הוא ימין. גם ההחלקה הולכת לפי אותו כיוון. */
+.how-tap.prev{inset-inline-start:0;width:32%}
+.how-tap.next{inset-inline-end:0;width:68%}
 .how-slides{position:absolute;inset:0}
 .how-slide{
   position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
@@ -742,7 +745,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '9dc929e';
+window.NETA_BUILD = 'c126ca3';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
