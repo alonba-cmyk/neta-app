@@ -658,9 +658,19 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .how-close{position:absolute;top:20px;left:14px;z-index:12;width:26px;height:26px;border-radius:50%;
   border:none;background:rgba(0,0,0,.35);color:var(--tx);font-size:13px;line-height:1;cursor:pointer;
   display:flex;align-items:center;justify-content:center;font-family:inherit}
-.how-tap{position:absolute;top:0;bottom:0;width:38%;z-index:9;cursor:pointer}
-.how-tap.prev{left:0}
-.how-tap.next{right:0}
+/* אזורי המגע הם שקופים, ולכן הם בלתי נראים — עד שאנדרואיד צובע אותם.
+   דפדפן נייד מסמן כל אלמנט לחיץ בריבוע מודגש, וכאן זה יצא מלבן טורקיז
+   על 38% מרוחב המסך, שנראה כמו תקלת עיצוב ולא כמו משוב. אלון נתקל בזה
+   ולא הבין מה הוא רואה. אין כאן מה להדגיש: המשוב הוא שהסיפור מתקדם.
+
+   והרוחב: 38 ועוד 38 משאירים 24% מתים באמצע. מי שלחץ שם לא קיבל כלום,
+   וזו בדיוק הסיבה ש"אפשר להעביר רק בצדדים". עכשיו השניים מכסים את כל
+   הרוחב, ביחס המקובל בסיפורים — שליש אחורה, שני שלישים קדימה. */
+.how-tap{position:absolute;top:0;bottom:0;z-index:9;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.how-tap.prev{left:0;width:32%}
+.how-tap.next{right:0;width:68%}
 .how-slides{position:absolute;inset:0}
 .how-slide{
   position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
@@ -732,7 +742,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b61995d';
+window.NETA_BUILD = '9dc929e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2420,6 +2430,25 @@ function howPause(p){
   if(live)live.style.transitionProperty=p?'none':'width';
   if(p)clearTimeout(howTimer);else howSchedule();
 }
+/* החלקה, בנוסף להקשה. סיפור שאפשר להתקדם בו רק בהקשה על הצד מרגיש
+   שבור בנייד, כי האצבע מנסה קודם להחליק. הסף 40px מפריד בין החלקה
+   לבין הקשה שהאצבע זזה בה קצת. */
+function howSwipe(el){
+  if(!el)return;
+  let x0=null,y0=null;
+  el.addEventListener('touchstart',function(e){
+    const t=e.changedTouches[0];x0=t.clientX;y0=t.clientY;
+  },{passive:true});
+  el.addEventListener('touchend',function(e){
+    if(x0==null)return;
+    const t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;
+    x0=null;
+    /* תנועה אנכית אינה החלקה: היא גלילה או סתם רעד. */
+    if(Math.abs(dx)<40||Math.abs(dx)<=Math.abs(dy))return;
+    if(dx<0)howNext();else howPrev();
+  },{passive:true});
+}
+
 function howNext(){if(howIdx<howSlides().length-1)howSet(howIdx+1);else go(ONBO.login)}
 function howPrev(){howSet(howIdx-1<0?0:howIdx-1)}
 function howFinish(){clearTimeout(howTimer);go(ONBO.login)}
@@ -2433,6 +2462,7 @@ function howClose(){
 }
 /* back=true פירושו "החזר לאן שאני עכשיו", ולא מספר מסך כתוב ביד:
    מספר כזה נשבר בשקט ביום שבו מסך נוסף באמצע. */
+howSwipe(document.getElementById('how-story'));
 function howOpen(back){
   howBack=back?screens.findIndex(function(x){return x.classList.contains('on')}):null;
   go(ONBO.how);howSet(0);
