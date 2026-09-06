@@ -304,6 +304,28 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .fa{font-size:13.5px;font-weight:600;color:var(--leaf);font-variant-numeric:tabular-nums;flex-shrink:0;white-space:nowrap}
 .fa.oth{color:var(--leaf-soft)}
 .fa.let{font-size:11px;font-weight:500;color:var(--sun-soft)}
+/* שורה בלי "מי" נמוכה יותר, כי אין בה שורה שנייה — ולא רק בגלל שהיא
+   ריקה: הריווח מתהדק איתה כדי שהפיד ייראה רשימה ולא טבלה מרווחת. */
+.fr.one{padding:7px 0}
+.fr.one .fic,.fr.one .fav{width:30px;height:30px}
+.fr.one .fic{border-radius:9px;font-size:14px}
+/* הקיפול הוא הדבר היחיד בפיד שאינו אירוע אחד, ולכן הוא הדבר היחיד
+   שיושב בתוך מסגרת. הפתיחה מסובבת את החץ במקום להחליף סמל. */
+.fr.roll{background:var(--s1);border:1px solid var(--line);border-radius:11px;
+  padding:9px 11px;margin-top:2px}
+.fr.roll+.fday,.fsub+.fday{margin-top:16px}
+.fr.roll .fic.rec{background:var(--s2);color:var(--leaf-soft)}
+.fr.roll .chev{color:var(--tx-3);flex-shrink:0;line-height:0;display:flex;
+  align-items:center;transform:rotate(-90deg);transition:transform .18s ease}
+.fr.roll.op .chev{transform:rotate(90deg)}
+/* הפתיחה ממשיכה את אותו כרטיס ולא פותחת רשימה חדשה: בלי זה השורות
+   שנפתחו נראות כמו אירועים נפרדים בפיד, וזה בדיוק ההפך מהקיפול. */
+.fr.roll.op{border-bottom-left-radius:0;border-bottom-right-radius:0;
+  border-bottom:0;padding-bottom:7px}
+.fsub{background:var(--s1);border:1px solid var(--line);border-top:0;
+  border-radius:0 0 11px 11px;padding:0 11px 3px}
+.fsub .fr{border-top:1px solid var(--rule)}
+@media (prefers-reduced-motion:reduce){.fr.roll .chev{transition:none}}
 
 /* ===== edit screen ===== */
 .sw{position:relative;width:38px;height:22px;border-radius:11px;background:var(--s2);border:1px solid var(--line-2);
@@ -4761,14 +4783,18 @@ function netaBackend(cfg){
       });
     },
 
+    /* המכסה עלתה מ-30 ל-100 יחד עם קיפול הקבע: קודם שלושים שורות היו
+       ברובן הוראת קבע, והרגעים הישנים יותר פשוט נחתכו מחוץ לפיד. עכשיו
+       הקבע תופס שורה לחודש, ומאה שורות גולמיות נכנסות למסך קריא. */
     feed:function(){
       return call('/rest/v1/rpc/activity_feed',{method:'POST',
-        body:JSON.stringify({p_limit:30})}).catch(remember).then(function(rows){
+        body:JSON.stringify({p_limit:100})}).catch(remember).then(function(rows){
         return (rows||[]).map(function(r){
           return {kind:r.kind,actor:r.actor_name,avatar:r.actor_avatar,
                   key:r.planting_id,name:r.planting_name,
                   icon:r.planting_icon,isMe:r.is_me,years:r.years,
                   amount:r.amount_agorot==null?null:Number(r.amount_agorot),
+                  contribKind:r.contrib_kind,
                   at:r.occurred_at};
         });
       });
@@ -5136,17 +5162,38 @@ const demoExtra=[];
 /* אותם ארבעה רגעים שהיו כתובים ב-HTML, עכשיו כנתונים. התאריכים יחסיים
    להיום כדי ש"לפני יומיים" יישאר נכון גם בעוד חצי שנה. */
 function daysAgo(n){return new Date(Date.now()-n*86400000).toISOString()}
+/* יום בתוך חודש קלנדרי שלם, ולא "לפני n ימים": הקיפול מקבץ לפי חודש,
+   ותאריך יחסי היה נופל לחודש הקודם או הבא לפי היום שבו פותחים את ההדגמה.
+   בחודש הנוכחי אין ימים שטרם הגיעו, ולכן הוא נחתך בהיום. */
+function inMonth(back,day){
+  const n=new Date(), d=new Date(n.getFullYear(),n.getMonth()-back,1);
+  const last=back===0?n.getDate()
+    :new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+  d.setDate(Math.min(day,last));
+  return d.toISOString();
+}
+/* הוראת קבע על ארבע נטיעות — שמונה שורות זהות בשני חודשים, שהפיד מקפל
+   לשתי שורות. בלעדיהן ההדגמה מראה פיד של רגעים בלבד, שהוא בדיוק המצב
+   שאינו קורה לאף הורה שמפקיד כל חודש. */
+const DEMO_RECUR=[['הלימודים של נועה','🎓',6000],['הגיוס של דניאל','🪖',10000],
+                  ['בר המצווה של דניאל','🎂',5000],['הדירה של נועה','🏠',15000]];
+function demoRecurring(back,day){
+  return DEMO_RECUR.map(function(r){
+    return {kind:'contribution',actor:'אתה',name:r[0],icon:r[1],
+            amount:r[2],isMe:true,contribKind:'recurring',at:inMonth(back,day)};
+  });
+}
 demoSource.feed=function(){
   return Promise.resolve([
     {kind:'contribution',   actor:'דוד יוסי', name:'הגיוס של דניאל',
-     amount:5000, isMe:false, at:daysAgo(2)},
+     amount:5000, isMe:false, contribKind:'gift', at:daysAgo(2)},
     {kind:'contribution',   actor:'אתה',      name:'הלימודים של נועה',
-     amount:6000, isMe:true,  at:daysAgo(7)},
+     amount:6000, isMe:true,  contribKind:'one_time', at:daysAgo(7)},
     {kind:'letter_signed',  actor:'סבתא רחל', name:'הדירה של נועה',
      amount:null, isMe:false, at:daysAgo(14)},
     {kind:'anniversary',    actor:null,       name:'בר המצווה של דניאל',
      amount:null, isMe:false, at:daysAgo(32), years:6, icon:'🎂'}
-  ]);
+  ].concat(demoRecurring(0,4)).concat(demoRecurring(1,4)));
 };
 
 function supabaseSource(client){
@@ -5419,8 +5466,13 @@ function feedRowHTML(e){
   let sub='',amount='',cls='',glyph=e.icon||'🌱',title=e.name;
   /* חלוקה קבועה בכל סוגי השורות: הכותרת אומרת לאן, השורה מתחתיה אומרת
      מי, והעמודה בקצה אומרת מה. כך אפשר לסרוק כל עמודה בנפרד, ואף שורה
-     אינה חוזרת על עצמה בשני מקומות. */
-  sub=mine?'אתה':who(e.actor);
+     אינה חוזרת על עצמה בשני מקומות.
+
+     בשורה שלך "מי" הוא תמיד אתה, ולכן השורה השנייה נשארת ריקה: היא נועדה
+     להבדיל בינך לבין קרוב, ובפיד של הורה שמפקיד לחמש נטיעות היא אומרת
+     "אתה" בשמונים וחמישה אחוז מהשורות ואינה מבדילה דבר. עכשיו היא מופיעה
+     רק כשמישהו אחר עשה משהו — ואז היא נושאת מידע. */
+  sub=mine?'':who(e.actor);
   if(e.kind==='contribution'){
     /* בלי סכום נשארת רק עצם ההשתתפות — כך רואה קרוב את קרוב אחר. */
     amount=e.amount!=null
@@ -5443,18 +5495,87 @@ function feedRowHTML(e){
       '<span class="fbadge">'+(e.icon||'🌱')+'</span></div>'
     : '<div class="fic'+cls+'">'+glyph+'</div>';
   const open=e.key?' onclick="openDetail(\''+e.key+'\')"':'';
-  return '<div class="fr"'+open+'>'+badge+
+  return '<div class="fr'+(sub?'':' one')+'"'+open+'>'+badge+
     '<div class="fx"><div class="fn">'+title+'</div>'+
-    '<div class="fs'+(mine?'':' oth')+'">'+sub+'</div></div>'+amount+'</div>';
+    (sub?'<div class="fs'+(mine?'':' oth')+'">'+sub+'</div>':'')+
+    '</div>'+amount+'</div>';
 }
+/* ─── ב · הוראות הקבע מתקפלות ────────────────────────────────────────
+   הפקדת קבע אינה רגע, היא הנהלת חשבונות: אותה נטיעה, אותו סכום, כל חודש.
+   הפקדות הקבע שלך בכל חודש קלנדרי מתאחדות לשורה אחת שנפתחת בלחיצה, ומה
+   שנשאר בשורות מלאות הוא רק מה שקרה באמת — קרוב שהפקיד, מכתב שנחתם,
+   אבן דרך. כך העומס אינו גדל עם הזמן: חודש הוא שורה.
+
+   הקיפול מתוארך לפי ההפקדה האחרונה שבתוכו, ולכן הוא יושב במקומו הכרונולוגי
+   ולא נדבק לראש הרשימה. חודש שיש בו הפקדה אחת אינו מתקפל — שורה מקופלת
+   שמסתירה פריט אחד היא רק דרך ארוכה יותר להראות אותו.                    */
+const feedOpen={};
+let lastFeedRows=null;
+function toggleFold(key){
+  feedOpen[key]=!feedOpen[key];
+  const box=document.getElementById('feed');
+  if(box&&lastFeedRows)box.innerHTML=feedHTML(lastFeedRows);
+}
+function isRecurringOfMine(e){
+  return e.isMe&&e.kind==='contribution'&&e.contribKind==='recurring';
+}
+function monthKey(iso){
+  const d=new Date(iso);
+  return d.getFullYear()+'-'+d.getMonth();
+}
+/* אייקון מחזורי, ולא אמוג'י: זו השורה היחידה בפיד שאינה אירוע יחיד. */
+const FOLD_GLYPH='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" '+
+  'stroke="currentColor" stroke-width="1.9" stroke-linecap="round">'+
+  '<path d="M4 9a8 8 0 0113.7-5.7L20 5"/><path d="M20 15a8 8 0 01-13.7 5.7L4 19"/>'+
+  '<path d="M20 3v3h-3M4 21v-3h3"/></svg>';
+
+function foldRowHTML(f){
+  const open=!!feedOpen[f.key];
+  const plants=Object.keys(f.rows.reduce(function(a,e){a[e.key||e.name]=1;return a},{})).length;
+  const known=f.rows.filter(function(e){return e.amount!=null});
+  return '<div class="fr one roll'+(open?' op':'')+'" '+
+      'onclick="toggleFold(\''+f.key+'\')">'+
+    '<div class="fic rec">'+FOLD_GLYPH+'</div>'+
+    '<div class="fx"><div class="fn">ההפקדות החודשיות שלך</div>'+
+    '<div class="fs">'+months[f.month]+' · '+f.rows.length+' הפקדות ל-'+
+      plants+' נטיעות</div></div>'+
+    (known.length?'<div class="fa">'+shekel(f.total)+'</div>':'')+
+    '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12">'+
+      '<use href="#chev"/></svg></span></div>';
+}
+
 /* תווית הזמן חזרה על שמונה שורות לשלושה ערכים. עכשיו היא כותרת קטע,
    ונאמרת פעם אחת לכל יום. */
 function feedHTML(rows){
-  let out='',last=null;
+  lastFeedRows=rows;
+  /* קיפול לפני קיבוץ לימים: הקיפול משנה את התאריך של מה שמוצג, ולכן
+     כותרות הימים חייבות להיגזר ממה שנשאר אחריו ולא ממה שהיה לפניו. */
+  const folds={},kept=[];
   rows.forEach(function(e){
+    if(!isRecurringOfMine(e)){kept.push(e);return}
+    const k=monthKey(e.at);
+    if(!folds[k])folds[k]={key:k,month:new Date(e.at).getMonth(),
+                           at:e.at,total:0,rows:[]};
+    const f=folds[k];
+    f.rows.push(e);
+    if(e.amount!=null)f.total+=e.amount;
+    if(new Date(e.at)>new Date(f.at))f.at=e.at;
+  });
+  Object.keys(folds).forEach(function(k){
+    const f=folds[k];
+    if(f.rows.length<2){kept.push(f.rows[0]);return}
+    kept.push({fold:f,at:f.at});
+  });
+  kept.sort(function(a,b){return new Date(b.at)-new Date(a.at)});
+
+  let out='',last=null;
+  kept.forEach(function(e){
     const w=agoText(e.at);
     if(w!==last){out+='<div class="fday"><span>'+w+'</span></div>';last=w}
-    out+=feedRowHTML(e);
+    if(!e.fold){out+=feedRowHTML(e);return}
+    out+=foldRowHTML(e.fold);
+    if(feedOpen[e.fold.key])
+      out+='<div class="fsub">'+e.fold.rows.map(feedRowHTML).join('')+'</div>';
   });
   return out;
 }
