@@ -732,7 +732,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1097282';
+window.NETA_BUILD = 'b61995d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3094,7 +3094,11 @@ function paintSharedCard(r,pre){
 /* האם כרטיס ההזמנה כבר צויר בסבב הזה. לא di localStorage: טוקן ישן
    שנשאר שם אינו אומר שיש עכשיו כרטיס לחזור אליו. */
 let sharedCardShown=false;
+/* איזה טוקן מוצג כרגע. אחרי "בפעם אחרת" הכתובת מנוקה, ולכן בכניסה הבאה
+   אי אפשר לגזור אותו מה-hash. */
+let shownToken=null;
 function openShared(token){
+  shownToken=token;
   if(!netaServer)return false;
   /* מסך הבית מסומן on כבר ב-HTML, ולכן הוא נצבע כל עוד התשובה על הקישור
      לא חזרה. מי שפתח הזמנה ראה חצי שנייה מסך בית של חשבון ריק שאינו
@@ -3117,9 +3121,28 @@ function openShared(token){
   },fail);
   return true;
 }
+/* "בפעם אחרת" אינה "לא". עד כה היא מחקה את ההזמנה מהמכשיר, ומי שלחץ
+   ואז נרשם לנטע בדרך אחרת לא צורף לנטיעה גם אם רצה — הוא היה צריך לחזור
+   למייל. עכשיו הטוקן נשמר, אבל **להצעה ולא לצירוף**: בכניסה הבאה הכרטיס
+   נפתח שוב עם אותם שני כפתורים.
+
+   ההבחנה הזו היא כל העניין. צירוף אוטומטי למי שאמר "לא עכשיו" הוא בדיוק
+   מה שהוא לא ביקש, ובנטיעה שנושאת שם של ילד זה לא זניח. לכן הטוקן הזה
+   נשמר במפתח נפרד מזה של סבב כניסה שנקטע — רק האחרון מצרף.
+
+   ודחייה שנייה על אותו קישור סוגרת את העניין: הצעה שחוזרת לנצח היא
+   נדנוד, לא שירות. */
+const LATER_KEY='neta.invite.later';
+function keepLater(t){try{localStorage.setItem(LATER_KEY,t)}catch(e){}}
+function laterInvite(){try{return localStorage.getItem(LATER_KEY)||''}catch(e){return ''}}
+function dropLater(){try{localStorage.removeItem(LATER_KEY)}catch(e){}}
+
 function leaveShared(){
-  sharedCardShown=false;
+  const t=shownToken||sharedTokenInUrl()||pendingInvite();
+  const deferredBefore=!!t&&laterInvite()===t;
+  sharedCardShown=false;shownToken=null;
   dropInvite();
+  if(t&&!deferredBefore)keepLater(t); else dropLater();
   history.replaceState(null,'',location.pathname);
   go(liveAccount()?0:ONBO.welcome);
 }
@@ -3158,12 +3181,12 @@ function finishJoin(){
   if(!t)return false;
   netaServer.redeemInvite(t).then(function(r){
     const status=(r&&r.status)||'dead_link';
-    if(status==='dead_link'){dropInvite();sharedState('dead');return}
+    if(status==='dead_link'){dropInvite();dropLater();sharedState('dead');return}
     /* הטוקן **נשמר** כאן, בניגוד ל-dead_link: הכפתור במסך הזה מבקש
        גישה על אותו קישור, וקישור שפג לא בוטל — הבקשה עליו עוברת. */
     if(status==='expired'){sharedState('expired');return}
     if(status==='not_invited'){askForAccess(t,!!r.has_pending_invite);return}
-    dropInvite();
+    dropInvite();dropLater();
     history.replaceState(null,'',location.pathname);
     /* חשבון חדש עדיין בלי שם — בלעדיו הוא מופיע לבעל הנטיעה כשורה ריקה. */
     introduceThen(r.planting_id,function(){
@@ -6270,6 +6293,8 @@ if(sharedToken&&liveAccount()){
 } else if(!sharedToken||!openShared(sharedToken)){
   /* וסבב כניסה שנקטע באמצע חוזר לאותה נקודה. */
   if(liveAccount()&&pendingInvite()&&finishJoin()){}
+  /* ומי שאמר "בפעם אחרת" מקבל את ההצעה שוב — ההצעה, לא הצירוף. */
+  else if(laterInvite()&&openShared(laterInvite())){}
   else if(liveAccount())landSignedIn();
   else go(ONBO.welcome);
 }
