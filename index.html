@@ -745,7 +745,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '234fb3a';
+window.NETA_BUILD = 'cbbaf6f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2638,6 +2638,10 @@ function flowBar(cur,label){
 }
 function startCreate(){
   creating=true;dateTouched=false;beneSex='m';fullTouched=false;modeTouched=false;
+  /* investIn טוען את המסלול מהנטיעה שמפקידים בה, ולכן נטיעה חדשה חייבת
+     להתחיל מהערכים של הטופס — אחרת "יישמר כמו שהוא" של נטיעה שהפקדת בה
+     קודם היה נדבק לנטיעה הבאה שתפתח. */
+  mode=null;rate=.035;
   document.getElementById('c-full').value='';
   document.querySelectorAll('#c-sex button').forEach(function(x){x.classList.remove('on')});
   beneCopy();
@@ -2688,7 +2692,13 @@ function cStepGo(n){
 /* the wizard produces one true review, right before the lock — not a recap at every step along the way */
 const TRACK_LABELS={0.02:'פיקדון גמיש · כ-2% בשנה',0.035:'פיקדון נעול · כ-3.5% בשנה',
   0.06:'מאוזן · כ-6% בשנה',0.08:'עוקב מדד · כ-8% בשנה',0.09:'נועז · כ-9% בשנה'};
-function trackLabel(){return mode==='keep'?'יישמר כמו שהוא (ללא ריבית)':(TRACK_LABELS[rate]||'·');}
+/* הטבלה מכסה את חמשת המסלולים שהטופס מציע. נטיעה קיימת יכולה לשאת כל
+   ריבית — עמודה numeric(5,4) ולא אנום — ולכן נפילה לניסוח כללי במקום
+   לנקודה, שאינה אומרת דבר. */
+function trackLabel(){
+  if(mode==='keep'||rate==null||rate===0)return 'יישמר כמו שהוא (ללא ריבית)';
+  return TRACK_LABELS[rate]||('כ-'+(+(rate*100).toFixed(2))+'% בשנה');
+}
 function opennessLabel(){return shareMode==='open'?'פתוחה לאנשים אחרים':'פרטית';}
 function paySummary(){
   const head=document.getElementById('py-headrow');
@@ -3764,6 +3774,10 @@ function liveDetail(r){
     kid:desig?(r.beneficiary_name||''):'', designated:desig,
     sex:r.beneficiary_sex||null, occasion:r.occasion||null,
     approver:r.approver||undefined, guardName:r.guardian_name||undefined,
+    /* המסלול של הנטיעה, כפי שהשרת מסר אותו (0037). עד כה מסך ההשקעה
+       הציג את הגלובלי מזרימת פתיחת נטיעה חדשה, כלומר מסלול של שום
+       נטיעה — ובמסד החי חמש מתוך שבע היו מוצגות שגוי. */
+    mode:r.mode||null, rate:r.track_rate==null?null:Number(r.track_rate),
     shared:!!r.open_to_relatives, mine:!!r.is_initiator,
     /* בעלים כולל שותף בבעלות, ו-mine הוא היוזם בלבד. השורה שמסבירה מה
        רואים תלויה בראשון ולא בשני. */
@@ -6218,6 +6232,14 @@ function investIn(key){
   const p=plantAt(key);cur=key;
   showTermStep(false);
   shareMode=p.shared?'open':'private';isNewPlant=false;
+  /* המסלול נקבע כשהנטיעה נפתחה, ומי שמפקיד בה לא בוחר אותו מחדש —
+     זו קופה אחת, לא שני חשבונות. לכן המשתנים הגלובליים, שמשרתים את
+     זרימת הפתיחה, נטענים כאן מהנטיעה עצמה. בלי זה שורת "מסלול" במסך
+     האישור הציגה את ברירת המחדל של פתיחת נטיעה חדשה. */
+  if(p.live){
+    mode=p.mode||(p.rate?null:'keep');
+    rate=p.rate==null?rate:p.rate;
+  }
   txt('ct-title','השקע עבור '+p.kid);
   txt('ct-meta',p.name+' · המועד המיוחל '+p.date);
   goal={name:p.kid,type:p.name,icon:p.icon,dateLabel:p.date,years:p.yl};
