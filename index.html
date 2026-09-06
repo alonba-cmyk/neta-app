@@ -745,7 +745,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'e48ff55';
+window.NETA_BUILD = '5201ffc';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -5155,6 +5155,22 @@ function netaBackend(cfg){
          ריק הוא התשובה הנכונה למסך, לא אובייקט שיפיל את הציור. */
       return rpc('plantings_im_in')
         .then(function(r){return Array.isArray(r)?r:[]}).catch(remember);
+    },
+
+    /* נטיעות שמישהו ציין בהן את הכתובת שלי כמורשה. ההתאמה היא קריאה
+       ולא כתיבה: אין טריגר בהרשמה ואין מיגרציית נתונים, ולכן זה עובד
+       גם למי שנרשם לפני שהנטיעה נפתחה וגם למי שנרשם אחריה. */
+    guardianRequests:function(){
+      return rpc('guardian_requests')
+        .then(function(r){return Array.isArray(r)?r:[]}).catch(remember);
+    },
+    /* אישור וסירוב אינם משתמשים ב-andDrain: התור מתרוקן בבקשה נפרדת
+       ממילא, ואין כאן עדיין התראה לרוקן — היא נכנסת עם מסך האישור. */
+    confirmGuardian:function(plantingId){
+      return rpc('confirm_guardian',{p_planting_id:plantingId}).catch(remember);
+    },
+    declineGuardian:function(plantingId){
+      return rpc('decline_guardian',{p_planting_id:plantingId}).catch(remember);
     },
 
     myLetters:function(){
