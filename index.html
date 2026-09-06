@@ -732,7 +732,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'e385617';
+window.NETA_BUILD = '0a051f1';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4652,6 +4652,17 @@ function netaBackend(cfg){
     throw e;
   };
 
+  /* פעולה שמייצרת התראה במסד מרוקנת את התור מיד אחריה. הריקון אינו חלק
+     מהפעולה: הוא לא מעכב את התשובה, וכישלון שלו אינו מכשיל אותה — השורה
+     כבר רשומה בתור, ומי שיפתח את האפליקציה אחריו ישלח אותה. */
+  const andDrain=function(p){
+    return p.then(function(v){
+      call('/functions/v1/send-notifications',{method:'POST',body:'{}'})
+        .catch(function(){});
+      return v;
+    });
+  };
+
   return {
     connected:true,
     signedIn:function(){return !!(sess&&sess.access_token)},
@@ -4845,7 +4856,7 @@ function netaBackend(cfg){
     /* הפקדה לנטיעה שכבר קיימת. עד כה "השקע עוד" עבר את כל מסע התשלום,
        הציג את מסך החגיגה — ולא כתב כלום. הסכום חזר לקדמותו ברענון. */
     deposit:function(id,amount,recurring,visible){
-      return call('/rest/v1/contributions',{method:'POST',
+      return andDrain(call('/rest/v1/contributions',{method:'POST',
         body:JSON.stringify({planting_id:id,amount_agorot:amount,
                              kind:recurring?'recurring':'one_time',
                              visible_to_others:!!visible})})
@@ -4859,7 +4870,7 @@ function netaBackend(cfg){
               return call('/rest/v1/standing_orders',{method:'POST',
                 body:JSON.stringify({planting_id:id,amount_agorot:amount})});
             });
-        }).catch(remember);
+        }).catch(remember));
     },
 
     /* פתיחה לקרובים וייעוד קופה הם שינויים בנטיעה עצמה, ולא בתצוגה.
@@ -4926,8 +4937,8 @@ function netaBackend(cfg){
        נשלחה ההזמנה מוכיח בכך שהקישור הגיע אליו — קוד הכניסה הוא בדיוק
        הקוד שהאפיון מתאר, ולא עוד טקס לצידו. */
     redeemInvite:function(token){
-      return rpc('redeem_invite',{p_token:token})
-        .then(function(r){return (r&&r[0])||null}).catch(remember);
+      return andDrain(rpc('redeem_invite',{p_token:token})
+        .then(function(r){return (r&&r[0])||null}).catch(remember));
     },
     /* יציאה לספק חיצוני. החזרה מגיעה עם הטוקנים ב-hash, ו-fromUrlHash שבראש
        המפעל כבר קולט אותם ומנקה את הכתובת — ולכן אין כאן שום דבר לטפל בו
@@ -4961,14 +4972,18 @@ function netaBackend(cfg){
     pendingRequests:function(){
       return rpc('pending_requests').then(function(r){return r||[]}).catch(remember);
     },
+    /* אישור בקשת גישה מכניס שורה ל-planting_access, כלומר מייצר התראת
+       "קרוב הצטרף" — שהנמען שלה הוא בעל הנטיעה, כלומר מי שאישר. הוא לא
+       יקבל אותה (enqueue מסנן את מי שגרם לאירוע), אבל שותף בבעלות כן. */
     resolveRequest:function(id,approve){
-      return rpc('resolve_request',{p_id:id,p_approve:approve}).catch(remember);
+      return andDrain(rpc('resolve_request',{p_id:id,p_approve:approve})
+        .catch(remember));
     },
     /* "ספרי למישהו": הצעה של קרוב, לא הזמנה — אין לה קישור ולא ערוץ
        אימות. בעל הנטיעה מחליט אם ומתי היא הופכת להזמנה אמיתית. */
     suggestRelative:function(plantingId,name,contact,channel){
-      return rpc('suggest_relative',{p_planting:plantingId,p_name:name,
-        p_contact:contact,p_channel:channel}).catch(remember);
+      return andDrain(rpc('suggest_relative',{p_planting:plantingId,p_name:name,
+        p_contact:contact,p_channel:channel}).catch(remember));
     },
     pendingSuggestions:function(){
       return rpc('pending_suggestions').then(function(r){return r||[]}).catch(remember);
@@ -5035,6 +5050,15 @@ function netaBackend(cfg){
        כמו כל קריאה אחרת, ולכן לא רואה הזמנות שאינן שלה. תשובה שאינה
        {sent:true} לא נזרקת כשגיאה: היעד לא נשלח והמסך יודע להציע קישור
        להעתקה במקום זה, לא לקרוס. */
+    /* מרוקנת את תור ההתראות. ההתראות עצמן נרשמות בטריגר במסד ברגע
+       האירוע, ולא כאן — קריאה שנכשלת או לקוח שלא קרא אינם מאבדים דבר,
+       הם רק דוחים. לכן .catch שבולע: אין למשתמש מה לעשות עם הכישלון,
+       ואין סיבה שמסך ייתקע בגללו. */
+    drainNotifications:function(){
+      return call('/functions/v1/send-notifications',{method:'POST',body:'{}'})
+        .catch(function(){return null});
+    },
+
     sendInvitationEmail:function(invitationId){
       return call('/functions/v1/send-invitation',{method:'POST',
         body:JSON.stringify({invitation_id:invitationId})})
@@ -5633,6 +5657,10 @@ function buildHomeSummary(){
     }
     if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();loadPeople();}
     buildFeed();buildConnection();
+    /* ההתראות ממתינות במסד למי שיפתח את האפליקציה. זו רשת הביטחון:
+       הריקון המיידי קורה אצל מי שגרם לאירוע (ראו onAction למטה), וכאן
+       יוצא כל מה שנתקע — קריאה שנכשלה, טאב שנסגר, לקוח ישן. */
+    if(liveAccount()&&netaServer.drainNotifications)netaServer.drainNotifications();
     return model;
   });
 }
