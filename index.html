@@ -705,7 +705,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '156d53b';
+window.NETA_BUILD = 'b9e3288';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1796,12 +1796,20 @@ window.NETA_CONFIG = {
          מקבעת שהוא אינו מוחזר). מה שכן מותר — השם, שכבר מוצג — מספיק
          כדי שהמשפט יהיה על ילד ולא על מוצר. -->
     <p class="sub center" id="sl-why" style="margin:2px 0 10px;color:var(--leaf-soft)"></p>
-    <p class="fine gap" id="sl-fine">לאיזה רגע היא נועדה, ומתי בדיוק, יוצג רק אחרי שנוודא שהקישור הגיע אליך.</p>
+    <!-- מי שמגיע לכאן אינו מכיר את נטע, ועומד למסור פרטים לשירות פיננסי
+         שלא שמע עליו. ההרגעה קודמת לסייג: היא מה שמאפשר ללחוץ, והסייג
+         מסביר למה לא הכול מוצג. שניהם בלשון ניטרלית, כי בקישור פתוח
+         איננו יודעים מי פותח אותו ואף בהזמנה אישית יש לנו שם ולא מגדר. -->
+    <p class="fine gap" id="sl-fine">להצטרף לא מחייב בכלום. אפשר לראות מה יש שם, ולהחליט אחר כך אם ובכמה להשקיע.<br>לאיזה רגע היא נועדה, ומתי בדיוק, יוצג רק אחרי שנוודא שהקישור הגיע אליך.</p>
 
     <div id="sl-live-actions">
       <button class="btn gap-s" onclick="startJoin()">אני רוצה להצטרף</button>
       <!-- "רק הצצתי" תיאר מה המשתמשת עשתה, לא מה יקרה כשתלחץ. -->
       <button class="btn ghost" style="margin-top:8px" onclick="leaveShared()">בפעם אחרת</button>
+      <!-- המסך הזה היה בנוי כולו ולא היה מקושר משום מקום למי שאינו בתוך
+           ההרשמה. אורח שלא מכיר את נטע היה צריך להחליט בלי שום דרך ללמוד
+           מה זה. -->
+      <button class="link" onclick="howOpen(true)">מה זה נטע, ואיך זה עובד ›</button>
     </div>
   </div>
 
@@ -2393,8 +2401,20 @@ function howPause(p){
 function howNext(){if(howIdx<howSlides().length-1)howSet(howIdx+1);else go(ONBO.login)}
 function howPrev(){howSet(howIdx-1<0?0:howIdx-1)}
 function howFinish(){clearTimeout(howTimer);go(ONBO.login)}
-function howClose(){clearTimeout(howTimer);go(ONBO.welcome)}
-function howOpen(){go(ONBO.how);howSet(0)}
+/* עד כה הסגירה החזירה תמיד למסך הפתיחה. משנפתח המסך גם מתוך קישור
+   שיתוף, סגירה כזו הייתה זורקת את האורחת אל מחוץ להזמנה שקיבלה. */
+let howBack=null;
+function howClose(){
+  clearTimeout(howTimer);
+  const to=howBack;howBack=null;
+  go(to==null?ONBO.welcome:to);
+}
+/* back=true פירושו "החזר לאן שאני עכשיו", ולא מספר מסך כתוב ביד:
+   מספר כזה נשבר בשקט ביום שבו מסך נוסף באמצע. */
+function howOpen(back){
+  howBack=back?screens.findIndex(function(x){return x.classList.contains('on')}):null;
+  go(ONBO.how);howSet(0);
+}
 document.querySelector('[data-how-nav="next"]').addEventListener('click',howNext);
 document.querySelector('[data-how-nav="prev"]').addEventListener('click',howPrev);
 (function(){
