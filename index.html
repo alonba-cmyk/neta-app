@@ -233,6 +233,36 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .nc-id{flex:1;min-width:0}
 .nc-nm{font-weight:500;font-size:13.5px;line-height:1.32;letter-spacing:-.012em}
 .nc-meta{font-size:10.5px;color:var(--tx-3);line-height:1.3;margin-top:3px;white-space:nowrap}
+/* ── כרטיס הנטיעה, 05ג ─────────────────────────────────────────────
+   מחליף את מבנה .nc-top בכרטיסי הרשימה. .ncard נשאר הרקע והמסגרת. */
+.pc{display:flex;align-items:center;gap:10px}
+.pc-ic{width:36px;height:36px;border-radius:12px;background:var(--leaf-bg);
+  display:grid;place-items:center;font-size:16px;flex-shrink:0}
+.pc-x{flex:1;min-width:0}
+/* בלי nowrap ובלי ellipsis: כותרת שנחתכת באמצע מילה גרועה מכותרת
+   שנשברת לשתי שורות. זה גם מה שהיה כתוב כאן קודם, ובצדק. */
+.pc-nm{font-size:13.5px;font-weight:500;line-height:1.35;letter-spacing:-.012em;
+  overflow-wrap:anywhere}
+.pc-amt{font-size:13px;font-weight:600;color:var(--leaf);
+  font-variant-numeric:tabular-nums;margin-top:4px}
+.pc-dt{font-size:10.5px;color:var(--tx-3);margin-top:4px}
+/* inline-start ב-RTL הוא הצד הימני — הצד של העמודה שפונה אל הטקסט. */
+.pc-fc{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;
+  border-inline-start:1px solid var(--rule);padding-inline-start:10px}
+.pc-fc i{font-style:normal;font-size:9.5px;color:var(--tx-3);white-space:nowrap}
+.fx2{display:flex;align-items:center;width:63px;justify-content:flex-end}
+.fx2>span{width:38px;height:38px;border-radius:50%;overflow:hidden;position:relative;
+  border:2px solid var(--s1);background:var(--s2);flex:0 0 auto;display:block}
+/* z-index מפורש כדי שהתג יהיה שלם ולא יסתמך על סדר הציור */
+.fx2>span+span{margin-right:-13px;z-index:1}
+.fx2 .avsvg{width:100%;height:100%}
+/* התג כמעט אטום ובטבעת ירוקה: בכיסוי שקוף על דמות כהה הוא נבלע,
+   ושני העיגולים נמסים זה לזה. direction:ltr כי "+2" בעברית נקרא "2+". */
+.fx2 .ov{position:absolute;inset:0;background:rgba(26,50,31,.95);display:flex;
+  align-items:center;justify-content:center;font-size:13.5px;font-weight:700;
+  color:#CDE6D1;font-style:normal;direction:ltr;unicode-bidi:isolate;letter-spacing:-.03em}
+.fx2 .ov::after{content:"";position:absolute;inset:0;border-radius:50%;
+  border:1px solid rgba(127,192,136,.35)}
 /* מעבר לשתיים הראשונות: רק כרטיס "הצצה" אחד נוסף מוצג, באותה דהייה
    שמשמשת את .gsample במסכים ריקים — לא רק opacity, גם דוהה אל תוך
    הרקע ופחות רווי. השאר לא מצוירים בכלל עד שמבקשים. */
@@ -754,7 +784,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6a709d0';
+window.NETA_BUILD = 'a60107e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -882,7 +912,7 @@ window.NETA_CONFIG = {
   <div class="summary">
     <div class="s-row">
       <div class="s-body">
-        <div class="s-eyebrow">ההשקעה שלך</div>
+        <div class="s-eyebrow">ההשקעות שלך</div>
         <div class="s-num" id="s-you">13,300 ₪</div>
         <div class="s-label" id="s-label">זה הסכום שנטעת עד כה עבור העתיד של דניאל ונועה</div>
       </div>
@@ -1169,7 +1199,7 @@ window.NETA_CONFIG = {
        הנטע לא נעלם: הוא הנקודה שעל העקומה, במקום שבו אנחנו נמצאים. -->
   <div class="d-money">
     <div class="dm-top">
-      <div><span class="dm-k" id="d-lb">נצבר עד כה</span><span class="dm-v" id="d-num">15,600 ₪</span></div>
+      <div><span class="dm-k" id="d-lb">נצבר לרגע הזה</span><span class="dm-v" id="d-num">15,600 ₪</span></div>
       <button class="dm-act" id="d-invest" onclick="investIn(cur)">השקע עוד</button>
     </div>
     <p class="dm-split" id="d-split"></p>
@@ -1320,7 +1350,7 @@ window.NETA_CONFIG = {
   <div class="card" id="pr-stats">
     <div class="stat"><span class="k">הנטיעות שלך</span><span class="v" id="pr-mine">2</span></div>
     <div class="stat"><span class="k">נטיעות שקרובים פתחו</span><span class="v" id="pr-theirs">2</span></div>
-    <div class="stat"><span class="k">סה״כ נצבר עד כה</span><span class="v" style="color:var(--leaf)" id="pr-sum">27,500 ₪</span></div>
+    <div class="stat"><span class="k">נצבר לרגע הזה</span><span class="v" style="color:var(--leaf)" id="pr-sum">27,500 ₪</span></div>
   </div>
   <p class="fine" id="pr-conn" style="margin:14px 0 0;opacity:.8"></p>
   <button class="link" id="pr-signout" style="display:none;padding:6px 0"
@@ -5092,6 +5122,11 @@ function netaBackend(cfg){
             return {key:p.id,name:p.name,icon:p.icon,designated:p.designated,
                     targetYear:d.getFullYear(),targetMonth:d.getMonth(),
                     accrued:Number(p.accrued_agorot||0),
+                    /* מה שאני נטעתי, בנפרד ממה שנצבר לרגע כולו: הכרטיס
+                       מציג את שלי, כי הרשימה מערבת רגעים שפתחתי ורגעים
+                       שקרוב הצטרף אליהם. */
+                    mine:Number(p.my_agorot||0),
+                    since:p.opened_on||null,
                     projection:Number(p.projection_agorot||0),
                     hasStandingOrder:p.has_standing_order,
                     participants:p.participants||[]};
@@ -5520,8 +5555,13 @@ const demoSource={
         if(p.designated!==false&&kids.indexOf(p.kid)<0)kids.push(p.kid);
       }
       if(!p.mine)return;
+      /* בהדגמה "כמה נטעתי" יושב כמחרוזת בשורת "אתה" שברשימת המשתתפים */
+      const meRow=(p.who||[]).find(function(w){return w[1]==='אתה'});
+      const mineAg=meRow?Math.round(parseFloat(String(meRow[2]).replace(/[^\d.]/g,''))*100)
+                       :p.now*100;
       list.push({key:k,name:p.name,icon:p.icon,designated:p.designated!==false,
                  targetYear:p.yr,targetMonth:monthOf(p.date),accrued:p.now*100,
+                 mine:mineAg,since:p.planted||null,
                  projection:p.end*100,
                  participants:p.who.map(function(w){return{name:w[1],avatar:w[0]}})});
     });
@@ -5543,7 +5583,8 @@ const demoSource={
     demoExtra.push({key:'new-'+(demoExtra.length+1),name:p.name,icon:p.icon,
       designated:p.designated,beneficiary:p.beneficiary,
       targetYear:p.targetYear,targetMonth:p.targetMonth,
-      accrued:p.amount,projection:p.projection,
+      accrued:p.amount,mine:p.amount,since:new Date().toISOString().slice(0,10),
+      projection:p.projection,
       recurring:p.recurring,monthly:p.recurring?p.amount:0,
       hasStandingOrder:p.recurring,participants:[]});
     return Promise.resolve(demoExtra[demoExtra.length-1].key);
@@ -5648,25 +5689,54 @@ function shekel(agorot){
    הצפי לעתיד יושב כשורה שנייה באותו nc-meta, מתחת לתאריך — אותו class,
    אותו צבע וגופן, כך שהכרטיס מוסיף פרט ולא נראה מבולגן. מוצג רק לקופה
    שיועדה ורק כשיש לאן לצמוח. */
+/* כרטיס הנטיעה — 05ג. אייקון האירוע מימין, שלוש שורות באמצע (שם, מה
+   נטעתי, ומאז מתי), ועמודת פנים ברוחב קבוע משמאל.
+
+   הרוחב הקבוע הוא כל העניין: שתי דמויות לכל היותר, וכשיש יותר ה-"+N"
+   יושב על השנייה במקום לתפוס מקום משלו — כך העמודה אינה גדלה עם מספר
+   האנשים, וכל הכרטיסים ברשימה נגמרים באותו קו. כשאני לבד מופיעה דמות
+   אחת ולא כלום, מיושרת לאותו מקום בדיוק.
+
+   "נטעת" ולא "נצבר": הרשימה מערבת רגעים שפתחתי ורגעים שקרוב פתח
+   וצירף אותי, ו"נצבר" על כרטיס כזה נקרא כמו הסכום של כולם — ואז
+   נכנסים פנימה ורואים מספר אחר. */
+function faceStack(list){
+  const arr=(list&&list.length)?list:[{avatar:'av-parent'}];
+  const show=arr.slice(0,2), rest=arr.length-2;
+  return '<span class="fx2">'+show.map(function(w,i){
+    return '<span><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+
+      (w.avatar||'av-parent')+'"/></svg>'+
+      ((i===1&&rest>0)?'<i class="ov">+'+rest+'</i>':'')+'</span>';
+  }).join('')+'</span>';
+}
+/* כיתוב ריק כשאני לבד, ולא כיתוב חסר: העמודה ממורכזת אנכית, והסרת
+   שורה הייתה מזיזה את הדמות ושוברת את היישור בין הכרטיסים. */
+function faceCap(list){
+  const n=(list&&list.length)||0;
+  return '<i>'+(n>1?(n+' נוטעים'):'&nbsp;')+'</i>';
+}
+/* מקבל תאריך מלא מהשרת, או שנה בלבד — ההדגמה יודעת רק שנה, ולהמציא
+   לה חודש היה להציג נתון שלא קיים. */
+function sinceLine(v){
+  if(!v)return '';
+  if(typeof v==='number'||/^\d{4}$/.test(v))return 'מאז '+v;
+  const d=new Date(v+'T00:00:00');
+  return isNaN(d)?'':('מאז '+months[d.getMonth()]+' '+d.getFullYear());
+}
+function plantCard(o){
+  const dt=o.designated===false ? 'עדיין לא יועדה' : sinceLine(o.since);
+  return '<div class="ncard pc" onclick="openDetail(\''+o.key+'\')">'+
+    '<div class="pc-ic">'+(o.icon||'🌱')+'</div>'+
+    '<div class="pc-x"><div class="pc-nm">'+o.name+'</div>'+
+      '<div class="pc-amt">'+o.verb+' '+shekel(o.amount)+'</div>'+
+      (dt?'<div class="pc-dt">'+dt+'</div>':'')+'</div>'+
+    '<div class="pc-fc">'+faceStack(o.people)+faceCap(o.people)+'</div>'+
+  '</div>';
+}
 function cardHTML(p){
-  const when=p.designated
-    ? 'המועד המיוחל: '+monthsShort[p.targetMonth]+' '+p.targetYear
-    : 'עדיין לא יועדה · '+months[p.targetMonth]+' '+p.targetYear;
-  const grow=(p.designated&&p.projection>p.accrued)
-    ? '<br>בקצב הזה ייצבר: כ-'+shekel(p.projection) : '';
-  return '<div class="ncard" onclick="openDetail(\''+p.key+'\')">'+
-    '<div class="nc-top">'+
-      '<div class="dot '+(p.designated?'g':'s')+'">'+p.icon+'</div>'+
-      '<div class="nc-id">'+
-        '<div class="nc-nm">'+p.name+'</div>'+
-        '<div class="nc-meta">'+when+grow+'</div>'+
-      '</div>'+
-      '<span class="peek"><span class="pk">נצבר</span>'+
-        '<span class="pv">'+shekel(p.accrued)+'</span></span>'+
-      /* חץ שמאלה כ-SVG ולא כתו: ‹ הוא Bidi_Mirrored ומתהפך ב-RTL. */
-      '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12">'+
-        '<use href="#chev"/></svg></span>'+
-    '</div></div>';
+  return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נטעת',
+                    amount:(p.mine==null?p.accrued:p.mine),
+                    since:p.since,designated:p.designated,people:p.participants});
 }
 /* יותר משתי נטיעות מציפות את המסך, אז רק כרטיס אחד נוסף — הצצה דהויה —
    מצטרף לשתיים הראשונות. השאר לא נכנסים ל-DOM בכלל עד שמבקשים, כדי
@@ -5679,16 +5749,9 @@ let gardenHidden='';
    אותו רכיב משרת עכשיו את מסך הבית ואת טאב הקרובים. היה כאן קוד כפול,
    ושני עותקים של אותו כרטיס היו מתיישנים ברגע שאחד מהם משתנה. */
 function guestCardHTML(p){
-  const t=new Date(p.target_date+'T00:00:00');
-  return '<div class="ncard" onclick="openDetail(\''+p.id+'\')"><div class="nc-top">'+
-    '<div class="dot s">'+(p.icon||'🌱')+'</div>'+
-    '<div class="nc-id"><div class="nc-nm">'+p.name+'</div>'+
-    '<div class="nc-meta">פתח/ה '+(p.initiator_name||'קרוב')+' · '+
-      monthsShort[t.getMonth()]+' '+t.getFullYear()+'</div></div>'+
-    '<span class="peek"><span class="pk">הפקדת</span><span class="pv">'+
-      shekel(Number(p.my_agorot||0))+'</span></span>'+
-    '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12">'+
-      '<use href="#chev"/></svg></span></div></div>';
+  return plantCard({key:p.id,icon:p.icon,name:p.name,verb:'נטעת',
+                    amount:Number(p.my_agorot||0),since:p.opened_on,
+                    designated:true,people:p.participants||[]});
 }
 
 function gardenHTML(list){
@@ -6599,7 +6662,7 @@ function detail(y){
     md.style.top='calc('+((chartY(amt,CH.max)/CH_H)*100)+'% - 13px)';
   }
   txt('d-num',(y===0?'':'כ-')+shekelAt(amt,y===0));
-  txt('d-lb',y===0?'נצבר עד כה':'צפי לנקודה זו');
+  txt('d-lb',y===0?'נצבר לרגע הזה':'צפי לנקודה זו');
   const sp=document.getElementById('d-split');
   if(sp){sp.innerHTML=splitLine(n,amt);sp.style.display=sp.innerHTML?'':'none'}
   const left=YL-y;
