@@ -745,7 +745,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'cbbaf6f';
+window.NETA_BUILD = '50e2db8';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3540,9 +3540,22 @@ function plantingFromFlow(){
     rate:rate,
     amount:Math.round(v*100),
     projection:Math.round(total*100),
-    recurring:recurring
+    recurring:recurring,
+    /* מה שהשלב "מי יקבל את הכסף שנטעת" אסף. עד כאן הוא נאסף ונזרק:
+       הרשומה נבנתה בלעדיו, ו-create() קבע approver='self' בעצמו — כך
+       שגם מי שבחר "מי שאני קובע היום" נשמר כאילו הנהנה יפדה לבדו,
+       בזמן שאותו מסך הבטיח לו "חשבון היעד יצטרך להיות על שם המורשה".
+       תעודת הזהות עדיין אינה נשמרת: אין לה עמודה, ואין לה שימוש עד
+       הפדיון. */
+    approver:desig?(APPROVER_ENUM[beneMode]||'self'):null,
+    guardName:(desig&&beneMode==='guardian')?(fieldVal('c-gname')||null):null,
+    beneFull:desig?(fieldVal('c-full')||null):null,
+    /* שדה הכתובת מוצג רק כשהנהנה פודה בעצמו (c-codefield), ולכן רק אז
+       יש בו ערך שמישהו באמת הזין. */
+    beneContact:(desig&&beneMode==='self')?(fieldVal('c-bene')||null):null
   };
 }
+function fieldVal(id){const el=document.getElementById(id);return el?el.value.trim():''}
 
 function finishDeposit(){
   /* the method is only saved once the deposit is actually confirmed */
@@ -5226,9 +5239,12 @@ function netaBackend(cfg){
           occasion:p.occasion,designated:p.designated,
           beneficiary_name:p.designated?p.beneficiary:null,
           beneficiary_sex:p.designated?p.sex:null,
+          beneficiary_full_name:p.designated?(p.beneFull||null):null,
+          beneficiary_contact:p.designated?(p.beneContact||null):null,
           target_date:p.targetDate,mode:p.mode,
           track_rate:p.mode==='keep'?null:p.rate,
-          approver:p.designated?'self':null,
+          approver:p.designated?(p.approver||'self'):null,
+          guardian_name:p.designated?(p.guardName||null):null,
           projection_agorot:p.projection})});
       })
         .then(function(rows){
@@ -5257,6 +5273,9 @@ const OCCASION_ENUM={'בר/בת מצווה':'bar_mitzvah','לימודים':'stud
                      'קופת הפתעות':'open_fund'};
 function occasionEnum(t){return OCCASION_ENUM[t]||'other'}
 const MODE_ENUM={keep:'keep',safe:'guaranteed',market:'market'};
+/* המסך אומר "אחליט בהמשך", האנום במסד אומר undecided. שני השמות נכונים
+   במקומם, וזו הנקודה היחידה שבה הם נפגשים. */
+const APPROVER_ENUM={self:'self',guardian:'guardian',later:'undecided'};
 
 /* שם הנטיעה, בצורה שהמוצר כבר מדבר בה: "בר המצווה של דניאל", לא
    "בר/בת מצווה של דניאל". תווית הצ'יפ היא שאלה שמוצגת למשתמש, ולא שם —
