@@ -732,7 +732,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'dca35a2';
+window.NETA_BUILD = '1097282';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1623,7 +1623,7 @@ window.NETA_CONFIG = {
   <p class="fine" id="lg-fine" style="margin-top:12px">אם כבר יש לך חשבון, תיכנס אליו. אם לא, ניצור אחד. אותו כפתור.</p>
   <!-- הסיסמה חיה כאן ולא בדלת: רק מי שהגדיר אחת בפרופיל מחפש אותה. -->
   <button class="link" id="lg-pwlink" style="display:none" onclick="usePassword()">יש לי סיסמה</button>
-  <button class="link backlink" onclick="go(ONBO.welcome)">חזרה</button>
+  <button class="link backlink" onclick="loginBackOut()">חזרה</button>
 </section>
 
 <!-- 23 HOW IT WORKS -->
@@ -3091,16 +3091,34 @@ function paintSharedCard(r,pre){
   if(fine)fine.innerHTML='להצטרף לא מחייב בכלום. אפשר לראות מה יש שם, ולהחליט אחר כך אם ובכמה להשקיע.'+
     (r.occasion?'':'<br>לאיזה רגע היא נועדה, ומתי בדיוק, יוצג רק אחרי שנוודא שהקישור הגיע אליך.');
 }
+/* האם כרטיס ההזמנה כבר צויר בסבב הזה. לא di localStorage: טוקן ישן
+   שנשאר שם אינו אומר שיש עכשיו כרטיס לחזור אליו. */
+let sharedCardShown=false;
 function openShared(token){
   if(!netaServer)return false;
+  /* מסך הבית מסומן on כבר ב-HTML, ולכן הוא נצבע כל עוד התשובה על הקישור
+     לא חזרה. מי שפתח הזמנה ראה חצי שנייה מסך בית של חשבון ריק שאינו
+     שלו, ואז קפיצה להזמנה. מסתירים עד שידוע מה להראות — אותו דפוס
+     בדיוק כמו ב-landSignedIn, כולל רשת הביטחון: אם השרת לא עונה, עדיף
+     להגיד שהקישור לא נפתח מאשר להשאיר מסך ריק לנצח. */
+  const stage=document.querySelector('.stage');
+  let shown=false;
+  const show=function(){if(shown)return;shown=true;if(stage)stage.style.visibility=''};
+  if(stage)stage.style.visibility='hidden';
+  const bail=setTimeout(function(){sharedState('dead');show()},4000);
+  const fail=function(){clearTimeout(bail);sharedState('dead');show()};
   netaServer.sharedSummary(token).then(function(r){
-    if(!r){sharedState('dead');return}
+    clearTimeout(bail);
+    if(!r){fail();return}
     paintSharedCard(r);
+    sharedCardShown=true;
     sharedState('card');
-  });
+    show();
+  },fail);
   return true;
 }
 function leaveShared(){
+  sharedCardShown=false;
   dropInvite();
   history.replaceState(null,'',location.pathname);
   go(liveAccount()?0:ONBO.welcome);
@@ -3114,6 +3132,16 @@ const INVITE_KEY='neta.invite';
 function keepInvite(t){try{localStorage.setItem(INVITE_KEY,t)}catch(e){}}
 function pendingInvite(){try{return localStorage.getItem(INVITE_KEY)||''}catch(e){return ''}}
 function dropInvite(){try{localStorage.removeItem(INVITE_KEY)}catch(e){}}
+
+/* "חזרה" במסך הכניסה הייתה קבועה למסך הפתיחה, ולכן מי שהגיע דרך הזמנה,
+   לחץ "אני רוצה להצטרף" ואז התחרט — נחת ב-splash ולא חזר להזמנה שבשבילה
+   בא. בדיוק אותה מלכודת שתוקנה ב-howClose: "חזרה" שיודעת יעד אחד אינה
+   יודעת מאיפה באו. הכרטיס עדיין מצויר במסך, ולכן החזרה אליו היא ניווט
+   ולא טעינה מחדש. */
+function loginBackOut(){
+  if(sharedCardShown&&!liveAccount()){sharedState('card');return}
+  go(ONBO.welcome);
+}
 
 function startJoin(){
   const t=sharedTokenInUrl()||pendingInvite();
