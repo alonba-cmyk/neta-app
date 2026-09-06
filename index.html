@@ -745,7 +745,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7c7a1e8';
+window.NETA_BUILD = '76283f9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3741,7 +3741,10 @@ function liveDetail(r){
     return [w.avatar||'av-parent', w.is_me?'אתה':w.name,
             /* null מגיע כשלצופה אסור לראות את הסכום — אותו כלל כמו בפיד.
                המגדר אינו ידוע, ולכן הצורה הכפולה שהאפיון כבר קבע. */
-            w.amount==null?VERB.participated:shekel(Number(w.amount)), null];
+            w.amount==null?VERB.participated:shekel(Number(w.amount)), null,
+            /* מי שפתח את הנטיעה. מגיע ראשון מהשרת, ונושא כאן כיתוב —
+               אחרת "אלון · 50 ₪" נראה כמו עוד תורם, והוא המקור. */
+            !!w.opened];
   });
   const others=who.filter(function(w){return w[1]!=='אתה'}).map(function(w){return w[1]});
   const n=Number(r.signed_letters||0);
@@ -3757,6 +3760,9 @@ function liveDetail(r){
     sex:r.beneficiary_sex||null, occasion:r.occasion||null,
     approver:r.approver||undefined, guardName:r.guardian_name||undefined,
     shared:!!r.open_to_relatives, mine:!!r.is_initiator,
+    /* בעלים כולל שותף בבעלות, ו-mine הוא היוזם בלבד. השורה שמסבירה מה
+       רואים תלויה בראשון ולא בשני. */
+    owner:!!r.is_owner,
     initiator:r.initiator_name||'',
     co:r.co_owner_name||undefined,
     who:who, monthly:monthly,
@@ -3819,8 +3825,17 @@ function paintDetail(key,p){
      בכלל (שלך ופתוחה לקרובים), אחרת זו רשימה של מישהו אחר. */
   document.getElementById('d-who').innerHTML=p.who.map(w=>
     '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+w[0]+'"/></svg></div>'+
-    '<span class="cbn">'+w[1]+'</span><span class="cbv">'+w[2]+'</span></div>').join('')+
+    '<span class="cbn">'+(w[4]
+      ? '<b>'+w[1]+'</b><i>'+(w[1]==='אתה'?'פתחת את הנטיעה':'פתח/ה את הנטיעה')+'</i>'
+      : w[1])+'</span><span class="cbv">'+w[2]+'</span></div>').join('')+
     (p.mine&&p.shared ? inviteExtraRows(p) : '');
+  /* מי שאינו בעל הנטיעה רואה עכשיו גם את הסכום של מי שפתח אותה (0034),
+     ולכן המשפט "הקרובים רואים זה את זה בלי סכומים" נעשה אצלו לא מדויק. */
+  /* בנתוני ההדגמה אין is_owner, ושם mine הוא המקור היחיד. */
+  const iOwn=(p.owner===undefined)?!!p.mine:p.owner;
+  txt('d-whofine', iOwn
+    ? 'רק אתה רואה את הפילוח הזה, כבעל הנטיעה. הקרובים רואים זה את זה, בלי סכומים.'
+    : 'אתה רואה את הסכום שלך ואת של מי שפתח את הנטיעה. סכום של קרוב אחר מוצג רק אם בחר לחשוף אותו.');
   const solo=!p.shared&&p.who.length<2;
   document.getElementById('d-cbh').style.display=solo?'none':'';
   document.getElementById('d-who').style.display=solo?'none':'';
