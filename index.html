@@ -745,7 +745,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '50e2db8';
+window.NETA_BUILD = 'e48ff55';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -977,7 +977,12 @@ window.NETA_CONFIG = {
   </div>
   <div id="c-guard" style="display:none">
     <div class="field"><label>שם המורשה</label><input type="text" id="c-gname" placeholder="למשל: מיכל כהן, אמא של דניאל"></div>
-    <div class="field"><label>תעודת זהות של המורשה</label><input type="text" id="c-gid" placeholder="9 ספרות"></div>
+    <!-- תעודת הזהות ירדה מכאן. היא נחוצה רק בפדיון, בעוד עשר שנים, אי
+         אפשר לאמת אותה בלקוח, ומעולם לא הייתה לה עמודה — כלומר היא
+         נגבתה ונזרקה. הכתובת, לעומתה, דרושה כבר במועד: לשם יישלח קוד
+         הפדיון, בדיוק כמו במסלול שבו הנהנה פודה בעצמו. -->
+    <div class="field"><label>לאן יישלח הקוד למימוש ההשקעה במועד המיוחל</label>
+      <input type="text" id="c-gcontact" placeholder="אימייל או טלפון של המורשה"></div>
     <p class="fine" id="c-acctfine">חשבון היעד יצטרך להיות על שמו. העברה לחשבון של אדם אחר לא תאושר.</p>
   </div>
 
@@ -2608,9 +2613,15 @@ let beneMode='self';
 document.querySelectorAll('.opt.ben').forEach(el=>el.onclick=()=>{
   document.querySelectorAll('.opt.ben').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');beneMode=el.dataset.b;
-  document.getElementById('c-guard').style.display=beneMode==='guardian'?'block':'none';
-  document.getElementById('c-codefield').style.display=beneMode==='self'?'block':'none';
+  beneFields();
 });
+/* מי מציג מה, במקום אחד: כתובת הנהנה כשהוא פודה בעצמו, וגוש המורשה
+   (שם + כתובת) כשמישהו אחר יפדה עבורו. */
+function beneFields(){
+  const g=document.getElementById('c-guard'),c=document.getElementById('c-codefield');
+  if(g)g.style.display=beneMode==='guardian'?'block':'none';
+  if(c)c.style.display=beneMode==='self'?'block':'none';
+}
 /* creating a planting is three decisions, one per screen */
 let cStep=0;
 const C_LABELS=['בשביל מי','מי יקבל את הכסף שנטעת','פתיחות'];
@@ -2655,8 +2666,7 @@ function startCreate(){
   beneMode='self';
   document.querySelectorAll('.opt.ben').forEach(function(x){x.classList.remove('on')});
   document.querySelector('.opt.ben[data-b="self"]').classList.add('on');
-  document.getElementById('c-guard').style.display='none';
-  document.getElementById('c-codefield').style.display='block';
+  beneFields();
   cStepGo(0);go(1);
 }
 function toAmount(){
@@ -2792,7 +2802,7 @@ function checkBene(){
   /* once he's given a full name here, that's the more specific, authoritative one — prefer it
      everywhere on this screen over the casual first name from step 1 */
   const dispNm=(full&&full.value.trim().split(' ')[0])||nm;
-  document.getElementById('c-codefield').style.display=beneMode==='self'?'block':'none';
+  beneFields();
   txt('c-selfb',dispNm+bs(' עצמו',' עצמה'));
   /* "he'll redeem it himself" only holds if he's actually grown by then — a short horizon makes that
      unlikely, so nudge toward the fact that the approver can still be changed, without asking his age */
@@ -3552,7 +3562,8 @@ function plantingFromFlow(){
     beneFull:desig?(fieldVal('c-full')||null):null,
     /* שדה הכתובת מוצג רק כשהנהנה פודה בעצמו (c-codefield), ולכן רק אז
        יש בו ערך שמישהו באמת הזין. */
-    beneContact:(desig&&beneMode==='self')?(fieldVal('c-bene')||null):null
+    beneContact:(desig&&beneMode==='self')?(fieldVal('c-bene')||null):null,
+    guardContact:(desig&&beneMode==='guardian')?(fieldVal('c-gcontact')||null):null
   };
 }
 function fieldVal(id){const el=document.getElementById(id);return el?el.value.trim():''}
@@ -5245,6 +5256,7 @@ function netaBackend(cfg){
           track_rate:p.mode==='keep'?null:p.rate,
           approver:p.designated?(p.approver||'self'):null,
           guardian_name:p.designated?(p.guardName||null):null,
+          guardian_contact:p.designated?(p.guardContact||null):null,
           projection_agorot:p.projection})});
       })
         .then(function(rows){
