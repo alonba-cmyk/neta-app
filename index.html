@@ -518,6 +518,9 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .cbr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
 .cbr:last-child{border-bottom:none}
 .cba{width:28px;height:28px;border-radius:9px;overflow:hidden;flex-shrink:0;background:var(--s2)}
+/* אותה משבצת, אבל עם אייקון האירוע במקום פרצוף: ברשימה של רגעים
+   האמוג'י הוא הזיהוי, ורקע הערוגה מבדיל אותה משורה של אדם. */
+.cba.pcicon{background:var(--leaf-bg);display:grid;place-items:center;font-size:14px}
 .cbn{flex:1;font-size:12.5px}
 .cbv{font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--leaf-soft)}
 .cbn b{display:block;font-size:12.5px;font-weight:500}
@@ -632,17 +635,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .gsample.tall{height:212px}
 .gsample.tall:after{background:linear-gradient(to bottom,transparent 46%,var(--bg) 99%)}
 .gsample .feed:last-child{border-bottom:0}
-/* דגם האנשים גבוה משורות נטיעה ונמוך משורות פיד, ולכן שתי התאמות
-   ממוקדות ל-#kin-ghost בלבד: כרטיס צר יותר כדי ששלוש הפנים ייכנסו מעל
-   הדהייה, ודהייה שמתחילה מאוחר יותר (62% ולא 46%) מאותה סיבה. שורת
-   ה"טרם הצטרפה" לא מקבלת עמעום כפול — .gsample כבר מעמעם הכול.
-   העמעום עצמו מרוכך מ-.34 ל-.5: הפנים הן העניין במסך הזה, ובעמעום
-   המלא הן נמרחו לצלליות. אי אפשר להחריג את האווטאר לבדו — opacity על
-   ההורה חוסם כל ילד — ולכן ההקלה היא על המכל. */
-#kin-ghost>*{opacity:.5;filter:saturate(.7)}
-#kin-ghost .card{padding:4px 12px}
-#kin-ghost:after{background:linear-gradient(to bottom,transparent 62%,var(--bg) 99%)}
-#kin-ghost .cbr.pend{opacity:1}
+/* הדגם כאן הוא שני כרטיסי 05ג — 86 פיקסל כל אחד ועוד 9 מרווח, בדיוק
+   כמו הכרטיס האמיתי, כך שמה שיופיע כאן יופיע במקום שהוא מסמן. הראשון
+   שלם והשני נבלע בדהייה. אין כאן חריגות מ-.gsample: העמעום והדהייה
+   הסטנדרטיים תוכננו בדיוק לכרטיסים כאלה. */
+#kin-ghost{height:181px}
 /* המסך הריק של הבית בלבד, ולא .es הגלובלי שמשרת עוד שני מסכים.
 
    רוחב: 27ch נתנו לפסקה 190px, והיא נשברה לשלוש שורות. שתי שורות
@@ -816,7 +813,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4341b52';
+window.NETA_BUILD = '93faf2b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1547,8 +1544,11 @@ window.NETA_CONFIG = {
   <div class="summary">
     <div class="s-row">
       <div class="s-body">
+        <!-- הכותרת מעל המספר ולא מתחתיו: השורה העליונה כבר אומרת "מי
+             נטע לעתיד של הילדים שלך", וכיתוב מתחת היה חוזר עליה. מה
+             שחסר כאן הוא מה המספר מודד, וזה מה שכתוב. -->
+        <div class="s-eyebrow">נטעו למשפחתך</div>
         <div class="s-num" id="fam-num">260 ₪</div>
-        <div class="s-label" id="fam-label">נטעו קרובים לעתיד של הילדים שלך</div>
       </div>
       <div class="s-art"><span class="ppav" id="fam-av">
         <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></span>
@@ -1580,13 +1580,24 @@ window.NETA_CONFIG = {
 <!-- 15 RELATIVES / הקרובים שלי -->
 <section class="screen" data-name="הקרובים שלי">
   <h2 class="gap-s">הקרובים שלי</h2>
-  <p class="sub gap">רשימה אחת לכל הנטיעות. כשתזמין מישהו לנטיעה, תבחר אותו מכאן במקום להקליד את הפרטים מחדש.</p>
+  <!-- שני כיוונים, ולכן שתי רשימות. הכיוון השני — מי הכניס אותי פנימה —
+       לא הוצג כאן מעולם, ואדם שהוזמן לא ראה בשום מסך מי הזמין אותו. -->
+  <p class="sub gap">מי נוטע איתך, ולמי נוטעים איתך.</p>
 
   <p class="eyebrow" id="req-head" style="display:none">בקשות הצטרפות שממתינות לך</p>
   <div id="req-list"></div>
+  <p class="eyebrow big">נוטעים איתך</p>
   <div class="card" id="rel-list"></div>
   <button class="btn gap-s" onclick="addRelative()">+ הוסף קרוב</button>
+
+  <!-- הכיוון השני צמוד לראשון: פסקת ההסבר הארוכה ביניהם ניתקה אותם,
+       והשנייה נראתה כמו מסך אחר שהתחיל. ההסבר סוגר את המסך. -->
+  <p class="eyebrow big" id="inv-head" style="display:none">רגעים שהזמינו אותך אליהם</p>
+  <div class="card" id="inv-list" style="display:none"></div>
+  <p class="fine gap" id="inv-fine" style="display:none">בלחיצה על רגע נפתח מסך הרגע — ושם מי נטע וכמה, ואפשר להוסיף.</p>
+
   <p class="fine gap">ההזמנה היא קישור אישי, חד-פעמי, שנקשר למי שפתח אותו, קישור שהועבר הלאה לא יצרף אף אחד אחר. הזמנה במייל נשלחת אוטומטית; בוואטסאפ אתה שולח אותה בעצמך. קרוב שהצטרף רואה רק את הנטיעות שצירפת אותו אליהן, ורק התקדמות, בלי סכומים.</p>
+
   <button class="btn ghost" id="rel-back" onclick="backFromRelatives()">חזרה לפרופיל</button>
 </section>
 
@@ -4724,7 +4735,7 @@ function openRelatives(from){
   relBack=(from==null?10:from);
   const b=document.getElementById('rel-back');
   if(b){b.style.display='';b.textContent=(relBack===7?'חזרה להזמנה':'חזרה לפרופיל')}
-  buildRequests();buildRelatives();go(15);
+  buildRequests();buildRelatives();buildInvitedTo();go(15);
 }
 function backFromRelatives(){go(relBack)}
 /* relBack=0 כשהמסך נפתח מהסרגל, ואז "חזרה" מחזירה לנטיעות ולא לפרופיל */
@@ -5989,9 +6000,19 @@ function faceStack(list){
 }
 /* כיתוב ריק כשאני לבד, ולא כיתוב חסר: העמודה ממורכזת אנכית, והסרת
    שורה הייתה מזיזה את הדמות ושוברת את היישור בין הכרטיסים. */
-function faceCap(list){
+/* הכיתוב מתחת לפנים. שורה ריקה (&nbsp;) שמרה על הגובה אבל לא אמרה
+   כלום, ודווקא במצב הנפוץ ביותר — נטיעה שרק אתה נוטע בה.
+
+   הכיתוב אינו נגזר ממספר הפנים בלבד, כי פרצוף בודד אינו בהכרח שלך:
+   ברגע שקרוב פתח ורק הוא הפקיד, הפנים היחידות הן שלו. לכן כל בונה
+   כרטיס מוסר את הכיתוב שמתאים לשאלה שהוא עונה עליה. */
+function faceCap(text){return '<i>'+(text||'&nbsp;')+'</i>'}
+function planterCap(list,mineAgorot){
   const n=(list&&list.length)||0;
-  return '<i>'+(n>1?(n+' נוטעים'):'&nbsp;')+'</i>';
+  if(n>1)return n+' נוטעים';
+  /* פרצוף אחד ויש לי סכום — הפרצוף הוא שלי, ואין עוד איש. */
+  if(n<=1&&Number(mineAgorot||0)>0)return 'רק אתה';
+  return n===1?'נוטע אחד':'';
 }
 /* מקבל תאריך מלא מהשרת, או שנה בלבד — ההדגמה יודעת רק שנה, ולהמציא
    לה חודש היה להציג נתון שלא קיים. */
@@ -6008,12 +6029,13 @@ function plantCard(o){
     '<div class="pc-x"><div class="pc-nm">'+o.name+'</div>'+
       '<div class="pc-amt">'+o.verb+' '+shekel(o.amount)+'</div>'+
       (dt?'<div class="pc-dt">'+dt+'</div>':'')+'</div>'+
-    '<div class="pc-fc">'+faceStack(o.people)+faceCap(o.people)+'</div>'+
+    '<div class="pc-fc">'+faceStack(o.people)+faceCap(o.cap)+'</div>'+
   '</div>';
 }
 function cardHTML(p){
+  const mine=(p.mine==null?p.accrued:p.mine);
   return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נטעת עד כה',
-                    amount:(p.mine==null?p.accrued:p.mine),
+                    amount:mine,cap:planterCap(p.participants,mine),
                     since:p.since,designated:p.designated,people:p.participants});
 }
 /* יותר משתי נטיעות מציפות את המסך, אז רק כרטיס אחד נוסף — הצצה דהויה —
@@ -6119,26 +6141,19 @@ function buildGhosts(){
   if(home)home.innerHTML=['danielBar','noaStudy']
     .map(function(k){return ghostCardHTML(plants[k])}).join('');
 
-  /* המסך המלא כאן הוא שני חלקים — מה שהם פתחו, ומי הם. הדגם הוביל עד
-     כה בחלק הראשון, בעוד שהכפתור שמעליו ("הזמן קרוב") מוליד דווקא את
-     השני: הכפתור הבטיח אנשים והדגם הראה נטיעות. עכשיו הסדר הפוך —
-     פנים תחילה, וכרטיס נטיעה אחד מתחתיהן שהדהייה בולעת את רובו, כדי
-     שהחלק השני של המסך לא ייעלם מהתמונה.
-
-     שורת "טרם הצטרפה" אינה קישוט: היא מראה הזמנה שנמצאת באוויר, כלומר
-     שהזמנת קרובים היא דבר שעושים שוב ושוב. שורת "+ הזמן קרוב נוסף"
-     נשקלה וירדה — הדגם אינו לחיץ בכוונה, ושורת "+" נראית כמו פקד
-     ומזמינה נגיעה שלא עושה דבר. */
+  /* הדגם מסמן את מה שבאמת יופיע כאן, ובגובה שלו: הטאב הזה מציג רגעים
+     שקרובים נטעו בהם, ולכן הדגם הוא אותו כרטיס 05ג עם "נטעו". קודם
+     הוא הראה אנשים — זה היה נכון למסך הקודם שישב על האינדקס הזה. */
   const kin=document.getElementById('kin-ghost');
   if(kin){
-    const ppl=peopleFromPlants().slice(0,2).map(personRowHTML).join('')+
-      '<div class="cbr pend"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40">'+
-      '<use href="#av-friend"/></svg></div>'+
-      '<span class="cbn"><b>מיכל, אמא של נועה</b><i>הוזמנה לפני 3 ימים</i></span>'+
-      '<span class="cbp">טרם הצטרפה</span></div>';
-    const p=plants.noaHome,o=p.who[0],f=o[3]==='f';
-    kin.innerHTML='<div class="card">'+ppl+'</div>'+
-      ghostCardHTML(p,'פתח'+(f?'ה':'')+' '+o[1]+' · '+p.date);
+    kin.innerHTML=[['🎂','בר המצווה של פיסטוק',22000,'2026-05-01',
+                    [{name:'סבתא רחל',avatar:'av-granny'}]],
+                   ['🎓','הלימודים של נועה',4000,'2024-03-01',
+                    [{name:'דוד יוסי',avatar:'av-uncle'}]]]
+      .map(function(g){
+        return familyCardHTML({id:'',icon:g[0],name:g[1],others_agorot:g[2],
+                               first_on:g[3],designated:true,participants:g[4]});
+      }).join('');
   }
 
   const act=document.getElementById('act-ghost');
@@ -6400,36 +6415,16 @@ function buildHomeSummary(){
     return model;
   });
 }
-/* מי הקרובים, לפי הנטיעות עצמן — לא רשימה שנשמרת בנפרד ויכולה לסתור אותן.
-   הופרד מ-buildPeople כדי שגם הדגם יקרא מאותו מקום. */
-function peopleFromPlants(){
-  const agg={},order=[];
-  Object.keys(plants).forEach(function(k){
-    plants[k].who.forEach(function(w){
-      if(w[1]==='אתה')return;
-      if(!agg[w[1]]){agg[w[1]]={av:w[0],g:w[3],n:0,one:''};order.push(w[1])}
-      agg[w[1]].n++;agg[w[1]].one=plants[k].name;
-    });
-  });
-  return order.map(function(name){
-    const a=agg[name], verb=a.g==='f'?'משקיעה':'משקיע';
-    return {name:name,av:a.av,
-            where:a.n>1?(verb+' ב-'+a.n+' נטיעות'):(verb+' ב'+stripHe(a.one))};
-  });
-}
-function personRowHTML(r){
-  return '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40">'+
-    '<use href="#'+r.av+'"/></svg></div>'+
-    '<span class="cbn"><b>'+r.name+'</b><i>'+r.where+'</i></span></div>';
-}
 /* ─── נטעו למשפחתי ────────────────────────────────────────────────────
    הכיוון הנכנס. הסכום כאן אינו כספך: הוא מה שקרובים נטעו לרגעים של
    המשפחה שלך, ולכן הוא לא מתחבר לאף מספר במסך הבית. הרשימה היא רגעים,
    והכרטיס הוא אותו 05ג — רק שהמונה הוא "נטעו" ולא "נטעת", ועמודת הפנים
    מציגה את מי שנטע, בלעדיך. */
 function familyCardHTML(p){
+  const n=(p.participants||[]).length;
   return plantCard({key:p.id,icon:p.icon,name:p.name,verb:'נטעו',
                     amount:Number(p.others_agorot||0),
+                    cap:n>1?(n+' קרובים'):(n===1?'קרוב אחד':''),
                     since:p.first_on||p.opened_on,
                     designated:p.designated!==false,people:p.participants||[]});
 }
@@ -6453,7 +6448,6 @@ function paintFamily(total,rows,people){
   if(empty)empty.style.display=any?'none':'';
   if(!any)return;
   txt('fam-num',shekel(total));
-  txt('fam-label','נטעו קרובים לעתיד של הילדים שלך');
   const av=document.getElementById('fam-av');
   if(av)av.innerHTML=famAvatars(list);
   const n=people!=null?people:(function(){
@@ -6514,6 +6508,35 @@ function buildDemoFamily(){
    עוד — הרגעים שבו עברו לרשימה אחת במסך הבית. הוא נשאר בקובץ כי
    אינדקסי המסכים הם מספרים, ומחיקה מזיזה כל go() וכל NOCHROME
    אחריו; להסיר בסריקת אינדקסים נפרדת. */
+/* ─── הכיוון ההפוך ────────────────────────────────────────────────────
+   רגעים שקרוב פתח והזמין אותי אליהם. הרשימה נגזרת מהמודל שכבר נטען
+   למסך הבית (joined/by), ולא מקריאה נוספת — אותם רגעים בדיוק, רק
+   שהשאלה כאן היא "מי הכניס אותי", ולא "מה יש לי".
+
+   וכאן גם התשובה לשאלה שנשארה פתוחה: "פתחה סבתא רחל" יושב במסך הזה
+   ולא על הכרטיס במסך הבית. שם הוא היה מאריך כל שורת משנה כדי להבדיל
+   בין שני מצבים; כאן הוא כל מה שהרשימה אומרת. */
+function buildInvitedTo(){
+  const head=document.getElementById('inv-head'),box=document.getElementById('inv-list');
+  if(!head||!box)return;
+  const rows=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.joined});
+  const fine=document.getElementById('inv-fine');
+  head.style.display=rows.length?'':'none';
+  box.style.display=rows.length?'':'none';
+  if(fine)fine.style.display=rows.length?'':'none';
+  if(!rows.length)return;
+  box.innerHTML=rows.map(function(p){
+    /* מגדר של מי שפתח אינו ידוע כאן — profiles אינה נושאת אותו. עד
+       שיהיה, "פתח/ה", כמו בכל שאר המסכים. */
+    const mine=Number(p.mine==null?0:p.mine);
+    const sub='פתח/ה '+(p.by||'קרוב')+(mine?(' · נטעת '+shekel(mine)):'');
+    return '<div class="cbr tap" onclick="openDetail(\''+p.key+'\')">'+
+      '<div class="cba pcicon">'+(p.icon||'🌱')+'</div>'+
+      '<span class="cbn"><b>'+p.name+'</b><i>'+sub+'</i></span>'+
+      '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12">'+
+      '<use href="#chev"/></svg></span></div>';
+  }).join('');
+}
 function openPeople(){
   relBack=0;
   /* יעד בסרגל אינו מסך שחוזרים ממנו: "חזרה לפרופיל" יורד כשמגיעים
@@ -6521,7 +6544,7 @@ function openPeople(){
   document.querySelectorAll('#rel-back').forEach(function(b){b.style.display='none'});
   const b=document.getElementById('rel-back');
   if(b)b.style.display='none';
-  buildRequests();buildRelatives();go(15);
+  buildRequests();buildRelatives();buildInvitedTo();go(15);
 }
 function designate(){
   const p=plantAt(cur);
