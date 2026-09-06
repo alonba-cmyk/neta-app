@@ -148,6 +148,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .hero-num{font-size:32px;font-weight:500;color:var(--leaf);letter-spacing:-.02em;line-height:1.25;margin:3px 0 2px}
 .hero-num.idle{color:var(--tx-3);font-size:26px}
 .hero-sub{font-size:11.5px;color:#8FB794;line-height:1.5}
+.gcard .gline{font-size:14.5px;line-height:1.55;color:#EAF3EB;margin:10px 0 0;font-weight:400;text-wrap:balance}
+.gcard .gask{font-size:14.5px;line-height:1.5;color:#EAF3EB;margin:15px 0 0;font-weight:400}
+.gcard .gask .gname{display:block;margin-top:2px}
+.gcard .gask b{font-weight:600;color:var(--leaf)}
+.gcard .gyear{font-size:11px;color:var(--leaf-soft);opacity:.75;margin:14px 0 0}
 .note{background:var(--leaf-bg);border:1px solid #2A4530;border-radius:11px;padding:12px 13px;font-size:12.5px;line-height:1.55;color:#C6E3C9}
 .note b{color:var(--leaf);font-weight:500}
 .lock{background:var(--sun-bg);border:1px solid #3D3520;border-radius:11px;padding:14px;text-align:center}
@@ -705,7 +710,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b9e3288';
+window.NETA_BUILD = 'd420ac0';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1181,13 +1186,11 @@ window.NETA_CONFIG = {
       </div>
       <b style="display:block;font-size:14.5px;line-height:1.35;margin:10px 0 0" id="iv-h">·</b>
     </div>
-    <div class="card center" style="background:var(--leaf-bg);border-color:var(--leaf-line);margin:13px 0 0">
+    <div class="card center gcard" style="background:var(--leaf-bg);border-color:var(--leaf-line);margin:13px 0 0">
       <div class="brandmark"><svg width="30" height="35" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
-      <b style="display:block;margin:6px 0 4px;font-size:13.5px" id="iv-title">·</b>
-      <p class="sub" style="color:var(--leaf-soft)" id="iv-meta">·</p>
-      <div style="margin-top:12px;height:6px;border-radius:3px;background:var(--s2);overflow:hidden">
-        <div id="iv-bar" style="height:100%;width:0;background:var(--leaf);border-radius:3px"></div>
-      </div>
+      <p class="gline" id="iv-why">·</p>
+      <p class="gask" id="iv-ask">·</p>
+      <p class="gyear" id="iv-meta">·</p>
     </div>
   </div>
 
@@ -1772,6 +1775,9 @@ window.NETA_CONFIG = {
         <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent" id="sl-av"/></svg>
       </div>
       <h2 style="margin:11px 0 4px" id="sl-h">מישהו הזמין אותך להיות חלק</h2>
+      <!-- מתחת לכותרת ולא בתחתית: מי שהגיע לכאן אינו מכיר את נטע, והוא
+           צריך את ההסבר לפני שהוא מחליט, לא אחרי. -->
+      <button class="link" style="padding:2px 0 0" onclick="howOpen(true)">מה זה נטע, ואיך זה עובד ›</button>
     </div>
 
     <!-- מה שהמזמין כתב בעצמו. מוצג רק אם נכתב. -->
@@ -1781,21 +1787,19 @@ window.NETA_CONFIG = {
       <p class="fine" style="margin-top:7px" id="sl-note-by"></p>
     </div>
 
-    <div class="card center" style="background:var(--leaf-bg);border-color:var(--leaf-line)">
-      <div class="brandmark"><svg width="34" height="40" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
-      <b style="display:block;margin:6px 0 4px;font-size:14px" id="sl-title">·</b>
-      <p class="sub" style="color:var(--leaf-soft)" id="sl-meta">·</p>
-      <div style="margin-top:12px;height:6px;border-radius:3px;background:var(--s2);overflow:hidden">
-        <div id="sl-bar" style="height:100%;width:0;background:var(--leaf);border-radius:3px"></div>
-      </div>
-    </div>
+    <!-- הכרטיס הוא ההזמנה עצמה: משפט על הילד, השאלה, והשנה. הפס והשורה
+         "כבר נטע כאן" ירדו — שם המזמין נמצא בשאלה, ואמירה נוספת עליו היא
+         כפילות. השורה על המשתתפים חוזרת רק כשיש יותר מאחד, ואז היא
+         מוסיפה משהו שהשאלה אינה אומרת.
 
-    <!-- הרגע שבו מחליטים, ולכן המקום היחיד שבו המשפט הזה משנה משהו.
-         בלי לנקוב ברגע שהנטיעה נועדה לו: זה "היעד", והוא אסור לפני
-         אימות (docs/open-decisions.md §10, ובדיקה ב-permissions.sql
-         מקבעת שהוא אינו מוחזר). מה שכן מותר — השם, שכבר מוצג — מספיק
-         כדי שהמשפט יהיה על ילד ולא על מוצר. -->
-    <p class="sub center" id="sl-why" style="margin:2px 0 10px;color:var(--leaf-soft)"></p>
+         המשפט נוקב ברגע רק בהזמנה אישית. בקישור פתוח share_link_summary
+         מחזירה occasion=null בכוונה, וההסבר המלא בראש 0030 וב-§10. -->
+    <div class="card center gcard" style="background:var(--leaf-bg);border-color:var(--leaf-line)">
+      <div class="brandmark"><svg width="34" height="40" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
+      <p class="gline" id="sl-why">·</p>
+      <p class="gask" id="sl-ask">·</p>
+      <p class="gyear" id="sl-meta">·</p>
+    </div>
     <!-- מי שמגיע לכאן אינו מכיר את נטע, ועומד למסור פרטים לשירות פיננסי
          שלא שמע עליו. ההרגעה קודמת לסייג: היא מה שמאפשר ללחוץ, והסייג
          מסביר למה לא הכול מוצג. שניהם בלשון ניטרלית, כי בקישור פתוח
@@ -1806,10 +1810,6 @@ window.NETA_CONFIG = {
       <button class="btn gap-s" onclick="startJoin()">אני רוצה להצטרף</button>
       <!-- "רק הצצתי" תיאר מה המשתמשת עשתה, לא מה יקרה כשתלחץ. -->
       <button class="btn ghost" style="margin-top:8px" onclick="leaveShared()">בפעם אחרת</button>
-      <!-- המסך הזה היה בנוי כולו ולא היה מקושר משום מקום למי שאינו בתוך
-           ההרשמה. אורח שלא מכיר את נטע היה צריך להחליט בלי שום דרך ללמוד
-           מה זה. -->
-      <button class="link" onclick="howOpen(true)">מה זה נטע, ואיך זה עובד ›</button>
     </div>
   </div>
 
@@ -3034,9 +3034,11 @@ function paintSharedCard(r,pre){
   const q=(pre||'sl')+'-';
   const who=r.inviter_name||'מישהו';
   const kid=r.beneficiary_name||'';
-  const you=r.invitee_name?(r.invitee_name+', '):'';
-  txt(q+'h', you+who+' הזמין אותך להיות חלק'+
-      (kid?(' מההשקעה ב'+kid):' ממשהו שהוא פתח'));
+  const sex=r.beneficiary_sex||null;
+  /* "עתידו" או "עתידה" רק כשהמגדר ידוע. אחרת "העתיד של", שנכון תמיד. */
+  const fut=kid?(sex==='f'?'עתידה של '+kid:sex==='m'?'עתידו של '+kid:'העתיד של '+kid)
+               :'משהו שהוא פתח';
+  txt(q+'h', who+' נטע השקעה חדשה עבור '+fut+', והזמין אותך להצטרף.');
 
   const av=document.getElementById(q+'av');
   if(av)av.setAttribute('href','#'+(r.inviter_avatar||'av-parent'));
@@ -3050,28 +3052,22 @@ function paintSharedCard(r,pre){
     } else note.style.display='none';
   }
 
-  txt(q+'title','נטיעה שנפתחה לקראת '+r.target_year);
-  /* מספר, לא שמות: רשימת שמות מתחילה להיות פרופיל של משפחה. */
+  /* השאלה נושאת את שם המזמין, ולכן היא גם מה שמחליף את "כבר נטע כאן".
+     מספר, לא שמות: רשימת שמות מתחילה להיות פרופיל של משפחה. */
+  const el=document.getElementById(q+'ask');
+  if(el)el.innerHTML='תרצה/י להצטרף להשקעה שנטע'+
+    '<span class="gname"><b>'+firstName(who)+'</b>?</span>';
   const n=Number(r.participants)||0;
-  txt(q+'meta', n>1 ? (who+' ועוד '+(n-1)+' מהמשפחה כבר נטעו כאן')
-              : n===1 ? (who+' כבר נטע כאן')
-              : 'אתה הראשון שמצטרף');
-  const pct=Number(r.percent)||0;
-  const bar=document.getElementById(q+'bar');
-  if(bar)bar.style.width=Math.max(2,Math.min(100,pct))+'%';
+  txt(q+'meta','נטיעה שנפתחה לקראת '+r.target_year+
+      (n>1?(' · '+who+' ועוד '+(n-1)+' מהמשפחה כבר נטעו כאן'):''));
 
-  /* מה שגל ביקשה: משפט שאומר שפעולה קטנה משנה משהו. הוא נאמר על הילד
-     ובשמו, אבל לא על הרגע שלו — ולכן "נקודת הפתיחה" ולא "הלימודים".
-     הסכום הוא ההמחשה הגנרית שכבר משמשת במסך הריק בבית, ואינו נתון של
-     הנטיעה הזאת. */
-  const why=document.getElementById(q+'why');
-  if(why){
-    why.innerHTML=kid
-      ? ('סכום קטן בכל חודש, לאורך שנים, משנה ל'+kid+' את נקודת הפתיחה.'+
-         '<br><span style="color:var(--tx-3)">100 ₪ בחודש הופכים לכ-23,500 ₪ בתוך 13 שנה.</span>')
-      : ('סכום קטן בכל חודש, לאורך שנים, משנה נקודת פתיחה.'+
-         '<br><span style="color:var(--tx-3)">100 ₪ בחודש הופכים לכ-23,500 ₪ בתוך 13 שנה.</span>');
-  }
+  txt(q+'why', inviteLine(kid,r.occasion,sex));
+
+  /* בהזמנה אישית הרגע כבר נאמר בכרטיס, ולכן ההבטחה להסתיר אותו הופכת
+     שם לשקר. היא נשארת רק בקישור פתוח, ושם היא נכונה. */
+  const fine=document.getElementById(q+'fine');
+  if(fine)fine.innerHTML='להצטרף לא מחייב בכלום. אפשר לראות מה יש שם, ולהחליט אחר כך אם ובכמה להשקיע.'+
+    (r.occasion?'':'<br>לאיזה רגע היא נועדה, ומתי בדיוק, יוצג רק אחרי שנוודא שהקישור הגיע אליך.');
 }
 function openShared(token){
   if(!netaServer)return false;
@@ -3495,27 +3491,27 @@ function ahaNext(){go(0)}
 /* ---- per-planting data for the detail screen ---- */
 const plants={
   danielBar:{icon:'🎂',name:'בר המצווה של דניאל',date:'אוגוסט 2032',yr:2032,planted:2019,
-    now:15600,end:35300,yl:6,tNow:53.8,monthly:150,kid:'דניאל',approver:'self',shared:true,mine:true,
+    now:15600,end:35300,yl:6,tNow:53.8,monthly:150,occasion:'bar_mitzvah',sex:'m',kid:'דניאל',approver:'self',shared:true,mine:true,
     who:[['av-parent','אתה','9,100 ₪','m'],['av-granny','סבתא רחל','4,300 ₪','f'],['av-uncle','דוד יוסי','2,200 ₪','m']],
     lCount:'ולא רק כסף, 3 מכתבים חתומים: מסבתא, מדוד יוסי וממך',lSub:'המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.',
     line:'בזכות 150 ₪ בחודש ממך, מסבתא ומדוד יוסי, דניאל מתקרב ליום הגדול שלו'},
   noaStudy:{icon:'🎓',name:'הלימודים של נועה',date:'ספטמבר 2038',yr:2038,planted:2024,
-    now:1500,end:15700,yl:12,tNow:14.3,monthly:60,kid:'נועה',approver:'guardian',guardName:'מיכל',shared:false,mine:true,co:'מיכל',
+    now:1500,end:15700,yl:12,tNow:14.3,monthly:60,occasion:'studies',sex:'f',kid:'נועה',approver:'guardian',guardName:'מיכל',shared:false,mine:true,co:'מיכל',
     who:[['av-parent','אתה','1,500 ₪','m']],
     lCount:'ולא רק כסף, מכתב אחד חתום ממך',lSub:'המכתב ייפתח בספטמבר 2038, יחד עם נועה.',
     line:'בזכות 60 ₪ בחודש שאתה מפקיד, נועה מתקרבת ללימודים שלה'},
   danielArmy:{icon:'★',name:'הגיוס של דניאל',date:'מרץ 2030',yr:2030,planted:2022,
-    now:2700,end:6100,yl:4,tNow:50,monthly:50,kid:'דניאל',approver:'later',shared:true,mine:false,
+    now:2700,end:6100,yl:4,tNow:50,monthly:50,occasion:'other',sex:'m',kid:'דניאל',approver:'later',shared:true,mine:false,
     who:[['av-uncle','דוד יוסי','2,700 ₪','m']],
     lCount:'ולא רק כסף, מכתב אחד חתום מדוד יוסי',lSub:'המכתב ייפתח במרץ 2030, יחד עם דניאל.',
     line:'בזכות 50 ₪ בחודש שדוד יוסי מפקיד, דניאל יגיע מוכן לגיוס'},
   openFund:{icon:'🎁',name:'קופת הפתעות',date:'יוני 2035',yr:2035,planted:2025,
-    now:400,end:4900,yl:9,tNow:11.1,monthly:30,kid:'מי שאחליט',shared:false,mine:true,designated:false,
+    now:400,end:4900,yl:9,tNow:11.1,monthly:30,occasion:'open_fund',kid:'מי שאחליט',shared:false,mine:true,designated:false,
     who:[['av-parent','אתה','400 ₪','m']],
     lCount:'ולא רק כסף, עוד לא נכתב מכתב',lSub:'אפשר לצרף מכתב ברגע שתייעד את הקופה.',
     line:'בזכות 30 ₪ בחודש שאתה מפקיד, יש כאן משהו שמחכה לרגע הנכון'},
   noaHome:{icon:'🏠',name:'הדירה של נועה',date:'יוני 2045',yr:2045,planted:2021,
-    now:7000,end:64100,yl:19,tNow:20.8,monthly:100,kid:'נועה',shared:true,mine:false,
+    now:7000,end:64100,yl:19,tNow:20.8,monthly:100,occasion:'apartment',sex:'f',kid:'נועה',shared:true,mine:false,
     who:[['av-granny','סבתא רחל','7,000 ₪','f']],
     lCount:'ולא רק כסף, מכתב אחד חתום מסבתא רחל',lSub:'המכתב ייפתח ביוני 2045, יחד עם נועה.',
     line:'בזכות 100 ₪ בחודש שסבתא רחל מפקידה, נועה תתחיל עם דירה משלה'}
@@ -3542,6 +3538,50 @@ function nameOfPlanting(key){
   return live?live.name:'הנטיעה';
 }
 
+/* המשפט בכרטיס ההזמנה. פותח מהילד ולא מהמשקיעים, ולכן הוא נכון גם
+   כשהשקיע אדם אחד בלבד: "התחלנו" סתר את "אלון כבר נטע כאן" שמתחתיו.
+   הוא גם אינו מיוחס לאיש, ולכן אינו שם בפי המזמין מילים שלא אמר.
+
+   הוא מתאר את הרגע שהנטיעה נועדה לו, ולכן מוצג רק בהזמנה אישית —
+   בקישור פתוח השרת מחזיר occasion=null. ראו 0030 ו-§10.
+
+   בלי מגדר ידוע אין דרך לכתוב אותו בעברית בלי "יודע/ת", ולכן במקרה
+   הזה חוזרים למשפט הכללי. ניחוש לפי השם נפסל כאן כמו ב-himHer. */
+const INVITE_LINE={
+  studies:function(n,g){return n+' עוד לא '+g('יודע','יודעת')+', אבל כש'+
+    g('יתחיל','תתחיל')+' ללמוד תהיה '+g('לו','לה')+' דאגה אחת פחות.'},
+  apartment:function(n,g){return n+' עוד לא '+g('יודע','יודעת')+', אבל כש'+
+    g('יחפש','תחפש')+' דירה כבר תהיה '+g('לו','לה')+' קרקע להתחיל ממנה.'},
+  bar_mitzvah:function(n,g){return n+' עוד לא '+g('יודע','יודעת')+', אבל כש'+
+    g('יעמוד','תעמוד')+' מול כולם יחכה '+g('לו','לה')+' גם משהו לאחרי.'},
+  first_car:function(n,g){return n+' עוד לא '+g('יודע','יודעת')+', אבל כש'+
+    g('יקבל','תקבל')+' רישיון יחכו '+g('לו','לה')+' גם המפתחות.'},
+  army_trip:function(n,g){return n+' עוד לא '+g('יודע','יודעת')+', אבל כש'+
+    g('ישתחרר','תשתחרר')+' '+g('הוא יוכל','היא תוכל')+' פשוט לארוז ולצאת.'},
+  wedding:function(n,g){return n+' עוד לא '+g('יודע','יודעת')+', אבל כש'+
+    g('יתחתן','תתחתן')+' '+g('הוא יתחיל','היא תתחיל')+' בלב קל.'},
+  /* לקופה שלא יועדה אין נהנה, ולכן גם אין שם ואין מגדר. */
+  open_fund:function(){return 'עוד לא ידוע לאיזה רגע, אבל כשהוא יגיע כבר יחכה משהו.'}
+};
+function inviteLine(kid,occasion,sex){
+  const f=sex==='f',m=sex==='m';
+  const fn=INVITE_LINE[occasion];
+  if(fn&&(occasion==='open_fund'||((f||m)&&kid)))
+    return fn(kid,function(a,b){return f?b:a});
+  return kid
+    ? ('סכום קטן בכל חודש, לאורך שנים, משנה ל'+kid+' את נקודת הפתיחה.')
+    : 'סכום קטן בכל חודש, לאורך שנים, משנה נקודת פתיחה.';
+}
+/* השם הפרטי לשאלה. חיתוך במילה הראשונה נכון לרוב המוחלט, ונשבר על שם
+   פרטי מורכב: "בן ציון כהן" היה נחתך ל"בן". התחיליות המוכרות מטופלות
+   במפורש; מה שמעבר להן אינו ניתן להכרעה בלי לנחש, ולכן לא ננחש. */
+const NAME_PREFIX=['בן','בת','אבו','אבן','אל'];
+function firstName(full){
+  const p=String(full||'').trim().split(/\s+/).filter(Boolean);
+  if(!p.length)return '';
+  if(p.length>2&&NAME_PREFIX.indexOf(p[0])>=0)return p[0]+' '+p[1];
+  return p[0];
+}
 /* מה שההפקדה בפועל מקרבת, לפי סוג הרגע — כפי שנבחר בהקמה. הכינוי כלפי
    הנהנה הוא "לו" או "לה" לפי מה שנבחר בהקמה או בעריכה; נטיעה ישנה שאין
    לה עדיין ערך שמור נשארת בצורה הכפולה "לו/ה", בלי לנחש לפי השם. */
@@ -3597,7 +3637,7 @@ function liveDetail(r){
     yl:Math.max(0,t.getFullYear()-new Date().getFullYear()),
     tNow:Math.max(0,Math.min(100,span>0?passed/span*100:0)),
     kid:desig?(r.beneficiary_name||''):'', designated:desig,
-    sex:r.beneficiary_sex||null,
+    sex:r.beneficiary_sex||null, occasion:r.occasion||null,
     approver:r.approver||undefined, guardName:r.guardian_name||undefined,
     shared:!!r.open_to_relatives, mine:!!r.is_initiator,
     initiator:r.initiator_name||'',
@@ -5793,9 +5833,14 @@ function inviteFor(key){
     /* participants הוא מספר המשקיעים כולם, כולל אותך, בדיוק כמו
        share_link_summary שסופר contributor_id ייחודיים. ספירת "אחרים"
        בלבד הייתה מציגה לנמען מספר קטן באחד ממה שהוא באמת. */
+    /* הזמנה מהמסך הזה היא תמיד אישית, ולכן התצוגה המקדימה מראה את
+       הרגע — בדיוק כמו שהנמענת תראה אותו. */
     card:{inviter_name:who, inviter_avatar:av,
-          beneficiary_name:p.kid||'', target_year:p.yr||'',
+          /* קופה שלא יועדה אין לה נהנה. בהדגמה ה-kid שלה הוא תיאור
+             ("מי שאחליט") ולא שם, ולכן הוא לא נכנס לכותרת. */
+          beneficiary_name:(p.designated===false?'':(p.kid||'')), target_year:p.yr||'',
           participants:(p.who||[]).length,
+          occasion:p.occasion||null, beneficiary_sex:p.sex||null,
           percent:pct, personal_note:null, invitee_name:null},
     quick:inviteExtraRows(p)
   };
