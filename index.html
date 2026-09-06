@@ -13,6 +13,9 @@
   --leaf:#7FC088;--leaf-2:#5FA36A;--leaf-soft:#A8CBAC;--leaf-bg:#1B2A1D;--leaf-line:#2A4530;
   --sun:#D9B25F;--sun-2:#BE9748;--sun-soft:#E5CB96;--sun-bg:#2A2318;--sun-line:#3D3520;
   --rose:#D99BA6;--rose-bg:#2A1F22;
+  /* קו מפריד פנימי, שקט מ---line: הוא מפריד בתוך כרטיס ולא בין כרטיסים.
+     היה בשימוש בשלושה מקומות בלי שהוגדר, ולכן פשוט לא צויר. */
+  --rule:#262A23;
 }
 /* כלל הצבע של הסכומים, אחרי שהצטבר בלגן: ירוק הוא כסף שקיים — נצבר,
    הופקד, יש אותו — וזהב הוא כסף שצפוי. עד כה תחזית הופיעה אפורה בשני
@@ -260,6 +263,9 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   border-inline-start:1px solid var(--rule);padding-inline-start:9px}
 .pc-fc i{font-style:normal;font-size:9.5px;color:var(--tx-3);white-space:nowrap}
 .fx2{display:flex;align-items:center;width:53px;justify-content:flex-end}
+/* דמות אחת מתמרכזת בעמודה: הצמדה לקצה נראית כמו יישור שנשבר
+   כשאין לידה דמות שנייה שממלאת את הרוחב. */
+.fx2.one{justify-content:center}
 .fx2>span{width:32px;height:32px;border-radius:50%;overflow:hidden;position:relative;
   border:2px solid var(--s1);background:var(--s2);flex:0 0 auto;display:block}
 /* z-index מפורש כדי שהתג יהיה שלם ולא יסתמך על סדר הציור */
@@ -464,13 +470,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שניהם ירוקים — כי שניהם כסף שקיים. */
 /* הפס היחסי מעל הפילוח: אותו דפוס שבאפיון. שני ירוקים, כי שניהם
    כסף שקיים — הזהב שמור לצפי. */
+/* בלי direction:ltr: הפס נקרא באותו כיוון כמו הכיתובים שמתחתיו, כלומר
+   "ממך" מימין. עם ltr המקטע של המשתמש יצא משמאל והכיתוב מימין — הפס
+   והכיתוב סיפרו הפוך זה מזה. */
 .split-bar{display:flex;height:8px;border-radius:5px;overflow:hidden;background:var(--s2);
-  margin-top:13px;direction:ltr}
+  margin-top:14px}
 .split-bar i{background:var(--leaf);display:block}
 .split-bar u{background:var(--leaf-2);opacity:.55;display:block}
-.mine-split{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;
+.mine-split{display:flex;gap:14px;flex-wrap:nowrap;margin-top:10px;
   font-size:11px;color:var(--tx-2)}
-.mine-split span{display:flex;align-items:center;gap:6px}
+.mine-split span{display:flex;align-items:center;gap:6px;white-space:nowrap}
 .mine-split b{color:var(--leaf);font-weight:600;font-variant-numeric:tabular-nums;font-size:12.5px}
 .mine-split .dsw.o{background:var(--leaf-2);opacity:.6}
 .mine-split span:last-child b{color:var(--leaf-2)}
@@ -807,7 +816,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'c78f2a7';
+window.NETA_BUILD = '31a58c4';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -937,13 +946,6 @@ window.NETA_CONFIG = {
       <div class="s-body">
         <div class="s-num" id="s-you">13,300 ₪</div>
         <div class="s-label" id="s-label">הושקעו עד כה בעתיד של דניאל ונועה</div>
-        <div id="s-mine" style="display:none">
-          <div class="split-bar"><i id="s-barmine"></i><u id="s-barother"></u></div>
-          <div class="mine-split">
-            <span><i class="dsw m"></i>ממך<b id="s-minev">·</b></span>
-            <span><i class="dsw o"></i>מאחרים<b id="s-othv">·</b></span>
-          </div>
-        </div>
       </div>
       <div class="s-art">
         <svg width="58" height="68" viewBox="0 0 60 70" aria-hidden="true">
@@ -955,6 +957,13 @@ window.NETA_CONFIG = {
           <path d="M30 33 C 17 28, 11 14, 19 7 C 27 15, 29 25, 30 33" fill="var(--leaf)"/>
           <path d="M30 33 C 43 28, 49 14, 41 7 C 33 15, 31 25, 30 33" fill="#A9D6AF"/>
         </svg>
+      </div>
+    </div>
+    <div id="s-mine" style="display:none">
+      <div class="split-bar"><i id="s-barmine"></i><u id="s-barother"></u></div>
+      <div class="mine-split">
+        <span><i class="dsw m"></i>ממך<b id="s-minev">·</b></span>
+        <span><i class="dsw o"></i>מקרוביי<b id="s-othv">·</b></span>
       </div>
     </div>
     <div class="s-meta"><span><b id="s-cnt">2</b> השקעות</span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span><span class="grp" id="s-fut-grp"><i></i><span>צפוי <b class="fut" id="s-fut"></b></span></span></div>
@@ -5915,7 +5924,7 @@ function shekel(agorot){
 function faceStack(list){
   const arr=(list&&list.length)?list:[{avatar:'av-parent'}];
   const show=arr.slice(0,2), rest=arr.length-2;
-  return '<span class="fx2">'+show.map(function(w,i){
+  return '<span class="fx2'+(show.length<2?' one':'')+'">'+show.map(function(w,i){
     return '<span><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+
       (w.avatar||'av-parent')+'"/></svg>'+
       ((i===1&&rest>0)?'<i class="ov">+'+rest+'</i>':'')+'</span>';
