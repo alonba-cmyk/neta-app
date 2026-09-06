@@ -745,7 +745,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd73c82e';
+window.NETA_BUILD = '7c7a1e8';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -891,6 +891,12 @@ window.NETA_CONFIG = {
   <div id="garden"></div>
 
   <button class="btn dash gap" style="margin-top:2px" onclick="startCreate()">+ פתח נטיעה חדשה</button>
+
+  <!-- מה שקרוב פתח וצירפת אליו. הכותרת אומרת "הצטרפת" ולא "פתחת", כי זו
+       ההבחנה — אבל הכסף שלך יושב כאן, במקום שבו המספר למעלה כבר סופר
+       אותו. ראו paintJoinedAtHome. -->
+  <p class="eyebrow big" id="home-joined-h" style="display:none;margin-top:22px">נטיעות שהצטרפת אליהן</p>
+  <div id="home-joined" style="display:none"></div>
   </div><!-- /home-full -->
 
   <div class="es" id="home-empty" style="display:none">
@@ -5393,6 +5399,25 @@ function cardHTML(p){
    מצטרף לשתיים הראשונות. השאר לא נכנסים ל-DOM בכלל עד שמבקשים, כדי
    שלא ייראו כל הכרטיסים גם דהויים. הכרטיס המוצג נשאר לחיץ כרגיל. */
 let gardenHidden='';
+/* נטיעה שקרוב פתח וצירף אותך אליה. הכרטיס מציג את מה שאתה הפקדת ולא את
+   מה שנצבר: הסה"כ כולל את כספם של אחרים, ומי שאינו בעל הנטיעה אינו רואה
+   אותו — זו אותה הבחנה שהאפיון דורש בכל שאר המסכים.
+
+   אותו רכיב משרת עכשיו את מסך הבית ואת טאב הקרובים. היה כאן קוד כפול,
+   ושני עותקים של אותו כרטיס היו מתיישנים ברגע שאחד מהם משתנה. */
+function guestCardHTML(p){
+  const t=new Date(p.target_date+'T00:00:00');
+  return '<div class="ncard" onclick="openDetail(\''+p.id+'\')"><div class="nc-top">'+
+    '<div class="dot s">'+(p.icon||'🌱')+'</div>'+
+    '<div class="nc-id"><div class="nc-nm">'+p.name+'</div>'+
+    '<div class="nc-meta">פתח/ה '+(p.initiator_name||'קרוב')+' · '+
+      monthsShort[t.getMonth()]+' '+t.getFullYear()+'</div></div>'+
+    '<span class="peek"><span class="pk">הפקדת</span><span class="pv">'+
+      shekel(Number(p.my_agorot||0))+'</span></span>'+
+    '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12">'+
+      '<use href="#chev"/></svg></span></div></div>';
+}
+
 function gardenHTML(list){
   if(list.length<=3){gardenHidden='';return list.map(cardHTML).join('')}
   gardenHidden=list.slice(3).map(cardHTML).join('');
@@ -5797,18 +5822,27 @@ function buildLivePeople(list){
       '<use href="#av-granny2"/></svg></div><span class="cbn"><b>'+n+'</b>'+
       '<i>פתח/ה נטיעה וצירף/ה אותך</i></span></div>';
   }).join('');
-  document.getElementById('pp-guest').innerHTML=rows.map(function(p){
-    const t=new Date(p.target_date+'T00:00:00');
-    return '<div class="ncard" onclick="openDetail(\''+p.id+'\')"><div class="nc-top">'+
-      '<div class="dot s">'+(p.icon||'🌱')+'</div>'+
-      '<div class="nc-id"><div class="nc-nm">'+p.name+'</div>'+
-      '<div class="nc-meta">פתח/ה '+(p.initiator_name||'קרוב')+' · '+
-        monthsShort[t.getMonth()]+' '+t.getFullYear()+'</div></div>'+
-      '<span class="peek"><span class="pk">הפקדת</span><span class="pv">'+
-        shekel(Number(p.my_agorot||0))+'</span></span>'+
-      '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12">'+
-        '<use href="#chev"/></svg></span></div></div>';
-  }).join('');
+  document.getElementById('pp-guest').innerHTML=rows.map(guestCardHTML).join('');
+  paintJoinedAtHome(rows);
+}
+
+/* ─── הסתירה שהייתה במסך הבית ─────────────────────────────────────────
+   home_summary סופרת את כל ההפקדות של המשתמש, גם לנטיעות שאחרים פתחו.
+   my_plantings מחזירה רק נטיעות שהוא פתח בעצמו. אמיר, שהצטרף לנטיעה של
+   אלון והפקיד 220 ₪, ראה במסך הבית "זה הסכום שנטעת עד כה עבור העתיד של
+   פיסטוק" ומיד מתחת רשימה ריקה עם "פתח את הנטיעה הראשונה".
+
+   ההפרדה בין "פתחתי" ל"הצטרפתי" נשארת — היא גבול הרשאות ולא קישוט: מי
+   שפתח קובע יעד, נהנה ומי מוזמן, ומי שהצטרף מפקיד בלבד. מה שמשתנה הוא
+   שהרשימה מדביקה את המספר: הכסף שהפקדת מופיע במקום שבו המספר כבר סופר
+   אותו, בקטע נפרד ועם שם מי שפתח על הכרטיס. */
+function paintJoinedAtHome(rows){
+  const box=document.getElementById('home-joined');
+  const head=document.getElementById('home-joined-h');
+  if(!box||!head)return;
+  const list=Array.isArray(rows)?rows:[];
+  box.innerHTML=list.map(guestCardHTML).join('');
+  box.style.display=head.style.display=list.length?'':'none';
 }
 function loadPeople(){
   if(!liveAccount())return Promise.resolve();
@@ -5819,6 +5853,8 @@ function loadPeople(){
     full.style.display=rows.length?'':'none';
     empty.style.display=rows.length?'none':'';
     if(rows.length)buildLivePeople(rows);
+    /* גם כשאין כלום: הקטע במסך הבית חייב להיסגר, לא להישאר ממה שהיה. */
+    else paintJoinedAtHome([]);
     return rows;
   }).catch(function(){});
 }
