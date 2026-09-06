@@ -32,7 +32,8 @@ body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse
   border:1px solid var(--line);background:transparent;color:var(--tx-3);cursor:pointer;transition:.15s}
 .nav button.on{background:var(--s2);color:var(--tx);border-color:var(--line-2)}
 
-.device{position:relative;width:min(390px,94vw);aspect-ratio:390/844;height:auto;background:var(--bg);
+.device{position:relative;width:min(390px,94vw,(100dvh - 26px)*390/844);
+  aspect-ratio:390/844;height:auto;background:var(--bg);
   border-radius:46px;border:9px solid #060704;box-shadow:0 40px 70px -25px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.03) inset;
   display:flex;flex-direction:column;overflow:hidden}
 .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:118px;height:24px;
@@ -98,6 +99,8 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 .btn.dash{border:1px dashed var(--line-2);background:transparent;color:var(--tx-3);font-weight:400}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .two>.btn:first-child{order:2}
+/* זוג שנשאר עם כפתור אחד אינו חצי שורה */
+.two.one{grid-template-columns:1fr}
 .two>.btn.ghost:last-child{order:1}
 
 /* שתי דרכי הזמנה, כבחירות שאפשר לסרוק — כרטיס לכל דרך במקום כפתור מלא
@@ -234,20 +237,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .nc-nm{font-weight:500;font-size:13.5px;line-height:1.32;letter-spacing:-.012em}
 .nc-meta{font-size:10.5px;color:var(--tx-3);line-height:1.3;margin-top:3px;white-space:nowrap}
 /* מסך ההשקעה של אדם */
-.pback{background:none;border:0;color:var(--tx-3);font-size:11.5px;font-family:inherit;
-  display:flex;align-items:center;gap:6px;padding:0 0 12px;cursor:pointer}
-/* ‏aspect-ratio ולא גובה קבוע: preserveAspectRatio ברירת המחדל הוא
-   meet, וגובה שאינו תואם לרוחב הותיר שוליים ריקים בצדדים — הקו נגמר
-   באוויר לפני קצה הגרף, וקו התחתית לא ישב על התחתית. */
-#pv-svg{width:100%;aspect-ratio:318/133;height:auto;display:block;
-  margin:10px 0 2px;direction:ltr}
 .cbr.tap{cursor:pointer}
 .cbr.tap .chev{margin-inline-start:6px;color:var(--tx-3);display:flex;align-items:center}
 /* ── כרטיס הנטיעה, 05ג ─────────────────────────────────────────────
    מחליף את מבנה .nc-top בכרטיסי הרשימה. .ncard נשאר הרקע והמסגרת. */
-.pc{display:flex;align-items:center;gap:10px}
-.pc-ic{width:36px;height:36px;border-radius:12px;background:var(--leaf-bg);
-  display:grid;place-items:center;font-size:16px;flex-shrink:0}
+.pc{display:flex;align-items:center;gap:9px}
+.pc-ic{width:32px;height:32px;border-radius:11px;background:var(--leaf-bg);
+  display:grid;place-items:center;font-size:15px;flex-shrink:0}
 .pc-x{flex:1;min-width:0}
 /* בלי nowrap ובלי ellipsis: כותרת שנחתכת באמצע מילה גרועה מכותרת
    שנשברת לשתי שורות. זה גם מה שהיה כתוב כאן קודם, ובצדק. */
@@ -257,19 +253,19 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   font-variant-numeric:tabular-nums;margin-top:4px}
 .pc-dt{font-size:10.5px;color:var(--tx-3);margin-top:4px}
 /* inline-start ב-RTL הוא הצד הימני — הצד של העמודה שפונה אל הטקסט. */
-.pc-fc{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;
-  border-inline-start:1px solid var(--rule);padding-inline-start:10px}
+.pc-fc{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:5px;
+  border-inline-start:1px solid var(--rule);padding-inline-start:9px}
 .pc-fc i{font-style:normal;font-size:9.5px;color:var(--tx-3);white-space:nowrap}
-.fx2{display:flex;align-items:center;width:63px;justify-content:flex-end}
-.fx2>span{width:38px;height:38px;border-radius:50%;overflow:hidden;position:relative;
+.fx2{display:flex;align-items:center;width:53px;justify-content:flex-end}
+.fx2>span{width:32px;height:32px;border-radius:50%;overflow:hidden;position:relative;
   border:2px solid var(--s1);background:var(--s2);flex:0 0 auto;display:block}
 /* z-index מפורש כדי שהתג יהיה שלם ולא יסתמך על סדר הציור */
-.fx2>span+span{margin-right:-13px;z-index:1}
+.fx2>span+span{margin-right:-11px;z-index:1}
 .fx2 .avsvg{width:100%;height:100%}
 /* התג כמעט אטום ובטבעת ירוקה: בכיסוי שקוף על דמות כהה הוא נבלע,
    ושני העיגולים נמסים זה לזה. direction:ltr כי "+2" בעברית נקרא "2+". */
 .fx2 .ov{position:absolute;inset:0;background:rgba(26,50,31,.95);display:flex;
-  align-items:center;justify-content:center;font-size:13.5px;font-weight:700;
+  align-items:center;justify-content:center;font-size:12px;font-weight:700;
   color:#CDE6D1;font-style:normal;direction:ltr;unicode-bidi:isolate;letter-spacing:-.03em}
 .fx2 .ov::after{content:"";position:absolute;inset:0;border-radius:50%;
   border:1px solid rgba(127,192,136,.35)}
@@ -461,6 +457,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   padding:0 15px;height:44px;cursor:pointer;flex-shrink:0;transition:.15s;margin-bottom:1px}
 .dm-act:hover{border-color:var(--leaf);background:#20321F}
 .dm-split{font-size:11.5px;color:var(--tx-3);margin:7px 0 0}
+/* הפילוח מתחת למספר של הרגע. אותו דפוס כמו במסך הבית: שני צבעים,
+   שניהם ירוקים — כי שניהם כסף שקיים. */
+.mine-split{display:flex;gap:16px;flex-wrap:wrap;margin-top:11px;padding-top:10px;
+  border-top:1px solid var(--rule);font-size:11px;color:var(--tx-2)}
+.mine-split span{display:flex;align-items:center;gap:6px}
+.mine-split b{color:var(--leaf);font-weight:600;font-variant-numeric:tabular-nums;font-size:12.5px}
+.mine-split .dsw.o{background:var(--leaf-2);opacity:.6}
+.mine-split span:last-child b{color:var(--leaf-2)}
 .dm-split em{font-style:normal;color:var(--leaf-soft)}
 .dm-split b{color:var(--sun-soft);font-weight:500}
 .dm-chart{position:relative;margin-top:14px;touch-action:pan-y}
@@ -794,7 +798,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'e2fec53';
+window.NETA_BUILD = '1b6b23f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -924,7 +928,7 @@ window.NETA_CONFIG = {
       <div class="s-body">
         <div class="s-eyebrow">ההשקעות שלך</div>
         <div class="s-num" id="s-you">13,300 ₪</div>
-        <div class="s-label" id="s-label">זה הסכום שנטעת עד כה עבור העתיד של דניאל ונועה</div>
+        <div class="s-label" id="s-label">עבור העתיד של דניאל ונועה</div>
       </div>
       <div class="s-art">
         <svg width="58" height="68" viewBox="0 0 60 70" aria-hidden="true">
@@ -1204,48 +1208,20 @@ window.NETA_CONFIG = {
     <div style="flex:1"><div class="title" style="font-size:14.5px" id="d-title">בר המצווה של דניאל</div><div class="meta" id="d-date" style="margin-top:3px">המועד המיוחל: אוגוסט 2032</div><div class="meta" id="d-owners" style="margin-top:3px;color:var(--leaf);display:none"></div></div>
     <button class="editbtn" onclick="openEdit()" aria-label="עריכת הנטיעה">✎</button>
   </div>
-  <!-- בלוק הכסף: הסכום, ממה הוא מורכב, ולאן הוא הולך. מחליף גם את איור
-       הנטע וגם את הרצועה — שניהם ענו על אותה שאלה, אחד מהם בלי מילים.
-       הנטע לא נעלם: הוא הנקודה שעל העקומה, במקום שבו אנחנו נמצאים. -->
+  <!-- מסך הרגע עונה על שאלה אחת: כמה נצבר כאן, ואיך הוא מתחלק. הגרף,
+       הצפי, המסלול והפעולות מתארים מסלול של אדם אחד לאורך זמן, ולכן הם
+       עברו למסך שלו — ואיתם גם "השקע עוד", שבמסך של רגע משותף תמיד גרר
+       את השאלה "לאן". -->
   <div class="d-money">
     <div class="dm-top">
-      <div><span class="dm-k" id="d-lb">נצבר לרגע הזה</span><span class="dm-v" id="d-num">15,600 ₪</span></div>
+      <div><span class="dm-k">נצבר לרגע הזה</span><span class="dm-v" id="d-total">·</span></div>
       <button class="dm-act" id="d-invest" onclick="investIn(cur)">השקע עוד</button>
     </div>
-    <p class="dm-split" id="d-split"></p>
-    <div class="dm-chart" id="d-chart">
-      <svg id="d-svg" viewBox="0 0 318 126" aria-hidden="true">
-        <defs>
-          <linearGradient id="dgGrow" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#D9B25F" stop-opacity=".5"/><stop offset="1" stop-color="#D9B25F" stop-opacity=".1"/></linearGradient>
-          <linearGradient id="dgDep" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#7FC088" stop-opacity=".36"/><stop offset="1" stop-color="#7FC088" stop-opacity=".08"/></linearGradient>
-        </defs>
-        <g stroke="var(--line)" stroke-width=".7" stroke-dasharray="3 5" id="d-grid"></g>
-        <path id="d-growarea" fill="url(#dgGrow)"/>
-        <path id="d-deparea" fill="url(#dgDep)"/>
-        <path id="d-depline" stroke="var(--leaf)" stroke-width="1.5" fill="none" opacity=".8" stroke-linecap="round"/>
-        <path id="d-futline" stroke="var(--sun)" stroke-width="2" fill="none" stroke-dasharray="4 3.5" opacity=".8" stroke-linecap="round"/>
-        <path id="d-pastline" stroke="var(--sun)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-        <line id="d-nowline" stroke="var(--tx-3)" stroke-width="1" stroke-dasharray="2 4" y1="7" y2="118"/>
-        <circle id="d-endpt" r="3.5" fill="var(--bg)" stroke="var(--sun)" stroke-width="1.8"/>
-      </svg>
-      <span class="dm-endlbl" id="d-endlbl"></span>
-      <span class="dm-medal idle" id="d-medal"><svg width="14" height="15" viewBox="0 0 14 15"><use href="#sprout"/></svg></span>
-      <input type="range" id="d-time" min="0" max="6" step="1" value="0" aria-label="גרירה קדימה בזמן">
+    <div class="mine-split" id="d-mine" style="display:none">
+      <span><i class="dsw m"></i>ממך<b id="d-minev">·</b></span>
+      <span><i class="dsw o"></i>מאחרים<b id="d-othv">·</b></span>
     </div>
-    <div class="dm-ax">
-      <span id="d-planted">נשתל 2019</span>
-      <b id="d-when">עוד 6 שנים</b>
-      <span><span id="d-goalicon">🎂</span> <span id="d-yr">2032</span></span>
-    </div>
-    <div class="dm-key" id="d-key">
-      <span><i class="dsw m"></i>ההפקדות שלכם <em id="d-kdep"></em></span>
-      <span><i class="dsw g"></i>הצמיחה <em id="d-kgrow"></em></span>
-    </div>
-    <p class="dm-disc" id="d-disc"></p>
   </div>
-
   <p class="d-line" id="d-line">בזכות 150 ₪ בחודש ממך, מסבתא ומדוד יוסי, דניאל מתקרב ליום הגדול שלו</p>
 
   <p class="eyebrow" style="margin-top:20px" id="d-cbh">מי השקיע בעתיד של דניאל</p>
@@ -2006,9 +1982,6 @@ window.NETA_CONFIG = {
      מתארים מסלול של אדם אחד לאורך זמן, ולכן הם שייכים למסך שלו — וכאן
      הם גם יכולים לנשום במקום להידחס לתוך כרטיס בתוך כרטיס. -->
 <section class="screen" data-name="ההשקעה של">
-  <button class="pback" onclick="go(5)">
-    <svg width="7" height="12" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg>
-    <span id="pv-back">חזרה</span></button>
   <div class="row gap" style="align-items:center">
     <div class="pic" style="width:44px;height:44px;border-radius:14px;overflow:hidden;background:var(--s2);border:1px solid var(--line);flex:0 0 auto">
       <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent" id="pv-av"/></svg></div>
@@ -2018,23 +1991,41 @@ window.NETA_CONFIG = {
   </div>
 
   <div class="d-money">
-    <div class="dm-top"><div><span class="dm-k">נצבר</span>
+    <div class="dm-top"><div><span class="dm-k" id="pv-lb">נצבר</span>
       <span class="dm-v" id="pv-num">·</span></div></div>
-    <svg id="pv-svg" viewBox="0 0 318 133" aria-hidden="true">
-      <defs><linearGradient id="pvg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#D9B25F" stop-opacity=".22"/>
-        <stop offset="1" stop-color="#D9B25F" stop-opacity="0"/></linearGradient></defs>
-      <line x1="10" y1="126" x2="308" y2="126" stroke="var(--rule)"/>
-      <line id="pv-now" stroke="var(--line-2)" stroke-dasharray="3 4" y1="14" y2="126"/>
-      <path id="pv-farea" fill="url(#pvg)"/>
-      <path id="pv-past" stroke="var(--leaf)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-      <path id="pv-fut" stroke="var(--sun)" stroke-width="2.2" stroke-dasharray="4 4" fill="none" stroke-linecap="round"/>
-      <circle id="pv-dot" r="4" fill="var(--bg)" stroke="var(--leaf)" stroke-width="2"/>
-      <circle id="pv-end" r="3.4" fill="var(--sun)"/>
-    </svg>
-    <div class="dm-ax"><span id="pv-a1">·</span><b>היום</b><span id="pv-a3">·</span></div>
-    <div class="dm-key"><span><i class="dsw m"></i>מה שנצבר</span>
-      <span><i class="dsw g"></i>הצפי, אם ההפקדה נמשכת</span></div>
+    <p class="dm-split" id="d-split"></p>
+    <div class="dm-chart" id="d-chart">
+      <svg id="d-svg" viewBox="0 0 318 126" aria-hidden="true">
+        <defs>
+          <linearGradient id="dgGrow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#D9B25F" stop-opacity=".5"/><stop offset="1" stop-color="#D9B25F" stop-opacity=".1"/></linearGradient>
+          <linearGradient id="dgDep" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7FC088" stop-opacity=".36"/><stop offset="1" stop-color="#7FC088" stop-opacity=".08"/></linearGradient>
+        </defs>
+        <g stroke="var(--line)" stroke-width=".7" stroke-dasharray="3 5" id="d-grid"></g>
+        <path id="d-growarea" fill="url(#dgGrow)"/>
+        <path id="d-deparea" fill="url(#dgDep)"/>
+        <path id="d-depline" stroke="var(--leaf)" stroke-width="1.5" fill="none" opacity=".8" stroke-linecap="round"/>
+        <path id="d-futline" stroke="var(--sun)" stroke-width="2" fill="none" stroke-dasharray="4 3.5" opacity=".8" stroke-linecap="round"/>
+        <path id="d-pastline" stroke="var(--sun)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <line id="d-nowline" stroke="var(--tx-3)" stroke-width="1" stroke-dasharray="2 4" y1="7" y2="118"/>
+        <circle id="d-endpt" r="3.5" fill="var(--bg)" stroke="var(--sun)" stroke-width="1.8"/>
+      </svg>
+      <span class="dm-endlbl" id="d-endlbl"></span>
+      <span class="dm-medal idle" id="d-medal"><svg width="14" height="15" viewBox="0 0 14 15"><use href="#sprout"/></svg></span>
+      <input type="range" id="d-time" min="0" max="6" step="1" value="0" aria-label="גרירה קדימה בזמן">
+    </div>
+    <div class="dm-ax">
+      <span id="d-planted">נשתל 2019</span>
+      <b id="d-when">עוד 6 שנים</b>
+      <span><span id="d-goalicon">🎂</span> <span id="d-yr">2032</span></span>
+    </div>
+    <div class="dm-key" id="d-key">
+      <span><i class="dsw m"></i>ההפקדות שלכם <em id="d-kdep"></em></span>
+      <span><i class="dsw g"></i>הצמיחה <em id="d-kgrow"></em></span>
+    </div>
+    <p class="dm-disc" id="d-disc"></p>
+
   </div>
 
   <div class="card gap" id="pv-fut-card">
@@ -4078,6 +4069,12 @@ let pvNow=null;
 /* נתוני ההדגמה נכתבו כארבע עמודות: [דמות, שם, סכום כמחרוזת, מגדר].
    השרת מוסיף עוד חמש. משווים כאן, במקום אחד, כדי שהמסך לא יצטרך לדעת
    מאיפה הגיעו הנתונים — וכדי שהחץ בשורה לא ייעלם בהדגמה. */
+/* כמה מתוך מה שנצבר לרגע הוא שלי. מגיע מרשימת המשתתפים ולא משדה
+   נפרד, כי היא כבר נושאת בדיוק את ההבחנה הזו ואת כללי החשיפה שלה. */
+function personalOf(p){
+  const me=(p.who||[]).find(function(w){return w[7]||w[1]==='אתה'});
+  return me&&me[8]!=null?Number(me[8]):0;
+}
 function normWho(p){
   (p.who||[]).forEach(function(w,i){
     if(w.length>=9)return;
@@ -4100,15 +4097,21 @@ function openPerson(i){
   pvNow={key:p.key,idx:i,isMe:isMe,accrued:accrued,proj:proj};
 
   document.getElementById('pv-av').setAttribute('href','#'+w[0]);
-  txt('pv-back',p.name);
   txt('pv-name',isMe?'ההשקעה שלך':('ההשקעה של '+w[1]));
   txt('pv-sub',w[4]?(isMe?'פתחת את הרגע הזה':'פתח/ה את הרגע הזה')
                   :(p.kid?withPrep('ל',p.kid)+', '+p.date:p.date));
   txt('pv-num',shekel(accrued));
 
-  pvChart(p,accrued,proj);
-  txt('pv-a1','נשתל '+p.planted);
-  txt('pv-a3',p.date);
+  /* אותו גרף בדיוק שהיה במסך הרגע — עם המחוון והנבט שנע על העקומה —
+     רק שהוא מוזן במספרים של האדם הזה. זה מה שהופך אותו לנכון: עד כה
+     הוא תיאר את הרגע כולו והוצג ליד השם של אדם אחד. */
+  buildChart(Object.assign({},p,{now:accrued/100,end:Math.max(accrued,proj)/100,
+                                 monthly:(w[6]!=null?Number(w[6])/100:0)}));
+  const sl=document.getElementById('d-time');
+  if(sl)sl.value=0;
+  const md0=document.getElementById('d-medal');
+  if(md0)md0.classList.add('idle');
+  detail(0);
 
   const card=document.getElementById('pv-fut-card');
   const hasProj=proj>accrued;
@@ -4129,13 +4132,17 @@ function openPerson(i){
     if(tl)txt('pv-track',tl);
   }
 
+  /* מימין חזרה, משמאל עצור או שנה — הראשון ב-.two יושב בימין ב-RTL.
+     "השקע עוד" אינו כאן: הוא חזר למסך הרגע, שם הוא הפעולה הראשית. */
+  /* ‏.two מציב את הילד הראשון בשמאל (order:2), ולכן "עצור או שנה"
+     נכתב ראשון ו"חזרה" שני — וכך הם יושבים לפי הבקשה: חזרה מימין.
+     כשאין מה לעצור נשאר כפתור אחד, והוא ברוחב מלא ולא חצי. */
   const acts=document.getElementById('pv-acts');
-  acts.innerHTML=isMe
-    ? '<button class="btn" onclick="investIn(cur)">השקע עוד</button>'+
-      (orderNow&&orderNow.key===p.key
-        ? '<button class="btn ghost" onclick="stopOrder()">עצור או שנה</button>'
-        : '<button class="btn ghost" onclick="go(5)">חזרה</button>')
-    : '<button class="btn ghost" onclick="go(5)">חזרה</button>';
+  const canStop=isMe&&orderNow&&orderNow.key===p.key;
+  acts.className='two gap'+(canStop?'':' one');
+  acts.innerHTML=(canStop
+      ? '<button class="btn ghost" onclick="stopOrder()">עצור או שנה</button>' : '')+
+    '<button class="btn ghost" onclick="go(5)">חזרה</button>';
   txt('pv-fine',isMe
     ? 'הצפי מניח שההפקדה החודשית נמשכת עד המועד. הוא שלך בלבד ואינו מחובר לאף אחד אחר.'
     : 'זה מה ש'+w[1]+' נטע כאן, והצפי הוא שלו בלבד. מי שעוצר או משנה — המספר משתנה איתו.');
@@ -4147,28 +4154,6 @@ function plantTrackLabel(p){
   if(p.rate==null)return '';           // לא ידוע — לא מוצג
   if(p.rate===0)return 'יישמר כמו שהוא (ללא ריבית)';
   return TRACK_LABELS[p.rate]||('כ-'+(+(p.rate*100).toFixed(2))+'% בשנה');
-}
-/* קו ירוק מלא עד היום, זהב מקווקו משם — בדיוק כלל הצבעים של האפליקציה.
-   הזמן זורם מימין לשמאל: נשתל בקצה הימני, המועד בשמאלי. */
-function pvChart(p,accrued,proj){
-  const L=10,R=308,BASE=126,TOP=16;
-  const t=Math.max(0,Math.min(1,(p.tNow||0)/100));
-  const nowX=R-(R-L)*t;
-  const top=Math.max(proj,accrued,1);
-  const y=function(v){return BASE-(BASE-TOP)*(v/top)};
-  const aY=y(accrued), eY=y(proj);
-  const set=function(id,attrs){const el=document.getElementById(id);
-    if(el)for(const k in attrs)el.setAttribute(k,attrs[k])};
-  const past='M'+R+' '+BASE+' Q'+(R-(R-nowX)*0.55)+' '+(BASE-(BASE-aY)*0.25)+
-             ' '+nowX+' '+aY;
-  const fut='M'+nowX+' '+aY+' Q'+(nowX-(nowX-L)*0.55)+' '+(aY-(aY-eY)*0.35)+
-            ' '+L+' '+eY;
-  set('pv-past',{d:past});
-  set('pv-fut',{d:fut});
-  set('pv-farea',{d:fut+' L'+L+' '+BASE+' L'+nowX+' '+BASE+' Z'});
-  set('pv-now',{x1:nowX,x2:nowX});
-  set('pv-dot',{cx:nowX,cy:aY});
-  set('pv-end',{cx:L,cy:eY});
 }
 function openDetail(key){
   const known=plantAt(key);
@@ -4205,6 +4190,19 @@ function paintDetail(key,p){
   const own=document.getElementById('d-owners');
   own.style.display=p.co?'block':'none';
   if(p.co)own.textContent='נוטעים יחד · אתה ו'+p.co;
+  /* המספר של הרגע ופילוחו. "ממך" בירוק מלא, "מאחרים" בירוק עמום —
+     שניהם כסף שקיים, ולכן שניהם ירוקים; הזהב שמור לצפי. הפילוח מוצג
+     רק כשיש באמת אחרים, אחרת הוא מספר לאדם שהוא לבד. */
+  txt('d-invest',p.designated===false?'הפקד לקופה':'השקע עוד');
+  normWho(p);   // לפני personalOf: הוא קורא את w[7] ו-w[8] שההשוואה כותבת
+  const tot=Number(p.now||0)*100, mineAg=personalOf(p);
+  txt('d-total',shekel(tot));
+  const others=Math.max(0,tot-mineAg);
+  const box=document.getElementById('d-mine');
+  if(box){
+    box.style.display=others>0?'':'none';
+    if(others>0){txt('d-minev',shekel(mineAg));txt('d-othv',shekel(others))}
+  }
   txt('d-planted','נשתל '+p.planted);
   txt('d-yr',p.yr);
   txt('d-goalicon',p.icon);
@@ -5905,7 +5903,7 @@ function plantCard(o){
   '</div>';
 }
 function cardHTML(p){
-  return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נטעת',
+  return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נטעת עד כה',
                     amount:(p.mine==null?p.accrued:p.mine),
                     since:p.since,designated:p.designated,people:p.participants});
 }
@@ -5920,7 +5918,7 @@ let gardenHidden='';
    אותו רכיב משרת עכשיו את מסך הבית ואת טאב הקרובים. היה כאן קוד כפול,
    ושני עותקים של אותו כרטיס היו מתיישנים ברגע שאחד מהם משתנה. */
 function guestCardHTML(p){
-  return plantCard({key:p.id,icon:p.icon,name:p.name,verb:'נטעת',
+  return plantCard({key:p.id,icon:p.icon,name:p.name,verb:'נטעת עד כה',
                     amount:Number(p.my_agorot||0),since:p.opened_on,
                     designated:true,people:p.participants||[]});
 }
@@ -6264,8 +6262,8 @@ function buildHomeSummary(){
     txt('s-mon',shekel(s.monthly));
     /* בלי שמות — המשפט נגמר ב"של " באוויר. קורה לכל חשבון חדש. */
     txt('s-label',s.kids.length
-      ? 'זה הסכום שנטעת עד כה עבור העתיד של '+s.kids.join(' ו')
-      : 'זה הסכום שנטעת עד כה');
+      ? 'עבור העתיד של '+s.kids.join(' ו')
+      : '');
     document.getElementById('garden').innerHTML=gardenHTML(model.plantings);
     const proj=projectablePlantings(model);
     const projLink=document.getElementById('proj-link');
@@ -6515,7 +6513,6 @@ function declinePartner(){go(0)}
 /* בנטיעה אמיתית מוצע רק מה שבאמת נשמר בשרת. פעולה שמשנה אובייקט בזיכרון
    נראית כאילו קרתה ונעלמת ברענון — וזה גרוע מכפתור שאינו קיים. */
 function buildLiveActions(p){
-  txt('d-invest',p.designated===false?'הפקד לקופה':'השקע עוד');
   const acts=document.getElementById('d-acts'),note=document.getElementById('d-actnote');
   note.style.display='block';
   /* נטיעה שקרוב פתח אינה שלך להזמין אליה ואינה שלך לערוך. זה כלל
@@ -6568,7 +6565,6 @@ function actionsFor(p){
     : '<button class="btn ghost" onclick="go(0)">חזרה</button>';
 }
 function buildActions(p){
-  txt('d-invest',p.designated===false?'הפקד לקופה':'השקע עוד');
   if(p.live){buildLiveActions(p);return}
   const acts=document.getElementById('d-acts'),note=document.getElementById('d-actnote');
   const addPartnerLink='<a href="#" onclick="addPartner();return false" style="color:var(--leaf)">הוסף שותף/ה</a>';
@@ -6752,8 +6748,14 @@ function buildChart(p){
   const rPast=solveRate(function(r){return fvAnnuity(monthly,passed,r)},now);
   const rFut=solveRate(function(r){return fvFrom(now,monthly,total-passed,r)},end);
   const max=Math.max(end,depEnd,1);
-  const val=function(n){return n<=passed?fvAnnuity(monthly,n,rPast)
-                                        :fvFrom(now,monthly,n-passed,rFut)};
+  /* בלי קצב חודשי ידוע אין ממה לגזור עקומת עבר: אנחנו יודעים כמה יש
+     היום ולא מתי זה נכנס. קו ישר מהשתילה עד היום אומר בדיוק את זה,
+     ולא מתיימר לתאר קצב שלא ראינו. */
+  const val=function(n){
+    if(n<=passed)return monthly>0?fvAnnuity(monthly,n,rPast)
+                                 :(passed>0?now*(n/passed):now);
+    return fvFrom(now,monthly,n-passed,rFut);
+  };
   CH={total:total,passed:passed,monthly:monthly,now:now,end:end,max:max,
       hasSplit:hasSplit,val:val,depEnd:depEnd};
 
@@ -6800,8 +6802,10 @@ function buildChart(p){
      נאמרת ליד הקצב שההערכה נשענת עליו. */
   const disc=document.getElementById('d-disc');
   if(disc){
+    const known=(p.rate!=null&&p.mode!=='keep')?Number(p.rate):null;
+    const pct=known!=null?known*100:rFut*100;
     disc.textContent=show?('התחזית מבוססת על כ-'+
-      (Math.round(rFut*1000)/10).toLocaleString('he-IL')+'% בשנה ואינה הבטחה.'):'';
+      (Math.round(pct*10)/10).toLocaleString('he-IL')+'% בשנה ואינה הבטחה.'):'';
     disc.style.display=show?'':'none';
   }
 }
@@ -6832,8 +6836,8 @@ function detail(y){
     md.style.right='calc('+(((CH_W-chartX(n/CH.total))/CH_W)*100)+'% - 13px)';
     md.style.top='calc('+((chartY(amt,CH.max)/CH_H)*100)+'% - 13px)';
   }
-  txt('d-num',(y===0?'':'כ-')+shekelAt(amt,y===0));
-  txt('d-lb',y===0?'נצבר לרגע הזה':'צפי לנקודה זו');
+  txt('pv-num',(y===0?'':'כ-')+shekelAt(amt,y===0));
+  txt('pv-lb',y===0?'נצבר':'צפי לנקודה זו');
   const sp=document.getElementById('d-split');
   if(sp){sp.innerHTML=splitLine(n,amt);sp.style.display=sp.innerHTML?'':'none'}
   const left=YL-y;
