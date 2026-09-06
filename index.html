@@ -745,7 +745,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '76283f9';
+window.NETA_BUILD = '94f7976';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1450,6 +1450,10 @@ window.NETA_CONFIG = {
 <!-- 14 PEOPLE / מעגל -->
 <section class="screen" data-name="הנטיעות של הקרובים">
   <div id="kin-full">
+  <!-- כרטיס הסיכום ורשימת מה שהם פתחו קיימים רק למי שהצטרף לנטיעה של
+       מישהו. מי שרק הזמין ואיש הצטרף אליו (אלון) מגיע לכאן בשביל
+       הקרובים בלבד, ואז הכרטיס היה מציג 0 ₪ על שום דבר. -->
+  <div id="pp-invested">
   <div class="summary">
     <div class="s-row">
       <div class="s-body">
@@ -1468,10 +1472,11 @@ window.NETA_CONFIG = {
   <p class="eyebrow big">הנטיעות שהם פתחו</p>
   <div id="pp-guest"></div>
   <p class="fine gap">נטיעות שקרוב פתח עבור הילדים שלך והזמין אותך לראות. אתה יכול להשקיע בהן, אבל ההזמנות אליהן נשלחות ממי שפתח אותן.</p>
+  </div><!-- /pp-invested -->
 
   <p class="eyebrow big">הקרובים שלך</p>
   <div class="card" id="pp-list"></div>
-  <p class="fine gap">כמה כל אחד השקיע מופיע בתוך הנטיעה עצמה. הקרובים רואים זה את זה, בלי סכומים.</p>
+  <p class="fine gap" id="pp-listfine">כמה כל אחד השקיע מופיע בתוך הנטיעה עצמה. הקרובים רואים זה את זה, בלי סכומים.</p>
   <button class="btn gap-s" onclick="openInvitePicker()">הזמן קרוב</button>
   <p class="fine" style="margin-top:8px">בלחיצה תבחר לאיזו נטיעה ההזמנה שייכת.</p>
   </div><!-- /kin-full -->
@@ -5102,6 +5107,11 @@ function netaBackend(cfg){
       return rpc('resolve_suggestion',{p_id:id,p_status:status}).catch(remember);
     },
     /* מה שקרוב פתח וצירף אותי אליו. הסכום שחוזר הוא שלי בלבד. */
+    /* הקרובים לשני הכיוונים. plantingsImIn מחזירה רק את הכיוון האחד
+       (מי שפתח וצירף אותי), ומי שרק הזמין נשאר בלי אף קרוב. */
+    myCircle:function(){
+      return rpc('my_circle').then(function(r){return r||[]}).catch(remember);
+    },
     plantingsImIn:function(){
       /* תשובה שאינה מערך פירושה שהקריאה נכשלה בצורה שלא נתפסה — ומערך
          ריק הוא התשובה הנכונה למסך, לא אובייקט שיפיל את הציור. */
@@ -5832,11 +5842,6 @@ function buildLivePeople(list){
   document.getElementById('pp-meta').innerHTML=rows.length
     ?('<span><b>'+rows.length+'</b> נטיעות שהם פתחו</span><i></i><span><b>'+
       names.length+'</b> קרובים</span>'):'';
-  document.getElementById('pp-list').innerHTML=names.map(function(n){
-    return '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40">'+
-      '<use href="#av-granny2"/></svg></div><span class="cbn"><b>'+n+'</b>'+
-      '<i>פתח/ה נטיעה וצירף/ה אותך</i></span></div>';
-  }).join('');
   document.getElementById('pp-guest').innerHTML=rows.map(guestCardHTML).join('');
   paintJoinedAtHome(rows);
 }
@@ -5859,17 +5864,61 @@ function paintJoinedAtHome(rows){
   box.innerHTML=list.map(guestCardHTML).join('');
   box.style.display=head.style.display=list.length?'':'none';
 }
+/* ─── רשימת הקרובים, לשני הכיוונים ───────────────────────────────────
+   עד כה היא נגזרה מהיוזמים של הנטיעות שהצטרפתי אליהן, כלומר כיוון אחד
+   בלבד. אלון הזמין את אמיר, אמיר הצטרף והפקיד — ואצל אלון הטאב נשאר
+   ריק לגמרי, כולל רשימת הקרובים, כי הוא עצמו לא הצטרף לאף נטיעה של
+   אחר. זה שגוי בדיוק אצל מי שהמוצר קיים בשבילו: מי שמזמין. */
+function circleLine(c){
+  const o=Number(c.opened_for_me||0), j=Number(c.joined_mine||0);
+  if(o&&j)   return 'פתח/ה נטיעה, וגם הצטרף/ה לשלך';
+  if(o)      return 'פתח/ה נטיעה וצירף/ה אותך';
+  return j>1 ? ('הצטרף/ה ל-'+j+' מהנטיעות שלך') : 'הצטרף/ה לנטיעה שפתחת';
+}
+function buildCircle(list){
+  const box=document.getElementById('pp-list');
+  if(!box)return;
+  const rows=Array.isArray(list)?list:[];
+  box.innerHTML=rows.map(function(c){
+    return '<div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40">'+
+      '<use href="#'+(c.avatar_key||'av-parent')+'"/></svg></div>'+
+      '<span class="cbn"><b>'+c.name+'</b><i>'+circleLine(c)+'</i></span></div>';
+  }).join('');
+}
+
 function loadPeople(){
   if(!liveAccount())return Promise.resolve();
-  return netaServer.plantingsImIn().then(function(rows){
-    kinRows=Array.isArray(rows)?rows:[];
-    /* הטאב ריק כשלא צורפת לשום נטיעה — ואז מוצג המצב הריק, לא רשימה ריקה. */
+  return Promise.all([netaServer.plantingsImIn(),
+                      netaServer.myCircle?netaServer.myCircle():Promise.resolve([])])
+    .then(function(res){
+    const rows=Array.isArray(res[0])?res[0]:[];
+    const circle=Array.isArray(res[1])?res[1]:[];
+    kinRows=rows;
+    /* הטאב מלא כשיש לך נטיעות של קרובים **או** קרובים. מי שרק הזמין
+       נכנס לכאן בשביל השני, ועד עכשיו קיבל מסך ריק. */
     const full=document.getElementById('kin-full'),empty=document.getElementById('kin-empty');
-    full.style.display=rows.length?'':'none';
-    empty.style.display=rows.length?'none':'';
+    const any=rows.length||circle.length;
+    full.style.display=any?'':'none';
+    empty.style.display=any?'none':'';
+    /* וכרטיס הסיכום ורשימת "מה שהם פתחו" מוצגים רק למי שבאמת הצטרף
+       למשהו — אחרת הם מכריזים 0 ₪ על שום דבר. */
+    const inv=document.getElementById('pp-invested');
+    if(inv)inv.style.display=rows.length?'':'none';
     if(rows.length)buildLivePeople(rows);
     /* גם כשאין כלום: הקטע במסך הבית חייב להיסגר, לא להישאר ממה שהיה. */
     else paintJoinedAtHome([]);
+    buildCircle(circle);
+    const fine=document.getElementById('pp-listfine');
+    if(fine)fine.style.display=circle.length?'':'none';
+    /* כותרת המשנה הבטיחה "מה שקרובים פתחו למי שיקר לך". למי שרק הזמין
+       איש לא פתח דבר, והמסך מחזיק אצלו אנשים בלבד — אז זה מה שהיא
+       אומרת. אותו topbars שמצייר את הכותרת בכל מעבר מסך. */
+    topbars[14][1]=rows.length
+      ? 'מה שקרובים פתחו למי שיקר לך'
+      : 'מי מהמשפחה נוטע יחד איתך';
+    const cur=document.querySelector('.screen.on');
+    if(cur&&cur.dataset.name==='הנטיעות של הקרובים')
+      go([...screens].indexOf(cur));
     return rows;
   }).catch(function(){});
 }
