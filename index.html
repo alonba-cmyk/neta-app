@@ -754,7 +754,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4277773';
+window.NETA_BUILD = '6a709d0';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1219,6 +1219,18 @@ window.NETA_CONFIG = {
   <div class="letter-card" id="d-letters">
     <span class="ic">✉</span>
     <div><b id="d-lcount">ולא רק כסף, 3 מכתבים חתומים: מסבתא, מדוד יוסי וממך</b><span id="d-lett">המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.</span></div>
+  </div>
+
+  <!-- ההבטחה "אפשר לעצור או לשנות בכל רגע" נכתבה במסך ההרשמה לפני
+       שהיה לה מסך. היא יושבת כאן ולא בפרופיל, כי כדי להחליט צריך לראות
+       את מה שעוצרים: הסכום, מה כבר נצבר, ולאן זה הולך. -->
+  <div class="card gap" id="d-order" style="display:none">
+    <div class="stat"><span class="k">ההפקדה החודשית שלך</span>
+      <span class="v" id="d-order-amt">·</span></div>
+    <div class="two" style="margin-top:11px">
+      <button class="btn ghost" onclick="changeOrder()">שנה סכום</button>
+      <button class="btn ghost" onclick="stopOrder()">עצור</button>
+    </div>
   </div>
 
   <div class="two" id="d-acts" style="margin-top:18px"></div>
@@ -1784,7 +1796,7 @@ window.NETA_CONFIG = {
     <div class="stat"><span class="k" id="ob-whenk">ההפקדה הראשונה</span><span class="v" id="ob-when">1 בספטמבר</span></div>
     <div class="stat"><span class="k" id="ob-endk">בקצב הזה ייצבר</span><span class="v" style="color:var(--sun-soft)" id="ob-end">כ-23,500 ₪</span></div>
   </div>
-  <div class="verified gap-s"><div class="vi">✓</div><div><b id="ob-okt">הוראת הקבע פעילה</b><p id="ob-okp">מכאן זה קורה מעצמו. אפשר לעצור או לשנות בכל רגע, מהפרופיל.</p></div></div>
+  <div class="verified gap-s"><div class="vi">✓</div><div><b id="ob-okt">הוראת הקבע פעילה</b><p id="ob-okp">מכאן זה קורה מעצמו. אפשר לעצור או לשנות בכל רגע, מתוך הנטיעה.</p></div></div>
   <button class="btn gap" id="ob-cta" onclick="onboDone()">לנטיעות שלי</button>
 </section>
 
@@ -3725,7 +3737,7 @@ function celebrate(){
     txt('ob-endk',rec?'בקצב הזה ייצבר':'ימשיך לגדול ל');
     txt('ob-end','כ-'+Math.round(total).toLocaleString('he-IL')+' ₪');
     txt('ob-okt',rec?'הוראת הקבע פעילה':'ההפקדה נקלטה');
-    txt('ob-okp',rec?'מכאן זה קורה מעצמו. אפשר לעצור או לשנות בכל רגע, מהפרופיל.'
+    txt('ob-okp',rec?'מכאן זה קורה מעצמו. אפשר לעצור או לשנות בכל רגע, מתוך הנטיעה.'
       :('הכסף בדרכו לחשבון הנעול על '+(goal.desig===false?'שמך':bs('שמו','שמה'))+'. אפשר להוסיף הפקדה נוספת בכל זמן, או להגדיר הפקדה חודשית.'));
     txt('ob-cta','לנטיעות שלי');
     isNewPlant=false;go(ONBO.done);return;
@@ -3909,8 +3921,64 @@ function liveDetail(r){
 }
 
 /* ─── מסך הנטיעה ─────────────────────────────────────────────────────── */
+/* ── ההפקדה החודשית: לראות, לשנות, לעצור ─────────────────────────
+   ההבטחה "אפשר לעצור או לשנות בכל רגע" קיימת במסך ההרשמה מאז שנכתב,
+   והמסך שמקיים אותה נבנה רק כאן. */
+let orderNow=null;
+function paintOrder(key){
+  const box=document.getElementById('d-order');
+  if(!box)return;
+  orderNow=null;box.style.display='none';
+  const src=netaSource();
+  if(!src.myStandingOrder)return;
+  src.myStandingOrder(key).then(function(o){
+    if(!o||!o.amount_agorot){orderNow=null;box.style.display='none';return}
+    orderNow={key:key,id:o.id,agorot:o.amount_agorot};
+    txt('d-order-amt',shekel(o.amount_agorot));
+    box.style.display='';
+  });
+}
+function changeOrder(){
+  if(!orderNow)return;
+  sheetForm('שינוי ההפקדה החודשית',
+    '<p class="sub">מה שכבר נצבר נשאר במקומו. השינוי חל מהחודש הבא.</p>'+
+    '<div class="field" style="margin:12px 0 0"><label>סכום חודשי חדש</label>'+
+    '<input type="number" id="sh-amt" inputmode="numeric" min="10" step="10" value="'+
+    Math.round(orderNow.agorot/100)+'"></div>',
+    'שמור', function(){
+      const el=document.getElementById('sh-amt');
+      const v=Math.round(+(el&&el.value||0));
+      if(!(v>=10)){toast('סכום חודשי מתחיל מ-10 ₪');return false}
+      const src=netaSource();
+      if(!src.setStandingOrder){toast('לא זמין בהדגמה');return}
+      src.setStandingOrder(orderNow.id,v*100).then(function(){
+        toast('ההפקדה החודשית עודכנה');
+        const k=orderNow.key;
+        paintOrder(k);refreshDetail(k,true);
+      },function(){toast('לא הצלחנו לשמור, נסה שוב')});
+    });
+}
+function stopOrder(){
+  if(!orderNow)return;
+  /* שלוש ההבחנות שהפונקציה במסד כופה, במילים: מה נעצר, מה נשאר,
+     ומה לא נגעו בו. בלעדיהן "עצור" נקרא כמו ביטול הנטיעה. */
+  sheetForm('לעצור את ההפקדה החודשית?',
+    '<p class="sub">' + shekel(orderNow.agorot) + ' בחודש לא יצאו יותר.<br>'+
+    'מה שכבר נצבר נשאר וממשיך לצמוח עד המועד, והנטיעה עצמה אינה נסגרת.<br>'+
+    'מי שנוטע כאן מלבדך אינו מושפע.</p>',
+    'עצור', function(){
+      const src=netaSource();
+      if(!src.stopStandingOrder){toast('לא זמין בהדגמה');return}
+      const k=orderNow.key;
+      src.stopStandingOrder(k).then(function(r){
+        toast(r===null?'לא הייתה הפקדה פעילה':'ההפקדה החודשית נעצרה');
+        paintOrder(k);refreshDetail(k,true);
+      },function(){toast('לא הצלחנו לעצור, נסה שוב')});
+    });
+}
 function openDetail(key){
   const known=plantAt(key);
+  paintOrder(key);
   if(known){paintDetail(key,known);return}
   if(!netaServer)return;
   netaServer.detail(key).then(function(r){
@@ -5246,6 +5314,27 @@ function netaBackend(cfg){
          ריק הוא התשובה הנכונה למסך, לא אובייקט שיפיל את הציור. */
       return rpc('plantings_im_in')
         .then(function(r){return Array.isArray(r)?r:[]}).catch(remember);
+    },
+
+    /* ההפקדה החודשית שלי בנטיעה הזו. נקראת ישירות מהטבלה ולא דרך
+       planting_detail: monthly_agorot שם הוא של כולם לבעלים ושל הקורא
+       לתורם, ולכן בעל נטיעה לא יכול לדעת ממנו מה הקצב שלו עצמו.
+       ה-RLS כבר מגביל את הקריאה לשורות שלי (standing_orders_read). */
+    myStandingOrder:function(plantingId){
+      return call('/rest/v1/standing_orders?planting_id=eq.'+plantingId+
+                  '&user_id=eq.'+(sess&&sess.user?sess.user.id:'')+
+                  '&active=is.true&select=id,amount_agorot',{method:'GET'})
+        .then(function(rows){return (rows&&rows[0])||null}).catch(function(){return null});
+    },
+    /* שינוי סכום הוא PATCH ולא RPC: standing_orders_cancel כבר מרשה
+       לבעל ההוראה לעדכן את עצמה, והטריגר מ-0036 גוזר את הצפי מחדש
+       בכל שינוי — כלומר אין כאן מה להוסיף בשרת. */
+    setStandingOrder:function(orderId,agorot){
+      return call('/rest/v1/standing_orders?id=eq.'+orderId,
+        {method:'PATCH',body:JSON.stringify({amount_agorot:agorot})}).catch(remember);
+    },
+    stopStandingOrder:function(plantingId){
+      return rpc('stop_standing_order',{p_planting:plantingId}).catch(remember);
     },
 
     /* נטיעות שמישהו ציין בהן את הכתובת שלי כמורשה. ההתאמה היא קריאה
