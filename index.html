@@ -732,7 +732,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0a051f1';
+window.NETA_BUILD = 'dca35a2';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6196,9 +6196,16 @@ function setEmpty(on){
   const live=liveAccount();
   ['home','act','kin'].forEach(function(k){
     /* kin נגזר ממה שחזר מהשרת ולא מהמתג הזה: המתג עוקב אחרי הנטיעות
-       שלך, ולנטיעות של קרובים אין לו שום קשר. */
-    if(live&&k==='kin')return;
-    const blank=on||(live&&LIVE_TABS.indexOf(k)<0);
+       שלך, ולנטיעות של קרובים אין לו שום קשר.
+
+       אבל "לא נגזר מכאן" אינו "להשאיר כמו שהוא": ברירת המחדל ב-HTML היא
+       kin-full, ולכן דילוג השאיר מי שנרשם עכשיו מול המסך המלא על חשבון
+       ריק — כותרות, מסגרת ריקה, ושני אווטארים של הדגם שאינם מייצגים איש.
+       נראה חי (אלון נתקל בזה בחשבון חדש). עד שהתשובה חוזרת ריק עדיף על
+       מלא-וריק, וזה בדיוק מה ש-applyTabSources כבר קובעת במסלול השני;
+       loadPeople היא היחידה שרשאית לפתוח אותו. */
+    const blank=k==='kin'&&live ? true
+              : on||(live&&LIVE_TABS.indexOf(k)<0);
     document.getElementById(k+'-full').style.display=blank?'none':'';
     document.getElementById(k+'-empty').style.display=blank?'':'none';
   });
