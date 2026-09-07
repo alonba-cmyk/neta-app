@@ -854,7 +854,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '8851c27';
+window.NETA_BUILD = 'f6c867a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -983,7 +983,7 @@ window.NETA_CONFIG = {
     <div class="s-row">
       <div class="s-body">
         <div class="s-num" id="s-you">13,300 ₪</div>
-        <div class="s-label" id="s-label">הושקעו עד כה בעתיד של דניאל ונועה</div>
+        <div class="s-label" id="s-label">נצבר עד כה בעתיד של דניאל ונועה</div>
       </div>
       <div class="s-art">
         <svg width="58" height="68" viewBox="0 0 60 70" aria-hidden="true">
@@ -5588,7 +5588,7 @@ function netaBackend(cfg){
                           rpc('plantings_im_in')]).catch(remember)
         .then(function(r){
         const s=(r[0]&&r[0][0])||{},rows=r[1]||[],joined=r[2]||[];
-        const shape=function(p,by){
+        const shape=function(p,by,bySex){
           const d=new Date(p.target_date+'T00:00:00');
           return {key:p.id,name:p.name,icon:p.icon,designated:p.designated,
                   targetYear:d.getFullYear(),targetMonth:d.getMonth(),
@@ -5600,11 +5600,12 @@ function netaBackend(cfg){
                   since:p.opened_on||null,
                   projection:Number(p.projection_agorot||0),
                   hasStandingOrder:p.has_standing_order,
-                  joined:!!by, by:by||null,
+                  joined:!!by, by:by||null, bySex:bySex||null,
                   participants:p.participants||[]};
         };
         const all=rows.map(function(p){return shape(p,null)})
-          .concat(joined.map(function(p){return shape(p,p.initiator_name||'קרוב')}))
+          .concat(joined.map(function(p){
+            return shape(p,p.initiator_name||'קרוב',p.initiator_sex||null)}))
           /* מה שנפתח לאחרונה למעלה, בלי קשר למי פתח אותו */
           .sort(function(a,b){return String(b.since||'').localeCompare(String(a.since||''))});
         return {
@@ -6236,7 +6237,13 @@ function sinceLine(v){
   return isNaN(d)?'':('מאז '+months[d.getMonth()]+' '+d.getFullYear());
 }
 function plantCard(o){
-  const dt=o.designated===false ? 'עדיין לא יועדה' : sinceLine(o.since);
+  /* רגע שקרוב פתח וצירף אותך אליו נראה בכרטיס בדיוק כמו רגע שפתחת
+     בעצמך — "נטעת עד כה 100 ₪", ותו לא. מי פתח אותו כבר קיים במודל
+     ופשוט לא צויר, ולכן השאלה "למה זה אצלי" נשארה בלי תשובה על המסך
+     שמעורר אותה. */
+  const who=o.by?(vb(o.bySex,'פתח','פתחה')+' '+o.by):'';
+  const dt=[who,o.designated===false?'עדיין לא יועדה':sinceLine(o.since)]
+    .filter(Boolean).join(' · ');
   return '<div class="ncard pc" onclick="openDetail(\''+o.key+'\')">'+
     '<div class="pc-ic">'+(o.icon||'🌱')+'</div>'+
     '<div class="pc-x"><div class="pc-nm">'+o.name+'</div>'+
@@ -6249,6 +6256,7 @@ function cardHTML(p){
   const mine=(p.mine==null?p.accrued:p.mine);
   return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נטעת עד כה',
                     amount:mine,cap:planterCap(p.participants,mine),
+                    by:p.by,bySex:p.bySex,
                     since:p.since,designated:p.designated,people:p.participants});
 }
 /* יותר משתי נטיעות מציפות את המסך, אז רק כרטיס אחד נוסף — הצצה דהויה —
@@ -6609,9 +6617,13 @@ function buildHomeSummary(){
     txt('s-cnt',s.count);
     txt('s-mon',shekel(s.monthly));
     /* בלי שמות — המשפט נגמר ב"של " באוויר. קורה לכל חשבון חדש. */
+    /* "הושקעו" סבילה וחסרת נושא, ולכן היא נקראת כמו "זה מה שאני
+       הפקדתי" — בדיוק ההפך מהמספר, שהוא מה שנצבר לרגעים האלה כולם,
+       כולל כסף של קרובים. "נצבר" אומרת את זה בלי נושא כי אין לה נושא
+       אחד, והיא גם המילה שמסך הרגע כבר משתמש בה ("נצבר לרגע הזה"). */
     txt('s-label',s.kids.length
-      ? 'הושקעו עד כה בעתיד של '+listNames(s.kids)
-      : 'הושקעו עד כה');
+      ? 'נצבר עד כה בעתיד של '+listNames(s.kids)
+      : 'נצבר עד כה');
     const others=Math.max(0,(tot||s.invested)-mineTot);
     const sm=document.getElementById('s-mine');
     if(sm){
@@ -6765,7 +6777,7 @@ function buildInvitedTo(){
     /* מגדר של מי שפתח אינו ידוע כאן — profiles אינה נושאת אותו. עד
        שיהיה, "פתח/ה", כמו בכל שאר המסכים. */
     const mine=Number(p.mine==null?0:p.mine);
-    const sub='פתח/ה '+(p.by||'קרוב')+(mine?(' · נטעת '+shekel(mine)):'');
+    const sub=vb(p.bySex,'פתח','פתחה')+' '+(p.by||'קרוב')+(mine?(' · נטעת '+shekel(mine)):'');
     return '<div class="cbr tap" onclick="openDetail(\''+p.key+'\')">'+
       '<div class="cba pcicon">'+(p.icon||'🌱')+'</div>'+
       '<span class="cbn"><b>'+p.name+'</b><i>'+sub+'</i></span>'+
