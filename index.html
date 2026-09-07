@@ -839,7 +839,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '96ccab7';
+window.NETA_BUILD = '755890e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1100,7 +1100,8 @@ window.NETA_CONFIG = {
          נגבתה ונזרקה. הכתובת, לעומתה, דרושה כבר במועד: לשם יישלח קוד
          הפדיון, בדיוק כמו במסלול שבו הנהנה פודה בעצמו. -->
     <div class="field"><label id="c-gcontlbl">לאן יישלח הקוד למימוש ההשקעה במועד המיוחל</label>
-      <input type="text" id="c-gcontact" placeholder="אימייל או טלפון של המורשה"></div>
+      <input type="email" inputmode="email" autocomplete="email" id="c-gcontact" placeholder="אימייל של המורשה">
+      <p class="fine" style="margin-top:6px" id="c-gcontfine">אימייל, לא טלפון — לפיו נמצא את החשבון שלו כדי לשלוח את האישור.</p></div>
     <!-- המשפט הזה נוסף רק עכשיו, כשהאישור באמת קיים. הוא לא נכתב יחד
          עם השדה כדי לא לחזור על התקלה שבגללה השדות האלה נגבו ונזרקו:
          מסך שמבטיח דבר שאינו קורה. -->
@@ -2902,7 +2903,7 @@ function beneFields(){
   txt('c-gcontlbl',kin?'האימייל של ההורה'
                       :'לאן יישלח הקוד למימוש ההשקעה במועד המיוחל');
   const gc=document.getElementById('c-gcontact');
-  if(gc)gc.placeholder=kin?'אימייל של ההורה':'אימייל או טלפון של המורשה';
+  if(gc)gc.placeholder=kin?'אימייל של ההורה':'אימייל של המורשה';
   const gn=document.getElementById('c-gname');
   if(gn)gn.placeholder=kin?'למשל: רון כהן, אבא של פיסטוק'
                           :'למשל: מיכל כהן, אמא של דניאל';
@@ -2979,7 +2980,38 @@ function afterAmount(){
   toPayment();
 }
 function cGo(n){cStepGo(n)}
+/* כתובת שאינה מייל לא תמצא איש: auth.users נושאת email, ו-guardian_requests
+   משווה מולה. מספר טלפון בשדה הזה נשמר, לא מתאים לאיש, ו"נשלח אליו אישור"
+   שכתוב מעליו נשאר הבטחה ריקה — בשקט, בלי שגיאה. לכן הוא נבלם כאן, במקום
+   היחיד שבו אפשר עוד לתקן אותו. */
+function looksLikeEmail(v){
+  const t=String(v||'').trim();
+  const at=t.indexOf('@');
+  return at>0 && t.indexOf('.',at)>at+1 && !/\s/.test(t) && t.length>=6;
+}
 function beneContinue(){
+  const kin=famMode==='kin';
+  const guard=document.getElementById('c-guard');
+  const guardOpen=guard&&guard.style.display!=='none';
+  if(designated&&kin&&!fieldVal('c-gname')){
+    toast('צריך את שם ההורה');
+    (document.getElementById('c-gname')||{}).focus&&document.getElementById('c-gname').focus();
+    return;
+  }
+  if(designated&&guardOpen){
+    const v=fieldVal('c-gcontact');
+    /* בענף של קרוב הכתובת אינה רשות: בלעדיה הרגע לא יופיע אצל ההורה
+       לעולם, וגם לא ייספר אצלו. בענף שלי אפשר להשאיר ריק, אבל מה
+       שנכתב חייב להיות מייל. */
+    if(kin&&!v){
+      toast('צריך את האימייל של ההורה');
+      document.getElementById('c-gcontact').focus();return;
+    }
+    if(v&&!looksLikeEmail(v)){
+      toast(kin?'צריך אימייל של ההורה, לא טלפון':'צריך כתובת אימייל תקינה');
+      document.getElementById('c-gcontact').focus();return;
+    }
+  }
   toPayment();
 }
 function cStepGo(n){
