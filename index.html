@@ -629,6 +629,8 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="פתיחת חשבון"] h2,[data-name="פתיחת חשבון"] .sub{text-align:center}
 /* סמל הנבט של האפליקציה (#sprout-art), לא אמוג'י — אותו סמל כמו במסך
    הפתיחה, בסרגל התחתון ובסיום ההרשמה. */
+.lg-err{font-size:12px;line-height:1.55;color:var(--rose);background:var(--rose-bg);
+  border:1px solid #5B3D45;border-radius:11px;padding:10px 12px;margin:0 0 14px;text-align:right}
 [data-name="כניסה"] .scr-icon{text-align:center;margin-bottom:10px;color:var(--leaf)}
 [data-name="כניסה"] .scr-icon svg{display:block;margin:0 auto}
 .brandmark{color:var(--leaf);line-height:0}
@@ -837,7 +839,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'c0b579b';
+window.NETA_BUILD = '8983a9d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -987,7 +989,7 @@ window.NETA_CONFIG = {
         <span><i class="dsw o"></i>מקרוביי<b id="s-othv">·</b></span>
       </div>
     </div>
-    <div class="s-meta"><span><b id="s-cnt">2</b> השקעות</span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span><span class="grp" id="s-fut-grp"><i></i><span>צפוי <b class="fut" id="s-fut"></b></span></span></div>
+    <div class="s-meta"><span><b id="s-cnt">2</b> נטיעות</span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span><span class="grp" id="s-fut-grp"><i></i><span>צפוי <b class="fut" id="s-fut"></b></span></span></div>
   </div>
 
   <div class="hdr-row">
@@ -1725,6 +1727,10 @@ window.NETA_CONFIG = {
   <div class="scr-icon"><svg width="40" height="47" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
   <h2 class="gap-s">מה המספר שלך?</h2>
   <p class="sub gap" id="lg-sub">אותו מספר משמש לכניסה ולהזמנות שתשלח. אין סיסמה.</p>
+  <!-- כשהכניסה עם גוגל נכשלת, הספק מחזיר לכאן ?error=… והאפליקציה
+       התעלמה מזה לגמרי: המשתמש נחת על מסך רגיל, בלי מילה, ועם שגיאה
+       תלויה בשורת הכתובת. -->
+  <p class="lg-err" id="lg-err" style="display:none"></p>
   <div class="chips" id="lg-method" style="display:none;margin-bottom:6px">
     <button class="on" data-m="code" onclick="setLoginMethod('code')">קוד למייל</button>
     <button data-m="password" onclick="setLoginMethod('password')">מייל וסיסמה</button>
@@ -1835,6 +1841,14 @@ window.NETA_CONFIG = {
   <h2 class="gap-s">מי אתה?</h2>
   <p class="sub gap" id="id-sub">כבר אימתנו אותך. זה השם שיופיע לך ולקרובים שתזמין.</p>
   <div class="field"><label>שם מלא</label><input type="text" id="id-name" placeholder="השם המלא שלך"></div>
+  <!-- לא בשביל זהות אלא בשביל פועל: בלי זה כל מסך שמדבר עליך כותב
+       "פתח/ה" ו"נטע/ה". אפשר לדלג — הצורה הכפולה נשארת. -->
+  <div class="field"><label>איך לפנות אליך</label>
+    <div class="chips" id="id-sex">
+      <button data-x="m" onclick="pickMySex(this,'m')">בלשון זכר</button>
+      <button data-x="f" onclick="pickMySex(this,'f')">בלשון נקבה</button>
+    </div>
+  </div>
   <div class="field"><label>תמונה</label><div id="id-avpick"></div></div>
   <!-- שדה תעודת הזהות הוסר. אימות זהות מלא נדרש רק במועד הפדיון, ומתבצע
      דרך ה-KYC של הגוף הפיננסי המנהל — נטע לא מאחסנת ולא מעבדת מסמכי זיהוי.
@@ -2426,6 +2440,15 @@ function afterVerifiedNewUser(){
 }
 function onboDone(){onboEnd()}
 function onboEnd(){onbo=false;setEmpty(false);document.getElementById('resume-card').style.display='none';go(0)}
+let mySex=null;
+function pickMySex(el,x){
+  const on=el.classList.contains('on');
+  el.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('on')});
+  /* לחיצה שנייה מבטלת: מי שאינו רוצה לבחור צריך דרך לחזור בו, ולא רק
+     דרך לבחור. הצורה הכפולה היא ברירת מחדל לגיטימית. */
+  if(on){mySex=null;return}
+  el.classList.add('on');mySex=x;
+}
 function idNext(){
   const n=(document.getElementById('id-name')||{}).value;
   if(!n||!n.trim()){toast('צריך שם מלא');return}
@@ -2434,6 +2457,8 @@ function idNext(){
      דרך מסך אחר שפותח בורר תמונה משלו היה עלול לדרוס את מה שנבחר כאן. */
   const avBtn=document.querySelector('#id-avpick button.on');
   const av=avBtn?avBtn.dataset.av:'av-parent';
+  const sexBtn=document.querySelector('#id-sex button.on');
+  const sex=sexBtn?sexBtn.dataset.x:null;
 
   /* תעודת הזהות נדרשת ע"י הגוף הפיננסי, לא ע"י נטע — ולכן היא לא נשמרת
      כאן. המסד מחזיק שם ותמונה בלבד. */
@@ -2447,7 +2472,7 @@ function idNext(){
   }
   const b=document.getElementById('id-cta');
   if(b){b.disabled=true;b.style.opacity='.55'}
-  netaServer.ensureProfile(n.trim(),av).then(function(){
+  netaServer.ensureProfile(n.trim(),av,sex).then(function(){
     if(b){b.disabled=false;b.style.opacity=''}
     applyIdentity();
     idDone=true;toast('החשבון נפתח על שמך');
@@ -4046,7 +4071,7 @@ function liveDetail(r){
     return [w.avatar||'av-parent', w.is_me?'אתה':w.name,
             /* null מגיע כשלצופה אסור לראות את הסכום — אותו כלל כמו בפיד.
                המגדר אינו ידוע, ולכן הצורה הכפולה שהאפיון כבר קבע. */
-            w.amount==null?VERB.participated:shekel(Number(w.amount)), null,
+            w.amount==null?VERB.participated:shekel(Number(w.amount)), w.sex||null,
             /* מי שפתח את הנטיעה. מגיע ראשון מהשרת, ונושא כאן כיתוב —
                אחרת "אלון · 50 ₪" נראה כמו עוד תורם, והוא המקור. */
             !!w.opened,
@@ -4056,7 +4081,9 @@ function liveDetail(r){
             w.projection==null?null:Number(w.projection),
             w.monthly==null?null:Number(w.monthly),
             !!w.is_me,
-            w.amount==null?null:Number(w.amount)];
+            w.amount==null?null:Number(w.amount),
+            /* מה הוא לילד, ומאז מתי — שניהם מ-0047. */
+            w.relation||null, w.since||null];
   });
   const others=who.filter(function(w){return w[1]!=='אתה'}).map(function(w){return w[1]});
   const n=Number(r.signed_letters||0);
@@ -4161,6 +4188,28 @@ function personalOf(p){
   const me=(p.who||[]).find(function(w){return w[7]||w[1]==='אתה'});
   return me&&me[8]!=null?Number(me[8]):0;
 }
+/* ── התאמת פועל ──────────────────────────────────────────────────────
+   "פתח/ה" ו"הצטרף/ה" נכתבו כך כי לא היה במסד מגדר. עכשיו יש (0047),
+   ומי שהמגדר שלו ידוע מקבל את הצורה הנכונה. ריק — הצורה הכפולה
+   נשארת, כי לנחש כאן גרוע מלכתוב לוכסן. */
+function vb(sex,m,f){return sex==='f'?f:(sex==='m'?m:(m+'/'+f.slice(m.length)))}
+/* מי האדם הזה, בשורה אחת. היחס הוא טקסט שהאדם עצמו כתב על עצמו אחרי
+   שהצטרף ("מה את לדניאל"), ולכן הוא מוצג כמו שהוא ולא נבנה סביבו
+   משפט. "מאז" נגזר מההפקדה הראשונה שלו ברגע הזה. */
+function sinceMonth(d){
+  if(!d)return '';
+  const t=new Date(String(d).slice(0,10)+'T00:00:00');
+  return isNaN(t)?'':months[t.getMonth()];
+}
+function personSub(w,long){
+  const isMe=!!w[7]||w[1]==='אתה';
+  if(w[4])return isMe?('פתחת את הרגע'+(long?' הזה':''))
+                    :(vb(w[3],'פתח','פתחה')+' את הרגע'+(long?' הזה':''));
+  const m=sinceMonth(w[10]);
+  const verb=isMe?('נוטע'+(m?' מאז '+m:''))
+                 :(vb(w[3],'נוטע','נוטעת')+(m?' מאז '+m:''));
+  return [w[9]||'',verb].filter(Boolean).join(' · ');
+}
 function normWho(p){
   (p.who||[]).forEach(function(w,i){
     if(w.length>=9)return;
@@ -4184,8 +4233,9 @@ function openPerson(i){
 
   document.getElementById('pv-av').setAttribute('href','#'+w[0]);
   txt('pv-name',isMe?'ההשקעה שלך':('ההשקעה של '+w[1]));
-  txt('pv-sub',w[4]?(isMe?'פתחת את הרגע הזה':'פתח/ה את הרגע הזה')
-                  :(p.kid?withPrep('ל',p.kid)+', '+p.date:p.date));
+  /* מי האדם — היחס והמגדר שלו — ולא תיאור של הרגע, שכבר כתוב בכותרת
+     שמעליו. כשאין יחס ואין תאריך, המשפט נופל חזרה על הרגע. */
+  txt('pv-sub',personSub(w,true)||(p.kid?withPrep('ל',p.kid)+', '+p.date:p.date));
   txt('pv-num',shekel(accrued));
 
   /* אותו גרף בדיוק שהיה במסך הרגע — עם המחוון והנבט שנע על העקומה —
@@ -4329,8 +4379,7 @@ function paintDetail(key,p){
   document.getElementById('d-who').innerHTML=p.who.map((w,i)=>{
     /* הסכום יושב בשורת המשנה ולא בעמודה משלו: שורה שהיא ניווט צריכה
        שם, פרט אחד וחץ — לא טבלה. */
-    const lead=w[4]?(w[1]==='אתה'?'פתחת את הרגע':'פתח/ה את הרגע'):'';
-    const sub=[lead,w[2]].filter(Boolean).join(' · ');
+    const sub=[personSub(w,false),w[2]].filter(Boolean).join(' · ');
     return '<div class="cbr'+(w[8]==null?'':' tap')+'"'+
       (w[8]==null?'':' onclick="openPerson('+i+')"')+'>'+
     '<div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+w[0]+'"/></svg></div>'+
@@ -5324,7 +5373,7 @@ function netaBackend(cfg){
     },
 
     /* הפרופיל נוצר בכניסה הראשונה — auth מחזיק את האימייל, השם מגיע מהמסך. */
-    ensureProfile:function(name,avatar){
+    ensureProfile:function(name,avatar,sex){
       const self=this;
       return needUid().then(function(u){
         /* המזהה לא נשלח, וזו לא קוסמטיקה: upsert מתרגם לכל עמודה שנשלחה
@@ -5335,11 +5384,15 @@ function netaBackend(cfg){
            id ממילא מוגדר במסד כ-DEFAULT auth.uid(), והוא נכתב משם. */
         const body={name:name};
         if(avatar)body.avatar_key=avatar;
+        /* נשלח רק כשנבחר. שליחת null הייתה מוסיפה את העמודה ל-SET של
+           ה-upsert גם למי שדילג, ולכן דורשת הרשאת עדכון עליה — 0047
+           נותנת אותה, אבל אין סיבה לדרוס בחירה קיימת במסך שדולגו בו. */
+        if(sex)body.sex=sex;
         return call('/rest/v1/profiles?on_conflict=id',{method:'POST',
         headers:{Prefer:'resolution=merge-duplicates,return=representation'},
         body:JSON.stringify(body)});
       })
-        .then(function(r){self.profile=(r&&r[0])||{id:uid(),name:name,avatar_key:avatar};return self.profile});
+        .then(function(r){self.profile=(r&&r[0])||{id:uid(),name:name,avatar_key:avatar,sex:sex||null};return self.profile});
     },
     /* הרשאת עדכון על name ו-avatar_key בלבד (0012) — לכן זו פעולה נפרדת
        מ-updateName, לא פרמטר נוסף לה: שתי הקריאות משנות עמודה אחרת בכל
@@ -5368,7 +5421,7 @@ function netaBackend(cfg){
       if(!uid())return whoami().then(function(u){
         return u&&u.id?self.loadProfile():null;
       });
-      return call('/rest/v1/profiles?select=id,name,avatar_key&id=eq.'+uid(),{method:'GET'})
+      return call('/rest/v1/profiles?select=id,name,avatar_key,sex&id=eq.'+uid(),{method:'GET'})
         .then(function(r){self.profile=(r&&r[0])||null;return self.profile});
     },
 
@@ -6114,6 +6167,21 @@ addEventListener('resize',tidyMetaRow);
 function projectedTotal(rows){
   return rows.reduce(function(sum,p){return sum+Number(p.projection||0)},0);
 }
+/* ── עד מתי ─────────────────────────────────────────────────────────
+   "צפוי כ-34,500 ₪" בלי תאריך הוא חיבור של שלוש תחזיות שמבשילות
+   ב-2036, ב-2038 וב-2044 — כלומר מספר שאינו קיים באף יום נתון. עם
+   "עד מאי 2044" הוא מדויק: זה מה שיינתן בסך הכול עד אז. אותה משפחה
+   של תקלה כמו חיבור הכוונות של אחרים, רק על ציר הזמן. */
+function projectedHorizon(rows){
+  let y=null,m=null;
+  rows.forEach(function(p){
+    const py=Number(p.targetYear),pm=Number(p.targetMonth);
+    if(!isFinite(py))return;
+    if(y===null||py>y||(py===y&&isFinite(pm)&&pm>m)){y=py;m=isFinite(pm)?pm:m}
+  });
+  if(y===null)return '';
+  return months[m]?(' עד '+months[m]+' '+y):(' עד '+y);
+}
 function showProjectionSheet(){
   const rows=projectablePlantings(lastModel);
   if(!rows.length)return;
@@ -6424,7 +6492,7 @@ function buildHomeSummary(){
     const futGrp=document.getElementById('s-fut-grp');
     if(futGrp){
       futGrp.style.display=proj.length?'':'none';
-      txt('s-fut','כ-'+shekel(projectedTotal(proj)));
+      txt('s-fut','כ-'+shekel(projectedTotal(proj))+projectedHorizon(proj));
       tidyMetaRow();
     }
     if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();loadFamily();}
@@ -7049,6 +7117,43 @@ checkBene();
 /* מי שכבר מחובר נכנס הביתה; מי שלא — נפתח בדלת. משתמש חוזר שרואה שוב את
    מסך הכניסה חושב שהחיבור שלו אבד.
    ומי שהגיע דרך קישור שיתוף רואה קודם כל את הכרטיס שהקישור פותח. */
+/* ─── שגיאה שחוזרת מספק הכניסה ────────────────────────────────────────
+   כשהכניסה עם גוגל נכשלת, Supabase מחזיר לכתובת ?error=…&error_description=…
+   (או אותם שדות ב-hash). האפליקציה קראה מה-hash רק access_token, ולכן
+   כישלון נבלע: המשתמש נחת על מסך רגיל, בלי מילה, ועם ?error= תלוי
+   בשורת הכתובת. אלון נתקל בזה.
+
+   התיאור של הספק אנגלי ולא נועד למשתמש קצה, ולכן הוא לא מוצג כמו
+   שהוא — הקודים הנפוצים מתורגמים, ולכל השאר יש משפט אחד שאומר את
+   האמת: לא הצלחנו, נסה שוב. */
+const AUTH_ERRORS={
+  access_denied:'הכניסה בוטלה. אפשר לנסות שוב, או להיכנס עם קוד למייל.',
+  otp_expired:'הקוד או הקישור פגו. בקש קוד חדש ונסה שוב.',
+  server_error:'הספק לא הצליח לאמת אותך כרגע. נסה שוב בעוד רגע.',
+  temporarily_unavailable:'הספק לא זמין כרגע. נסה שוב בעוד רגע.',
+  provider_email_needs_verification:'צריך לאמת קודם את כתובת המייל אצל הספק.'
+};
+function authErrorFromUrl(){
+  try{
+    const q=new URLSearchParams(location.search.replace(/^\?/,''));
+    const h=new URLSearchParams((location.hash||'').replace(/^#/,''));
+    const pick=function(k){return q.get(k)||h.get(k)||''};
+    const code=pick('error_code')||pick('error');
+    if(!code)return '';
+    /* הכתובת מתנקה בכל מקרה: רענון עם ?error= היה מציג את ההודעה שוב
+       על ניסיון שכבר הסתיים. */
+    ['error','error_code','error_description'].forEach(function(k){q.delete(k);h.delete(k)});
+    const qs=q.toString(), hs=h.toString();
+    history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+(hs?'#'+hs:''));
+    return AUTH_ERRORS[code]||'הכניסה לא הושלמה. נסה שוב, או היכנס עם קוד למייל.';
+  }catch(e){return ''}
+}
+const authErr=authErrorFromUrl();
+if(authErr){
+  const box=document.getElementById('lg-err');
+  if(box){box.textContent=authErr;box.style.display=''}
+}
+
 const sharedToken=sharedTokenInUrl();
 if(sharedToken&&liveAccount()){
   /* מחובר שפתח קישור — אין טעם להראות לו כרטיס אנונימי ולבקש שיתחבר. */
@@ -7059,6 +7164,9 @@ if(sharedToken&&liveAccount()){
   /* ומי שאמר "בפעם אחרת" מקבל את ההצעה שוב — ההצעה, לא הצירוף. */
   else if(laterInvite()&&openShared(laterInvite())){}
   else if(liveAccount())landSignedIn();
+  /* מי שהגיע עם שגיאת כניסה היה באמצע סבב, ולכן הוא נוחת על דלת
+     הכניסה עם ההסבר — ולא על מסך הפתיחה, שמתחיל הכול מחדש. */
+  else if(authErr)go(ONBO.login);
   else go(ONBO.welcome);
 }
 </script>
