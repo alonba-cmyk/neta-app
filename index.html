@@ -217,17 +217,25 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   background:radial-gradient(circle,rgba(127,192,136,.14),transparent 68%)}
 .s-art svg{position:relative}
 .ppav{position:relative;display:flex;align-items:center}
-.ppav>*{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid var(--bg);background:var(--s2)}
-.ppav>*+*{margin-right:-13px}
-/* הפרצוף האמיתי נשאר מעל המשבצת השנייה */
-.ppav>*:first-child{position:relative;z-index:1}
-/* כשנטע רק קרוב אחד, המשבצת השנייה מקווקוות ונושאת "+": ניכר בה שאינה
-   אדם אלא מקום פנוי, והיא גם מזמינה למלא אותו. להמציא כאן פרצוף שני
-   היה משקר בדיוק על השאלה שהמסך הזה עונה עליה — מי נטע. */
-.ppav .add{border-style:dashed;border-color:var(--line-2);background:transparent;
-  display:grid;place-items:center;color:var(--tx-3);font-size:17px;line-height:1;
-  font-family:inherit;padding:0;cursor:pointer;transition:.15s}
-.ppav .add:hover{border-color:var(--leaf-2);color:var(--leaf)}
+/* שלוש משבצות תמיד, ולכן רוחב קבוע — העמודה אינה קופצת כשמצטרף קרוב.
+   בחפיפה של 12 המשבצת האמצעית הוסתרה כמעט לחצי ונקראה כתמונה מרוחה,
+   ולכן העמודה מתרחבת ל-86 (ממוקד למסך הזה: הנבט במסך הבית לבדו ואינו
+   צריך את זה) והחפיפה יורדת ל-8. שלוש·30 פחות שתיים·8 הם 74. */
+.ppav>*{width:30px;height:30px;border-radius:50%;overflow:hidden;border:2px solid var(--bg);background:var(--s2)}
+.ppav>*+*{margin-right:-8px}
+[data-name="נטעו למשפחתי"] .s-art{width:86px}
+[data-name="נטעו למשפחתי"] .s-art::before{width:104px;height:104px}
+/* הפרצופים האמיתיים נשארים מעל המשבצות הפנויות, לפי הסדר */
+.ppav>*:nth-child(1){position:relative;z-index:3}
+.ppav>*:nth-child(2){position:relative;z-index:2}
+/* המשבצות הפנויות: מקווקוות ובצבע מעומעם, כדי שייקראו כמקום ולא כאדם.
+   להשלים כאן פרצוף אמיתי היה משקר בדיוק על השאלה שהמסך עונה עליה —
+   מי נטע. השנייה שבהן נושאת "+" ופותחת את בוחר ההזמנות. */
+.ppav .slot{border-style:dashed;border-color:var(--line-2);background:transparent;
+  display:grid;place-items:center;color:var(--tx-3);font-family:inherit;padding:0}
+.ppav .slot svg{width:20px;height:20px;opacity:.5}
+.ppav button.slot{font-size:16px;line-height:1;cursor:pointer;transition:.15s}
+.ppav button.slot:hover{border-color:var(--leaf-2);color:var(--leaf)}
 .ppav .avsvg{display:block;width:100%;height:100%}
 .s-eyebrow{font-size:10px;letter-spacing:.1em;color:var(--tx-3);margin-bottom:7px}
 .s-num{font-size:33px;font-weight:600;color:var(--leaf);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
@@ -828,7 +836,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7f4f0b6';
+window.NETA_BUILD = 'e93f1b5';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6448,14 +6456,21 @@ function famAvatars(rows){
     const k=w.name||w.avatar;
     if(!seen[k]){seen[k]=1;av.push(w.avatar||'av-parent')}
   })});
-  const two=(av.length?av:['av-granny']).slice(0,2).map(function(a){
+  const out=av.slice(0,2).map(function(a){
     return '<span><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+a+'"/></svg></span>';
   });
-  /* עמודה של דמות אחת נראית ריקה ליד מספר בגודל הזה. השנייה אינה פרצוף
-     שהומצא אלא משבצת פנויה שמזמינה קרוב נוסף. */
-  if(two.length<2)two.push('<button class="add" onclick="openInvitePicker()" '+
-    'aria-label="הזמן קרוב">+</button>');
-  return two.join('');
+  /* עמודה של דמות אחת נראית ריקה ליד מספר בגודל הזה. מה שמשלים אותה
+     אינו פרצוף שהומצא אלא משבצות פנויות: צללית מעומעמת, ואחריה "+"
+     שפותח את בוחר ההזמנות. שלוש משבצות תמיד, ולכן רוחב קבוע. */
+  while(out.length<2)
+    out.push('<span class="slot" aria-hidden="true">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '+
+      'stroke-linecap="round" stroke-linejoin="round">'+
+      '<circle cx="12" cy="8.4" r="3.5"/>'+
+      '<path d="M5.6 19.6 C5.6 15.4 8.5 13.4 12 13.4 C15.5 13.4 18.4 15.4 18.4 19.6"/>'+
+      '</svg></span>');
+  out.push('<button class="slot" onclick="openInvitePicker()" aria-label="הזמן קרוב">+</button>');
+  return out.join('');
 }
 function paintFamily(total,rows,people){
   const list=Array.isArray(rows)?rows:[];
