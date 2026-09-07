@@ -882,7 +882,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd5de5f7';
+window.NETA_BUILD = '08ce7e9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -937,10 +937,18 @@ window.NETA_CONFIG = {
 
        שלושה קווים עולים: מה שנתת, לאורך זמן. אותם כללים של הסט הקווי
        שאלון בחר — 24x24, currentColor, stroke-width 1.8, קצה עגול. -->
-  <g id="ic-invest" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-    <line x1="5.4" y1="19" x2="5.4" y2="14.6"/>
-    <line x1="12" y1="19" x2="12" y2="10.4"/>
-    <line x1="18.6" y1="19" x2="18.6" y2="5.8"/>
+  <!-- מזלף, ולא עמודות של גרף. הטאב הזה הוא מה שאני נותן — וזה מה
+       שמזלף עושה, כל חודש מחדש. עמודות עולות הן אייקון של אפליקציית
+       השקעות; הן נכונות לכל אפליקציה כזאת, ולכן אינן נכונות לזאת.
+       הן גם סתרו את כלל הצבע: עמודה שגדלה מבטיחה תשואה, ובנטיעה
+       הצמיחה היא זהב ולא ירוק.
+
+       הטיפות שנוסו מתחת לפיה ירדו — ב-19px הן קראו כלכלוך ולא כמים. -->
+  <g id="ic-can" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8.8 10.6 H20.2 L18.4 20.4 H10.6 Z"/>
+    <path d="M11.4 10.6 C11.4 6.4 17.6 6.4 17.6 10.6"/>
+    <path d="M9 12.8 C6.6 12.8 4.8 11.8 3.9 9.4"/>
+    <path d="M2.3 10 L5.5 8.8"/>
   </g>
   <g id="ic-kin" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="15" cy="8.6" r="3.6"/><path d="M9.2 20.2 C9.2 16.1 11.8 14.2 15 14.2 C18.2 14.2 20.8 16.1 20.8 20.2"/>
@@ -2221,7 +2229,7 @@ window.NETA_CONFIG = {
        יושב על אותו אינדקס (14) שנשא את "נטעו למשפחתי", שהתמזג לסקשן
        במסך הבית. -->
   <button class="tab on" onclick="go(0)"><span class="ic"><svg width="14" height="20" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>כל</span><span>הנטיעות</span></span></button>
-  <button class="tab" onclick="openInvestments()"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-invest"/></svg></span><span class="lb"><span>הנטיעות</span><span>שלי</span></span></button>
+  <button class="tab" onclick="openInvestments()"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-can"/></svg></span><span class="lb"><span>הנטיעות</span><span>שלי</span></span></button>
   <button class="tab center" onclick="startCreate()"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg></span><span class="lb"><span>נטיעה</span></span></button>
   <button class="tab" onclick="openPeople()"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-kin"/></svg></span><span class="lb"><span>הקרובים</span><span>שלי</span></span></button>
   <button class="tab" onclick="go(9)"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></span><span class="lb"><span>פעילות</span></span></button>
