@@ -295,9 +295,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   font-variant-numeric:tabular-nums;margin-top:4px}
 .pc-dt{font-size:10.5px;color:var(--tx-3);margin-top:4px}
 /* inline-start ב-RTL הוא הצד הימני — הצד של העמודה שפונה אל הטקסט. */
-.pc-fc{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:5px;
-  border-inline-start:1px solid var(--rule);padding-inline-start:9px}
-.pc-fc i{font-style:normal;font-size:9.5px;color:var(--tx-3);white-space:nowrap}
+/* רוחב קבוע ולא לפי תוכן: מאז שהכיתוב הוא שם, אורכו משתנה מכרטיס
+   לכרטיס — ועמודה שנמדדת לפי תוכן הייתה מזיזה את הקו המפריד בכל
+   שורה. שם ארוך נחתך בשלוש נקודות במקום להרחיב. */
+.pc-fc{flex:0 0 65px;width:65px;display:flex;flex-direction:column;align-items:center;
+  gap:5px;border-inline-start:1px solid var(--rule);padding-inline-start:9px}
+.pc-fc i{font-style:normal;font-size:9.5px;color:var(--tx-3);white-space:nowrap;
+  display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;text-align:center}
 .fx2{display:flex;align-items:center;width:53px;justify-content:flex-end}
 /* דמות אחת מתמרכזת בעמודה: הצמדה לקצה נראית כמו יישור שנשבר
    כשאין לידה דמות שנייה שממלאת את הרוחב. */
@@ -868,7 +872,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'dcda855';
+window.NETA_BUILD = '8881e3d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6309,12 +6313,19 @@ function faceStack(list){
    ברגע שקרוב פתח ורק הוא הפקיד, הפנים היחידות הן שלו. לכן כל בונה
    כרטיס מוסר את הכיתוב שמתאים לשאלה שהוא עונה עליה. */
 function faceCap(text){return '<i>'+(text||'&nbsp;')+'</i>'}
+function firstName(t){return String(t||'').trim().split(/\s+/)[0]||''}
+/* מתחת לפרצוף: מי זה, ולא כמה הם. "נוטע אחד" תיאר את הכמות בזמן
+   שהפרצוף ממש מעליו כבר אומר אותה — ואת מי שנטע, הדבר היחיד שהעמודה
+   לא אמרה, אפשר פשוט לומר.
+
+   בשניים ומעלה נשארת הספירה: הפרצופים מציגים שניים ותג "+N", ושם
+   בודד מתוך הקבוצה היה מציג אדם אחד כאילו הוא העיקר. שם פרטי בלבד,
+   כי העמודה רחבה 56 פיקסל. */
 function planterCap(list,mineAgorot){
   const n=(list&&list.length)||0;
   if(n>1)return n+' נוטעים';
-  /* פרצוף אחד ויש לי סכום — הפרצוף הוא שלי, ואין עוד איש. */
-  if(n<=1&&Number(mineAgorot||0)>0)return 'רק אתה';
-  return n===1?'נוטע אחד':'';
+  if(n===1)return firstName(list[0]&&list[0].name)||'נוטע אחד';
+  return Number(mineAgorot||0)>0?'אתה':'';
 }
 /* מקבל תאריך מלא מהשרת, או שנה בלבד — ההדגמה יודעת רק שנה, ולהמציא
    לה חודש היה להציג נתון שלא קיים. */
@@ -6329,11 +6340,15 @@ function plantCard(o){
      בעצמך — "נטעת עד כה 100 ₪", ותו לא. מי פתח אותו כבר קיים במודל
      ופשוט לא צויר, ולכן השאלה "למה זה אצלי" נשארה בלי תשובה על המסך
      שמעורר אותה. */
-  const who=o.by?(vb(o.bySex,'פתח','פתחה')+' '+o.by):'';
-  /* note גובר על "מי פתח": בסקשן השני העובדה החשובה היא של מי הרגע,
-     ולא מי לחץ ראשון. בלעדיה הכרטיס נראה בדיוק כמו רגע של המשפחה שלי. */
-  const dt=[o.note||who,o.designated===false?'עדיין לא יועדה':sinceLine(o.since)]
-    .filter(Boolean).join(' · ');
+  /* "נפתח על ידי" ולא "פתח/ה": סביל, ולכן אינו נזקק למגדר שלא תמיד
+     ידוע, ומדויק יותר — הוא מתאר את הפתיחה ולא את הנטיעה.
+
+     שורה אחת בדיוק, תמיד. קודם היא הופיעה רק כשהיה מה לומר, ולכן
+     כרטיס שקרוב פתח היה גבוה מכרטיס שפתחתי בעצמי — שני גבהים באותה
+     רשימה. מי שאין לו "נפתח על ידי" מקבל את המועד, שהוא ממילא הפרט
+     החשוב ביותר ברגע אחרי הסכום, ולא הופיע במסך הבית מעולם. */
+  const dt=o.designated===false ? 'עדיין לא יועדה'
+    : (o.note || (o.by?('נפתח על ידי '+o.by):'') || o.when || '');
   return '<div class="ncard pc" onclick="openDetail(\''+o.key+'\')">'+
     '<div class="pc-ic">'+(o.icon||'🌱')+'</div>'+
     '<div class="pc-x"><div class="pc-nm">'+o.name+'</div>'+
@@ -6345,32 +6360,50 @@ function plantCard(o){
   '</div>';
 }
 function cardHTML(p){
-  const mine=(p.mine==null?p.accrued:p.mine);
-  return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נטעת עד כה',
-                    amount:mine,cap:planterCap(p.participants,mine),
-                    by:p.by,bySex:p.bySex,
-                    since:p.since,designated:p.designated,people:p.participants});
+  /* המספר הוא מה שנצבר לרגע, לא חלקי בו. הסקשן הזה הוא הרגעים של
+     המשפחה שלי, והכסף שם שייך לילד — גם כשקרוב הפקיד אותו. קודם
+     הכרטיס אמר להורה שאישר ועוד לא הפקיד "נטעת עד כה 0 ₪", כלומר
+     מספר שקיומו מודיע על היעדרו.
+
+     ויש לזה רווח נוסף: סכום הכרטיסים שווה עכשיו בדיוק למספר הגדול
+     שמעליהם, ו"ממני" שבפילוח הוא החלק שלי בתוכו. "כמה אני נתתי"
+     נשאלת ונענית במסך "ההשקעות שלי".
+
+     והתאריך ירד: הסקשן כבר מקבץ אותם, ומי שפתח את הרגע הוא הפרט
+     שבאמת חסר. */
+  return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נצבר עד כה',
+                    amount:Number(p.accrued||0),
+                    cap:planterCap(p.participants,(p.mine==null?p.accrued:p.mine)),
+                    by:p.by,when:targetLine(p),
+                    designated:p.designated,people:p.participants});
 }
 /* הכרטיס בסקשן "נטיעות עבור אחרים". המספר הוא מה ש*אני* נטעתי ולא מה
    שנצבר ברגע — הרגע הזה אינו שלי, והחלק שלי בו הוא כל מה שיש לי לומר
    עליו. ושורת המשנה אומרת של מי הוא, אחרת הוא נראה כמו רגע שלי. */
+/* "עד ספטמבר 2036" — המועד שהרגע מחכה לו. */
+function targetLine(p){
+  const m=months[Number(p.targetMonth)],y=p.targetYear;
+  if(!y)return '';
+  return 'עד '+(m?m+' ':'')+y;
+}
 function othCardHTML(p){
   const mine=(p.mine==null?p.accrued:p.mine);
   return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נטעת עד כה',
                     amount:mine,cap:planterCap(p.participants,mine),
                     note:p.familyName?('המשפחה של '+p.familyName):'משפחה של קרוב',
-                    since:null,designated:p.designated,people:p.participants});
+                    designated:p.designated,people:p.participants});
 }
 /* יותר משתי נטיעות מציפות את המסך, אז רק כרטיס אחד נוסף — הצצה דהויה —
    מצטרף לשתיים הראשונות. השאר לא נכנסים ל-DOM בכלל עד שמבקשים, כדי
    שלא ייראו כל הכרטיסים גם דהויים. הכרטיס המוצג נשאר לחיץ כרגיל. */
 let gardenHidden='';
-function gardenHTML(list){
-  if(list.length<=3){gardenHidden='';return list.map(cardHTML).join('')}
-  gardenHidden=list.slice(3).map(cardHTML).join('');
-  return list.slice(0,2).map(cardHTML).join('')+
+function gardenHTML(list,fn){
+  const draw=fn||cardHTML;
+  if(list.length<=3){gardenHidden='';return list.map(draw).join('')}
+  gardenHidden=list.slice(3).map(draw).join('');
+  return list.slice(0,2).map(draw).join('')+
     '<div class="declutter" id="declutter">'+
-      cardHTML(list[2])+
+      draw(list[2])+
       '<div class="declutter-fade"></div>'+
       '<button class="declutter-more" onclick="revealPlantings()">עוד '+
         (list.length-2)+' נטיעות'+
@@ -6733,9 +6766,22 @@ function buildHomeSummary(){
     /* קצר בכוונה. כותרת הסקשן מיד מתחת כבר אומרת "עבורי ובני משפחתי",
        והשורה הזאת צריכה רק לומר מה המספר מודד. ניסוח ארוך יותר שבר
        את השורה לשתיים, והנבט שלצידה נראה ננסי — homefix בודק את זה. */
+    /* השמות מגיעים מ-home_summary, שסופרת רק רגעים שהפקדתי בהם — ולכן
+       הם ריקים דווקא אצל הורה שאישר ועוד לא נטע, כלומר במקום שבו הם
+       הכי נחוצים. נגזרים מהרשימה כשהם חסרים: רק משם שיש בו " של ",
+       כדי שקופה שלא יועדה לא תיכנס כאילו היא ילד. */
+    const kidsHere=s.kids.length?s.kids:(function(){
+      const out=[];
+      own.forEach(function(p){
+        const parts=String(p.name||'').split(' של ');
+        if(parts.length<2)return;
+        const k=parts[parts.length-1].trim();
+        if(k&&out.indexOf(k)<0)out.push(k);
+      });
+      return out;})();
     txt('s-label',onlyOth
       ? 'נטעת עבור משפחות של קרובים'
-      : (s.kids.length ? 'נצבר עד כה עבור '+listNames(s.kids) : 'נצבר עד כה'));
+      : (kidsHere.length ? 'נצבר עד כה עבור '+listNames(kidsHere) : 'נצבר עד כה'));
     const others=onlyOth?0:Math.max(0,tot-mineTot);
     const sm=document.getElementById('s-mine');
     if(sm){
@@ -6753,14 +6799,14 @@ function buildHomeSummary(){
         if(bar)bar.style.display=(mineTot>0&&others>0)?'':'none';
       }
     }
-    document.getElementById('garden').innerHTML=gardenHTML(onlyOth?[]:own);
-    document.getElementById('own-head').style.display=onlyOth?'none':'';
-    document.getElementById('garden-oth').innerHTML=oth.map(othCardHTML).join('');
-    document.getElementById('oth-head').style.display=(oth.length&&!onlyOth)?'':'none';
-    document.getElementById('oth-fine').style.display=(oth.length&&!onlyOth)?'':'none';
     /* מי שיש לו רק סקשן שני רואה אותו כרשימה הראשית, בלי כותרת שנייה
        שמפרידה אותו ממשהו שאינו קיים. */
-    if(onlyOth)document.getElementById('garden').innerHTML=oth.map(othCardHTML).join('');
+    document.getElementById('garden').innerHTML=
+      gardenHTML(onlyOth?oth:own, onlyOth?othCardHTML:cardHTML);
+    document.getElementById('own-head').style.display=onlyOth?'none':'';
+    document.getElementById('garden-oth').innerHTML=onlyOth?'':oth.map(othCardHTML).join('');
+    document.getElementById('oth-head').style.display=(oth.length&&!onlyOth)?'':'none';
+    document.getElementById('oth-fine').style.display=(oth.length&&!onlyOth)?'':'none';
     const proj=projectablePlantings({plantings:onlyOth?oth:own});
     const projLink=document.getElementById('proj-link');
     if(projLink)projLink.style.display=proj.length?'':'none';
@@ -6999,8 +7045,15 @@ function pairWithBack(primaryBtn){
    מי שאינו היוזם, ונטיעה שאינה פתוחה לקרובים, אינם מזמינים — ואז
    נשארת "חזרה" לבדה, ברוחב מלא ולא בחצי, כי אין לה עם מי לחלוק. */
 function actionsFor(p){
-  if(!p.mine||p.designated===false)
+  if(p.designated===false)
     return '<button class="btn ghost" onclick="go(0)">חזרה</button>';
+  /* מי שאינו הבעלים הוזמן כדי לנטוע — וזה בדיוק מה שלא היה לו איך
+     לעשות. "השקע עוד" יושב במסך האדם, ולמי שעוד לא הפקיד אין שם
+     שורה בכלל; אמיר אישר כהורה, קיבל planting_access ברמת contribute,
+     והמסך הציע לו "חזרה" בלבד. המסד תמיד הרשה לו (contributions_create
+     בודקת planting_access) — רק הכפתור חסר. */
+  if(!p.mine)
+    return pairWithBack('<button class="btn" onclick="investIn(cur)">נטע כאן</button>');
   /* וברגע פרטי הפעולה שמזיזה אותו קדימה היא לפתוח אותו לקרובים —
      ולכן היא כפתור, באותו מקום שבו רגע משותף מציג "הזמן קרוב". קודם היא
      הייתה קישור בתוך משפט אפור מתחת לשורת הפעולות, והמקום הזה נשאר
