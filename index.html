@@ -547,7 +547,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .dm-key em{font-style:normal;color:var(--tx-2);font-weight:500;font-variant-numeric:tabular-nums}
 .dsw{width:8px;height:8px;border-radius:3px;flex-shrink:0}
 .dsw.m{background:var(--leaf)}.dsw.g{background:var(--sun)}
-.dm-disc{font-size:10px;color:var(--tx-3);margin:9px 0 0;line-height:1.5}
+/* השורה הזאת מסייגת את "הצמיחה" — הפריט הזהוב במקרא שמעליה — ולכן
+   היא צמודה אליו: גרף, מקרא, וסיוג הם אובייקט אחד, כמו איור עם כיתוב
+   והערת שוליים. המרווח עבר למטה, אל הכרטיס, שהוא אובייקט אחר.
+
+   (הקיצור margin חייב לשאת את הערך בעצמו — margin-top נפרד לפניו
+   נדרס על ידו בשקט.) */
+.dm-disc{font-size:10px;color:var(--tx-3);margin:7px 0 0;line-height:1.5}
+/* הכרטיס הוא אובייקט נפרד מהגרף, וקודם הוא נשק לשורת הסיוג. */
+#pv-fut-card{margin-top:22px}
 .d-line{font-size:12px;color:var(--tx-2);line-height:1.6;margin-top:26px;text-align:center;
   padding:0 6px;text-wrap:balance}
 @keyframes sproutPulse{
@@ -872,7 +880,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'a506c85';
+window.NETA_BUILD = 'ed5d7c5';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1339,6 +1347,18 @@ window.NETA_CONFIG = {
         <span><i class="dsw o"></i>מאחרים<b id="d-othv">·</b></span>
       </div>
     </div>
+  </div>
+
+  <!-- הגוש הזה ריק ברוב המקרים. כשיש נוטע יחיד — כלומר רק אני —
+       הגרף, הצפי, הקצב והמסלול מועברים לכאן מתוך מסך ההשקעה. לא
+       העתק: אותם צמתים ממש, מוזזים ב-appendChild, כי הם נשענים על
+       מזהים והכפלה הייתה יוצרת id כפול (המלכודת שנתקלנו בה היום).
+
+       הסיבה שהם ישבו במסך נפרד הייתה "של מי הגרף" ברגע משותף. כשיש
+       אדם אחד השאלה הזאת לא קיימת, ואיתה גם הסיבה. -->
+  <div id="d-inline" style="display:none">
+    <div class="d-money" id="d-inline-money"></div>
+    <div id="d-inline-card"></div>
   </div>
 
   <p class="eyebrow" style="margin-top:20px" id="d-cbh">מי נוטע כאן</p>
@@ -2136,6 +2156,7 @@ window.NETA_CONFIG = {
     <div class="dm-top"><div><span class="dm-k" id="pv-lb">נצבר</span>
       <span class="dm-v" id="pv-num">·</span></div></div>
     <p class="dm-split" id="d-split"></p>
+    <div id="pv-move">
     <div class="dm-chart" id="d-chart">
       <svg id="d-svg" viewBox="0 0 318 126" aria-hidden="true">
         <defs>
@@ -2163,10 +2184,11 @@ window.NETA_CONFIG = {
       <span><span id="d-goalicon">🎂</span> <span id="d-yr">2032</span></span>
     </div>
     <div class="dm-key" id="d-key">
-      <span><i class="dsw m"></i>ההפקדות שלכם <em id="d-kdep"></em></span>
+      <span><i class="dsw m"></i><span id="d-kdepw">ההפקדות שלכם</span> <em id="d-kdep"></em></span>
       <span><i class="dsw g"></i>הצמיחה <em id="d-kgrow"></em></span>
     </div>
     <p class="dm-disc" id="d-disc"></p>
+    </div><!-- /pv-move -->
 
   </div>
 
@@ -4412,7 +4434,33 @@ function normWho(p){
   });
   return p;
 }
+/* גוש הכסף — הגרף, הצירים, המקרא והכרטיס — חי במסך ההשקעה, ומושאל
+   למסך הרגע כשיש בו נוטע יחיד. צמתים ולא העתק, כי כולם נשענים על
+   מזהים; העתקה הייתה יוצרת id כפול, וזו בדיוק המלכודת שנתקלנו בה
+   היום עם iv-meta. */
+function moneyHome(){
+  const mv=document.getElementById('pv-move'),
+        cd=document.getElementById('pv-fut-card'),
+        money=document.querySelector('[data-name="ההשקעה של"] .d-money'),
+        sec=document.querySelector('[data-name="ההשקעה של"]'),
+        acts=document.getElementById('pv-acts');
+  if(mv&&money&&mv.parentElement!==money)money.appendChild(mv);
+  if(cd&&sec&&cd.parentElement!==sec)sec.insertBefore(cd,acts);
+  const box=document.getElementById('d-inline');
+  if(box)box.style.display='none';
+}
+function moneyToDetail(){
+  const mv=document.getElementById('pv-move'),
+        cd=document.getElementById('pv-fut-card'),
+        m=document.getElementById('d-inline-money'),
+        c=document.getElementById('d-inline-card'),
+        box=document.getElementById('d-inline');
+  if(mv&&m&&mv.parentElement!==m)m.appendChild(mv);
+  if(cd&&c&&cd.parentElement!==c)c.appendChild(cd);
+  if(box)box.style.display='';
+}
 function openPerson(i){
+  moneyHome();
   const p=normWho(plantAt(cur)||{}); if(!p.who)return;
   const w=p.who[i]; if(!w||w[8]==null)return;
   const isMe=w[7]||w[1]==='אתה';
@@ -4430,6 +4478,9 @@ function openPerson(i){
      שמעליו. כשאין יחס ואין תאריך, המשפט נופל חזרה על הרגע. */
   txt('pv-sub',personSub(w,true)||(p.kid?withPrep('ל',p.kid)+', '+p.date:p.date));
   txt('pv-num',shekel(accrued));
+  /* "שלכם" תיאר קבוצה במסך של אדם אחד — הכותרת ממש מעליו אומרת
+     "ההשקעה שלך" או "ההשקעה של סבתא רחל". */
+  txt('d-kdepw',isMe?'ההפקדות שלך':('ההפקדות של '+w[1]));
 
   /* אותו גרף בדיוק שהיה במסך הרגע — עם המחוון והנבט שנע על העקומה —
      רק שהוא מוזן במספרים של האדם הזה. זה מה שהופך אותו לנכון: עד כה
@@ -4594,6 +4645,11 @@ function paintDetail(key,p){
      למה הכפתור שמתחת מציע לפתוח אותו לקרובים.
 
      ריק לגמרי עדיין מסתתר: רשימה בלי אף שורה היא כותרת מעל אוויר. */
+  /* נוטע יחיד — כלומר רק אני — מקבל את גוש הכסף כאן, ולא לחיצה
+     פנימה על שורה של אדם אחד. שאלת "של מי הגרף", שבגללה הוא הועבר
+     למסך נפרד, פשוט אינה קיימת כשיש אדם אחד. */
+  const alone=p.who.length===1&&(p.who[0][7]||p.who[0][1]==='אתה');
+  if(alone){moneyToDetail();paintSoloMoney(p)}else{moneyHome()}
   const solo=!p.shared&&p.who.length<2;
   const noone=!p.who.length;
   document.getElementById('d-cbh').style.display=noone?'none':'';
@@ -4616,6 +4672,40 @@ function paintDetail(key,p){
   void md.getBoundingClientRect();
   requestAnimationFrame(function(){md.classList.remove('snap')});
   go(5);
+}
+/* אותם מספרים בדיוק שהיו מוצגים בלחיצה על "אתה", רק בלי הלחיצה.
+   ‏openPerson מחשב אותם מתוך w; כאן w הוא הראשון והיחיד. */
+function paintSoloMoney(p){
+  const w=p.who[0];
+  const accrued=Number(w[8]!=null?w[8]:Math.round(Number(p.now||0)*100));
+  const ratio=(p.now>0&&p.end>p.now)?(p.end/p.now):1;
+  const proj=w[5]!=null?Number(w[5]):Math.round(accrued*ratio);
+  const mon=w[6]!=null?Number(w[6]):(p.monthly!=null?Math.round(p.monthly*100):null);
+  buildChart(Object.assign({},p,{now:accrued/100,end:Math.max(accrued,proj)/100,
+                                 monthly:mon?mon/100:0}));
+  const sl=document.getElementById('d-time');
+  if(sl)sl.value=0;
+  const md=document.getElementById('d-medal');
+  if(md)md.classList.add('idle');
+  detail(0);
+  const card=document.getElementById('pv-fut-card');
+  const hasProj=proj>accrued;
+  if(card)card.style.display=hasProj?'':'none';
+  if(!hasProj)return;
+  txt('pv-futk','צפוי ב'+p.date);
+  txt('pv-futv','כ-'+shekel(proj));
+  const row=document.getElementById('pv-monrow');
+  if(row)row.style.display=mon?'':'none';
+  if(mon)txt('pv-mon',shekel(mon)+' בכל חודש');
+  /* מסלול לא ידוע אינו "ללא ריבית", ולכן השורה יורדת ולא מציגה מקף.
+     בהדגמה אין rate לחלק מהרגעים. */
+  const tl=plantTrackLabel(p);
+  const trow=document.getElementById('pv-track')&&
+             document.getElementById('pv-track').closest('.stat');
+  if(trow)trow.style.display=tl?'flex':'none';
+  if(tl)txt('pv-track',tl);
+  /* אדם אחד, ולכן "שלך" ולא "שלכם". */
+  txt('d-kdepw','ההפקדות שלך');
 }
 function enterRedeem(key){
   cur=key||cur||'danielBar';
@@ -7053,6 +7143,13 @@ function pairWithBack(primaryBtn){
 
    מי שאינו היוזם, ונטיעה שאינה פתוחה לקרובים, אינם מזמינים — ואז
    נשארת "חזרה" לבדה, ברוחב מלא ולא בחצי, כי אין לה עם מי לחלוק. */
+/* כשגוש הכסף כאן, גם הפעולה שמשנה אותו צריכה להיות כאן — אחרת
+   "השקע עוד" נשארת מאחורי לחיצה שביטלנו. שתי פעולות אמיתיות בזוג,
+   ו"חזרה" כקישור שקט מתחת, לפי הכלל שכבר קבוע בקובץ. */
+function pairWithQuietBack(a,b){
+  return '<div class="two">'+a+b+'</div>'+
+    '<button class="fold" onclick="go(0)" style="margin:11px auto 0;display:block">חזרה לנטיעות</button>';
+}
 function actionsFor(p){
   if(p.designated===false)
     return '<button class="btn ghost" onclick="go(0)">חזרה</button>';
@@ -7067,6 +7164,16 @@ function actionsFor(p){
      ולכן היא כפתור, באותו מקום שבו רגע משותף מציג "הזמן קרוב". קודם היא
      הייתה קישור בתוך משפט אפור מתחת לשורת הפעולות, והמקום הזה נשאר
      ריק מפעולה — "חזרה" לבדה ברוחב מלא. */
+  /* כשגוש הכסף מוצג כאן, "השקע עוד" מצטרפת — היא הפעולה על מה שרואים,
+     והיא הייתה מאחורי הלחיצה שביטלנו. אבל היא ה*שנייה*: הפעולה שמזיזה
+     רגע פרטי קדימה היא לפתוח אותו לקרובים, וזו הכרעה שכבר התקבלה.
+     "השקע עוד" חוזרת כל חודש; פתיחה קורית פעם אחת. */
+  if(p.who&&p.who.length===1&&(p.who[0][7]||p.who[0][1]==='אתה'))
+    return pairWithQuietBack(
+      (p.shared
+        ? '<button class="btn" onclick="openInvite(cur)">הזמן קרוב</button>'
+        : '<button class="btn" onclick="openToCircle()">פתח לקרובים</button>'),
+      '<button class="btn ghost" onclick="investIn(cur)">השקע עוד</button>');
   return p.shared
     ? pairWithBack('<button class="btn" onclick="openInvite(cur)">הזמן קרוב</button>')
     : pairWithBack('<button class="btn" onclick="openToCircle()">פתח לקרובים</button>');
