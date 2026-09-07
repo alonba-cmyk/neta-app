@@ -216,6 +216,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .s-art::before{content:"";position:absolute;width:78px;height:78px;border-radius:50%;
   background:radial-gradient(circle,rgba(127,192,136,.14),transparent 68%)}
 .s-art svg{position:relative}
+/* צביר הפנים במצב הריק של הטאב הנכנס. אותה שפה של .ppav שמעל המספר,
+   בגודל של איור: הראשון בסדר ה-DOM הוא הימני ב-RTL, ולכן גם העליון. */
+.esfaces{display:flex;align-items:center;justify-content:center}
+.esfaces>span{width:54px;height:54px;border-radius:50%;overflow:hidden;
+  border:3px solid var(--bg);background:var(--s2);flex:0 0 auto;display:block}
+.esfaces>span+span{margin-right:-17px}
+.esfaces>span:nth-child(1){z-index:3;position:relative}
+.esfaces>span:nth-child(2){z-index:2;position:relative}
+.esfaces .avsvg{width:100%;height:100%;display:block}
 .ppav{position:relative;display:flex;align-items:center}
 /* שלוש משבצות תמיד, בגודל אחד ובצורה אחת, ולכן רוחב קבוע — העמודה
    אינה קופצת כשמצטרף קרוב. שלוש·34 פחות שתיים·10 הם 82, והעמודה
@@ -839,7 +848,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ca91721';
+window.NETA_BUILD = '309e00a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1588,7 +1597,14 @@ window.NETA_CONFIG = {
        פסקה, כפתור אחד, ודגם בגובה הכרטיס האמיתי. הפסקה ויתרה על החצי
        שמדבר על להשקיע — זו שאלת הטאב האחר — ו"אחרים" הפך ל"קרובים". -->
   <div class="es" id="kin-empty" style="display:none">
-    <div class="art" style="color:var(--leaf-2)"><svg width="74" height="74" viewBox="7 6 57 57" aria-hidden="true"><g opacity=".45" transform="translate(-1.4,13.64) scale(.78)"><use href="#sprout-art"/></g><g opacity=".85" transform="translate(14,0)"><use href="#sprout-art"/></g></svg></div>
+    <!-- פנים ולא נבטים: המסך הזה עונה על "מי נטע", והכותרת מתחתיו מדברת
+         על קרובים. נבט הוא סימן המותג ומופיע בכל מקום; כאן הוא לא אמר
+         את מה שהמסך אומר. -->
+    <div class="art"><span class="esfaces" aria-hidden="true">
+      <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></span>
+      <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></span>
+      <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-friend"/></svg></span>
+    </span></div>
     <h3>כאן יופיע מה שקרובים נטעו<br>עבור היקרים לכם</h3>
     <p>הזמינו את הקרובים שלכם לרגע שפתחתם, וכל מה שינטעו יופיע כאן.</p>
     <button class="btn" onclick="openInvitePicker()">הזמן קרוב</button>
