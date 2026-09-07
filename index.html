@@ -703,6 +703,20 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .es h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
 .es p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin-top:10px;max-width:27ch}
 .es .btn{margin-top:18px}
+/* מסך הסיום מאמץ את אותה מוסכמת טיפוגרפיה, בלי לאמץ את .es עצמו:
+   ‏min-height:62% שלו נועד למסך שאין בו דבר מלבד ההודעה, וכאן יש
+   מתחתיה טבלה, מכתב ושתי פעולות.
+
+   שני המסכים אומרים את אותו דבר במבנה — איור, כותרת, משפט אחד — ועד
+   עכשיו כל אחד מהם אמר אותו בגודל אחר: h2 הוא 16px/500 מול h3 שהוא
+   17px/600, ו-.sub הוא 1.55 בלי רוחב מרבי מול .es p שהוא 1.65 ב-290.
+   ההבדלים קטנים בנפרד, וביחד הם שני מסכים משתי משפחות. */
+[data-name="רגע ההשקעה"] .center{padding:0 4px}
+[data-name="רגע ההשקעה"] .center>svg{margin:0 auto 16px}
+[data-name="רגע ההשקעה"] #aha-h2{font-size:17px;font-weight:600;line-height:1.35;
+  text-wrap:balance;margin:0}
+[data-name="רגע ההשקעה"] #aha-sub{font-size:12.5px;line-height:1.65;
+  margin:10px auto 0;max-width:290px}
 /* ‏min-height:62% של .es נועד למסך ריק שאין בו דבר מלבד ההודעה. במסך
    האישור יש מתחתיה כרטיס ושלוש יציאות, ולכן הוא מצומצם — אבל לא לאפס:
    הסיבה שהוא נדחף פעם מתחת לקצה המכשיר לא הייתה המרווח אלא שהמסך ישב
@@ -854,7 +868,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f6c867a';
+window.NETA_BUILD = '9f7d5f2';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1073,7 +1087,7 @@ window.NETA_CONFIG = {
   <div class="card">
     <div class="row"><div class="dot g" id="p-icon">🎂</div><div style="flex:1"><div class="title" id="p-title">בר/בת מצווה של דניאל</div><div class="meta" id="p-date">אוגוסט 2032</div></div></div>
   </div>
-  <button class="btn gap" onclick="cGo(2)">המשך</button>
+  <button class="btn gap" onclick="toAmount()">המשך</button>
   </div><!-- /cp-0 -->
 
   <div id="cp-1" style="display:none">
@@ -1141,19 +1155,6 @@ window.NETA_CONFIG = {
   <div class="two gap"><button class="btn" onclick="beneContinue()">המשך</button><button class="btn ghost" onclick="toAmount()">חזרה</button></div>
   </div><!-- /cp-1 -->
 
-  <div id="cp-2" style="display:none">
-  <h2 class="gap-x">פתוחה לאנשים אחרים או פרטית?</h2>
-  <p class="sub gap">אפשר לשנות את זה בכל שלב.</p>
-  <div class="stack gap">
-    <div class="opt shr on" data-s="private"><b>פרטית</b><p>רק מי שתזמין אישית, יכול להיות רק אתה, או גם בן/בת זוג. אף אחד אחר לא יכול להצטרף בלי הזמנה שלך.</p></div>
-    <div class="opt shr" data-s="open" id="shr-open"><b>פתוחה לאנשים אחרים</b><p>כל מי שתזמין יכול להצטרף ולהשקיע: קרובים, חברים, כל מי שתרצה. כל אחד רואה רק את ההשתתפות שלו, אלא אם בחר אחרת.</p></div>
-  </div>
-  <p class="fine gap" id="c-sharenote" style="display:none">קופה שעדיין לא יועדה רשומה על שמך, ולכן אחרים לא יכולים להפקיד לתוכה, כסף שהם ייתנו יישאר בשליטתך, ולא הובטח לאיש. אפשר לפתוח אותה ברגע שתייעד אותה.</p>
-  <button class="btn ghost gap-s" id="c-designbtn" style="display:none" onclick="backToName()">בחר עבור מי</button>
-  <p class="fine gap">רוצה לבנות את זה עם עוד אדם אחד, כבעלים שווה ולא כמשקיע? אפשר להוסיף שותף/ה בכל שלב, גם אחרי ההקמה, מהנטיעה עצמה.</p>
-
-  <div class="two gap"><button class="btn" onclick="toAmount()">המשך</button><button class="btn ghost" onclick="shareBack()">חזרה</button></div>
-  </div><!-- /cp-2 -->
 </section>
 
 <!-- 2 CONTRIBUTE -->
@@ -1231,7 +1232,7 @@ window.NETA_CONFIG = {
 <!-- 4 AHA -->
 <section class="screen center-v" data-name="רגע ההשקעה">
   <div class="center">
-    <svg width="120" height="140" viewBox="0 0 140 160" style="margin:4px auto 0;display:block">
+    <svg width="104" height="121" viewBox="0 0 140 160" style="display:block">
       <ellipse cx="70" cy="150" rx="36" ry="6" fill="var(--s2)"/>
       <line x1="70" y1="148" x2="70" y2="50" stroke="var(--leaf)" stroke-width="4" stroke-linecap="round"/>
       <path d="M70 120 C 52 114, 44 98, 53 87 C 62 98, 68 109, 70 120" fill="var(--leaf)" opacity=".35"/>
@@ -1241,12 +1242,20 @@ window.NETA_CONFIG = {
       <circle cx="89" cy="53" r="15" fill="none" stroke="var(--leaf)" stroke-width="1" opacity=".45"/>
       <g id="env" style="opacity:0;transition:opacity .4s"><line x1="53" y1="87" x2="53" y2="102" stroke="var(--line-2)" stroke-width="1"/><rect x="43" y="102" width="20" height="14" rx="2" fill="var(--sun-bg)" stroke="var(--sun)" stroke-width=".9"/><path d="M43 103 L53 110 L63 103" fill="none" stroke="var(--sun)" stroke-width=".9"/></g>
     </svg>
-    <h2 style="margin:13px 0 6px" id="aha-h2">העלה שלך נוסף לעץ של דניאל</h2>
-    <p class="sub" style="margin-bottom:4px" id="aha-sub">בחרת להשקיע <b style="color:var(--tx)">1,000 ₪</b> היום, שיהפכו בעוד 6 שנים לכ-<b style="color:var(--leaf)">1,419 ₪</b> ביום הבר מצווה שלו</p>
-    <p class="fine gap">הדמיה לפי מסלול מאוזן. אינה מהווה הבטחת תשואה.</p>
-    <div class="note gap" id="aha-note">עד כה השקיעו בדניאל <b>אתה, סבתא ודוד יוסי</b></div>
+    <h2 id="aha-h2">העלה שלך נוסף לעץ של דניאל</h2>
+    <p class="sub" id="aha-sub">זו הנטיעה הראשונה עבור <b>דניאל</b>. אתה פותח אותה.</p>
   </div>
-  <button class="btn dash" id="letter-open" onclick="openLetter()"><span id="lo-txt">✉ רוצה לצרף מכתב שייפתח באוגוסט 2032?</span></button>
+  <!-- שלוש עובדות בשלוש שורות, במקום משפט אחד שנשא את שלושתן והמספר
+       שהוא כל התמורה נבלע בתוכו. זו אותה טבלה בדיוק שבמסך "סיום
+       הרשמה" — אותו רגע, רק לחשבון שכבר קיים — וממנה גם הצבע: הצפי
+       זהוב, כמו שם, כי הוא כסף שיהיה ולא כסף שיש. -->
+  <div class="card gap-s">
+    <div class="stat"><span class="k" id="aha-k1">מופקד כל חודש</span><span class="v" id="aha-v1">100 ₪</span></div>
+    <div class="stat"><span class="k">המועד המיוחל</span><span class="v" id="aha-v2">אוגוסט 2032</span></div>
+    <div class="stat"><span class="k" id="aha-k3">בקצב הזה ייצבר</span><span class="v" style="color:var(--sun-soft)" id="aha-v3">כ-14,343 ₪</span></div>
+  </div>
+  <p class="fine" style="margin-top:9px" id="aha-fine">הדמיה לפי מסלול מאוזן. אינה מהווה הבטחת תשואה.</p>
+  <button class="btn dash gap" id="letter-open" onclick="openLetter()"><span id="lo-txt">✉ רוצה לצרף מכתב שייפתח באוגוסט 2032?</span></button>
 
   <div class="card" id="letter-form" style="text-align:right;display:none">
     <p class="sub gap-s" id="lf-txt">המכתב ייחתם עכשיו וייפתח על ידי דניאל רק באוגוסט 2032, יחד עם מה שהשקעת עבורו.</p>
@@ -1258,19 +1267,13 @@ window.NETA_CONFIG = {
   </div>
   <div class="lock" id="letter-done" style="display:none"><div style="font-size:18px">🔒</div><b style="display:block;margin:5px 0 4px;font-size:13.5px">המכתב נחתם</b><p class="sub" id="ld-txt">תלוי על העץ עד אוגוסט 2032. רק דניאל יוכל לפתוח אותו.</p></div>
 
-  <button class="btn dash" id="tp-open" style="margin-top:8px" onclick="openTellParents()"><span id="tp-open-txt">🎉 רוצה לשתף מישהו שישמח לראות שנטעת עבור דניאל?</span></button>
-  <div class="note" id="tp-form" style="text-align:right;display:none">
-    <p class="sub gap-s" id="tp-form-sub" style="color:#C6E3C9">יראו בדיוק כמה נטעת, ויוכלו לחזור מתי שבא להם ולראות איך זה גדל, בלי גישה לכסף עצמו.</p>
-    <div class="field" style="margin-bottom:0"><label>לאן לשלוח</label><input type="text" id="tp-contact" placeholder="050-0000000 או name@mail.com" oninput="tpChanHint()">
-      <p class="hint" id="tp-hint">הקישור יישלח בוואטסאפ אם תזין מספר, ובאימייל אם תזין כתובת.</p></div>
-    <div class="two" style="margin-top:12px">
-      <button class="btn" onclick="sendTellParents()">שלח קישור</button>
-      <button class="btn ghost" onclick="skipTellParents()">לא עכשיו</button>
-    </div>
+  <!-- שתי פעולות, ושתיהן אמיתיות: לפתוח לקרובים, או לראות את מה
+       שנטעת. קודם ישבו כאן שלוש הצעות מקווקוות זו מעל זו והכל נראה
+       שווה במשקל. המכתב נשאר מקווקו כי הוא תוספת; השיתוף אינו. -->
+  <div class="two" id="a-acts" style="margin-top:14px">
+    <button class="btn" id="a-share" onclick="shareFromAha()">פתח לקרובים</button>
+    <button class="btn ghost" id="a-next" onclick="ahaNext()">חזרה לנטיעות שלי</button>
   </div>
-  <div class="note" id="tp-done" style="display:none;text-align:center"><div style="font-size:20px">🎉</div><b style="display:block;margin:6px 0 4px;font-size:13.5px;color:var(--leaf)">נשלח!</b><p class="sub" id="tp-done-txt" style="color:#C6E3C9">יראו בדיוק כמה נטעת, ויוכלו לחזור ולראות איך זה גדל.</p></div>
-
-  <button class="btn" id="a-next" style="margin-top:14px" onclick="ahaNext()">חזרה לנטיעות שלי</button>
 </section>
 
 <!-- 5 DETAIL -->
@@ -2281,11 +2284,9 @@ function prev(){
   el.textContent=months[d.getMonth()]+' '+d.getFullYear()+' · עוד '+y+yrWord(y);
 }
 [cName,cCustom,cDate].forEach(el=>el.addEventListener('input',function(){prev();checkBene();render()}));prev();
+/* shareMode עדיין נקרא ונכתב — investIn טוענת אותו מהנטיעה שמפקידים
+   בה, ומסך הסיכום מציג אותו. מה שירד הוא רק הבורר שקבע אותו באשף. */
 let shareMode='private',isNewPlant=false;
-document.querySelectorAll('.opt.shr').forEach(el=>el.onclick=()=>{
-  document.querySelectorAll('.opt.shr').forEach(x=>x.classList.remove('on'));
-  el.classList.add('on');shareMode=el.dataset.s;
-});
 function toggleShare(sw){
   sw.classList.toggle('on');
   document.getElementById('c-share-box').style.display=sw.classList.contains('on')?'block':'none';
@@ -2843,7 +2844,12 @@ function render(){const v=freq==='m'?+amtM.value:+amtL.value;if(freq==='m')docum
        שנבחר מסלול — כלומר קו מפריד ריק מתחת לכותרת לאורך כל החלק
        הראשון של המסך, בדיוק כשגוללים ורוצים לזכור כמה בחרת. */
     document.getElementById('amt-sticky-txt').textContent=
-      v.toLocaleString('he-IL')+' ₪ '+(freq==='m'?'בחודש':'היום');return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);const approx=mode==='market'?'כ-':'';num.textContent=approx+Math.round(total).toLocaleString('he-IL')+' ₪';document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+approx+Math.round(total).toLocaleString('he-IL')+' ₪';if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();ahaCopy();document.getElementById('aha-sub').innerHTML='בחרת להשקיע <b style="color:var(--tx)">'+v.toLocaleString('he-IL')+' ₪</b> '+(freq==='m'?'כל חודש':'היום')+', שיהפכו עד '+goal.dateLabel+' לכ-<b style="color:var(--leaf)">'+approx+Math.round(total).toLocaleString('he-IL')+' ₪</b>';const assume=freq==='m'?'בהנחה שההפקדה נמשכת עד אז. ':'';
+      v.toLocaleString('he-IL')+' ₪ '+(freq==='m'?'בחודש':'היום');return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);const approx=mode==='market'?'כ-':'';num.textContent=approx+Math.round(total).toLocaleString('he-IL')+' ₪';document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+approx+Math.round(total).toLocaleString('he-IL')+' ₪';if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();ahaCopy();
+txt('aha-k1',freq==='m'?'מופקד כל חודש':'הפקדה חד פעמית');
+txt('aha-v1',v.toLocaleString('he-IL')+' ₪');
+txt('aha-v2',goal.dateLabel||'');
+txt('aha-k3',mode==='keep'?'יישמר עד אז':(freq==='m'?'בקצב הזה ייצבר':'ימשיך לגדול ל'));
+txt('aha-v3',approx+Math.round(total).toLocaleString('he-IL')+' ₪');const assume=freq==='m'?'בהנחה שההפקדה נמשכת עד אז. ':'';
   fine.textContent=assume+(mode==='keep'?'הסכום נשמר כפי שהוא ואינו חשוף לשוק. שימו לב שערכו הריאלי עשוי להישחק עם הזמן בשל אינפלציה.':mode==='safe'?'הקרן והריבית מובטחות על ידי הגוף הפיננסי המנהל. התנאים המדויקים, לרבות סכומי מינימום, נקבעים על ידו.':'התשואות להמחשה בלבד ומבוססות על נתוני עבר. הערך עשוי לרדת. אינן מהוות הבטחת תשואה או ייעוץ השקעות.');}
 document.querySelectorAll('.opt[data-m]').forEach(el=>el.onclick=()=>{
   modeTouched=true;setMode(el.dataset.m);
@@ -2965,20 +2971,26 @@ function beneFields(){
 }
 /* creating a planting is three decisions, one per screen */
 let cStep=0;
-const C_LABELS=['בשביל מי','מי יקבל את הכסף שנטעת','פתיחות'];
+const C_LABELS=['בשביל מי','מי יקבל את הכסף שנטעת'];
 let creating=false;
 /* the whole creation is one act: name, amount, recipient, sharing — then payment creates it */
-/* 1 בשביל מי · 2 כמה · [3 ייעוד — רק כשיש נהנה] · שיתוף · [פתיחת חשבון — רק באונבורדינג] · תשלום */
-function flowSteps(){return (onbo?6:5)+(designated?1:0)}
+/* 1 בשביל מי · 2 כמה · [3 ייעוד — רק כשיש נהנה] · [פתיחת חשבון — רק
+   באונבורדינג] · תשלום · סיכום.
+
+   שלב "פרטית או פתוחה" ירד מכאן. הוא נשאל לפני שיש כסף ברגע ולפני
+   שידוע מי הנהנה, כלומר ברגע שבו "מי עוד יכול להצטרף" הוא מושג
+   מופשט — וברירת המחדל שלו הייתה ממילא "פרטית", כך שברוב המקרים הוא
+   מסך שלוחצים עליו "המשך". ההחלטה עברה למקום שיש בו הקשר: מסך הרגע,
+   שבו "פתח לקרובים" הוא עכשיו הכפתור הראשי. */
+function flowSteps(){return (onbo?5:4)+(designated?1:0)}
 function stepNo(key){
   const d=designated?1:0;
   if(key==='who')return 1;
-  if(key==='share')return 2;
-  if(key==='amount')return 3;
-  if(key==='bene')return 4;
-  if(key==='identity')return 4+d;
-  if(key==='pay')return 4+d+(onbo?1:0);
-  return 5+d+(onbo?1:0); // review
+  if(key==='amount')return 2;
+  if(key==='bene')return 3;
+  if(key==='identity')return 3+d;
+  if(key==='pay')return 3+d+(onbo?1:0);
+  return 4+d+(onbo?1:0); // review
 }
 function flowBar(cur,label){
   const box=document.getElementById('flowbar'),bar=document.getElementById('steps-top');
@@ -2990,6 +3002,9 @@ function flowBar(cur,label){
 }
 function startCreate(){
   creating=true;dateTouched=false;beneSex='m';fullTouched=false;modeTouched=false;
+  /* כל רגע נולד פרטי מאז ששלב הפתיחות ירד מהאשף. במפורש, ולא בהסתמכות
+     על הערך שנשאר מנטיעה קודמת — investIn טוענת אותו מהרגע שמפקידים בו. */
+  shareMode='private';
   /* investIn טוען את המסלול מהנטיעה שמפקידים בה, ולכן נטיעה חדשה חייבת
      להתחיל מהערכים של הטופס — אחרת "יישמר כמו שהוא" של נטיעה שהפקדת בה
      קודם היה נדבק לנטיעה הבאה שתפתח. */
@@ -3034,7 +3049,7 @@ function toAmount(){
 }
 /* order: בשביל מי -> מי עוד שותף -> כמה תשקיע -> [מי יקבל את הכסף, רק אם יש נהנה] -> תשלום.
    השותפות יושבת מיד אחרי "בשביל מי" כי שתיהן אותה שאלה — מי, ועם מי — ולא רוצים שהן יתקררו זו מזו */
-function backFromAmount(){cStepGo(2);go(1)}
+function backFromAmount(){cStepGo(0);go(1)}
 function backFromPay(){
   if(onbo){go(ONBO.identity);return}
   if(creating){
@@ -3043,7 +3058,6 @@ function backFromPay(){
   }
   go(0);
 }
-function shareBack(){cStepGo(0)}
 function afterAmount(){
   /* בלי בחירה, mode נשאר null ו-plantingFromFlow ממיר אותו ל-guaranteed
      בריבית 3.5% — כלומר האפליקציה בוחרת עבור המשתמש מסלול פיננסי שהוא
@@ -3057,7 +3071,6 @@ function afterAmount(){
   if(creating && designated){cStepGo(1);go(1);return}
   toPayment();
 }
-function cGo(n){cStepGo(n)}
 /* כתובת שאינה מייל לא תמצא איש: auth.users נושאת email, ו-guardian_requests
    משווה מולה. מספר טלפון בשדה הזה נשמר, לא מתאים לאיש, ו"נשלח אליו אישור"
    שכתוב מעליו נשאר הבטחה ריקה — בשקט, בלי שגיאה. לכן הוא נבלם כאן, במקום
@@ -3094,8 +3107,8 @@ function beneContinue(){
 }
 function cStepGo(n){
   cStep=n;
-  [0,1,2].forEach(function(i){document.getElementById('cp-'+i).style.display=i===n?'block':'none'});
-  flowBar(stepNo(n===0?'who':n===1?'bene':'share'),C_LABELS[n]);
+  [0,1].forEach(function(i){document.getElementById('cp-'+i).style.display=i===n?'block':'none'});
+  flowBar(stepNo(n===0?'who':'bene'),C_LABELS[n]);
   if(n===1)checkBene();
   document.querySelector('.stage').scrollTo?.(0,0);
 }
@@ -3109,7 +3122,11 @@ function trackLabel(){
   if(mode==='keep'||rate==null||rate===0)return 'יישמר כמו שהוא (ללא ריבית)';
   return TRACK_LABELS[rate]||('כ-'+(+(rate*100).toFixed(2))+'% בשנה');
 }
-function opennessLabel(){return shareMode==='open'?'פתוחה לאנשים אחרים':'פרטית';}
+/* מאז שהשאלה ירדה מהאשף, השורה הזאת היא המקום היחיד שבו נאמר מה
+   נקבע — ולכן היא אומרת גם שאפשר לשנות. */
+function opennessLabel(){
+  return shareMode==='open'?'פתוחה לאנשים אחרים':'פרטית · אפשר לפתוח לקרובים אחר כך';
+}
 function paySummary(){
   const head=document.getElementById('py-headrow');
   if(!isNewPlant){
@@ -3168,24 +3185,8 @@ function toggleDesig(cb){
   document.getElementById('c-benefields').style.display=designated?'block':'none';
   document.getElementById('c-safebtn').style.display=designated?'':'none';
   if(!designated)document.getElementById('c-safe').style.display='none';
-  const open=document.getElementById('shr-open');
-  open.style.opacity=designated?'':'.45';
-  open.style.pointerEvents=designated?'':'none';
-  document.getElementById('c-sharenote').style.display=designated?'none':'block';
-  document.getElementById('c-designbtn').style.display=designated?'none':'block';
-  if(!designated && shareMode==='open'){
-    document.querySelectorAll('.opt.shr').forEach(x=>x.classList.remove('on'));
-    document.querySelector('.opt.shr[data-s="private"]').classList.add('on');
-    shareMode='private';
-  }
   prev();checkBene();
   if(creating)flowBar(stepNo('who'),C_LABELS[0]);
-}
-function backToName(){
-  const u=document.getElementById('c-undecided');
-  u.checked=false;toggleDesig(u);
-  cStepGo(0);
-  document.getElementById('c-name').focus();
 }
 function checkBene(){
   /* raw הוא מה שבאמת הוקלד, ו-nm הוא מה שמוצג בכיתובים. ההפרדה נחוצה
@@ -3851,49 +3852,33 @@ function ahaCopy(){
   const nm=goal.name, dl=goal.dateLabel, open=goal.desig===false;
   const letterBtn=document.getElementById('letter-open');
   if(letterBtn)letterBtn.style.display=open?'none':'';
-  const tpBtn=document.getElementById('tp-open');
-  if(tpBtn)tpBtn.style.display=(open||!isNewPlant)?'none':'';
   if(open){
     txt('pay-fine','ההפקדה עוברת לחשבון הרשום על שמך, אצל הגוף הפיננסי המנהל, ומיועדת לקופה שפתחת. נטע אינה מחזיקה בכסף בשום שלב.');
-    const el0=document.getElementById('aha-note');
-    if(el0)el0.innerHTML='שמת כסף בצד. <b>תחליט למי הוא הולך, כשתדע.</b>';
+    const el0=document.getElementById('aha-sub');
+    if(el0)el0.innerHTML='הכסף שמור על שמך. <b>תחליט למי הוא הולך, כשתדע.</b>';
     return;
   }
   txt('pay-fine','ההפקדה עוברת ישירות לחשבון הנעול על שם '+nm+', אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.');
+  /* "הדמיה לפי מסלול מאוזן" היה כתוב קשיח בקובץ, בזמן שהמספר שמעליו
+     מחושב מהמסלול שנבחר בפועל. כל עוד ברירת המחדל הייתה מאוזן איש לא
+     ראה; מאז שהיא "ריבית מובטחת", הכיתוב מכחיש את המספר שמעליו. */
+  txt('aha-fine',mode==='keep'
+    ? 'הכסף יישמר כמו שהוא, בלי ריבית.'
+    : ('הדמיה לפי מסלול '+trackLabel().split(' · ')[0]+'. אינה מהווה הבטחת תשואה.'));
   txt('lo-txt','✉ רוצה לצרף מכתב שייפתח ב'+dl+'?');
-  txt('tp-open-txt','🎉 רוצה לשתף מישהו שישמח לראות שנטעת עבור '+nm+'?');
-  txt('tp-form-sub','יראו בדיוק כמה נטעת, ויוכלו לחזור מתי שבא להם ולראות איך זה גדל, בלי גישה לכסף עצמו.');
-  txt('tp-done-txt','יראו בדיוק כמה נטעת, ויוכלו לחזור ולראות איך זה גדל.');
   txt('lf-txt','המכתב ייחתם עכשיו וייפתח על ידי '+nm+' רק ב'+dl+', יחד עם מה שהשקעת '+bs('עבורו','עבורה')+'.');
   txt('ld-txt','תלוי על העץ עד '+dl+'. רק '+nm+' יוכל לפתוח אותו.');
   const lt=document.getElementById('letter');if(lt)lt.placeholder=nm+', ביום שתקרא את זה...';
-  const el=document.getElementById('aha-note');
-  if(isNewPlant){el.innerHTML='זו הנטיעה הראשונה עבור <b>'+nm+'</b>, אתה פותח אותה';return}
+  /* המשפט הזה ישב קודם בקופסה ירוקה מתחת למספר, וחזר על מה שהכותרת
+     כבר אמרה. כשורת משנה תחת הכותרת הוא משלים אותה במקום להכפיל. */
+  const el=document.getElementById('aha-sub');
+  if(isNewPlant){el.innerHTML='זו הנטיעה הראשונה עבור <b>'+nm+'</b>. אתה פותח אותה.';return}
   let p=null;try{p=plantAt(cur);}catch(e){}
   if(!p){el.innerHTML='עד כה השקעת עבור <b>'+nm+'</b>';return}
   const others=p.who.filter(w=>w[1]!=='אתה').map(w=>w[1]);
   el.innerHTML=others.length
     ?'עד כה השקיעו ב'+p.kid+' <b>'+['אתה'].concat(others).join(', ')+'</b>'
     :'עד כה <b>אתה</b> היחיד שהשקיע ב'+p.kid;
-}
-function tpChanHint(){
-  const v=(document.getElementById('tp-contact')||{}).value,c=chanOf(v);
-  txt('tp-hint',c?'הקישור יישלח ב'+CHAN[c]:'הקישור יישלח בוואטסאפ אם תזין מספר, ובאימייל אם תזין כתובת.');
-}
-function openTellParents(){
-  document.getElementById('tp-open').style.display='none';
-  document.getElementById('tp-form').style.display='block';
-}
-function skipTellParents(){
-  document.getElementById('tp-form').style.display='none';
-  document.getElementById('tp-open').style.display='block';
-}
-function sendTellParents(){
-  const v=(document.getElementById('tp-contact')||{}).value;
-  if(!v||!v.trim()){toast('צריך טלפון או אימייל כדי לשלוח');return}
-  document.getElementById('tp-form').style.display='none';
-  document.getElementById('tp-done').style.display='block';
-  toast('הקישור נשלח');
 }
 function openLetter(){
   document.getElementById('letter-open').style.display='none';
@@ -3998,7 +3983,11 @@ function finishDeposit(){
   const btn=document.querySelector('[onclick="finishDeposit()"]');
   if(btn){btn.disabled=true;btn.style.opacity='.55';btn.textContent='שומר…'}
   save()
-    .then(function(){
+    .then(function(newId){
+      /* המזהה חזר מ-create() מאז ומעולם ונזרק כאן. בלעדיו אי אפשר
+         היה לפתוח את הרגע שזה עתה נוצר, וסוף ההקמה נחת במסך הבית
+         עם רשימה שצריך לחפש בה את מה שהרגע נטעת. */
+      if(isNewPlant&&newId)cur=newId;
       if(isEmpty)setEmpty(false);
       return buildHomeSummary();
     })
@@ -4044,11 +4033,51 @@ function celebrate(){
     txt('ob-cta','לנטיעות שלי');
     isNewPlant=false;go(ONBO.done);return;
   }
-  txt('a-next','חזרה לנטיעות שלי');
+  /* סוף ההקמה נוחת ברגע עצמו ולא במסך הבית. זו גם הנחיתה הנכונה
+     ממילא — אתה רואה את מה שיצרת — וגם מה שמחליף את שלב הפתיחות
+     שירד: שם, ולא באשף, "פתח לקרובים" הוא הכפתור הראשי. */
+  ahaToDetail=!!(isNewPlant&&cur);
+  txt('a-next',ahaToDetail?'לרגע שנטעת':'חזרה לנטיעות שלי');
+  /* השיתוף מוצע רק כשיש מה לשתף: רגע חדש ומיועד. לקופה שעדיין לא
+     יועדה אי אפשר לפתוח לקרובים בכלל — הם לא יכולים להפקיד לתוכה —
+     ובהפקדה לרגע קיים ההצעה כבר יושבת במסך הרגע שממנו הגעת. */
+  const canShare=ahaToDetail&&goal.desig!==false;
+  const sh=document.getElementById('a-share');
+  if(sh)sh.style.display=canShare?'':'none';
+  document.getElementById('a-acts').classList.toggle('one',!canShare);
   isNewPlant=false;
   go(4);
 }
-function ahaNext(){go(0)}
+let ahaToDetail=false;
+function ahaNext(){
+  if(ahaToDetail&&cur){ahaToDetail=false;openDetail(cur);return}
+  go(0);
+}
+/* אותה פעולה בדיוק כמו במסך הרגע, ובאותן מילים: פותחת לקרובים ונוחתת
+   על ההזמנה כפי שהיא תיראה. הגיליון שבדרך אינו חיכוך מיותר — הוא
+   המקום היחיד שאומר מה פתיחה עושה, ומה כבר אי אפשר לבטל.
+
+   הרגע נוצר לפני שניות, ו-livePlants מתמלא רק כשנכנסים למסך הנטיעה —
+   כלומר openToCircle, שקוראת מהרגע את שמו, הייתה נופלת כאן על null.
+   ‏refreshDetail אינה הפתרון: היא יוצאת מיד כשאין עדיין רשומה. לכן
+   טעינה מפורשת, ורק אחריה השאלה. */
+function shareFromAha(){
+  if(!cur){go(0);return}
+  if(plantAt(cur)){openToCircle();return}
+  const src=netaSource();
+  if(!src.detail){go(0);return}
+  const btn=document.getElementById('a-share');
+  if(btn){btn.disabled=true;btn.style.opacity='.55'}
+  src.detail(cur).then(function(r){
+    if(btn){btn.disabled=false;btn.style.opacity=''}
+    if(!r){toast('לא הצלחנו לטעון את הנטיעה');return}
+    livePlants[cur]=liveDetail(r);
+    openToCircle();
+  }).catch(function(){
+    if(btn){btn.disabled=false;btn.style.opacity=''}
+    toast('לא הצלחנו לטעון את הנטיעה');
+  });
+}
 /* ---- per-planting data for the detail screen ---- */
 const plants={
   danielBar:{icon:'🎂',name:'בר המצווה של דניאל',date:'אוגוסט 2032',yr:2032,planted:2019,
