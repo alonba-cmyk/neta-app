@@ -854,7 +854,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '73262c5';
+window.NETA_BUILD = '8851c27';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1046,7 +1046,7 @@ window.NETA_CONFIG = {
   <p class="sub gap">בעוד כמה שנים מישהו ייהנה ממה שנטעת היום</p>
   <div class="field"><label>בעתיד של מי תרצה להשקיע?</label>
     <div class="row" style="gap:8px;align-items:stretch">
-      <input type="text" id="c-name" value="דניאל" style="flex:1">
+      <input type="text" id="c-name" placeholder="למשל: דניאל" style="flex:1">
       <div class="chips" id="c-sex" style="margin:0;flex:0 0 auto">
         <button onclick="setSex(this,'m')">בן</button>
         <button onclick="setSex(this,'f')">בת</button>
@@ -2814,7 +2814,17 @@ function commitGoal(){
     const def=document.querySelectorAll('#c-terms button')[1];
     if(def)setTerm(def,10);
   }
-  updateGoal();isNewPlant=true;render();go(2);
+  updateGoal();
+  /* ברירת מחדל גלויה: "שיצבור ריבית מובטחת", שכבר נושאת את התג "מתאים
+     לרוב". בלעדיה המסך נפתח עם קופסה ירוקה ריקה ונקודה — אין מספר,
+     ואין מה להגיב אליו.
+
+     זה אינו מה שהוסר מ-setFreq: שם המסלול נבחר כתופעת לוואי של לחיצה
+     על שאלת התדירות, בלי שדבר על המסך השתנה. כאן האפשרות נדלקת, הצפי
+     מופיע, ואפשר לבחור אחרת — ברירת מחדל שרואים. modeTouched שומר על
+     בחירה קודמת, כך שחזרה אחורה אינה דורסת אותה. */
+  if(!modeTouched)setMode('safe');
+  isNewPlant=true;render();go(2);
 }
 let freq='m',mode=null,rate=.035,modeTouched=false;
 const amtM=document.getElementById('amt-m'),amtL=document.getElementById('amt-l');
@@ -2984,7 +2994,24 @@ function startCreate(){
      להתחיל מהערכים של הטופס — אחרת "יישמר כמו שהוא" של נטיעה שהפקדת בה
      קודם היה נדבק לנטיעה הבאה שתפתח. */
   mode=null;rate=.035;
-  document.getElementById('c-full').value='';
+  /* ‏c-name נשאר מחוץ לניקוי, והיה מגיע עם "דניאל" שכתוב בקובץ — כלומר
+     כל נטיעה חדשה נפתחה על שם של ילד אחר. מי שלא שם לב הקים רגע בשם
+     "בר המצווה של דניאל" עבור לביא, וזה בדיוק מה שקרה בחשבון החי:
+     beneficiary_full_name קיבל "לביא" ו-beneficiary_name נשאר "דניאל".
+
+     ואיתו גם האירוע והשם החופשי: פיל שנבחר בנטיעה קודמת נשאר דלוק. */
+  document.getElementById('c-name').value='';
+  document.querySelectorAll('#c-pills button').forEach(function(x,i){
+    x.classList.toggle('on',i===0)});
+  cType='בר/בת מצווה';cIcon='🎂';
+  const cu=document.getElementById('c-custom');
+  if(cu){cu.value='';cu.style.display='none'}
+  /* וכל שדות הנהנה והמורשה. השמות והכתובות האלה שייכים לרגע אחד, ואם
+     הם נשארים הם נדבקים לרגע הבא — כלומר הכתובת של הורה אחד נשלחת
+     כבקשת אישור על ילד של מישהו אחר. */
+  ['c-full','c-bene','c-gname','c-gcontact'].forEach(function(id){
+    const el=document.getElementById(id); if(el)el.value='';
+  });
   document.querySelectorAll('#c-sex button').forEach(function(x){x.classList.remove('on')});
   beneCopy();
   cDate.value='';
@@ -3161,7 +3188,11 @@ function backToName(){
   document.getElementById('c-name').focus();
 }
 function checkBene(){
-  const nm=((document.getElementById('c-name')||{}).value||'הילד').trim();
+  /* raw הוא מה שבאמת הוקלד, ו-nm הוא מה שמוצג בכיתובים. ההפרדה נחוצה
+     כי "הילד" הוא מילת מילוי לטקסט, ולא ערך שמותר לזרוע בשדה שנשמר:
+     בלעדיה c-full נפתח עם "הילד" ו-beneficiary_full_name נשמר כך. */
+  const raw=((document.getElementById('c-name')||{}).value||'').trim();
+  const nm=raw||'הילד';
   if(!designated){
     txt('cp1-h','הכסף עד שתחליט');
     txt('cp1-sub','לא חייבים לדעת עכשיו למי. זה מה שקורה בינתיים.');
@@ -3171,7 +3202,7 @@ function checkBene(){
   beneCopy();
   /* the first name was already given one step ago — don't make him retype it, only extend it */
   const full=document.getElementById('c-full');
-  if(full && !fullTouched)full.value=nm;
+  if(full && !fullTouched)full.value=raw;
   /* once he's given a full name here, that's the more specific, authoritative one — prefer it
      everywhere on this screen over the casual first name from step 1 */
   const dispNm=(full&&full.value.trim().split(' ')[0])||nm;
@@ -4478,10 +4509,24 @@ function paintDetail(key,p){
   txt('d-whofine', iOwn
     ? 'רק אתה רואה את הפילוח הזה, כבעל הנטיעה. הקרובים רואים זה את זה, בלי סכומים.'
     : 'אתה רואה את הסכום שלך ואת של מי שפתח את הנטיעה. סכום של קרוב אחר מוצג רק אם בחר לחשוף אותו.');
+  /* גם ברגע פרטי הרשימה מוצגת, עם שורה אחת — אתה. קודם היא נעלמה, וכך
+     המסך של רגע פרטי היה מבנה אחר לגמרי מזה של רגע משותף: המספר, ואז
+     כלום. שורה אחת אומרת מה שהיא אומרת — כאן נוטע אדם אחד — ומסבירה
+     למה הכפתור שמתחת מציע לפתוח אותו לקרובים.
+
+     ריק לגמרי עדיין מסתתר: רשימה בלי אף שורה היא כותרת מעל אוויר. */
   const solo=!p.shared&&p.who.length<2;
-  document.getElementById('d-cbh').style.display=solo?'none':'';
-  document.getElementById('d-who').style.display=solo?'none':'';
-  document.getElementById('d-whofine').style.display=solo?'none':'';
+  const noone=!p.who.length;
+  document.getElementById('d-cbh').style.display=noone?'none':'';
+  document.getElementById('d-who').style.display=noone?'none':'';
+  document.getElementById('d-whofine').style.display=noone?'none':'';
+  /* והשורה הקטנה מתחת לרשימה מדברת על "הקרובים רואים זה את זה" — משפט
+     שאין לו על מה לחול כשאין קרובים. ברגע פרטי היא אומרת את מה שנכון בו. */
+  /* ובבעלות משותפת "רק אתה" סותר את הכותרת "נוטעים יחד · אתה ומיכל":
+     בעלות אינה הפקדה, אבל המשפט צריך להישמע נכון לשניהם. */
+  if(solo&&iOwn)txt('d-whofine', p.co
+    ? ('רק אתה הפקדת כאן עד עכשיו. מי שתפתחו לו את הרגע יופיע ברשימה הזאת, בלי לראות את הסכומים שלכם.')
+    : 'רק אתה נוטע כאן. מי שתפתח לו את הרגע יופיע ברשימה הזאת, בלי לראות את הסכומים שלך.');
   buildActions(p);
   buildChart(p);
   dTime.max=Math.max(1,p.yl);dTime.value=0;
@@ -6835,7 +6880,7 @@ function buildLiveActions(p){
   acts.className='';
   acts.innerHTML=actionsFor(p);
   note.innerHTML=p.co?('פרטית, רק אתה ו'+p.co+' רואים אותה')
-    :'הנטיעה הזאת פרטית, <a href="#" onclick="openToCircle();return false" style="color:var(--leaf)">פתח אותה לקרובים</a>';
+    :'הנטיעה הזאת פרטית — רק אתה רואה אותה';
 }
 /* חזרה מצטרפת לכל שורת פעולות באחת משתי דרכים: זוג עם כפתור בודד
    (מקבלת מקום נקי, ghost, אותו כלל שהוא ‎.two>.btn.ghost:last-child‎
@@ -6853,9 +6898,15 @@ function pairWithBack(primaryBtn){
    מי שאינו היוזם, ונטיעה שאינה פתוחה לקרובים, אינם מזמינים — ואז
    נשארת "חזרה" לבדה, ברוחב מלא ולא בחצי, כי אין לה עם מי לחלוק. */
 function actionsFor(p){
-  return (p.mine&&p.shared&&p.designated!==false)
+  if(!p.mine||p.designated===false)
+    return '<button class="btn ghost" onclick="go(0)">חזרה</button>';
+  /* וברגע פרטי הפעולה שמזיזה אותו קדימה היא לפתוח אותו לקרובים —
+     ולכן היא כפתור, באותו מקום שבו רגע משותף מציג "הזמן קרוב". קודם היא
+     הייתה קישור בתוך משפט אפור מתחת לשורת הפעולות, והמקום הזה נשאר
+     ריק מפעולה — "חזרה" לבדה ברוחב מלא. */
+  return p.shared
     ? pairWithBack('<button class="btn" onclick="openInvite(cur)">הזמן קרוב</button>')
-    : '<button class="btn ghost" onclick="go(0)">חזרה</button>';
+    : pairWithBack('<button class="btn" onclick="openToCircle()">פתח לקרובים</button>');
 }
 function buildActions(p){
   if(p.live){buildLiveActions(p);return}
@@ -6877,8 +6928,9 @@ function buildActions(p){
     acts.innerHTML=actionsFor(p);
     note.style.display='block';
     if(p.mine){
-      note.innerHTML=(p.co?'פרטית, רק אתה ו'+p.co+' רואים אותה. ':'הנטיעה הזאת פרטית, ')+
-        '<a href="#" onclick="openToCircle();return false" style="color:var(--leaf)">פתח אותה לקרובים</a>'+
+      /* הקישור "פתח אותה לקרובים" ירד מכאן והפך לכפתור הראשי. */
+      note.innerHTML=(p.co?'פרטית, רק אתה ו'+p.co+' רואים אותה'
+                          :'הנטיעה הזאת פרטית — רק אתה רואה אותה')+
         (p.co?'':' · '+addPartnerLink);
     }else{
       const o=p.who[0],f=o[3]==='f';
