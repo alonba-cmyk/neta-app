@@ -872,7 +872,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '8881e3d';
+window.NETA_BUILD = 'a506c85';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1034,7 +1034,7 @@ window.NETA_CONFIG = {
         <span><i class="dsw o"></i>מקרוביי<b id="s-othv">·</b></span>
       </div>
     </div>
-    <div class="s-meta"><span><b id="s-cnt">2</b> נטיעות</span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span><span class="grp" id="s-fut-grp"><i></i><span>צפוי <b class="fut" id="s-fut"></b></span></span></div>
+    <div class="s-meta"><span><b id="s-cnt">2</b> <span id="s-cntw">נטיעות</span></span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span><span class="grp" id="s-fut-grp"><i></i><span>צפוי <b class="fut" id="s-fut"></b></span></span></div>
   </div>
 
   <!-- שני סקשנים, והגבול ביניהם הוא family_of: רגע שייך למשפחה שלי,
@@ -6755,7 +6755,9 @@ function buildHomeSummary(){
        של 0 היה שקר על מסך שיש בו תוכן. אז המספר עובר לתאר את מה שיש. */
     const onlyOth=!own.length&&oth.length>0;
     txt('s-you',shekel(onlyOth?othTot:(tot||s.invested)));
-    txt('s-cnt',(onlyOth?oth:own).length);
+    const nHere=(onlyOth?oth:own).length;
+    txt('s-cnt',nHere);
+    txt('s-cntw',nHere===1?'נטיעה':'נטיעות');
     txt('s-mon',shekel((onlyOth?oth:own).reduce(function(a,p){
       return a+Number(p.myMonthly||0)},0)));
     /* בלי שמות — המשפט נגמר ב"של " באוויר. קורה לכל חשבון חדש. */
@@ -6766,11 +6768,18 @@ function buildHomeSummary(){
     /* קצר בכוונה. כותרת הסקשן מיד מתחת כבר אומרת "עבורי ובני משפחתי",
        והשורה הזאת צריכה רק לומר מה המספר מודד. ניסוח ארוך יותר שבר
        את השורה לשתיים, והנבט שלצידה נראה ננסי — homefix בודק את זה. */
-    /* השמות מגיעים מ-home_summary, שסופרת רק רגעים שהפקדתי בהם — ולכן
-       הם ריקים דווקא אצל הורה שאישר ועוד לא נטע, כלומר במקום שבו הם
-       הכי נחוצים. נגזרים מהרשימה כשהם חסרים: רק משם שיש בו " של ",
-       כדי שקופה שלא יועדה לא תיכנס כאילו היא ילד. */
-    const kidsHere=s.kids.length?s.kids:(function(){
+    /* השמות נגזרים מהסקשן הראשון בלבד, ולא מ-home_summary.
+       ‏beneficiary_names סופרת כל רגע שהפקדתי בו — כולל רגעים של
+       משפחות אחרות — ולכן אצל אלון הכיתוב אמר "נצבר עבור לביא,
+       לביקוש ופיסטוק" מעל מספר שהוא פיסטוק בלבד. כיתוב חייב לתאר את
+       המספר שמעליו, ולכן מקורו חייב להיות אותו מקור.
+
+       ומאותה סיבה זה גם מתקן את הכיוון השני: home_summary ריקה אצל
+       הורה שאישר ועוד לא הפקיד, כלומר דווקא במקום שבו השמות נחוצים.
+
+       רק משם שיש בו " של ", כדי שקופה שלא יועדה או שם חופשי לא ייכנסו
+       כאילו הם ילד. */
+    const kidsHere=(function(){
       const out=[];
       own.forEach(function(p){
         const parts=String(p.name||'').split(' של ');
