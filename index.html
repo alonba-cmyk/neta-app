@@ -868,7 +868,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'bb89dfa';
+window.NETA_BUILD = 'dcda855';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -916,6 +916,18 @@ window.NETA_CONFIG = {
        בלבד, stroke-width אחיד של 1.8, ו-stroke-linecap עגול כמו בנבט
        וב-chev. הצבע מגיע מ-.dot.g ולא נקבע כאן, ולכן אותו אייקון
        יעבוד גם על רקע אחר. -->
+  <!-- הטאב "ההשקעות שלי" נשא את אייקון שני הנבטים, שתיאר את הטאב
+       שישב שם קודם ("נטעו למשפחתי"). שני נבטים אינם אומרים "כמה
+       נתתי", ובעיקר — הם חוזרים על הנבט של הטאב הראשון, כלומר שני
+       אייקונים כמעט זהים זה ליד זה בסרגל.
+
+       שלושה קווים עולים: מה שנתת, לאורך זמן. אותם כללים של הסט הקווי
+       שאלון בחר — 24x24, currentColor, stroke-width 1.8, קצה עגול. -->
+  <g id="ic-invest" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+    <line x1="5.4" y1="19" x2="5.4" y2="14.6"/>
+    <line x1="12" y1="19" x2="12" y2="10.4"/>
+    <line x1="18.6" y1="19" x2="18.6" y2="5.8"/>
+  </g>
   <g id="ic-kin" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="15" cy="8.6" r="3.6"/><path d="M9.2 20.2 C9.2 16.1 11.8 14.2 15 14.2 C18.2 14.2 20.8 16.1 20.8 20.2"/>
     <path d="M9.4 5.6 A3.6 3.6 0 0 0 6.6 12.1"/><path d="M3.2 20.2 C3.2 16.6 5 14.8 7.6 14.5"/>
@@ -1021,14 +1033,26 @@ window.NETA_CONFIG = {
     <div class="s-meta"><span><b id="s-cnt">2</b> נטיעות</span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span><span class="grp" id="s-fut-grp"><i></i><span>צפוי <b class="fut" id="s-fut"></b></span></span></div>
   </div>
 
+  <!-- שני סקשנים, והגבול ביניהם הוא family_of: רגע שייך למשפחה שלי,
+       או למשפחה של מישהו אחר — לעולם לא לשתיהן. זה החתך היחיד שבו
+       שני הסקשנים זרים זה לזה, ולכן הוא זה שסוגר את הכפילות שבה אותו
+       רגע הופיע גם כאן וגם בטאב "נטעו למשפחתי".
+
+       ולכן גם שני הסכומים אינם מתחברים: המספר הגדול הוא הסקשן הראשון
+       בלבד. חיבור שלהם היה מאחד כסף של שתי משפחות למספר אחד, וזה
+       בדיוק מה שסעיף 16 ב-open-decisions אוסר. -->
   <div class="hdr-row">
-    <p class="eyebrow big">הנטיעות שלך</p>
+    <p class="eyebrow big" id="own-head">נטיעות עבורי ובני משפחתי</p>
     <button class="hdr-link" id="proj-link" style="display:none" onclick="showProjectionSheet()">הצפי לעתיד ›</button>
   </div>
 
   <div id="garden"></div>
 
   <button class="btn dash gap" style="margin-top:2px" onclick="startCreate()">+ פתח נטיעה חדשה</button>
+
+  <p class="eyebrow big" id="oth-head" style="display:none">נטיעות עבור אחרים</p>
+  <div id="garden-oth"></div>
+  <p class="fine" id="oth-fine" style="display:none">הכסף הזה שייך לרגעים של משפחות אחרות, ולכן הוא אינו נספר במספר שלמעלה.</p>
 
   </div><!-- /home-full -->
 
@@ -1582,50 +1606,63 @@ window.NETA_CONFIG = {
 </section>
 
 
-<!-- 14 INCOMING / נטעו למשפחתי -->
-<!-- הכיוון הנכנס. השאלה כאן אינה "כמה נטעתי" אלא "כמה נטעו לעתיד של
-     הילדים שלי" — כסף שאינו שלי, ולכן אינו מתחבר לאף מספר במסך הבית
-     ויושב בטאב משלו. הרשימה היא רגעים ולא אנשים: בלחיצה נפתח מסך
-     הרגע שכבר קיים, ושם רואים מי נטע וכמה. אין כאן מסך פנימי חדש.
+<!-- 14 · ההשקעות שלי -->
+<!-- המסך היחיד באפליקציה שהיחידה שלו היא הכסף שנתתי, ולא הרגע. אותן
+     שורות במסד כמו במסך הבית, שאלה אחרת לגמרי: לא "כמה נצבר למי"
+     אלא "כמה אני נותן, ולאן זה הולך".
+
+     זו גם הסיבה שהמילה הפיננסית יושבת דווקא כאן. הטאב הראשון הוא
+     "הנטיעות", כי המוצר בנוי על נטיעה ולא על תיק השקעות; המסך הזה
+     באמת מדבר כסף, ולכן הוא "ההשקעות שלי".
 
      המזהים kin-full ו-kin-empty נשמרו: applyTabSources ו-setEmpty
      מכירים אותם בשם, והחלפת שם כאן הייתה משאירה טאב שלא נסגר. -->
-<section class="screen" data-name="נטעו למשפחתי">
+<section class="screen" data-name="ההשקעות שלי">
   <div id="kin-full">
   <div class="summary">
     <div class="s-row">
       <div class="s-body">
-        <!-- הכותרת מעל המספר ולא מתחתיו: השורה העליונה כבר אומרת "מי
-             נטע לעתיד של הילדים שלך", וכיתוב מתחת היה חוזר עליה. מה
-             שחסר כאן הוא מה המספר מודד, וזה מה שכתוב. -->
-        <div class="s-eyebrow">נטעו למשפחתך</div>
-        <div class="s-num" id="fam-num">260 ₪</div>
+        <div class="s-eyebrow">נטעת עד כה, בסך הכל</div>
+        <div class="s-num" id="mi-num">300 ₪</div>
       </div>
-      <div class="s-art"><span class="ppav" id="fam-av">
-        <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></span>
-        <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></span>
-      </span></div>
+      <div class="s-art">
+        <svg width="52" height="61" viewBox="10 6 40 57" style="color:var(--leaf)" aria-hidden="true"><use href="#sprout-art"/></svg>
+      </div>
     </div>
-    <div class="s-meta" id="fam-meta"></div>
+    <div class="s-meta" id="mi-meta"></div>
   </div>
-  <p class="fine" style="margin-top:13px">הכסף הזה שייך לרגעים של המשפחה שלך, ולא להשקעות שלך. לכן הוא כאן, ולא במסך הבית.</p>
 
-  <p class="eyebrow big">הרגעים שנטעו בהם</p>
-  <div id="fam-list"></div>
-  <p class="fine gap">בלחיצה על רגע נפתח מסך הרגע — ושם מי נטע וכמה.</p>
+  <div class="card gap">
+    <div class="stat"><span class="k">בכל חודש, מכל הרגעים יחד</span>
+      <span class="v" style="color:var(--leaf)" id="mi-mon">·</span></div>
+    <div class="stat" id="mi-projrow"><span class="k">מה שנטעת יגדל ל</span>
+      <span class="v" style="color:var(--sun-soft)" id="mi-proj">·</span></div>
+  </div>
+  <p class="fine" style="margin-top:9px">הצפי מתייחס לכסף שלך בלבד, ולא למה שאחרים נטעו לאותם רגעים.</p>
+
+  <p class="eyebrow big">בעתיד של מי</p>
+  <div id="mi-list"></div>
+  <p class="fine gap">בלחיצה על רגע נפתח מסך הרגע — ושם אפשר להוסיף, או לעצור את ההפקדה החודשית.</p>
+
+  <p class="eyebrow big">אמצעי תשלום</p>
+  <div class="card tap" onclick="go(16)">
+    <div class="row" style="align-items:center;gap:10px">
+      <div class="dot g" style="background:var(--s2)">💳</div>
+      <div style="flex:1"><div class="title" id="mi-pay">·</div>
+        <div class="meta" id="mi-paysub">·</div></div>
+      <span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>
+    </div>
+  </div>
   </div><!-- /kin-full -->
 
-  <!-- אותו דפוס של המצב הריק שכבר קיים באפליקציה: שני נבטים, כותרת,
-       פסקה, כפתור אחד, ודגם בגובה הכרטיס האמיתי. הפסקה ויתרה על החצי
-       שמדבר על להשקיע — זו שאלת הטאב האחר — ו"אחרים" הפך ל"קרובים". -->
+  <!-- אותו מצב ריק של הבית, כי זו אותה עובדה: עוד לא נטעת. -->
   <div class="es" id="kin-empty" style="display:none">
-    <!-- נבטים ולא פנים: הטאב הזה מונה כסף ומציג רגעים, והאנשים שבו הם
-         רמה אחת פנימה. הפנים עברו ל"הקרובים שלי", שהוא רשימת אנשים —
-         האיור מתאר את מה שהמסך מונה. וזה גם אותו זוג שבאייקון בסרגל. -->
-    <div class="art" style="color:var(--leaf-2)"><svg width="74" height="74" viewBox="7 6 57 57" aria-hidden="true"><g opacity=".45" transform="translate(-1.4,13.64) scale(.78)"><use href="#sprout-art"/></g><g opacity=".85" transform="translate(14,0)"><use href="#sprout-art"/></g></svg></div>
-    <h3>כאן יופיע מה שקרובים נטעו<br>עבור היקרים לכם</h3>
-    <p>הזמינו את הקרובים שלכם לרגע שפתחתם, וכל מה שינטעו יופיע כאן.</p>
-    <button class="btn" onclick="openInvitePicker()">הזמן קרוב</button>
+    <!-- 63x74 ולא 66x78: גובה גוש האיור נמדד מול המצב הריק של הקרובים,
+         כדי ששני המסכים יתחילו את הכותרת באותה שורה בדיוק. esalign בודק. -->
+    <div class="art"><svg width="63" height="74" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
+    <h3>כאן יופיע מה שנתת</h3>
+    <p>ברגע שתנטע, כאן יהיה כמה אתה מפקיד בכל חודש, לאן זה הולך, ולאיזה סכום זה גדל.</p>
+    <button class="btn" onclick="startCreate()">פתח את הנטיעה הראשונה</button>
     <div class="gsample tall" id="kin-ghost" aria-hidden="true"></div>
   </div>
 </section>
@@ -2149,8 +2186,12 @@ window.NETA_CONFIG = {
      מגירת הגדרות שנכנסים אליה לעיתים רחוקות, ולא יעד שמתחרה על משבצת.
      כך הטאב הנכנס נכנס בלי שאיש שילם עליו. -->
 <nav class="tabbar" id="tabbar">
-  <button class="tab on" onclick="go(0)"><span class="ic"><svg width="14" height="20" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>הנטיעות</span><span>שלי</span></span></button>
-  <button class="tab" onclick="openFamily()"><span class="ic"><svg width="20" height="20" viewBox="7 6 57 57" aria-hidden="true"><g opacity=".5" transform="translate(-1.4,13.64) scale(.78)"><use href="#sprout-art"/></g><g transform="translate(14,0)"><use href="#sprout-art"/></g></svg></span><span class="lb"><span>נטעו</span><span>למשפחתי</span></span></button>
+  <!-- "שלי" ירדה מהטאב הראשון: הוא מכיל גם רגעים שקרוב פתח, והמילה
+       הזאת היא בדיוק מה שנשבר. הטאב השני החליף תוכן ולא מקום — הוא
+       יושב על אותו אינדקס (14) שנשא את "נטעו למשפחתי", שהתמזג לסקשן
+       במסך הבית. -->
+  <button class="tab on" onclick="go(0)"><span class="ic"><svg width="14" height="20" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>הנטיעות</span></span></button>
+  <button class="tab" onclick="openInvestments()"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-invest"/></svg></span><span class="lb"><span>ההשקעות</span><span>שלי</span></span></button>
   <button class="tab center" onclick="startCreate()"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg></span><span class="lb"><span>נטיעה</span></span></button>
   <button class="tab" onclick="openPeople()"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-kin"/></svg></span><span class="lb"><span>הקרובים</span><span>שלי</span></span></button>
   <button class="tab" onclick="go(9)"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></span><span class="lb"><span>פעילות</span></span></button>
@@ -2184,7 +2225,7 @@ const ONBO={welcome:19,login:20,how:21,identity:22,done:23};
 let onbo=false;
 const topbars={
   0:['שלום אלון','הכסף גדל בזמן שהם גדלים'],
-  14:['נטעו למשפחתי','מי נטע לעתיד של הילדים שלך'],
+  14:['ההשקעות שלי','כמה אתה נותן, ולאן זה הולך'],
   /* גם כאן, ולא ככותרת בתוך המסך: ארבעת יעדי הסרגל צריכים כותרת באותו
      מקום ובאותו גודל, אחרת המעבר ביניהם קופץ. זה היה המסך היחיד מביניהם
      שהחזיק h2 בתוך הגלילה, ולכן גם התמונה שבפינה נעלמה בו. */
@@ -5635,6 +5676,13 @@ function netaBackend(cfg){
                   projection:Number(p.projection_agorot||0),
                   hasStandingOrder:p.has_standing_order,
                   joined:!!by, by:by||null, bySex:bySex||null,
+                  /* הגבול בין שני הסקשנים. is not distinct from במסד,
+                     ולכן רגע בלי family_of נופל לצד של "אחרים" — וזה
+                     נכון: עד שההורה מאשר, הרגע אינו של המשפחה שלי. */
+                  familyMine:p.family_of_me===true,
+                  familyName:p.family_name||null,
+                  myMonthly:Number(p.my_monthly_agorot||0),
+                  myProjection:Number(p.my_projection_agorot||0),
                   participants:p.participants||[]};
         };
         const all=rows.map(function(p){return shape(p,null)})
@@ -6096,6 +6144,13 @@ const demoSource={
                  targetYear:p.yr,targetMonth:monthOf(p.date),accrued:p.now*100,
                  mine:mineAg,since:p.planted||null,
                  joined:!p.mine, by:p.mine?null:(p.co||'קרוב'),
+                 /* ארבעת הרגעים בהדגמה הם של דניאל, של נועה ושל הקופה —
+                    כולם המשפחה של אלון, כולל זה שדוד יוסי פתח. ולכן
+                    בהדגמה יש סקשן אחד, והשני אינו מוצג. בלי השורה הזאת
+                    familyMine היה undefined והכל היה נופל ל"עבור אחרים". */
+                 familyMine:true, familyName:null,
+                 myMonthly:(p.recurring===false?0:(p.monthly||0)*100),
+                 myProjection:p.end*100,
                  projection:p.end*100,
                  participants:p.who.map(function(w){return{name:w[1],avatar:w[0]}})});
     });
@@ -6275,14 +6330,18 @@ function plantCard(o){
      ופשוט לא צויר, ולכן השאלה "למה זה אצלי" נשארה בלי תשובה על המסך
      שמעורר אותה. */
   const who=o.by?(vb(o.bySex,'פתח','פתחה')+' '+o.by):'';
-  const dt=[who,o.designated===false?'עדיין לא יועדה':sinceLine(o.since)]
+  /* note גובר על "מי פתח": בסקשן השני העובדה החשובה היא של מי הרגע,
+     ולא מי לחץ ראשון. בלעדיה הכרטיס נראה בדיוק כמו רגע של המשפחה שלי. */
+  const dt=[o.note||who,o.designated===false?'עדיין לא יועדה':sinceLine(o.since)]
     .filter(Boolean).join(' · ');
   return '<div class="ncard pc" onclick="openDetail(\''+o.key+'\')">'+
     '<div class="pc-ic">'+(o.icon||'🌱')+'</div>'+
     '<div class="pc-x"><div class="pc-nm">'+o.name+'</div>'+
       '<div class="pc-amt">'+o.verb+' '+shekel(o.amount)+'</div>'+
       (dt?'<div class="pc-dt">'+dt+'</div>':'')+'</div>'+
-    '<div class="pc-fc">'+faceStack(o.people)+faceCap(o.cap)+'</div>'+
+    (o.nofaces
+      ? '<div class="pc-fc"><i>'+(o.cap||'&nbsp;')+'</i></div>'
+      : '<div class="pc-fc">'+faceStack(o.people)+faceCap(o.cap)+'</div>')+
   '</div>';
 }
 function cardHTML(p){
@@ -6291,6 +6350,16 @@ function cardHTML(p){
                     amount:mine,cap:planterCap(p.participants,mine),
                     by:p.by,bySex:p.bySex,
                     since:p.since,designated:p.designated,people:p.participants});
+}
+/* הכרטיס בסקשן "נטיעות עבור אחרים". המספר הוא מה ש*אני* נטעתי ולא מה
+   שנצבר ברגע — הרגע הזה אינו שלי, והחלק שלי בו הוא כל מה שיש לי לומר
+   עליו. ושורת המשנה אומרת של מי הוא, אחרת הוא נראה כמו רגע שלי. */
+function othCardHTML(p){
+  const mine=(p.mine==null?p.accrued:p.mine);
+  return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נטעת עד כה',
+                    amount:mine,cap:planterCap(p.participants,mine),
+                    note:p.familyName?('המשפחה של '+p.familyName):'משפחה של קרוב',
+                    since:null,designated:p.designated,people:p.participants});
 }
 /* יותר משתי נטיעות מציפות את המסך, אז רק כרטיס אחד נוסף — הצצה דהויה —
    מצטרף לשתיים הראשונות. השאר לא נכנסים ל-DOM בכלל עד שמבקשים, כדי
@@ -6410,18 +6479,15 @@ function buildGhosts(){
   if(home)home.innerHTML=['danielBar','noaStudy']
     .map(function(k){return ghostCardHTML(plants[k])}).join('');
 
-  /* הדגם מסמן את מה שבאמת יופיע כאן, ובגובה שלו: הטאב הזה מציג רגעים
-     שקרובים נטעו בהם, ולכן הדגם הוא אותו כרטיס 05ג עם "נטעו". קודם
-     הוא הראה אנשים — זה היה נכון למסך הקודם שישב על האינדקס הזה. */
+  /* הדגם מסמן את מה שבאמת יופיע כאן, ובגובה שלו. המסך הזה מונה את מה
+     שאני נתתי, ולכן הדגם הוא כרטיס "נטעת" עם קצב חודשי — לא "נטעו". */
   const kin=document.getElementById('kin-ghost');
   if(kin){
-    kin.innerHTML=[['🎂','בר המצווה של פיסטוק',22000,'2026-05-01',
-                    [{name:'סבתא רחל',avatar:'av-granny'}]],
-                   ['🎓','הלימודים של נועה',4000,'2024-03-01',
-                    [{name:'דוד יוסי',avatar:'av-uncle'}]]]
+    kin.innerHTML=[['🎂','בר המצווה של פיסטוק',22000,10000,'2026-05-01'],
+                   ['🎓','הלימודים של נועה',4000,6000,'2024-03-01']]
       .map(function(g){
-        return familyCardHTML({id:'',icon:g[0],name:g[1],others_agorot:g[2],
-                               first_on:g[3],designated:true,participants:g[4]});
+        return ivCardHTML({key:'',icon:g[0],name:g[1],mine:g[2],myMonthly:g[3],
+                           since:g[4],designated:true,familyMine:true});
       }).join('');
   }
 
@@ -6638,26 +6704,39 @@ function buildHomeSummary(){
       const nothing=!model.plantings.length&&!s.count;
       if(nothing!==isEmpty)setEmpty(nothing);
     }
-    /* המספר הגדול הוא מה שנצבר לעתיד של היקרים לך — לא רק מה שאתה
-       נטעת. זו השאלה שהמשתמש שואל כשהוא פותח את האפליקציה, והיא גם
-       מה שמצדיק את הקרובים: הכסף שלהם נספר כאן כי הוא הגיע לאותו
-       ילד. הפילוח מתחת שומר על ההבחנה, ומסתדר עם הכרטיסים: "ממך"
-       שווה בדיוק לסכום ה"נטעת עד כה" שלמטה. */
-    const tot=model.plantings.reduce(function(a,p){return a+Number(p.accrued||0)},0);
-    const mineTot=model.plantings.reduce(function(a,p){
-      return a+Number(p.mine==null?p.accrued:p.mine)},0);
-    txt('s-you',shekel(tot||s.invested));
-    txt('s-cnt',s.count);
-    txt('s-mon',shekel(s.monthly));
+    /* כל כרטיס הסיכום מתאר את הסקשן הראשון בלבד — הרגעים של המשפחה
+       שלי. המספר הגדול הוא מה שנצבר בהם, כולל כסף של קרובים, כי הוא
+       הגיע לאותו ילד; הפילוח מתחת שומר על ההבחנה.
+
+       הסקשן השני אינו נכנס לאף אחד מהמספרים האלה. הוא כסף שנטעתי
+       למשפחה אחרת, וחיבור שלו כאן היה מאחד כסף של שתי משפחות למספר
+       אחד. הוא מוזכר במשפט מתחת למספר, ונספר במלואו במסך "ההשקעות
+       שלי" — שם השאלה היא כמה נתתי, ולא כמה נצבר למי. */
+    const own=model.plantings.filter(function(p){return p.familyMine});
+    const oth=model.plantings.filter(function(p){return !p.familyMine});
+    const mineOf=function(p){return Number(p.mine==null?p.accrued:p.mine)};
+    const tot=own.reduce(function(a,p){return a+Number(p.accrued||0)},0);
+    const mineTot=own.reduce(function(a,p){return a+mineOf(p)},0);
+    const othTot=oth.reduce(function(a,p){return a+mineOf(p)},0);
+    /* מי שנטע רק לילדים של קרובים אין לו סקשן ראשון בכלל, ומספר גדול
+       של 0 היה שקר על מסך שיש בו תוכן. אז המספר עובר לתאר את מה שיש. */
+    const onlyOth=!own.length&&oth.length>0;
+    txt('s-you',shekel(onlyOth?othTot:(tot||s.invested)));
+    txt('s-cnt',(onlyOth?oth:own).length);
+    txt('s-mon',shekel((onlyOth?oth:own).reduce(function(a,p){
+      return a+Number(p.myMonthly||0)},0)));
     /* בלי שמות — המשפט נגמר ב"של " באוויר. קורה לכל חשבון חדש. */
     /* "הושקעו" סבילה וחסרת נושא, ולכן היא נקראת כמו "זה מה שאני
        הפקדתי" — בדיוק ההפך מהמספר, שהוא מה שנצבר לרגעים האלה כולם,
        כולל כסף של קרובים. "נצבר" אומרת את זה בלי נושא כי אין לה נושא
        אחד, והיא גם המילה שמסך הרגע כבר משתמש בה ("נצבר לרגע הזה"). */
-    txt('s-label',s.kids.length
-      ? 'נצבר עד כה בעתיד של '+listNames(s.kids)
-      : 'נצבר עד כה');
-    const others=Math.max(0,(tot||s.invested)-mineTot);
+    /* קצר בכוונה. כותרת הסקשן מיד מתחת כבר אומרת "עבורי ובני משפחתי",
+       והשורה הזאת צריכה רק לומר מה המספר מודד. ניסוח ארוך יותר שבר
+       את השורה לשתיים, והנבט שלצידה נראה ננסי — homefix בודק את זה. */
+    txt('s-label',onlyOth
+      ? 'נטעת עבור משפחות של קרובים'
+      : (s.kids.length ? 'נצבר עד כה עבור '+listNames(s.kids) : 'נצבר עד כה'));
+    const others=onlyOth?0:Math.max(0,tot-mineTot);
     const sm=document.getElementById('s-mine');
     if(sm){
       sm.style.display=others>0?'':'none';
@@ -6667,10 +6746,22 @@ function buildHomeSummary(){
         const bm=document.getElementById('s-barmine'),bo=document.getElementById('s-barother');
         if(bm)bm.style.width=pct+'%';
         if(bo)bo.style.width=(100-pct)+'%';
+        /* כשאחד הצדדים הוא 0, שני הגוונים הירוקים נקראים כפס אחד מלא —
+           כלומר גרפיקה שאומרת "הכל" בדיוק כשהיא אמורה לומר "כלום ממך".
+           במצב הזה נשארות המילים בלבד. */
+        const bar=document.querySelector('#s-mine .split-bar');
+        if(bar)bar.style.display=(mineTot>0&&others>0)?'':'none';
       }
     }
-    document.getElementById('garden').innerHTML=gardenHTML(model.plantings);
-    const proj=projectablePlantings(model);
+    document.getElementById('garden').innerHTML=gardenHTML(onlyOth?[]:own);
+    document.getElementById('own-head').style.display=onlyOth?'none':'';
+    document.getElementById('garden-oth').innerHTML=oth.map(othCardHTML).join('');
+    document.getElementById('oth-head').style.display=(oth.length&&!onlyOth)?'':'none';
+    document.getElementById('oth-fine').style.display=(oth.length&&!onlyOth)?'':'none';
+    /* מי שיש לו רק סקשן שני רואה אותו כרשימה הראשית, בלי כותרת שנייה
+       שמפרידה אותו ממשהו שאינו קיים. */
+    if(onlyOth)document.getElementById('garden').innerHTML=oth.map(othCardHTML).join('');
+    const proj=projectablePlantings({plantings:onlyOth?oth:own});
     const projLink=document.getElementById('proj-link');
     if(projLink)projLink.style.display=proj.length?'':'none';
     const futGrp=document.getElementById('s-fut-grp');
@@ -6679,7 +6770,8 @@ function buildHomeSummary(){
       txt('s-fut','כ-'+shekel(projectedTotal(proj))+projectedHorizon(proj));
       tidyMetaRow();
     }
-    if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();loadFamily();}
+    if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();}
+    paintInvestments();
     buildFeed();buildConnection();
     /* ההתראות ממתינות במסד למי שיפתח את האפליקציה. זו רשת הביטחון:
        הריקון המיידי קורה אצל מי שגרם לאירוע (ראו onAction למטה), וכאן
@@ -6688,71 +6780,61 @@ function buildHomeSummary(){
     return model;
   });
 }
-/* ─── נטעו למשפחתי ────────────────────────────────────────────────────
-   הכיוון הנכנס. הסכום כאן אינו כספך: הוא מה שקרובים נטעו לרגעים של
-   המשפחה שלך, ולכן הוא לא מתחבר לאף מספר במסך הבית. הרשימה היא רגעים,
-   והכרטיס הוא אותו 05ג — רק שהמונה הוא "נטעו" ולא "נטעת", ועמודת הפנים
-   מציגה את מי שנטע, בלעדיך. */
-function familyCardHTML(p){
-  const n=(p.participants||[]).length;
-  return plantCard({key:p.id,icon:p.icon,name:p.name,verb:'נטעו',
-                    amount:Number(p.others_agorot||0),
-                    cap:n>1?(n+' קרובים'):(n===1?'קרוב אחד':''),
-                    since:p.first_on||p.opened_on,
-                    designated:p.designated!==false,people:p.participants||[]});
+/* ─── ההשקעות שלי ─────────────────────────────────────────────────────
+   אותן שורות במסד כמו במסך הבית, שאלה אחרת: לא "כמה נצבר למי" אלא
+   "כמה אני נותן, ולאן זה הולך". לכן היחידה כאן היא הכסף שנתתי, וכל
+   מספר במסך הזה הוא שלי בלבד — כולל הצפי, שנגזר מ-projection_for_user
+   ולא מהצפי של הרגע.
+
+   אין כאן קריאה נוספת לשרת: הרשימה היא lastModel, אותו מודל שמסך הבית
+   כבר טען. מסך שמראה סכום אחר מזה שבמסך הקודם, כי הוא שאל שוב בזמן
+   אחר, גרוע ממסך שמתעדכן רגע מאוחר יותר. */
+function ivCardHTML(p){
+  const mine=Number(p.mine==null?p.accrued:p.mine);
+  const mo=Number(p.myMonthly||0);
+  return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נטעת',
+                    amount:mine,
+                    cap:mo>0?(shekel(mo)+' בחודש'):'ללא קבע',
+                    note:p.familyMine?'עבור המשפחה שלי'
+                        :(p.familyName?('עבור המשפחה של '+p.familyName):'עבור משפחה של קרוב'),
+                    /* בלי תאריך: השורה כבר נושאת את מי שהרגע שייך לו,
+                       ושניהם יחד נשברו לשתי שורות. ובלי פנים — במסך
+                       הזה כל הפרצופים הם שלי, כלומר עמודה שלמה של רעש. */
+                    since:null,designated:p.designated,nofaces:true});
 }
-/* עמודת התמונות שליד המספר. שתיים לכל היותר, כמו בכרטיס — עמוד של
-   שבעה פרצופים קטנים אינו אומר יותר מאשר שניים. */
-function famAvatars(rows){
-  const seen={},av=[];
-  (rows||[]).forEach(function(p){(p.participants||[]).forEach(function(w){
-    const k=w.name||w.avatar;
-    if(!seen[k]){seen[k]=1;av.push(w.avatar||'av-parent')}
-  })});
-  const out=av.slice(0,2).map(function(a){
-    return '<span><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+a+'"/></svg></span>';
+function paintInvestments(){
+  const rows=((lastModel&&lastModel.plantings)||[]).filter(function(p){
+    return Number(p.mine==null?p.accrued:p.mine)>0;
   });
-  /* עמודה של דמות אחת נראית ריקה ליד מספר בגודל הזה. מה שמשלים אותה
-     אינו פרצוף שהומצא אלא משבצות פנויות: צללית מעומעמת, ואחריה "+"
-     שפותח את בוחר ההזמנות. שלוש משבצות תמיד, ולכן רוחב קבוע. */
-  while(out.length<2)
-    out.push('<span class="slot" aria-hidden="true">'+
-      '<svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></span>');
-  out.push('<button class="slot" onclick="openInvitePicker()" aria-label="הזמן קרוב">+</button>');
-  return out.join('');
-}
-function paintFamily(total,rows,people){
-  const list=Array.isArray(rows)?rows:[];
-  const any=total>0||list.length;
   const full=document.getElementById('kin-full'),empty=document.getElementById('kin-empty');
+  const any=rows.length>0;
   if(full)full.style.display=any?'':'none';
   if(empty)empty.style.display=any?'none':'';
   if(!any)return;
-  txt('fam-num',shekel(total));
-  const av=document.getElementById('fam-av');
-  if(av)av.innerHTML=famAvatars(list);
-  const n=people!=null?people:(function(){
-    const seen={};let c=0;
-    list.forEach(function(p){(p.participants||[]).forEach(function(w){
-      if(!seen[w.name]){seen[w.name]=1;c++}})});
-    return c;})();
-  document.getElementById('fam-meta').innerHTML=
-    '<span><b>'+n+'</b> '+(n===1?'קרוב':'קרובים')+'</span><i></i>'+
-    '<span>ב-<b>'+list.length+'</b> '+(list.length===1?'רגע':'רגעים')+'</span>';
-  document.getElementById('fam-list').innerHTML=list.map(familyCardHTML).join('');
+  const mineOf=function(p){return Number(p.mine==null?p.accrued:p.mine)};
+  const total=rows.reduce(function(a,p){return a+mineOf(p)},0);
+  const monthly=rows.reduce(function(a,p){return a+Number(p.myMonthly||0)},0);
+  /* הצפי האישי חוזר מהשרת לכל רגע. כשהוא חסר — נטיעה ישנה, או מסלול
+     בלי ריבית — מוותרים על השורה ולא ממציאים מספר. */
+  const proj=rows.reduce(function(a,p){return a+Number(p.myProjection||0)},0);
+  txt('mi-num',shekel(total));
+  txt('mi-mon',monthly>0?shekel(monthly):'אין הוראת קבע פעילה');
+  const pr=document.getElementById('mi-projrow');
+  if(pr)pr.style.display=proj>total?'flex':'none';
+  txt('mi-proj','כ-'+shekel(proj));
+  document.getElementById('mi-meta').innerHTML=
+    '<span>ב-<b>'+rows.length+'</b> '+(rows.length===1?'רגע':'רגעים')+'</span>'+
+    (sinceLine(rows.map(function(p){return p.since}).filter(Boolean).sort()[0])
+      ? '<i></i><span>'+sinceLine(rows.map(function(p){return p.since})
+          .filter(Boolean).sort()[0])+'</span>' : '');
+  document.getElementById('mi-list').innerHTML=rows.map(ivCardHTML).join('');
+  const m=pays[0];
+  txt('mi-pay',m?m.t:'עוד לא חיברת אמצעי תשלום');
+  txt('mi-paysub',monthly>0
+    ? (rows.filter(function(p){return Number(p.myMonthly||0)>0}).length+' הוראות קבע פעילות')
+    : 'ההפקדות נעשות ידנית');
 }
-/* המקור נקבע מ-netaSource ולא מ-liveAccount: זה אותו שער שכל שאר
-   המסכים עוברים בו, וכך גם ההדגמה וגם חשבון אמיתי נכנסים מכאן. */
-function loadFamily(){
-  const src=netaSource();
-  if(!src.familyTotals){buildDemoFamily();return Promise.resolve()}
-  return Promise.all([src.familyTotals(),src.plantingsForMyFamily()])
-    .then(function(r){
-      const t=r[0]||{},rows=r[1]||[];
-      paintFamily(Number(t.kin_for_my_family_agorot||0),rows);
-    }).catch(function(){});
-}
-function openFamily(){ loadFamily(); go(14); }
+function openInvestments(){ paintInvestments(); go(14); }
 
 /* ─── הסתירה שהייתה במסך הבית, ואיך היא נסגרה סופית ────────────────
    home_summary סופרת את כל ההפקדות של המשתמש, גם לנטיעות שאחרים פתחו.
@@ -6763,32 +6845,6 @@ function openFamily(){ loadFamily(); go(14); }
    עכשיו אין קטע נפרד: הרשימה אחת, כי ההפרדה נשענה על מי לחץ ראשון —
    שאלה שהמשתמש אינו שואל. הגבול האמיתי, מי רשאי להזמין ולערוך, נאכף
    במסך הרגע. */
-/* ─── רשימת הקרובים, לשני הכיוונים ───────────────────────────────────
-   עד כה היא נגזרה מהיוזמים של הנטיעות שהצטרפתי אליהן, כלומר כיוון אחד
-   בלבד. אלון הזמין את אמיר, אמיר הצטרף והפקיד — ואצל אלון הטאב נשאר
-   ריק לגמרי, כולל רשימת הקרובים, כי הוא עצמו לא הצטרף לאף נטיעה של
-   אחר. זה שגוי בדיוק אצל מי שהמוצר קיים בשבילו: מי שמזמין. */
-function buildDemoFamily(){
-  const rows=[],seen={};let total=0,people=0;
-  Object.keys(plants).filter(function(k){return plants[k].mine}).forEach(function(k){
-    const p=plants[k],who=p.who.filter(function(w){return w[1]!=='אתה'});
-    if(!who.length)return;
-    let sum=0;
-    who.forEach(function(w){
-      sum+=parseInt(String(w[2]).replace(/[^0-9]/g,''),10)||0;
-      if(!seen[w[1]]){seen[w[1]]=1;people++}
-    });
-    total+=sum;
-    rows.push({id:k,icon:p.icon,name:p.name,others_agorot:sum*100,
-               first_on:p.since,designated:true,
-               participants:who.map(function(w){return {name:w[1],avatar:w[0]}})});
-  });
-  paintFamily(total*100,rows,people);
-}
-/* עובר למסך הקרובים (15). מסך 14, "הנטיעות של הקרובים", אינו נגיש
-   עוד — הרגעים שבו עברו לרשימה אחת במסך הבית. הוא נשאר בקובץ כי
-   אינדקסי המסכים הם מספרים, ומחיקה מזיזה כל go() וכל NOCHROME
-   אחריו; להסיר בסריקת אינדקסים נפרדת. */
 /* ─── הכיוון ההפוך ────────────────────────────────────────────────────
    רגעים שקרוב פתח והזמין אותי אליהם. הרשימה נגזרת מהמודל שכבר נטען
    למסך הבית (joined/by), ולא מקריאה נוספת — אותם רגעים בדיוק, רק
