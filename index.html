@@ -440,7 +440,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .rel .rn i{display:block;font-style:normal;font-size:10.5px;color:var(--tx-2);margin-top:2px}
 .rel .rx{font-family:inherit;font-size:10.5px;padding:5px 11px;border-radius:999px;cursor:pointer;
   flex-shrink:0;background:var(--leaf-bg);border:1px solid var(--leaf-line);color:var(--leaf)}
-.rel .rs{font-size:10px;color:var(--tx-3);flex-shrink:0}
 .avpick{display:flex;gap:9px;margin:4px 0 2px;flex-wrap:wrap}
 .avpick button{width:40px;height:40px;border-radius:13px;overflow:hidden;padding:0;cursor:pointer;
   background:var(--s2);border:2px solid transparent;transition:border-color .15s}
@@ -848,7 +847,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f28e5bd';
+window.NETA_BUILD = 'ac4fee0';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4702,11 +4701,14 @@ function buildRelatives(){
   box.style.border='';box.style.background='';box.style.padding='';
   box.innerHTML=relatives.map(function(r,i){
     let right;
-    if(r.status==='in')right='<span class="rs">באפליקציה</span>';
+    /* "באפליקציה" ירד. הוא היה תג ולא פעולה, ישב במקום שבו שאר השורות
+       מציעות כפתור, ותיאר את נטע ולא את הקשר איתך: יש לו חשבון אינו
+       אומר שהוא ברגע שלך. עכשיו כל שורה מציעה את אותה פעולה — להזמין
+       אותו לרגע — וזה בדיוק מה שהמסך מבטיח בכיתוב שלו. */
     /* מי שכבר הוזמן — מה שחסר לו הוא הקישור עצמו, לא הזמנה נוספת.
        הזמנות שנוצרו לפני שהקישור האישי נוסף אין להן טוקן, ולכן לא הייתה
        שום דרך באפליקציה לקבל אותו בדיעבד. */
-    else if(r.status==='invited')right=liveAccount()
+    if(r.status==='invited')right=liveAccount()
       ? '<button class="rx" onclick="event.stopPropagation();copyRelativeLink('+i+')">העתק קישור</button>'
       : '<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">שלח שוב</button>';
     else right='<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">הזמן</button>';
@@ -4846,7 +4848,7 @@ function relMeta(){
   if(!relatives.length){txt('rel-meta','עוד לא הוספת קרובים');return}
   txt('rel-meta',relatives.length+' קרובים'+
     (q?' · '+(q===1?'בקשה אחת ממתינה לאישורך':q+' בקשות ממתינות לאישורך'):
-      (pend?' · '+pend+' ממתינים להצטרפות':' · כולם באפליקציה')));
+      (pend?' · '+pend+' ממתינים להצטרפות':' · כולם הצטרפו')));
 }
 /* "הקרובים שלי" נפתח משני מקומות: מהפרופיל, ומכפתור "שלח לקרוב
    מהרשימה" שבמסך ההזמנה. כפתור החזרה שלו היה קבוע על הפרופיל, ולכן
