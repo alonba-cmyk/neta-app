@@ -847,7 +847,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '48e3c17';
+window.NETA_BUILD = 'e1b5859';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1596,14 +1596,10 @@ window.NETA_CONFIG = {
        פסקה, כפתור אחד, ודגם בגובה הכרטיס האמיתי. הפסקה ויתרה על החצי
        שמדבר על להשקיע — זו שאלת הטאב האחר — ו"אחרים" הפך ל"קרובים". -->
   <div class="es" id="kin-empty" style="display:none">
-    <!-- פנים ולא נבטים: המסך הזה עונה על "מי נטע", והכותרת מתחתיו מדברת
-         על קרובים. נבט הוא סימן המותג ומופיע בכל מקום; כאן הוא לא אמר
-         את מה שהמסך אומר. -->
-    <div class="art"><span class="esfaces" aria-hidden="true">
-      <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></span>
-      <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></span>
-      <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-friend"/></svg></span>
-    </span></div>
+    <!-- נבטים ולא פנים: הטאב הזה מונה כסף ומציג רגעים, והאנשים שבו הם
+         רמה אחת פנימה. הפנים עברו ל"הקרובים שלי", שהוא רשימת אנשים —
+         האיור מתאר את מה שהמסך מונה. וזה גם אותו זוג שבאייקון בסרגל. -->
+    <div class="art" style="color:var(--leaf-2)"><svg width="74" height="74" viewBox="7 6 57 57" aria-hidden="true"><g opacity=".45" transform="translate(-1.4,13.64) scale(.78)"><use href="#sprout-art"/></g><g opacity=".85" transform="translate(14,0)"><use href="#sprout-art"/></g></svg></div>
     <h3>כאן יופיע מה שקרובים נטעו<br>עבור היקרים לכם</h3>
     <p>הזמינו את הקרובים שלכם לרגע שפתחתם, וכל מה שינטעו יופיע כאן.</p>
     <button class="btn" onclick="openInvitePicker()">הזמן קרוב</button>
@@ -4563,7 +4559,9 @@ function markChip(el){[...el.parentNode.children].forEach(function(b){b.classLis
 /* requests the system could not verify — the owner decides, by name */
 const requests=[
   {name:'רועי כהן',av:'av-friend',plant:'danielBar',when:'לפני 4 שעות',
-   why:'פתח קישור לנטיעה אך לא נשלחה אליו הזמנה. לא הצלחנו לאמת אותו מול מספר או כתובת שהזנת.'}
+   /* באורך של הסיבה האמיתית מהשרת ("קרוב/ה · פתח/ה קישור שלא נשלח
+      אליו/ה, ולכן לא אומת/ה"), כדי שהכרטיס ייבדק בגובה שהוא באמת מקבל. */
+   why:'פתח קישור שלא נשלח אליו, ולכן לא אומת.'}
 ];
 function buildRequests(){
   const box=document.getElementById('req-list'),head=document.getElementById('req-head');
@@ -4718,10 +4716,16 @@ function buildRelatives(){
   const box=document.getElementById('rel-list');
   if(!relatives.length){
     box.style.border='none';box.style.background='none';box.style.padding='0';
-    box.innerHTML='<div class="es" style="min-height:0;padding:22px 4px"><div class="art" style="color:var(--leaf-2);opacity:.6">'+
-      '<svg width="52" height="52" viewBox="0 0 24 24"><use href="#ic-person"/></svg></div>'+
-      '<h3 style="font-size:15.5px">מי עוד נוטע איתך?</h3>'+
-      '<p>שמור כאן את סבתא, את הדוד ואת מי שקרוב, ותוכל לצרף אותם לכל נטיעה בלחיצה אחת, בלי להקליד פרטים מחדש.</p></div>';
+    /* אותו איור ואותם גדלים כמו בשאר המצבים הריקים: פנים, כי זו רשימת
+       אנשים. קודם ישב כאן אייקון קווי ב-52 פיקסל ובכותרת מוקטנת, ולכן
+       החלק העליון של המסך נראה כמו משפחה עיצובית אחרת. */
+    box.innerHTML='<div class="es" style="min-height:0;padding:22px 4px">'+
+      '<div class="art"><span class="esfaces" aria-hidden="true">'+
+      ['av-granny','av-uncle','av-friend'].map(function(a){
+        return '<span><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+a+'"/></svg></span>';
+      }).join('')+'</span></div>'+
+      '<h3>מי עוד נוטע איתך?</h3>'+
+      '<p>שמור כאן את סבתא, את הדוד ואת מי שקרוב — ותצרף אותם לכל רגע בלחיצה אחת.</p></div>';
     relMeta();return;
   }
   box.style.border='';box.style.background='';box.style.padding='';
