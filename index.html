@@ -166,8 +166,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .note b{color:var(--leaf);font-weight:500}
 .lock{background:var(--sun-bg);border:1px solid #3D3520;border-radius:11px;padding:14px;text-align:center}
 .lock p{color:#C4AE84}
-.stat{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line)}
-.stat:last-child{border-bottom:none}
+/* הקו בין השורות הוא border-top על השורה השנייה ואילך, ולא
+   border-bottom עם :last-child. ‏:last-child הוא מבני ומתעלם מ-display:none,
+   ולכן כששתי השורות האחרונות הוסתרו (כרטיס הצפי במסך ההשקעה מסתיר
+   "הפקדה חודשית" ו"מסלול" כשאינם ידועים) נשאר קו תלוי מתחת לשורה
+   האחרונה שנראית. עם + הקו שייך לשורה שמצוירת, ולכן הוא נעלם איתה. */
+.stat{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0}
+.stat+.stat{border-top:1px solid var(--line)}
 .stat .k{font-size:12px;color:var(--tx-2)}.stat .v{font-size:13.5px;font-weight:500}
 .quote{background:linear-gradient(180deg,var(--sun-bg),var(--s1));border:1px solid #3D3520;border-radius:12px;
   padding:20px 16px 14px 14px;font-size:12.5px;line-height:1.65;color:#D9C9A0;font-style:italic;position:relative}
@@ -664,9 +669,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .es p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin-top:10px;max-width:27ch}
 .es .btn{margin-top:18px}
 /* ‏min-height:62% של .es נועד למסך ריק שאין בו דבר מלבד ההודעה. במסך
-   האישור יש מתחתיה כרטיס ושלוש יציאות, והמרווח דחף את "אחר כך" אל
-   מתחת לקצה המכשיר. ממוקד למסך הזה, ולא נגיעה בקלאס שמשרת עוד שניים. */
-[data-name="אישור הורה"] .es{min-height:0;padding:10px 4px 2px}
+   האישור יש מתחתיה כרטיס ושלוש יציאות, ולכן הוא מצומצם — אבל לא לאפס:
+   הסיבה שהוא נדחף פעם מתחת לקצה המכשיר לא הייתה המרווח אלא שהמסך ישב
+   מחוץ ל-#stage ולכן לא נגלל כלל. */
+[data-name="אישור הורה"] .es{min-height:34%;padding:10px 4px 2px}
 /* קישור שקט מתחת לכפתורים, ולא כפתור שלישי שמתחרה איתם: "אחר כך"
    במסך האישור, ו"או לעצור את ההפקדה לגמרי" בגיליון השינוי. */
 .later{display:block;width:100%;background:none;border:0;
@@ -813,7 +819,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '93faf2b';
+window.NETA_BUILD = '5a9e288';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1984,8 +1990,11 @@ window.NETA_CONFIG = {
   </div>
 </section>
 
-</div><!-- /stage -->
-
+<!-- שני המסכים האלה ישבו מחוץ ל-#stage. הוא מה שגולל, והוא מה שנותן
+     את הריפוד הצדדי (18px) — כלומר מסך שיושב מחוצה לו נצמד לקצוות,
+     אינו נגלל, ונחתך על ידי overflow:hidden של .device. במסך האישור
+     זה נראה כמו מרווח שצריך לכוונן; במסך ההשקעה, שגבוה ממסך אחד, זה
+     חתך את הסכום, את הגרף ואת הכפתורים. -->
 <!-- 28 GUARDIAN APPROVAL / אישור הורה -->
 <!-- הזנת כתובת יוצרת רשומה על הילד של אדם אחר, בחשבון שלו. המסך הזה
      הוא מה שהופך את זה מקביעה לבקשה. שלוש יציאות ולא שתיים: "אחר כך"
@@ -2069,6 +2078,7 @@ window.NETA_CONFIG = {
   <p class="fine" id="pv-fine" style="margin-top:10px"></p>
 </section>
 
+</div><!-- /stage -->
 <!-- BOTTOM TAB BAR -->
 <!-- סדר ה-DOM הוא ימין→שמאל: הראשון הוא הימני ביותר.
 
