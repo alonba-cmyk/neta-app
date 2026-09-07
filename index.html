@@ -217,8 +217,17 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   background:radial-gradient(circle,rgba(127,192,136,.14),transparent 68%)}
 .s-art svg{position:relative}
 .ppav{position:relative;display:flex;align-items:center}
-.ppav>span{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid var(--bg);background:var(--s2)}
-.ppav>span+span{margin-right:-13px}
+.ppav>*{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid var(--bg);background:var(--s2)}
+.ppav>*+*{margin-right:-13px}
+/* הפרצוף האמיתי נשאר מעל המשבצת השנייה */
+.ppav>*:first-child{position:relative;z-index:1}
+/* כשנטע רק קרוב אחד, המשבצת השנייה מקווקוות ונושאת "+": ניכר בה שאינה
+   אדם אלא מקום פנוי, והיא גם מזמינה למלא אותו. להמציא כאן פרצוף שני
+   היה משקר בדיוק על השאלה שהמסך הזה עונה עליה — מי נטע. */
+.ppav .add{border-style:dashed;border-color:var(--line-2);background:transparent;
+  display:grid;place-items:center;color:var(--tx-3);font-size:17px;line-height:1;
+  font-family:inherit;padding:0;cursor:pointer;transition:.15s}
+.ppav .add:hover{border-color:var(--leaf-2);color:var(--leaf)}
 .ppav .avsvg{display:block;width:100%;height:100%}
 .s-eyebrow{font-size:10px;letter-spacing:.1em;color:var(--tx-3);margin-bottom:7px}
 .s-num{font-size:33px;font-weight:600;color:var(--leaf);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
@@ -819,7 +828,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '5a9e288';
+window.NETA_BUILD = '7f4f0b6';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -870,13 +879,6 @@ window.NETA_CONFIG = {
   <g id="ic-kin" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="15" cy="8.6" r="3.6"/><path d="M9.2 20.2 C9.2 16.1 11.8 14.2 15 14.2 C18.2 14.2 20.8 16.1 20.8 20.2"/>
     <path d="M9.4 5.6 A3.6 3.6 0 0 0 6.6 12.1"/><path d="M3.2 20.2 C3.2 16.6 5 14.8 7.6 14.5"/>
-  </g>
-  <!-- הכיוון הנכנס: חץ שיורד אל תוך ערוגה. לא נבט (זה סימן המותג
-       בטאב הראשון) ולא פרצופים (זה הטאב של הקרובים) — הטאב הזה עונה
-       על "מה נכנס", וזה מה שהאייקון מצייר. -->
-  <g id="ic-in" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 3.2 V12.9"/><path d="M8.3 9.4 L12 13.1 L15.7 9.4"/>
-    <path d="M3.4 15.4 C3.4 19.1 6.6 20.8 12 20.8 C17.4 20.8 20.6 19.1 20.6 15.4"/>
   </g>
   <g id="ic-name" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <rect x="2.9" y="5.1" width="18.2" height="13.8" rx="3.2"/>
@@ -2087,7 +2089,7 @@ window.NETA_CONFIG = {
      כך הטאב הנכנס נכנס בלי שאיש שילם עליו. -->
 <nav class="tabbar" id="tabbar">
   <button class="tab on" onclick="go(0)"><span class="ic"><svg width="14" height="20" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>הנטיעות</span><span>שלי</span></span></button>
-  <button class="tab" onclick="openFamily()"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-in"/></svg></span><span class="lb"><span>נטעו</span><span>למשפחתי</span></span></button>
+  <button class="tab" onclick="openFamily()"><span class="ic"><svg width="20" height="20" viewBox="7 6 57 57" aria-hidden="true"><g opacity=".5" transform="translate(-1.4,13.64) scale(.78)"><use href="#sprout-art"/></g><g transform="translate(14,0)"><use href="#sprout-art"/></g></svg></span><span class="lb"><span>נטעו</span><span>למשפחתי</span></span></button>
   <button class="tab center" onclick="startCreate()"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg></span><span class="lb"><span>נטיעה</span></span></button>
   <button class="tab" onclick="openPeople()"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-kin"/></svg></span><span class="lb"><span>הקרובים</span><span>שלי</span></span></button>
   <button class="tab" onclick="go(9)"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></span><span class="lb"><span>פעילות</span></span></button>
@@ -6446,9 +6448,14 @@ function famAvatars(rows){
     const k=w.name||w.avatar;
     if(!seen[k]){seen[k]=1;av.push(w.avatar||'av-parent')}
   })});
-  return (av.length?av:['av-granny']).slice(0,2).map(function(a){
+  const two=(av.length?av:['av-granny']).slice(0,2).map(function(a){
     return '<span><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+a+'"/></svg></span>';
-  }).join('');
+  });
+  /* עמודה של דמות אחת נראית ריקה ליד מספר בגודל הזה. השנייה אינה פרצוף
+     שהומצא אלא משבצת פנויה שמזמינה קרוב נוסף. */
+  if(two.length<2)two.push('<button class="add" onclick="openInvitePicker()" '+
+    'aria-label="הזמן קרוב">+</button>');
+  return two.join('');
 }
 function paintFamily(total,rows,people){
   const list=Array.isArray(rows)?rows:[];
