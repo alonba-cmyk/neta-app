@@ -847,7 +847,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'e1b5859';
+window.NETA_BUILD = '444c97b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1617,7 +1617,10 @@ window.NETA_CONFIG = {
 
   <p class="eyebrow" id="req-head" style="display:none">בקשות הצטרפות שממתינות לך</p>
   <div id="req-list"></div>
-  <p class="eyebrow big">נוטעים איתך</p>
+  <!-- "נוטעים איתך" ירדה: היא חזרה על תת-הכותרת שבשורה העליונה, ובמצב
+       הריק ישבה ממש מעל "מי עוד נוטע איתך?" ואמרה את אותו הדבר. הרשימה
+       הראשונה היא נושא המסך וממילא אינה צריכה תווית; "רגעים שהזמינו
+       אותך אליהם" נשארה, כי היא הכיוון האחר וכן צריכה שם. -->
   <div class="card" id="rel-list"></div>
   <button class="btn gap-s" onclick="addRelative()">+ הוסף קרוב</button>
 
