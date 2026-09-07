@@ -847,7 +847,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ac4fee0';
+window.NETA_BUILD = '48e3c17';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2795,6 +2795,14 @@ function updateGoal(){
   document.getElementById('ct-meta').textContent=designated?t:'קופה שעדיין לא יועדה';
 }
 function commitGoal(){
+  /* בלי שם, הרגע נוצר בשם "בר המצווה של הילד" והנהנה נרשם "הילד" —
+     בחשבון שננעל לעשר שנים. זו לא תקלה שמישהו יראה, ולכן היא נבלמת
+     כאן ולא מתוקנת אחר כך. */
+  if(designated && !((document.getElementById('c-name')||{}).value||'').trim()){
+    toast('צריך שם, כדי שנדע עבור מי');
+    const f=document.getElementById('c-name'); if(f)f.focus();
+    return;
+  }
   showTermStep(true);
   if(!cDate.value){ // arrive with a working projection rather than an empty one
     const def=document.querySelectorAll('#c-terms button')[1];
@@ -2806,11 +2814,20 @@ let freq='m',mode=null,rate=.035,modeTouched=false;
 const amtM=document.getElementById('amt-m'),amtL=document.getElementById('amt-l');
 /* a one-time deposit that "stays as it is" doesn't grow at all — the sensible default only for
    a monthly deposit, which keeps accumulating on its own regardless of the track chosen */
-function setFreq(f){freq=f;document.querySelectorAll('.pill[data-f]').forEach(b=>b.classList.toggle('on',b.dataset.f===f));document.getElementById('panel-m').style.display=f==='m'?'block':'none';document.getElementById('panel-l').style.display=f==='l'?'block':'none';document.getElementById('freq-stop-hint').style.display=f==='m'?'block':'none';document.getElementById('keep-desc').textContent=f==='m'?'הסכום שתפקיד כל חודש יחכה במלואו בהגעה למועד המיוחל.':'הסכום שתפקיד יחכה במלואו בהגעה למועד המיוחל.';if(!modeTouched)setMode(f==='l'?'safe':'keep');render()}
+function setFreq(f){freq=f;document.querySelectorAll('.pill[data-f]').forEach(b=>b.classList.toggle('on',b.dataset.f===f));document.getElementById('panel-m').style.display=f==='m'?'block':'none';document.getElementById('panel-l').style.display=f==='l'?'block':'none';document.getElementById('freq-stop-hint').style.display=f==='m'?'block':'none';document.getElementById('keep-desc').textContent=f==='m'?'הסכום שתפקיד כל חודש יחכה במלואו בהגעה למועד המיוחל.':'הסכום שתפקיד יחכה במלואו בהגעה למועד המיוחל.';render()}
+/* ‏setFreq בחרה כאן מסלול בעצמה (keep לחודשי, safe לחד-פעמי) כשהמשתמש
+   עוד לא נגע בשאלה 3. כלומר לחיצה על "כל חודש" — שאלה על תדירות —
+   הכריעה גם את שאלת הריבית, ומי שהמשיך משם קיבל מסלול פיננסי שלא בחר.
+   השאלה נשאלת בשלב 3 ונענית שם בלבד. */
 function setMode(m){mode=m;document.querySelectorAll('.opt[data-m]').forEach(el=>el.classList.toggle('on',el.dataset.m===m));document.getElementById('safe-block').style.display=m==='safe'?'block':'none';document.getElementById('market-block').style.display=m==='market'?'block':'none';if(m==='safe'){setTrack(document.querySelector('.trk[data-r="0.035"]'));return}if(m==='market'){setTrack(document.querySelector('.trk[data-r="0.06"]'));return}render()}
 function setTrack(el){rate=parseFloat(el.dataset.r);document.querySelectorAll('.trk').forEach(t=>t.classList.toggle('on',t===el));render()}
 function fvCalc(v,r){const y=goal.years;if(r===0)return freq==='m'?v*y*12:v;if(freq==='m'){const m=r/12,n=y*12;return v*((Math.pow(1+m,n)-1)/m)}return v*Math.pow(1+r,y)}
-function render(){const v=freq==='m'?+amtM.value:+amtL.value;if(freq==='m')document.getElementById('out-m').textContent=v.toLocaleString('he-IL')+' ₪';else document.getElementById('out-l').textContent=v.toLocaleString('he-IL')+' ₪';const label=document.getElementById('hero-label'),mid=document.getElementById('hero-mid'),num=document.getElementById('hero-num'),sub=document.getElementById('hero-sub'),fine=document.getElementById('fine');if(mode===null){label.textContent='בחרו למטה מה יקרה לכסף עד אז';mid.style.display='none';num.textContent='·';num.classList.add('idle');sub.textContent='';fine.textContent='';document.getElementById('amt-sticky-txt').textContent='';return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);const approx=mode==='market'?'כ-':'';num.textContent=approx+Math.round(total).toLocaleString('he-IL')+' ₪';document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+approx+Math.round(total).toLocaleString('he-IL')+' ₪';if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();ahaCopy();document.getElementById('aha-sub').innerHTML='בחרת להשקיע <b style="color:var(--tx)">'+v.toLocaleString('he-IL')+' ₪</b> '+(freq==='m'?'כל חודש':'היום')+', שיהפכו עד '+goal.dateLabel+' לכ-<b style="color:var(--leaf)">'+approx+Math.round(total).toLocaleString('he-IL')+' ₪</b>';const assume=freq==='m'?'בהנחה שההפקדה נמשכת עד אז. ':'';
+function render(){const v=freq==='m'?+amtM.value:+amtL.value;if(freq==='m')document.getElementById('out-m').textContent=v.toLocaleString('he-IL')+' ₪';else document.getElementById('out-l').textContent=v.toLocaleString('he-IL')+' ₪';const label=document.getElementById('hero-label'),mid=document.getElementById('hero-mid'),num=document.getElementById('hero-num'),sub=document.getElementById('hero-sub'),fine=document.getElementById('fine');if(mode===null){label.textContent='בחרו למטה מה יקרה לכסף עד אז';mid.style.display='none';num.textContent='·';num.classList.add('idle');sub.textContent='';fine.textContent='';
+    /* הסכום ידוע כבר עכשיו, והצפי עוד לא. הסרגל הדביק היה ריק עד
+       שנבחר מסלול — כלומר קו מפריד ריק מתחת לכותרת לאורך כל החלק
+       הראשון של המסך, בדיוק כשגוללים ורוצים לזכור כמה בחרת. */
+    document.getElementById('amt-sticky-txt').textContent=
+      v.toLocaleString('he-IL')+' ₪ '+(freq==='m'?'בחודש':'היום');return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);const approx=mode==='market'?'כ-':'';num.textContent=approx+Math.round(total).toLocaleString('he-IL')+' ₪';document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+approx+Math.round(total).toLocaleString('he-IL')+' ₪';if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();ahaCopy();document.getElementById('aha-sub').innerHTML='בחרת להשקיע <b style="color:var(--tx)">'+v.toLocaleString('he-IL')+' ₪</b> '+(freq==='m'?'כל חודש':'היום')+', שיהפכו עד '+goal.dateLabel+' לכ-<b style="color:var(--leaf)">'+approx+Math.round(total).toLocaleString('he-IL')+' ₪</b>';const assume=freq==='m'?'בהנחה שההפקדה נמשכת עד אז. ':'';
   fine.textContent=assume+(mode==='keep'?'הסכום נשמר כפי שהוא ואינו חשוף לשוק. שימו לב שערכו הריאלי עשוי להישחק עם הזמן בשל אינפלציה.':mode==='safe'?'הקרן והריבית מובטחות על ידי הגוף הפיננסי המנהל. התנאים המדויקים, לרבות סכומי מינימום, נקבעים על ידו.':'התשואות להמחשה בלבד ומבוססות על נתוני עבר. הערך עשוי לרדת. אינן מהוות הבטחת תשואה או ייעוץ השקעות.');}
 document.querySelectorAll('.opt[data-m]').forEach(el=>el.onclick=()=>{
   modeTouched=true;setMode(el.dataset.m);
@@ -2995,6 +3012,15 @@ function backFromPay(){
 }
 function shareBack(){cStepGo(0)}
 function afterAmount(){
+  /* בלי בחירה, mode נשאר null ו-plantingFromFlow ממיר אותו ל-guaranteed
+     בריבית 3.5% — כלומר האפליקציה בוחרת עבור המשתמש מסלול פיננסי שהוא
+     מעולם לא ראה. אותה משפחה של תקלות כמו approver שנגבה ונזרק. */
+  if(mode===null){
+    toast('בחר מה יקרה לכסף עד אז');
+    const b=document.getElementById('eb-mode');
+    if(b&&b.scrollIntoView)b.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
   if(creating && designated){cStepGo(1);go(1);return}
   toPayment();
 }
