@@ -236,8 +236,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    לבדו ואינו צריך את זה). */
 .ppav>*{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid var(--bg);background:var(--s2)}
 .ppav>*+*{margin-right:-10px}
-[data-name="נטעו למשפחתי"] .s-art{width:86px}
-[data-name="נטעו למשפחתי"] .s-art::before{width:104px;height:104px}
 /* הפרצופים האמיתיים נשארים מעל המשבצות הפנויות, לפי הסדר */
 .ppav>*:nth-child(1){position:relative;z-index:3}
 .ppav>*:nth-child(2){position:relative;z-index:2}
@@ -556,6 +554,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .dm-disc{font-size:10px;color:var(--tx-3);margin:7px 0 0;line-height:1.5}
 /* הכרטיס הוא אובייקט נפרד מהגרף, וקודם הוא נשק לשורת הסיוג. */
 #pv-fut-card{margin-top:22px}
+/* פעולה בתחתית כרטיס: קו מפריד מעליה, כדי שלא תיראה כשורה נוספת
+   בטבלה שמעליה. ריק — ואין לא קו ולא ריווח. */
+#pv-card-act:not(:empty){margin-top:11px;padding-top:12px;border-top:1px solid var(--line)}
+#d-who .who-act{padding-top:12px}
 .d-line{font-size:12px;color:var(--tx-2);line-height:1.6;margin-top:26px;text-align:center;
   padding:0 6px;text-wrap:balance}
 @keyframes sproutPulse{
@@ -880,7 +882,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4333460';
+window.NETA_BUILD = 'd5de5f7';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1001,7 +1003,7 @@ window.NETA_CONFIG = {
 <div class="stage" id="stage">
 
 <!-- 0 HOME -->
-<section class="screen on" data-name="הנטיעות שלי">
+<section class="screen on" data-name="כל הנטיעות">
   <div class="card gap" id="resume-card" style="display:none;background:var(--sun-bg);border-color:var(--sun-line)">
     <div class="row gap-s"><span>⏸</span><b style="font-size:13px;font-weight:500;color:var(--sun)">הנטיעה שהתחלת ממתינה</b></div>
     <p class="sub" style="color:#C4AE84" id="resume-t">בר המצווה של דניאל · 100 ₪ בחודש. נשאר רק לחבר אמצעי תשלום כדי שההפקדה הראשונה תצא.</p>
@@ -1641,7 +1643,7 @@ window.NETA_CONFIG = {
 
      המזהים kin-full ו-kin-empty נשמרו: applyTabSources ו-setEmpty
      מכירים אותם בשם, והחלפת שם כאן הייתה משאירה טאב שלא נסגר. -->
-<section class="screen" data-name="ההשקעות שלי">
+<section class="screen" data-name="הנטיעות שלי">
   <div id="kin-full">
   <div class="summary">
     <div class="s-row">
@@ -2187,11 +2189,19 @@ window.NETA_CONFIG = {
   </div>
 
   <div class="card gap" id="pv-fut-card">
+    <!-- שלוש השורות עטופות כי הכרטיס עצמו נשאר גם בלי צפי: הוא מחזיק
+         עכשיו גם את "השקע עוד", ופעולה אינה תלויה בכך שיש מה לחזות. -->
+    <div id="pv-fut-rows">
     <div class="stat"><span class="k" id="pv-futk">צפוי</span>
       <span class="v" id="pv-futv" style="color:var(--sun-soft)">·</span></div>
     <div class="stat" id="pv-monrow"><span class="k">הפקדה חודשית</span>
       <span class="v" id="pv-mon">·</span></div>
     <div class="stat"><span class="k">מסלול</span><span class="v" id="pv-track">·</span></div>
+    </div>
+    <!-- הפעולה יושבת בתוך הכרטיס שהיא משנה. במסך של אדם היא נשארת
+         בשורת הפעולות למטה, ולכן המקום הזה מתמלא רק כשהכרטיס מושאל
+         למסך הרגע. -->
+    <div id="pv-card-act"></div>
   </div>
 
   <div class="two gap" id="pv-acts"></div>
@@ -2211,7 +2221,7 @@ window.NETA_CONFIG = {
        יושב על אותו אינדקס (14) שנשא את "נטעו למשפחתי", שהתמזג לסקשן
        במסך הבית. -->
   <button class="tab on" onclick="go(0)"><span class="ic"><svg width="14" height="20" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>כל</span><span>הנטיעות</span></span></button>
-  <button class="tab" onclick="openInvestments()"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-invest"/></svg></span><span class="lb"><span>ההשקעות</span><span>שלי</span></span></button>
+  <button class="tab" onclick="openInvestments()"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-invest"/></svg></span><span class="lb"><span>הנטיעות</span><span>שלי</span></span></button>
   <button class="tab center" onclick="startCreate()"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg></span><span class="lb"><span>נטיעה</span></span></button>
   <button class="tab" onclick="openPeople()"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-kin"/></svg></span><span class="lb"><span>הקרובים</span><span>שלי</span></span></button>
   <button class="tab" onclick="go(9)"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></span><span class="lb"><span>פעילות</span></span></button>
@@ -2245,7 +2255,7 @@ const ONBO={welcome:19,login:20,how:21,identity:22,done:23};
 let onbo=false;
 const topbars={
   0:['שלום אלון','הכסף גדל בזמן שהם גדלים'],
-  14:['ההשקעות שלי','כמה אתה נותן, ולאן זה הולך'],
+  14:['הנטיעות שלי','כמה אתה נותן, ולאן זה הולך'],
   /* גם כאן, ולא ככותרת בתוך המסך: ארבעת יעדי הסרגל צריכים כותרת באותו
      מקום ובאותו גודל, אחרת המעבר ביניהם קופץ. זה היה המסך היחיד מביניהם
      שהחזיק h2 בתוך הגלילה, ולכן גם התמונה שבפינה נעלמה בו. */
@@ -4442,6 +4452,11 @@ function moneyHome(){
   if(cd&&sec&&cd.parentElement!==sec)sec.insertBefore(cd,acts);
   const box=document.getElementById('d-inline');
   if(box)box.style.display='none';
+  /* הכרטיס מושאל, ולכן מה שנוסף לו במסך הרגע יורד ממנו בדרך חזרה. */
+  const ca=document.getElementById('pv-card-act');
+  if(ca)ca.innerHTML='';
+  const rows=document.getElementById('pv-fut-rows');
+  if(rows)rows.style.display='';
 }
 function moneyToDetail(){
   const mv=document.getElementById('pv-move'),
@@ -4684,7 +4699,16 @@ function paintSoloMoney(p){
   detail(0);
   const card=document.getElementById('pv-fut-card');
   const hasProj=proj>accrued;
-  if(card)card.style.display=hasProj?'':'none';
+  if(card)card.style.display='';
+  /* הפעולה על הכסף יושבת בכרטיס של הכסף, ולא בשורת הפעולות שבתחתית
+     המסך — רחוק מהמספר שהיא משנה. יוצא מן הכלל: קופה שעדיין לא יועדה,
+     שהפעולה שלה היא לייעד; הצעת הפקדה לצידה מציעה להמשיך למלא משהו
+     שאין לו עדיין נהנה. */
+  const ca=document.getElementById('pv-card-act');
+  if(ca)ca.innerHTML=notDesignated(p)?''
+    :'<button class="btn" onclick="investIn(cur)">השקע עוד</button>';
+  const rows=document.getElementById('pv-fut-rows');
+  if(rows)rows.style.display=hasProj?'':'none';
   if(!hasProj)return;
   txt('pv-futk','צפוי ב'+p.date);
   txt('pv-futv','כ-'+shekel(proj));
@@ -7136,24 +7160,36 @@ function buildLiveActions(p){
 /* חזרה מצטרפת לכל שורת פעולות באחת משתי דרכים: זוג עם כפתור בודד
    (מקבלת מקום נקי, ghost, אותו כלל שהוא ‎.two>.btn.ghost:last-child‎
    שכבר קובע ימין/שמאל), או קישור שקט מתחת לזוג שכבר משמעותי ואין לו
-   מקום לפנות. חוזרת בדיוק כמו הטאב התחתון "הנטיעות שלי". */
+   מקום לפנות. חוזרת בדיוק כמו הטאב התחתון "כל הנטיעות". */
 function pairWithBack(primaryBtn){
   return '<div class="two">'+primaryBtn+'<button class="btn ghost" onclick="go(0)">חזרה</button></div>';
 }
-/* "השקע עוד" עלה לשורת הסכום שהוא משנה, וההזמנה ירדה מתוך כרטיס
-   המשתתפים לכאן. שם היא הייתה שורה ברשימה של אנשים — פעולה כללית
-   שמתחזה לפריט — וכשורה היא לא נראתה לחיצה. בשורת הפעולות היא
-   הכפתור הראשי היחיד, וזה גם מה שהיא: הפעולה שמזיזה את הנטיעה
-   קדימה, כי הוראת הקבע כבר רצה מעצמה.
-
-   מי שאינו היוזם, ונטיעה שאינה פתוחה לקרובים, אינם מזמינים — ואז
-   נשארת "חזרה" לבדה, ברוחב מלא ולא בחצי, כי אין לה עם מי לחלוק. */
-/* כשגוש הכסף כאן, גם הפעולה שמשנה אותו צריכה להיות כאן — אחרת
-   "השקע עוד" נשארת מאחורי לחיצה שביטלנו. שתי פעולות אמיתיות בזוג,
-   ו"חזרה" כקישור שקט מתחת, לפי הכלל שכבר קבוע בקובץ. */
-function pairWithQuietBack(a,b){
-  return '<div class="two">'+a+b+'</div>'+
-    '<button class="fold" onclick="go(0)" style="margin:11px auto 0;display:block">חזרה לנטיעות</button>';
+/* כל פעולה יושבת ליד הדבר שהיא משנה: "השקע עוד" בכרטיס הכסף,
+   ההזמנה בתחתית רשימת הנוטעים. מה שנשאר בתחתית המסך הוא היציאה
+   ממנו בלבד. הדגל אומר האם ההזמנה אכן מצאה מקום ברשימה — כשאין
+   רשימה (רגע בלי אף נוטע) היא חוזרת לשורת הפעולות, כי פעולה שאין
+   לה מקום עדיפה על פעולה שאין לה בכלל. */
+var whoActOn=false;
+function inviteButton(p,ghost){
+  const c=ghost?'btn ghost':'btn';
+  return p.shared
+    ? '<button class="'+c+'" onclick="openInvite(cur)">הזמן קרוב</button>'
+    : '<button class="'+c+'" onclick="openToCircle()">פתח לקרובים</button>';
+}
+/* בשני הנתיבים אותה שאלה, ושתי צורות: בהדגמה designated יכול להיות
+   undefined ופירושו מיועדת, ובנטיעה חיה הוא תמיד בוליאני. */
+function notDesignated(p){return p.live?!p.designated:p.designated===false}
+function buildWhoAction(p){
+  whoActOn=false;
+  const box=document.getElementById('d-who');
+  if(!box)return;
+  const old=box.querySelector('.who-act');
+  if(old)old.parentNode.removeChild(old);
+  if(notDesignated(p)||!p.mine||!p.who||!p.who.length)return;
+  if(box.style.display==='none')return;
+  box.insertAdjacentHTML('beforeend',
+    '<div class="who-act">'+inviteButton(p,true)+'</div>');
+  whoActOn=true;
 }
 function actionsFor(p){
   if(p.designated===false)
@@ -7161,29 +7197,17 @@ function actionsFor(p){
   /* מי שאינו הבעלים הוזמן כדי לנטוע — וזה בדיוק מה שלא היה לו איך
      לעשות. "השקע עוד" יושב במסך האדם, ולמי שעוד לא הפקיד אין שם
      שורה בכלל; אמיר אישר כהורה, קיבל planting_access ברמת contribute,
-     והמסך הציע לו "חזרה" בלבד. המסד תמיד הרשה לו (contributions_create
-     בודקת planting_access) — רק הכפתור חסר. */
+     והמסד תמיד הרשה לו (contributions_create בודקת planting_access) —
+     רק הכפתור חסר. */
   if(!p.mine)
     return pairWithBack('<button class="btn" onclick="investIn(cur)">נטע כאן</button>');
-  /* וברגע פרטי הפעולה שמזיזה אותו קדימה היא לפתוח אותו לקרובים —
-     ולכן היא כפתור, באותו מקום שבו רגע משותף מציג "הזמן קרוב". קודם היא
-     הייתה קישור בתוך משפט אפור מתחת לשורת הפעולות, והמקום הזה נשאר
-     ריק מפעולה — "חזרה" לבדה ברוחב מלא. */
-  /* כשגוש הכסף מוצג כאן, "השקע עוד" מצטרפת — היא הפעולה על מה שרואים,
-     והיא הייתה מאחורי הלחיצה שביטלנו. אבל היא ה*שנייה*: הפעולה שמזיזה
-     רגע פרטי קדימה היא לפתוח אותו לקרובים, וזו הכרעה שכבר התקבלה.
-     "השקע עוד" חוזרת כל חודש; פתיחה קורית פעם אחת. */
-  if(p.who&&p.who.length===1&&(p.who[0][7]||p.who[0][1]==='אתה'))
-    return pairWithQuietBack(
-      (p.shared
-        ? '<button class="btn" onclick="openInvite(cur)">הזמן קרוב</button>'
-        : '<button class="btn" onclick="openToCircle()">פתח לקרובים</button>'),
-      '<button class="btn ghost" onclick="investIn(cur)">השקע עוד</button>');
-  return p.shared
-    ? pairWithBack('<button class="btn" onclick="openInvite(cur)">הזמן קרוב</button>')
-    : pairWithBack('<button class="btn" onclick="openToCircle()">פתח לקרובים</button>');
+  /* ההזמנה כבר יושבת בתחתית רשימת הנוטעים, ולכן כאן נשארת רק היציאה. */
+  if(whoActOn)
+    return '<button class="btn ghost" onclick="go(0)">חזרה</button>';
+  return pairWithBack(inviteButton(p,false));
 }
 function buildActions(p){
+  buildWhoAction(p);
   if(p.live){buildLiveActions(p);return}
   const acts=document.getElementById('d-acts'),note=document.getElementById('d-actnote');
   const addPartnerLink='<a href="#" onclick="addPartner();return false" style="color:var(--leaf)">הוסף שותף/ה</a>';
