@@ -868,7 +868,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '9f7d5f2';
+window.NETA_BUILD = 'bb89dfa';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1109,7 +1109,20 @@ window.NETA_CONFIG = {
       <div class="opt fam" data-f="kin"><b>משפחה של קרוב</b><p>הילד של אח, של חבר או של בן/בת הזוג. נבקש את ההורה, כדי שהרגע יופיע גם אצלו.</p></div>
     </div>
   </div>
-  <div class="field"><label>שם מלא של הנהנה</label><input type="text" id="c-full" placeholder="למשל: דניאל כהן" oninput="fullTouched=true;checkBene()"></div>
+  <!-- "שם מלא של הנהנה" ירד מכאן. הוא נכתב למסד ואיש לא קרא אותו: אפס
+       פונקציות, אפס views, אפס טריגרים, ובלקוח כתיבה בלבד. ובפועל הוא
+       גם לא היה שם מלא — checkBene מילא אותו מראש בשם הפרטי, ולכן בשתי
+       השורות החיות הוא החזיק עותק של beneficiary_name.
+
+       והוא גם לא מה שמגן על הנהנה. מה שמגן זה הכתובת שאליה נשלח קוד
+       הפדיון, אישור המורשה מול חשבון מאומת (confirm_guardian משווה את
+       המייל של המשתמש המחובר ל-guardian_contact), ואימות הזהות בגוף
+       הפיננסי מול תעודה. שם בשדה חופשי, עשר שנים מראש, אינו מאמת דבר —
+       הוא רק נראה כאילו כן.
+
+       זו אותה הכרעה בדיוק שהורידה מכאן את תעודת הזהות: נחוצה בפדיון,
+       ואי אפשר לאמת אותה בלקוח. העמודה beneficiary_full_name נשארת
+       במסד ריקה, עד שהפדיון ייבנה וימלא אותה מול מסמך. -->
   <div class="field" id="c-approvefield">
     <p class="eyebrow">מי יאשר את הפדיון כשיגיע המועד?</p>
     <div class="stack gap">
@@ -2210,7 +2223,7 @@ function go(i){
 
 const months=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
 const monthsShort=['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
-let cType='בר/בת מצווה',cIcon='🎂',dateTouched=false,fullTouched=false;
+let cType='בר/בת מצווה',cIcon='🎂',dateTouched=false;
 /* a fund without a named beneficiary is a different instrument, and says so */
 let designated=true;
 /* a wedding fund and a bar-mitzva fund are not the same year — derive the date from the occasion */
@@ -3001,7 +3014,7 @@ function flowBar(cur,label){
   txt('flowlbl','שלב '+cur+' מתוך '+t+' · '+label);
 }
 function startCreate(){
-  creating=true;dateTouched=false;beneSex='m';fullTouched=false;modeTouched=false;
+  creating=true;dateTouched=false;beneSex='m';modeTouched=false;
   /* כל רגע נולד פרטי מאז ששלב הפתיחות ירד מהאשף. במפורש, ולא בהסתמכות
      על הערך שנשאר מנטיעה קודמת — investIn טוענת אותו מהרגע שמפקידים בו. */
   shareMode='private';
@@ -3024,7 +3037,7 @@ function startCreate(){
   /* וכל שדות הנהנה והמורשה. השמות והכתובות האלה שייכים לרגע אחד, ואם
      הם נשארים הם נדבקים לרגע הבא — כלומר הכתובת של הורה אחד נשלחת
      כבקשת אישור על ילד של מישהו אחר. */
-  ['c-full','c-bene','c-gname','c-gcontact'].forEach(function(id){
+  ['c-bene','c-gname','c-gcontact'].forEach(function(id){
     const el=document.getElementById(id); if(el)el.value='';
   });
   document.querySelectorAll('#c-sex button').forEach(function(x){x.classList.remove('on')});
@@ -3166,7 +3179,7 @@ function paySummary(){
     return;
   }
   txt('py-benek','הכסף רשום על שם');
-  txt('py-bene',((document.getElementById('c-full')||{}).value||'').trim()||nm);
+  txt('py-bene',nm);
   txt('py-relk','משתחרר');
   txt('py-rel',beneMode==='guardian'?'במועד המיוחל, לידי המורשה'
     :beneMode==='later'?'טרם נקבע · תוכל לעדכן בכל שלב עד המועד'
@@ -3189,11 +3202,9 @@ function toggleDesig(cb){
   if(creating)flowBar(stepNo('who'),C_LABELS[0]);
 }
 function checkBene(){
-  /* raw הוא מה שבאמת הוקלד, ו-nm הוא מה שמוצג בכיתובים. ההפרדה נחוצה
-     כי "הילד" הוא מילת מילוי לטקסט, ולא ערך שמותר לזרוע בשדה שנשמר:
-     בלעדיה c-full נפתח עם "הילד" ו-beneficiary_full_name נשמר כך. */
-  const raw=((document.getElementById('c-name')||{}).value||'').trim();
-  const nm=raw||'הילד';
+  /* מקור אחד לשם: מה שהוקלד בשלב 1. "הילד" הוא מילת מילוי לכיתובים
+     בלבד, לעולם לא ערך שנשמר. */
+  const nm=((document.getElementById('c-name')||{}).value||'').trim()||'הילד';
   if(!designated){
     txt('cp1-h','הכסף עד שתחליט');
     txt('cp1-sub','לא חייבים לדעת עכשיו למי. זה מה שקורה בינתיים.');
@@ -3201,12 +3212,7 @@ function checkBene(){
   }
   txt('cp1-h','מי יקבל את הכסף שנטעת?');
   beneCopy();
-  /* the first name was already given one step ago — don't make him retype it, only extend it */
-  const full=document.getElementById('c-full');
-  if(full && !fullTouched)full.value=raw;
-  /* once he's given a full name here, that's the more specific, authoritative one — prefer it
-     everywhere on this screen over the casual first name from step 1 */
-  const dispNm=(full&&full.value.trim().split(' ')[0])||nm;
+  const dispNm=nm;
   beneFields();
   txt('c-selfb',dispNm+bs(' עצמו',' עצמה'));
   /* "he'll redeem it himself" only holds if he's actually grown by then — a short horizon makes that
@@ -3946,7 +3952,6 @@ function plantingFromFlow(){
        הפדיון. */
     approver:desig?(APPROVER_ENUM[beneMode]||'self'):null,
     guardName:(desig&&beneMode==='guardian')?(fieldVal('c-gname')||null):null,
-    beneFull:desig?(fieldVal('c-full')||null):null,
     /* שדה הכתובת מוצג רק כשהנהנה פודה בעצמו (c-codefield), ולכן רק אז
        יש בו ערך שמישהו באמת הזין. */
     beneContact:(desig&&famMode!=='kin'&&beneMode==='self')?(fieldVal('c-bene')||null):null,
@@ -6007,7 +6012,6 @@ function netaBackend(cfg){
           occasion:p.occasion,designated:p.designated,
           beneficiary_name:p.designated?p.beneficiary:null,
           beneficiary_sex:p.designated?p.sex:null,
-          beneficiary_full_name:p.designated?(p.beneFull||null):null,
           beneficiary_contact:p.designated?(p.beneContact||null):null,
           target_date:p.targetDate,mode:p.mode,
           track_rate:p.mode==='keep'?null:p.rate,
