@@ -957,7 +957,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '3f71e63';
+window.NETA_BUILD = '8e3bd35';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1117,7 +1117,7 @@ window.NETA_CONFIG = {
     <button class="btn" style="margin-top:12px" onclick="openGuardian()">לראות ולהחליט</button>
   </div>
   <div id="home-full">
-  <div class="summary">
+  <div class="summary" id="home-sum">
     <div class="s-row">
       <div class="s-body">
         <div class="duo" id="s-duo">
@@ -1156,6 +1156,9 @@ window.NETA_CONFIG = {
   </div>
 
   <div id="garden"></div>
+  <!-- מי שהוזמן לרגע של מישהו אחר ועוד לא פתח משלו: הסקשן הראשון
+       ריק, ואין לו מספר. הכפתור שמתחת הוא הפעולה. -->
+  <p class="fine gap" id="garden-empty" style="display:none">עוד לא פתחת נטיעה משלך. כשתפתח, כאן יופיע מה שנצבר בה.</p>
 
   <button class="btn dash gap" style="margin-top:2px" onclick="startCreate()">+ פתח נטיעה חדשה</button>
 
@@ -7098,9 +7101,14 @@ function buildHomeSummary(){
     const tot=own.reduce(function(a,p){return a+Number(p.accrued||0)},0);
     const mineTot=own.reduce(function(a,p){return a+mineOf(p)},0);
     const othTot=oth.reduce(function(a,p){return a+mineOf(p)},0);
-    /* מי שנטע רק לילדים של קרובים אין לו סקשן ראשון בכלל, ומספר גדול
-       של 0 היה שקר על מסך שיש בו תוכן. אז המספר עובר לתאר את מה שיש. */
-    const onlyOth=!own.length&&oth.length>0;
+    /* מי שנטע רק לילדים של קרובים אין לו סקשן ראשון, וממילא אין לו
+       מספר: הראש מודד את הרגעים של המשפחה שלי, וכשאין כאלה כל מספר
+       שיוצג שם שקרי. קודם עבר המספר לתאר את הסקשן השני, וכך גל, שרק
+       הוזמנה לרגע של עופרי, ראתה בראש את מה שנצבר לילד של משפחה
+       אחרת — בדיוק מה ש-oth-fine מבטיח שלא קורה.
+
+       אז הראש כולו יורד, והסקשן השני נשאר סקשן שני עם הכותרת שלו. */
+    const noneMine=!own.length;
     /* המסך הזה מתאר רגעים, לא את חלקי בהם. זה מה שמבדיל אותו
        מ"הנטיעות שלי", ולכן גם בסקשן השני המספר הוא מה שנצבר לרגע.
 
@@ -7108,13 +7116,16 @@ function buildHomeSummary(){
        ‏`·` ירוק לצד צפי זהוב של 14,485 ₪ — כלומר שני מספרים על שני
        נושאים שונים באותו ראש: החלק שלה מול הצפי של הרגע. המספר
        שהיא צריכה הוא של הרגע, כמו הצפי שלידו. */
-    const othAccrued=oth.reduce(function(a,p){return a+Number(p.accrued||0)},0);
-    const here=onlyOth?oth:own;
+    const sumBox=document.getElementById('home-sum');
+    if(sumBox)sumBox.style.display=noneMine?'none':'';
+    const gEmpty=document.getElementById('garden-empty');
+    if(gEmpty)gEmpty.style.display=noneMine?'':'none';
+    const here=own;
     /* אפס גדול על חשבון חדש הוא ההיפך ממה שהמסך אמור לומר. `·` הוא
        כבר המציין של "אין ערך עדיין" בשאר המסכים, והכיתוב מספר מה
        יקרה — אבל רק אם באמת משהו בדרך. בלי הוראת קבע אין הפקדה
        ראשונה, וההבטחה הזאת הייתה שקר קטן על מסך ריק. */
-    const accrued=onlyOth?othAccrued:(tot||s.invested);
+    const accrued=tot||s.invested;
     const coming=here.some(function(p){
       return p.hasStandingOrder||Number(p.myMonthly||0)>0;
     });
@@ -7167,7 +7178,7 @@ function buildHomeSummary(){
       benw.style.display=one?'':'none';
       if(one)txt('s-ben',one);
     }
-    const others=onlyOth?0:Math.max(0,tot-mineTot);
+    const others=Math.max(0,tot-mineTot);
     const sm=document.getElementById('s-mine');
     if(sm){
       sm.style.display=others>0?'':'none';
@@ -7184,15 +7195,12 @@ function buildHomeSummary(){
         if(bar)bar.style.display=(mineTot>0&&others>0)?'':'none';
       }
     }
-    /* מי שיש לו רק סקשן שני רואה אותו כרשימה הראשית, בלי כותרת שנייה
-       שמפרידה אותו ממשהו שאינו קיים. */
-    document.getElementById('garden').innerHTML=
-      gardenHTML(onlyOth?oth:own, onlyOth?othCardHTML:cardHTML);
-    document.getElementById('own-head').style.display=onlyOth?'none':'';
-    document.getElementById('garden-oth').innerHTML=onlyOth?'':oth.map(othCardHTML).join('');
-    document.getElementById('oth-head').style.display=(oth.length&&!onlyOth)?'':'none';
-    document.getElementById('oth-fine').style.display=(oth.length&&!onlyOth)?'':'none';
-    const proj=projectablePlantings({plantings:onlyOth?oth:own});
+    document.getElementById('garden').innerHTML=gardenHTML(own,cardHTML);
+    document.getElementById('own-head').style.display='';
+    document.getElementById('garden-oth').innerHTML=oth.map(othCardHTML).join('');
+    document.getElementById('oth-head').style.display=oth.length?'':'none';
+    document.getElementById('oth-fine').style.display=oth.length?'':'none';
+    const proj=projectablePlantings({plantings:own});
     const projLink=document.getElementById('proj-link');
     if(projLink)projLink.style.display=proj.length?'':'none';
     const futGrp=document.getElementById('s-futbox');
