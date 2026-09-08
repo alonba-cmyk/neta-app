@@ -763,11 +763,19 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   text-wrap:balance;margin:0}
 [data-name="רגע ההשקעה"] #aha-sub{font-size:12.5px;line-height:1.65;
   margin:10px auto 0;max-width:290px}
+/* מספר אחד, לא טבלה. הסכום החודשי והמועד כבר נקראו במסך הסיכום שלפני,
+   ולא השתנה בהם דבר — הצגתם שוב הפכה את המסך לסיכום שני. מה שהמסך
+   הזה יודע ומסך הסיכום אינו יכול לדעת הוא מה הסכום הופך להיות, וזה
+   נשאר. זהב, כי זה כסף שיהיה ולא כסף שיש. */
+[data-name="רגע ההשקעה"] .aha-sum{text-align:center;margin-top:20px}
+[data-name="רגע ההשקעה"] .aha-k{font-size:11.5px;color:var(--tx-3);line-height:1.5}
+[data-name="רגע ההשקעה"] .aha-num{font-size:30px;font-weight:500;color:var(--sun-soft);
+  letter-spacing:-.02em;line-height:1.25;margin-top:2px}
 /* ‏min-height:62% של .es נועד למסך ריק שאין בו דבר מלבד ההודעה. במסך
    האישור יש מתחתיה כרטיס ושלוש יציאות, ולכן הוא מצומצם — אבל לא לאפס:
    הסיבה שהוא נדחף פעם מתחת לקצה המכשיר לא הייתה המרווח אלא שהמסך ישב
    מחוץ ל-#stage ולכן לא נגלל כלל. */
-[data-name="אישור הורה"] .es{min-height:34%;padding:10px 4px 2px}
+[data-name="אישור הנטיעה"] .es{min-height:34%;padding:10px 4px 2px}
 /* קישור שקט מתחת לכפתורים, ולא כפתור שלישי שמתחרה איתם: "אחר כך"
    במסך האישור, ו"או לעצור את ההפקדה לגמרי" בגיליון השינוי. */
 .later{display:block;width:100%;background:none;border:0;
@@ -914,7 +922,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0e8e669';
+window.NETA_BUILD = '68b9cac';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1343,16 +1351,15 @@ window.NETA_CONFIG = {
     <h2 id="aha-h2">העלה שלך נוסף לעץ של דניאל</h2>
     <p class="sub" id="aha-sub">זו הנטיעה הראשונה עבור <b>דניאל</b>. אתה פותח אותה.</p>
   </div>
-  <!-- שלוש עובדות בשלוש שורות, במקום משפט אחד שנשא את שלושתן והמספר
-       שהוא כל התמורה נבלע בתוכו. זו אותה טבלה בדיוק שבמסך "סיום
-       הרשמה" — אותו רגע, רק לחשבון שכבר קיים — וממנה גם הצבע: הצפי
-       זהוב, כמו שם, כי הוא כסף שיהיה ולא כסף שיש. -->
-  <div class="card gap-s">
-    <div class="stat"><span class="k" id="aha-k1">מופקד כל חודש</span><span class="v" id="aha-v1">100 ₪</span></div>
-    <div class="stat"><span class="k">המועד המיוחל</span><span class="v" id="aha-v2">אוגוסט 2032</span></div>
-    <div class="stat"><span class="k" id="aha-k3">בקצב הזה ייצבר</span><span class="v" style="color:var(--sun-soft)" id="aha-v3">כ-14,343 ₪</span></div>
+  <!-- קודם ישבה כאן טבלה של שלוש שורות, ושתיים מהן היו העתק מילה
+       במילה של מה שנקרא רגע אחד קודם במסך הסיכום. הסיכום אומר על מה
+       חותמים; המסך הזה אומר למה זה הופך. רק השורה השלישית עשתה את
+       זה, והיא ישבה אחרונה ובגודל הקטן ביותר. -->
+  <div class="aha-sum">
+    <p class="aha-k" id="aha-k3">בקצב הזה ייצבר עד ספטמבר 2036</p>
+    <p class="aha-num" id="aha-v3">כ-14,343 ₪</p>
   </div>
-  <p class="fine" style="margin-top:9px" id="aha-fine">הדמיה לפי מסלול מאוזן. אינה מהווה הבטחת תשואה.</p>
+  <p class="fine" style="margin-top:10px" id="aha-fine">הדמיה לפי מסלול מאוזן. אינה מהווה הבטחת תשואה.</p>
   <button class="btn dash gap" id="letter-open" onclick="openLetter()"><span id="lo-txt">✉ רוצה לצרף מכתב שייפתח באוגוסט 2032?</span></button>
 
   <div class="card" id="letter-form" style="text-align:right;display:none">
@@ -2185,11 +2192,11 @@ window.NETA_CONFIG = {
      אינו נגלל, ונחתך על ידי overflow:hidden של .device. במסך האישור
      זה נראה כמו מרווח שצריך לכוונן; במסך ההשקעה, שגבוה ממסך אחד, זה
      חתך את הסכום, את הגרף ואת הכפתורים. -->
-<!-- 28 GUARDIAN APPROVAL / אישור הורה -->
+<!-- 28 GUARDIAN APPROVAL / אישור הנטיעה -->
 <!-- הזנת כתובת יוצרת רשומה על הילד של אדם אחר, בחשבון שלו. המסך הזה
      הוא מה שהופך את זה מקביעה לבקשה. שלוש יציאות ולא שתיים: "אחר כך"
      קיים כי החלטה על ילד אינה משהו שכופים על אדם ברגע שהוא נכנס. -->
-<section class="screen" data-name="אישור הורה">
+<section class="screen" data-name="אישור הנטיעה">
   <div class="es">
     <div class="art" style="color:var(--leaf-2)"><svg width="74" height="74" viewBox="7 6 57 57" aria-hidden="true"><g opacity=".45" transform="translate(-1.4,13.64) scale(.78)"><use href="#sprout-art"/></g><g opacity=".85" transform="translate(14,0)"><use href="#sprout-art"/></g></svg></div>
     <h3 id="ga-title">נטיעה ממתינה לאישור</h3>
@@ -2545,7 +2552,7 @@ function onboStart(){setEmpty(true);go(0);onbo=true;}
    הערה: רשומת ההזדהות עצמה נוצרת אצל הספק ברגע האישור ואי אפשר למנוע
    זאת מכאן; מה שבשליטתנו הוא הפרופיל, וזה מה שהאפליקציה מתייחסת אליו
    כ"חשבון". מי שנוטש כאן יחזור ל"מי אתה" בכניסה הבאה. */
-/* ── בקשות אישור הורה ─────────────────────────────────────────────
+/* ── בקשות אישור הנטיעה ───────────────────────────────────────────
    ההתאמה נעשית בשרת לפי הכתובת, ולכן אין כאן טוקן ואין קישור אישי:
    מי שמחזיק בכתובת הוא היחיד ש-confirm_guardian תיתן לו לאשר. */
 let guardQueue=[];
@@ -2563,19 +2570,40 @@ function paintGuardCard(){
   const r=guardQueue[0];
   if(!r){box.style.display='none';return}
   box.style.display='';
-  txt('guard-card-t', r.opened_by+' פתח/ה נטיעה עבור '+(r.beneficiary_name||'ילד')+
-      ' וציין/ה אותך כהורה.'+(guardQueue.length>1?' ועוד '+(guardQueue.length-1)+'.':''));
+  txt('guard-card-t', guardOpened(r)+' נטיעה לעתיד של '+(r.beneficiary_name||'הילד')+', '+
+      (r.guardian_is_parent===false
+        ? 'ורשם אותך כמי שיקבל את הכסף במועד.'
+        : 'וציין אותך כהורה.')+
+      (guardQueue.length>1?' ועוד '+(guardQueue.length-1)+'.':''));
 }
+/* "פתח" או "פתחה" לפי מי שבאמת פתח. הפרופיל מחזיק את זה מ-0047,
+   וה-RPC מעביר את זה מ-0055; בשורה ישנה שאין בה מגדר נשארת הצורה
+   הכפולה במקום ניחוש לפי השם. */
+function guardOpened(r){
+  const w=r.opened_by||'מישהו';
+  return w+' '+(r.opened_by_sex==='f'?'פתחה':r.opened_by_sex==='m'?'פתח':'פתח/ה');
+}
+/* מורשה אינו תמיד הורה. באשף יש שני מסלולים — "שם ההורה" כשנוטעים
+   למשפחה של קרוב, ו"שם המורשה" כשנוטעים לילד שלך — והמסך הזה אמר
+   "הורה" בשניהם. מי שנרשם כמורשה ואינו ההורה קיבל כפתור שאינו יכול
+   ללחוץ עליו בכנות, וזה חסם אישור לגיטימי ולא רק צרם.
+
+   ההבחנה אינה שאלה חדשה באשף: family_of כבר יודע אותה מ-0046. */
 function openGuardian(){
   const r=guardQueue[0]; if(!r)return;
   const kid=r.beneficiary_name||'הילד';
-  txt('ga-title',r.opened_by+' פתח/ה נטיעה עבור '+kid);
-  txt('ga-body','ציינו אותך כהורה של '+kid+'. אם תאשר, הרגע יופיע אצלך, ותוכל לראות '+
-      'מי נטע, להזמין קרובים, ולנטוע בעצמך.');
+  const parent=r.guardian_is_parent!==false;
+  txt('ga-title',guardOpened(r)+' נטיעה לעתיד של '+kid);
+  txt('ga-body',parent
+    ? ('ציינו אותך כהורה של '+kid+'. אחרי האישור הרגע יופיע אצלך: מי נטע, '+
+       'כמה נצבר, ואפשר גם להזמין קרובים ולנטוע בעצמך.')
+    : ((r.opened_by||'מישהו')+' רשם אותך כמי שיקבל את הכסף בשביל '+kid+
+       ' במועד המיוחל. אחרי האישור הרגע יופיע אצלך: מי נטע, כמה נצבר, '+
+       'ואפשר גם להזמין קרובים ולנטוע בעצמך.'));
   txt('ga-kid',(r.beneficiary_name||'·'));
   txt('ga-when',r.target_date?monthYear(r.target_date):'·');
   txt('ga-who',r.opened_by||'·');
-  txt('ga-yes','כן, '+kid+' הוא הילד שלי');
+  txt('ga-yes',parent?('כן, '+kid+' הוא הילד שלי'):'כן, זה מוסכם עליי');
   go(27);
 }
 function monthYear(iso){
@@ -2999,10 +3027,7 @@ function render(){const v=freq==='m'?+amtM.value:+amtL.value;if(freq==='m')docum
        הראשון של המסך, בדיוק כשגוללים ורוצים לזכור כמה בחרת. */
     document.getElementById('amt-sticky-txt').textContent=
       v.toLocaleString('he-IL')+' ₪ '+(freq==='m'?'בחודש':'היום');return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);const approx=mode==='market'?'כ-':'';num.textContent=approx+Math.round(total).toLocaleString('he-IL')+' ₪';document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+approx+Math.round(total).toLocaleString('he-IL')+' ₪';if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();ahaCopy();
-txt('aha-k1',freq==='m'?'מופקד כל חודש':'הפקדה חד פעמית');
-txt('aha-v1',v.toLocaleString('he-IL')+' ₪');
-txt('aha-v2',goal.dateLabel||'');
-txt('aha-k3',mode==='keep'?'יישמר עד אז':(freq==='m'?'בקצב הזה ייצבר':'ימשיך לגדול ל'));
+txt('aha-k3',ahaLabel());
 txt('aha-v3',approx+Math.round(total).toLocaleString('he-IL')+' ₪');const assume=freq==='m'?'בהנחה שההפקדה נמשכת עד אז. ':'';
   fine.textContent=assume+(mode==='keep'?'הסכום נשמר כפי שהוא ואינו חשוף לשוק. שימו לב שערכו הריאלי עשוי להישחק עם הזמן בשל אינפלציה.':mode==='safe'?'הקרן והריבית מובטחות על ידי הגוף הפיננסי המנהל. התנאים המדויקים, לרבות סכומי מינימום, נקבעים על ידו.':'התשואות להמחשה בלבד ומבוססות על נתוני עבר. הערך עשוי לרדת. אינן מהוות הבטחת תשואה או ייעוץ השקעות.');}
 document.querySelectorAll('.opt[data-m]').forEach(el=>el.onclick=()=>{
@@ -4029,6 +4054,14 @@ function openInvite(key){
 function backFromInvite(){
   if(cur&&plantAt(cur)){openDetail(cur);return}
   go(0);
+}
+/* המועד נכנס לתוך הכיתוב של המספר במקום לשבת בשורה משלו: צפי בלי
+   תאריך אינו אומר דבר, ותאריך בשורה נפרדת הוא עובדה שכבר נקראה. */
+function ahaLabel(){
+  const dl=goal.dateLabel?(' עד '+goal.dateLabel):'';
+  if(mode==='keep')return 'יישמר'+(dl||' עד אז');
+  return freq==='m' ? ('בקצב הזה ייצבר'+dl)
+                    : (dl?('עד '+goal.dateLabel+' יגדל ל'):'ימשיך לגדול ל');
 }
 /* copy on the payment + aha screens follows the planting being deposited into */
 function ahaCopy(){
