@@ -973,7 +973,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '65041c5';
+window.NETA_BUILD = '5d8c75a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4014,7 +4014,7 @@ function openJoin(){
   /* בשם מי שהזמין, כשידוע מי הוא. בלי מגדר שמור הניסוח עובר לצורה
      הסתמית: לוכסן שני באותו משפט, ליד "תרגיש/י", היה הופך אותו
      לטופס. */
-  const by=inviteKnows.by, bySex=inviteKnows.bySex;
+  const by=firstName(inviteKnows.by), bySex=inviteKnows.bySex;
   txt('jo-sub',!known ? 'שני פרטים, ואפשר להיכנס.'
     : (by&&(bySex==='m'||bySex==='f')
         ? (by+' כבר '+(bySex==='f'?'סיפרה':'סיפר')+' לנו איך קוראים לך, אבל תרגיש/י חופשי לשנות.')
@@ -4065,6 +4065,11 @@ function joNext(){
     netaServer.sendCode(joMail).then(function(){
       btn.disabled=false;
       box.style.display='';
+      /* הכתובת מופיעה עכשיו בכיתוב של שדה הקוד, ו"זו לא הכתובת שלי"
+         כבר אינה הצעה: הקוד יצא. הגוש שמעל יורד כדי שהמסכה לא תופיע
+         פעמיים באותו מסך. */
+      const kn=document.getElementById('jo-known');
+      if(kn)kn.style.display='none';
       txt('jo-codelbl','הקוד נשלח ל'+maskMail(joMail));
       txt('jo-cta','הצטרף לנטיעה');
       const o=document.getElementById('jo-otp');if(o)o.focus();
@@ -4161,7 +4166,9 @@ function offerInviteName(next){
     const have=(prof&&prof.name||'').trim();
     if(!have||norm(have)===norm(want)){next();return}
     nameFixNext=next;
-    txt('nf-sub','מי שהזמין אותך רשם אותך כ'+want+'. ככה שמור אצלנו היום:');
+    const by=firstName(inviteKnows.by);
+    txt('nf-sub',(by?(by+' רשם אותך כ'+want):('רשמו אותך כ'+want))+
+        '. ככה שמור אצלנו היום:');
     txt('nf-cur',have);
     txt('nf-yes','שנה ל'+want);
     go(NAMEFIX_SCREEN());
