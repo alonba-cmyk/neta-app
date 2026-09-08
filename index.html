@@ -957,7 +957,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '576260a';
+window.NETA_BUILD = '3f71e63';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1139,7 +1139,7 @@ window.NETA_CONFIG = {
         <span><i class="dsw o"></i>מקרוביי<b id="s-othv">·</b></span>
       </div>
     </div>
-    <div class="s-meta"><span><b id="s-cnt">2</b> <span id="s-cntw">נטיעות</span><span id="s-benw" style="display:none"> עבור <b id="s-ben"></b></span></span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span></div>
+    <div class="s-meta"><span><b id="s-cnt">2</b> <span id="s-cntw">נטיעות</span><span id="s-benw" style="display:none"> עבור <b id="s-ben"></b></span></span><span class="grp" id="s-mongrp"><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span></span></div>
   </div>
 
   <!-- שני סקשנים, והגבול ביניהם הוא family_of: רגע שייך למשפחה שלי,
@@ -6730,9 +6730,14 @@ function cardHTML(p){
                     by:p.by,when:targetLine(p),
                     designated:p.designated,people:p.participants});
 }
-/* הכרטיס בסקשן "נטיעות עבור אחרים". המספר הוא מה ש*אני* נטעתי ולא מה
-   שנצבר ברגע — הרגע הזה אינו שלי, והחלק שלי בו הוא כל מה שיש לי לומר
-   עליו. ושורת המשנה אומרת של מי הוא, אחרת הוא נראה כמו רגע שלי. */
+/* הכרטיס בסקשן "נטיעות עבור אחרים". המספר הוא מה שנצבר לרגע, כמו
+   בסקשן הראשון: המסך הזה מתאר רגעים, ומי שהוזמן ועוד לא הפקיד קיבל
+   "נטעת עד כה 0 ₪" על רגע שכבר יש בו כסף — מספר שקיומו מודיע על
+   היעדרו, בדיוק התקלה ש-cardHTML כבר תוקן ממנה.
+
+   וגם: כך סכום הכרטיסים שווה למספר הגדול שמעליהם בשני הסקשנים.
+   "כמה אני נתתי" נשאלת ונענית ב"הנטיעות שלי", וזו כל ההבחנה בין
+   שני המסכים. שורת המשנה ממשיכה לומר של מי הרגע. */
 /* "עד ספטמבר 2036" — המועד שהרגע מחכה לו. */
 function targetLine(p){
   const m=months[Number(p.targetMonth)],y=p.targetYear;
@@ -6740,9 +6745,9 @@ function targetLine(p){
   return 'עד '+(m?m+' ':'')+y;
 }
 function othCardHTML(p){
-  const mine=(p.mine==null?p.accrued:p.mine);
-  return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נטעת עד כה',
-                    amount:mine,cap:planterCap(p.participants,mine),
+  return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נצבר עד כה',
+                    amount:Number(p.accrued||0),
+                    cap:planterCap(p.participants,(p.mine==null?p.accrued:p.mine)),
                     note:p.familyName?('המשפחה של '+p.familyName):'משפחה של קרוב',
                     designated:p.designated,people:p.participants});
 }
@@ -7096,17 +7101,34 @@ function buildHomeSummary(){
     /* מי שנטע רק לילדים של קרובים אין לו סקשן ראשון בכלל, ומספר גדול
        של 0 היה שקר על מסך שיש בו תוכן. אז המספר עובר לתאר את מה שיש. */
     const onlyOth=!own.length&&oth.length>0;
+    /* המסך הזה מתאר רגעים, לא את חלקי בהם. זה מה שמבדיל אותו
+       מ"הנטיעות שלי", ולכן גם בסקשן השני המספר הוא מה שנצבר לרגע.
+
+       ‏גל הוזמנה לרגע שאלון פתח והפקיד בו 100 ₪. עד כאן היא ראתה
+       ‏`·` ירוק לצד צפי זהוב של 14,485 ₪ — כלומר שני מספרים על שני
+       נושאים שונים באותו ראש: החלק שלה מול הצפי של הרגע. המספר
+       שהיא צריכה הוא של הרגע, כמו הצפי שלידו. */
+    const othAccrued=oth.reduce(function(a,p){return a+Number(p.accrued||0)},0);
+    const here=onlyOth?oth:own;
     /* אפס גדול על חשבון חדש הוא ההיפך ממה שהמסך אמור לומר. `·` הוא
        כבר המציין של "אין ערך עדיין" בשאר המסכים, והכיתוב מספר מה
-       יקרה במקום לדווח על מה שלא קרה. */
-    const accrued=onlyOth?othTot:(tot||s.invested);
+       יקרה — אבל רק אם באמת משהו בדרך. בלי הוראת קבע אין הפקדה
+       ראשונה, וההבטחה הזאת הייתה שקר קטן על מסך ריק. */
+    const accrued=onlyOth?othAccrued:(tot||s.invested);
+    const coming=here.some(function(p){
+      return p.hasStandingOrder||Number(p.myMonthly||0)>0;
+    });
     txt('s-you',accrued>0?shekel(accrued):'·');
-    txt('s-label',accrued>0?'נצבר עד כה':'ההפקדה הראשונה בדרך');
-    const nHere=(onlyOth?oth:own).length;
+    txt('s-label',accrued>0?'נצבר עד כה':(coming?'ההפקדה הראשונה בדרך':'עוד לא נצבר'));
+    const nHere=here.length;
     txt('s-cnt',nHere);
     txt('s-cntw',nHere===1?'נטיעה':'נטיעות');
-    txt('s-mon',shekel((onlyOth?oth:own).reduce(function(a,p){
-      return a+Number(p.myMonthly||0)},0)));
+    /* שורת העובדות מדברת על ההפקדה שלי, וכשאין כזו "0 ₪ בכל חודש"
+       נקרא כתקלה ולא כמידע. הפריט יורד במקום להציג אפס. */
+    const monHere=here.reduce(function(a,p){return a+Number(p.myMonthly||0)},0);
+    const monGrp=document.getElementById('s-mongrp');
+    if(monGrp)monGrp.style.display=monHere>0?'':'none';
+    txt('s-mon',shekel(monHere));
     /* בלי שמות — המשפט נגמר ב"של " באוויר. קורה לכל חשבון חדש. */
     /* "הושקעו" סבילה וחסרת נושא, ולכן היא נקראת כמו "זה מה שאני
        הפקדתי" — בדיוק ההפך מהמספר, שהוא מה שנצבר לרגעים האלה כולם,
@@ -7126,7 +7148,7 @@ function buildHomeSummary(){
 
        רק משם שיש בו " של ", כדי שקופה שלא יועדה או שם חופשי לא ייכנסו
        כאילו הם ילד. */
-    const kidsHere=beneficiariesOf(own);
+    const kidsHere=beneficiariesOf(here);
     /* הניסוח מתקצר ככל שיש יותר שמות, כי המקום אחד. נמדד ב-360:
        ילד אחד מחזיק את "עד כה"; שניים דורשים לוותר עליו; שלושה
        נשברים גם בלעדיו, ולכן השלישי ואילך הופכים ל"ועוד N".
@@ -7141,7 +7163,7 @@ function buildHomeSummary(){
        ממילא כתובים על הכרטיסים שמתחת. */
     const benw=document.getElementById('s-benw');
     if(benw){
-      const one=(!onlyOth&&kidsHere.length===1)?kidsHere[0]:'';
+      const one=kidsHere.length===1?kidsHere[0]:'';
       benw.style.display=one?'':'none';
       if(one)txt('s-ben',one);
     }
