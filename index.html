@@ -275,9 +275,31 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .ppav button.slot:hover{border-color:var(--leaf-2);color:var(--leaf)}
 .ppav .avsvg{display:block;width:100%;height:100%}
 .s-num{font-size:33px;font-weight:600;color:var(--leaf);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
-.s-label{font-size:12.5px;color:var(--tx-2);margin-top:8px;line-height:1.5}
-/* אותו קו בדיוק של .s-meta, למסך שאין לו שורת עובדות מתחתיו. */
-.s-cut{margin-top:14px;border-top:1px solid var(--line)}
+.s-label{font-size:12.5px;color:var(--tx-2);margin-top:8px;line-height:1.5;text-wrap:balance}
+/* שני מספרים במקום אחד, במסך הבית בלבד: ירוק למה שנצבר וזהב למה
+   שיחכה. עד כאן הראש היה מספר יחיד, והצפי — הדבר היחיד שמרשים
+   בחודש הראשון — ישב אחרון והכי קטן בשורת העובדות.
+
+   הנבט יורד מהמסך הזה. שני מספרים צריכים את כל הרוחב, והוא נשאר
+   ב"הנטיעות שלי", ששם נשאר מספר אחד. */
+.duo{display:flex;align-items:flex-start}
+.duo>div{flex:1;min-width:0}
+.duo>div+div{margin-inline-start:13px;border-inline-start:1px solid var(--rule)}
+.duo>div+div>*{padding-inline-start:13px}
+.duo .n{font-size:23px;font-weight:600;color:var(--leaf);letter-spacing:-.025em;
+  line-height:1;white-space:nowrap;font-variant-numeric:tabular-nums}
+.duo .n.fut{color:var(--sun-soft)}
+.duo .l{font-size:10.5px;color:var(--tx-3);margin-top:6px;line-height:1.45}
+/* בלי צפי אין חצי שני, והמספר חוזר לגודל שהיה לו כשהיה לבד. */
+.duo.solo .n{font-size:33px;letter-spacing:-.03em}
+.duo.solo .l{font-size:12.5px;color:var(--tx-2);margin-top:8px;line-height:1.5}
+/* המספר הוא מה שהעין עוקבת אחריו במעבר בין הטאבים, ולכן הוא חייב
+   לנחות באותו פיקסל בשניהם. ב"הנטיעות שלי" הנבט גבוה מגוש הטקסט
+   ודוחף אותו 4 פיקסלים למטה במרכוז; כאן אין נבט, ולכן ההפרש נוסף
+   ידנית. שורת העובדות שמתחת אינה מיושרת ואינה יכולה להיות: פס
+   הפילוח ממך/מקרובים מופיע רק כשקרוב הפקיד, כלומר הגובה משתנה
+   מחשבון לחשבון ממילא. */
+#home-full .summary .s-row{padding-top:4px}
 .summary+.card{margin-top:15px}
 .s-meta{display:flex;flex-wrap:wrap;gap:8px;row-gap:5px;align-items:center;font-size:11px;
   color:var(--tx-3);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
@@ -935,7 +957,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7830663';
+window.NETA_BUILD = '1209a32';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1098,11 +1120,16 @@ window.NETA_CONFIG = {
   <div class="summary">
     <div class="s-row">
       <div class="s-body">
-        <div class="s-num" id="s-you">13,300 ₪</div>
-        <div class="s-label" id="s-label">נצבר עד כה בעתיד של דניאל ונועה</div>
-      </div>
-      <div class="s-art">
-        <svg width="58" height="68" viewBox="0 0 60 70" aria-hidden="true"><use href="#sprout-pot"/></svg>
+        <div class="duo" id="s-duo">
+          <div>
+            <div class="n" id="s-you">13,300 ₪</div>
+            <div class="l" id="s-label">נצבר עד כה</div>
+          </div>
+          <div id="s-futbox">
+            <div class="n fut" id="s-fut">·</div>
+            <div class="l" id="s-futk">יחכו להם במועדים</div>
+          </div>
+        </div>
       </div>
     </div>
     <div id="s-mine" style="display:none">
@@ -1112,7 +1139,7 @@ window.NETA_CONFIG = {
         <span><i class="dsw o"></i>מקרוביי<b id="s-othv">·</b></span>
       </div>
     </div>
-    <div class="s-meta"><span><b id="s-cnt">2</b> <span id="s-cntw">נטיעות</span></span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span><span class="grp" id="s-fut-grp"><i></i><span>צפוי <b class="fut" id="s-fut"></b></span></span></div>
+    <div class="s-meta"><span><b id="s-cnt">2</b> <span id="s-cntw">נטיעות</span><span id="s-benw" style="display:none"> עבור <b id="s-ben"></b></span></span><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span></div>
   </div>
 
   <!-- שני סקשנים, והגבול ביניהם הוא family_of: רגע שייך למשפחה שלי,
@@ -1717,23 +1744,21 @@ window.NETA_CONFIG = {
         <div class="s-num" id="mi-num">300 ₪</div>
         <div class="s-label" id="mi-meta"></div>
       </div>
-      <!-- אותו איור ובאותו גודל כמו במסך הבית: שני מסכי סיכום, אותה
-           פתיחה. קודם ישב כאן סמל המותג ב-52×61, וההבדל בצורה ובגובה
-           הורגש בכל מעבר. -->
+      <!-- הנבט נשאר כאן ויורד ממסך הבית: שם יש מעכשיו שני מספרים
+           שצריכים את כל הרוחב, וכאן נשאר מספר אחד. -->
       <div class="s-art">
         <svg width="58" height="68" viewBox="0 0 60 70" aria-hidden="true"><use href="#sprout-pot"/></svg>
       </div>
     </div>
-    <!-- הקו של .s-meta, בלי השורה שאחריו: מתחתיו כאן יושב כרטיס ולא
-         טקסט, ולכן הריווח נמדד מהקו לכרטיס ולא מהקו לשורה. -->
-    <div class="s-cut"></div>
-  </div>
-
-  <div class="card gap">
-    <div class="stat"><span class="k">בכל חודש, מכל הרגעים יחד</span>
-      <span class="v" style="color:var(--leaf)" id="mi-mon">·</span></div>
-    <div class="stat" id="mi-projrow"><span class="k">מה שנטעת יגדל ל</span>
-      <span class="v" style="color:var(--sun-soft)" id="mi-proj">·</span></div>
+    <!-- אותה שורת עובדות כמו במסך הבית, ובאותו מבנה: ההפקדה החודשית,
+         מספר הרגעים כשיש יותר מאחד, והצפי האישי בזהב. קודם ישב כאן
+         כרטיס בן שתי שורות, שהחזיק את אותן שתי עובדות במשקל של טבלה
+         ודחף את הרשימה למטה. -->
+    <div class="s-meta">
+      <span><b id="mi-mon">·</b> בכל חודש</span>
+      <span class="grp" id="mi-cntgrp"><i></i><span id="mi-cnt">בשני רגעים</span></span>
+      <span class="grp" id="mi-projgrp"><i></i><span>יגדל ל<b class="fut" id="mi-proj">·</b></span></span>
+    </div>
   </div>
   <p class="fine" style="margin-top:9px">הצפי מתייחס לכסף שלך בלבד, ולא למה שאחרים נטעו לאותם רגעים.</p>
 
@@ -2339,7 +2364,8 @@ const ONBO={welcome:19,login:20,how:21,identity:22,done:23};
 let onbo=false;
 const topbars={
   0:['שלום אלון','הכסף גדל בזמן שהם גדלים'],
-  14:['הנטיעות שלי','כמה אתה נותן, ולאן זה הולך'],
+  /* "נותן" היא שפה של תרומה, וכל שאר המוצר מדבר על השקעה ועל נטיעה. */
+  14:['הנטיעות שלי','מה שאתה משקיע, ולמה זה יהפוך'],
   /* גם כאן, ולא ככותרת בתוך המסך: ארבעת יעדי הסרגל צריכים כותרת באותו
      מקום ובאותו גודל, אחרת המעבר ביניהם קופץ. זה היה המסך היחיד מביניהם
      שהחזיק h2 בתוך הגלילה, ולכן גם התמונה שבפינה נעלמה בו. */
@@ -5587,7 +5613,7 @@ function loadAccountLists(){
    "שלום" לבד תקין לכל אדם, ומשלים לשם המלא כשהפרופיל מגיע. */
 function blankBeforeFirstLoad(){
   if(!netaServer)return;
-  ['s-you','s-cnt','s-mon','s-label'].forEach(function(id){txt(id,'')});
+  ['s-you','s-cnt','s-mon','s-label','s-fut','s-futk','s-ben'].forEach(function(id){txt(id,'')});
   const g=document.getElementById('garden');
   if(g)g.innerHTML='';
   /* גם הפנקסים האישיים. הם מאותחלים בקובץ עם משפחת ההדגמה, וניקוי שלהם
@@ -6659,14 +6685,9 @@ function planterCap(list,mineAgorot){
   if(n===1)return firstName(list[0]&&list[0].name)||'נוטע אחד';
   return Number(mineAgorot||0)>0?'אתה':'';
 }
-/* מקבל תאריך מלא מהשרת, או שנה בלבד — ההדגמה יודעת רק שנה, ולהמציא
-   לה חודש היה להציג נתון שלא קיים. */
-function sinceLine(v){
-  if(!v)return '';
-  if(typeof v==='number'||/^\d{4}$/.test(v))return 'מאז '+v;
-  const d=new Date(v+'T00:00:00');
-  return isNaN(d)?'':('מאז '+months[d.getMonth()]+' '+d.getFullYear());
-}
+/* ‏sinceLine ירדה יחד עם "מאז ספטמבר 2026". בחודש הראשון היא הדפיסה
+   את החודש הנוכחי עצמו, וזה נקרא כמו תקלה; הכיתוב מדבר עכשיו על מי
+   ולא על מתי. */
 function plantCard(o){
   /* רגע שקרוב פתח וצירף אותך אליו נראה בכרטיס בדיוק כמו רגע שפתחת
      בעצמך — "נטעת עד כה 100 ₪", ותו לא. מי פתח אותו כבר קיים במודל
@@ -6758,19 +6779,9 @@ function projectablePlantings(model){
     return p.designated&&p.projection>p.accrued;
   });
 }
-/* הנקודה המפרידה שייכת לפריט שאחריה, ולכן כשהוא יורד שורה היא יורדת
-   איתו ונתלית בראשה. הבדיקה היא על המיקום בפועל ולא על אורך הטקסט,
-   ולכן היא נכונה בכל גודל טקסט, בכל שפה ובכל אורך מספר. */
-function tidyMetaRow(){
-  const m=document.querySelector('#home-full .s-meta'),
-        g=document.getElementById('s-fut-grp');
-  if(!m||!g||g.style.display==='none')return;
-  requestAnimationFrame(function(){
-    const first=m.firstElementChild;
-    if(first)g.classList.toggle('nodot',g.offsetTop>first.offsetTop);
-  });
-}
-addEventListener('resize',tidyMetaRow);
+/* ‏tidyMetaRow ירדה יחד עם הצפי. היא שמרה על הנקודה המפרידה של
+   הפריט השלישי בשורת העובדות, ומאז שהצפי עלה לראש נשארו שם שני
+   פריטים בלבד שנכנסים בכל רוחב. */
 /* הסכום העתידי המצטבר. שורת הסטטיסטיקה וטבלת "הצפי לעתיד" חייבות
    להסכים, ולכן שתיהן סוכמות בדיוק את אותה רשימה — אחרת המשתמש רואה
    מספר אחד בכותרת ומחבר מספר אחר מהטבלה.
@@ -7085,7 +7096,12 @@ function buildHomeSummary(){
     /* מי שנטע רק לילדים של קרובים אין לו סקשן ראשון בכלל, ומספר גדול
        של 0 היה שקר על מסך שיש בו תוכן. אז המספר עובר לתאר את מה שיש. */
     const onlyOth=!own.length&&oth.length>0;
-    txt('s-you',shekel(onlyOth?othTot:(tot||s.invested)));
+    /* אפס גדול על חשבון חדש הוא ההיפך ממה שהמסך אמור לומר. `·` הוא
+       כבר המציין של "אין ערך עדיין" בשאר המסכים, והכיתוב מספר מה
+       יקרה במקום לדווח על מה שלא קרה. */
+    const accrued=onlyOth?othTot:(tot||s.invested);
+    txt('s-you',accrued>0?shekel(accrued):'·');
+    txt('s-label',accrued>0?'נצבר עד כה':'ההפקדה הראשונה בדרך');
     const nHere=(onlyOth?oth:own).length;
     txt('s-cnt',nHere);
     txt('s-cntw',nHere===1?'נטיעה':'נטיעות');
@@ -7110,28 +7126,25 @@ function buildHomeSummary(){
 
        רק משם שיש בו " של ", כדי שקופה שלא יועדה או שם חופשי לא ייכנסו
        כאילו הם ילד. */
-    const kidsHere=(function(){
-      const out=[];
-      own.forEach(function(p){
-        const parts=String(p.name||'').split(' של ');
-        if(parts.length<2)return;
-        const k=parts[parts.length-1].trim();
-        if(k&&out.indexOf(k)<0)out.push(k);
-      });
-      return out;})();
+    const kidsHere=beneficiariesOf(own);
     /* הניסוח מתקצר ככל שיש יותר שמות, כי המקום אחד. נמדד ב-360:
        ילד אחד מחזיק את "עד כה"; שניים דורשים לוותר עליו; שלושה
        נשברים גם בלעדיו, ולכן השלישי ואילך הופכים ל"ועוד N".
 
        שורה שנייה כאן מגביהה את גוש הטקסט מעל הנבט שלצידו, והוא נראה
        ננסי — התקלה שאלון דיווח עליה בזמנו, ו-homefix שומרת עליה. */
-    txt('s-label',onlyOth ? 'נטעת עבור משפחות של קרובים' : (function(){
-      const k=kidsHere;
-      if(!k.length)return 'נצבר עד כה';
-      if(k.length===1)return 'נצבר עד כה עבור העתיד של '+k[0];
-      if(k.length===2)return 'נצבר עבור העתיד של '+k[0]+' ו'+k[1];
-      return 'נצבר עבור העתיד של '+k[0]+' ועוד '+(k.length-1);
-    })());
+    /* השם ירד מהכיתוב שמעל המספר ועבר לשורת העובדות, ליד מספר
+       הנטיעות: "1 נטיעה עבור ששי". כיתוב שמעל מספר צריך לומר מה
+       המספר מודד, ובשני מספרים אין מקום גם לשמות.
+
+       רק כשיש נהנה אחד. שניים ומעלה, השורה הייתה נשברת, והשמות
+       ממילא כתובים על הכרטיסים שמתחת. */
+    const benw=document.getElementById('s-benw');
+    if(benw){
+      const one=(!onlyOth&&kidsHere.length===1)?kidsHere[0]:'';
+      benw.style.display=one?'':'none';
+      if(one)txt('s-ben',one);
+    }
     const others=onlyOth?0:Math.max(0,tot-mineTot);
     const sm=document.getElementById('s-mine');
     if(sm){
@@ -7160,7 +7173,9 @@ function buildHomeSummary(){
     const proj=projectablePlantings({plantings:onlyOth?oth:own});
     const projLink=document.getElementById('proj-link');
     if(projLink)projLink.style.display=proj.length?'':'none';
-    const futGrp=document.getElementById('s-fut-grp');
+    const futGrp=document.getElementById('s-futbox');
+    const duo=document.getElementById('s-duo');
+    if(duo)duo.classList.toggle('solo',!proj.length);
     if(futGrp){
       futGrp.style.display=proj.length?'':'none';
       /* בלי אופק. "צפוי כ-14,485 ₪ עד ספטמבר 2036" נמדד ב-317 פיקסל
@@ -7173,7 +7188,16 @@ function buildHomeSummary(){
          יום נתון. הצגתי את זה, ואלון בחר בקיצור. הפירוט המלא, עם
          התאריך לכל רגע, נשאר בגיליון "הצפי לעתיד" שמעל הרשימה. */
       txt('s-fut','כ-'+shekel(projectedTotal(proj)));
-      tidyMetaRow();
+      /* "יחכו לו" צריך מגדר, ורגע אחד גם נותן מועד אמיתי במקום
+         "במועדים". שניהם קיימים רק כשיש רגע אחד בדיוק, ובלי מגדר
+         שמור נשארת הצורה חסרת הגוף במקום ניחוש לפי השם. */
+      txt('s-futk',(function(){
+        if(proj.length!==1)return 'יחכו להם במועדים';
+        const one=proj[0], when=one.date?(' ב'+one.date):'';
+        if(one.sex==='f')return 'יחכו לה'+when;
+        if(one.sex==='m')return 'יחכו לו'+when;
+        return 'יחכו שם'+when;
+      })());
     }
     if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();}
     paintInvestments();
@@ -7224,16 +7248,52 @@ function paintInvestments(){
   const proj=rows.reduce(function(a,p){return a+Number(p.myProjection||0)},0);
   txt('mi-num',shekel(total));
   txt('mi-mon',monthly>0?shekel(monthly):'אין הוראת קבע פעילה');
-  const pr=document.getElementById('mi-projrow');
-  if(pr)pr.style.display=proj>total?'flex':'none';
+  const pr=document.getElementById('mi-projgrp');
+  if(pr)pr.style.display=proj>total?'':'none';
   txt('mi-proj','כ-'+shekel(proj));
-  const first=sinceLine(rows.map(function(p){return p.since}).filter(Boolean).sort()[0]);
-  /* "נטעת" ולא "נצבר": אותה שורה בדיוק שבמסך הבית אומרת מה נצבר לילד,
-     אומרת כאן מה אני נתתי. זו כל ההבדלה בין שני המסכים, והיא מילה. */
-  txt('mi-meta','נטעת עד כה ב-'+rows.length+' '+(rows.length===1?'רגע':'רגעים')+
-      (first?' · '+first:''));
+  const cg=document.getElementById('mi-cntgrp');
+  if(cg){
+    cg.style.display=rows.length>1?'':'none';
+    txt('mi-cnt','ב'+hebCount(rows.length)+' רגעים');
+  }
+  /* הכיתוב אומר עבור מי, וזו כל ההבדלה בין שני המסכים: במסך הבית
+     המספר הוא של הילד, וכאן הוא שלי.
+
+     הספירה היא של אנשים ולא של רגעים. בר מצווה ולימודים של אותו ילד
+     הם עדיין ילד אחד, ולכן שמו נשאר. רק כשיש באמת יותר מאדם אחד,
+     כולל התערובת של ילדים שלי עם ילדים של אחרים שהמסך הזה מאחד,
+     הכיתוב עובר לצורה הכללית. */
+  const who=beneficiariesOf(rows);
+  txt('mi-meta',
+    who.length===1 ? ('זה מה שאתה נטעת עבור העתיד של '+who[0]) :
+    who.length>1   ? 'זה מה שאתה נטעת עבור עתיד קרוביך'
+                   : 'זה מה שאתה נטעת, עוד בלי לקבוע למי');
   document.getElementById('mi-list').innerHTML=rows.map(ivCardHTML).join('');
 }
+/* מי הנהנים ברשימה, בלי כפילויות. שני מסכי הסיכום חייבים להסכים על
+   מה זה "אדם אחד", אחרת אחד מהם יאמר שם והשני "קרוביך" על אותה
+   רשימה בדיוק.
+
+   ‏kid קיים רק במקור החי; בהדגמה השם נגזר מ"בר המצווה של דניאל".
+   רק שם שיש בו " של ", כדי שקופה שלא יועדה או שם חופשי לא ייכנסו
+   כאילו הם ילד. */
+function beneficiariesOf(rows){
+  const out=[];
+  (rows||[]).forEach(function(p){
+    if(p.designated===false)return;
+    let k=(p.kid||'').trim();
+    if(!k){
+      const parts=String(p.name||'').split(' של ');
+      if(parts.length<2)return;
+      k=parts[parts.length-1].trim();
+    }
+    if(k&&out.indexOf(k)<0)out.push(k);
+  });
+  return out;
+}
+/* מספרים קטנים במילים, כמו בשאר המסכים. מעל עשרה חוזרים לספרה. */
+const HEB_COUNT=['','אחד','שני','שלושה','ארבעה','חמישה','שישה','שבעה','שמונה','תשעה','עשרה'];
+function hebCount(n){return HEB_COUNT[n]||String(n)}
 function openInvestments(){ paintInvestments(); go(14); }
 
 /* ─── הסתירה שהייתה במסך הבית, ואיך היא נסגרה סופית ────────────────
