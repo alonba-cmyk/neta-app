@@ -774,6 +774,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #home-empty .art,#kin-empty .art,#act-empty .art,#rel-list .es .art{
   height:81px;display:grid;place-items:center}
 .es h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
+/* ערך ידוע שמוצג ואינו נשאל. מקווקו כדי שייקרא כמידע ולא כשדה ריק
+   שמחכה להקלדה. */
+.fixedval{display:flex;justify-content:space-between;align-items:center;gap:8px;
+  background:var(--s1);border:1px dashed var(--line-2);border-radius:10px;
+  padding:11px 12px;font-size:13.5px;color:var(--tx-2)}
+.fixedval i{font-style:normal;color:var(--leaf)}
+[data-name="הצטרפות"] .codebox{font-size:22px;letter-spacing:.34em;text-align:center}
+[data-name="הצטרפות"] .avpick{margin-top:10px}
 /* מצב ריק של סקשן, לא של מסך: מי שהוזמן לרגע של מישהו אחר ואין לו
    נטיעה משלו. ‏min-height:62% של .es נועד למסך שאין בו דבר מלבד
    ההודעה; כאן יש מתחתיה סקשן שלם, ולכן הוא יורד. */
@@ -965,7 +973,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ae4e048';
+window.NETA_BUILD = '6609062';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2338,6 +2346,67 @@ window.NETA_CONFIG = {
   <p class="fine" id="pv-fine" style="margin-top:10px"></p>
 </section>
 
+<!-- 29 JOIN · ההרשמה של מי שהוזמן ─────────────────────────────────
+     נוסף בסוף ה-stage בכוונה: המסכים ממוספרים לפי סדר ה-DOM, וכל
+     go(N) בקובץ נשען על המספר. הוספה באמצע הייתה מזיזה 27 מסכים.
+     ההפניה לכאן היא לפי שם, כמו SHARED_SCREEN. -->
+<section class="screen center-v" data-name="הצטרפות">
+  <div class="center gap">
+    <div class="brandmark"><svg width="40" height="47" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
+    <h2 style="margin:11px 0 5px" id="jo-h">נעים להכיר</h2>
+    <p class="sub" id="jo-sub">שני פרטים, ואפשר להיכנס.</p>
+  </div>
+
+  <div class="field" style="margin-top:18px">
+    <label>השם שלך</label>
+    <input type="text" id="jo-name" placeholder="איך שייקרא לך אצל מי שנוטע איתך">
+    <div id="jo-av"></div>
+  </div>
+
+  <!-- הכתובת ידועה מההזמנה, ולכן היא מוצגת ולא נשאלת. מסכה ולא הערך
+       המלא: קישור אישי ניתן להעברה, ומי שיפתח אותו אינו צריך לראות
+       למי הוא נשלח. -->
+  <div class="field" id="jo-known" style="display:none">
+    <label>הקוד יישלח לכתובת שאליה נשלחה ההזמנה</label>
+    <div class="fixedval"><span id="jo-mask">·</span><i>✓</i></div>
+    <button class="link" style="padding-top:7px" onclick="joUseOther()">זו לא הכתובת שלי, אני רוצה להזין אחרת</button>
+  </div>
+
+  <div class="field" id="jo-askmail">
+    <label>המייל שלך</label>
+    <input type="email" id="jo-mail" placeholder="you@example.com"
+      autocapitalize="off" autocorrect="off" spellcheck="false">
+    <p class="fine" style="margin-top:6px">לכאן יישלח קוד בן ארבע ספרות. אין סיסמה.</p>
+  </div>
+
+  <div class="field" id="jo-codebox" style="display:none">
+    <label id="jo-codelbl">הקוד מהמייל</label>
+    <input type="text" id="jo-otp" class="codebox" inputmode="numeric" placeholder="····" aria-label="הקוד מהמייל">
+    <button class="link" style="text-align:right;padding-top:6px" onclick="joResend()">לא קיבלת? שלח שוב</button>
+  </div>
+
+  <button class="btn" id="jo-cta" onclick="joNext()">שלח לי קוד</button>
+  <button class="link backlink" onclick="joBack()">חזרה</button>
+</section>
+
+<!-- 30 NAME FIX · השם שההזמנה יודעת ─────────────────────────────────
+     למי שכבר יש חשבון אין מה לאמת, אבל השם שהוא בחר לעצמו מופיע לכל
+     מי שנוטע איתו, ובעוד שנים גם לילד. כשההזמנה נושאת שם אחר, שווה
+     לשאול פעם אחת. -->
+<section class="screen center-v" data-name="השם שלך">
+  <div class="center gap">
+    <div class="brandmark"><svg width="40" height="47" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
+    <h2 style="margin:11px 0 5px">רגע לפני שתצטרף</h2>
+    <p class="sub" id="nf-sub">·</p>
+  </div>
+  <div class="field" style="margin-top:16px">
+    <label>איך תיראה לכל מי שנוטע איתך</label>
+    <div class="fixedval"><span id="nf-cur">·</span></div>
+  </div>
+  <button class="btn" id="nf-yes" onclick="nameFixYes()">·</button>
+  <button class="btn ghost" style="margin-top:9px" onclick="nameFixNo()">להשאיר כמו שזה</button>
+</section>
+
 </div><!-- /stage -->
 <!-- BOTTOM TAB BAR -->
 <!-- סדר ה-DOM הוא ימין→שמאל: הראשון הוא הימני ביותר.
@@ -2397,7 +2466,9 @@ const topbars={
 /* מסכים שאין בהם סרגל תחתון. 22 ו-26 נוספו אחרי שגל, שהגיעה דרך קישור
    ולא הייתה רשומה בכלל, ראתה את הסרגל, לחצה עליו והגיעה לנתוני ההדגמה
    של מישהו אחר. מסך שנפתח לפני שיש חשבון לא מציג ניווט לחשבון. */
-const NOCHROME=[19,20,21,22,23,25,26,27];
+/* ‏29 ו-30 הם "הצטרפות" ו"השם שלך", שנוספו בסוף ה-stage. שניהם
+   מסכי דרך פנימה, ולסרגל אין מה לעשות בהם. */
+const NOCHROME=[19,20,21,22,23,25,26,27,29,30];
 const REVIEW=24;
 function go(i){
   if(i===ONBO.welcome)playSplash();
@@ -3786,8 +3857,15 @@ function sharedState(which){
    בעל הנטיעה שרואה במסך ההזמנה מה בדיוק הוא שולח (תחילית iv). תחילית
    ולא העתק שני, כי עותק שני של הכרטיס היה מתיישן ברגע שאחד מהם משתנה,
    ואז הבעלים היה רואה משהו אחר ממה שהנמען מקבל. */
+/* מה שההזמנה כבר יודעת על מי שהוזמן. נשמר כשהכרטיס נטען, ומשמש את
+   מסך ההצטרפות כדי לא לשאול מחדש מה שאלון כבר הקליד. */
+let inviteKnows={name:'',mail:''};
 function paintSharedCard(r,pre){
   const q=(pre||'sl')+'-';
+  /* רק מהטוקן האמיתי. מסך ההזמנה מצייר את אותו כרטיס מנתונים מקומיים
+     כדי להראות לבעל הנטיעה מה הוא שולח, ומשם אין מה לשמור. */
+  if(!pre)inviteKnows={name:(r.invitee_name||'').trim(),
+                       mail:(r.invitee_contact||'').trim()};
   const who=r.inviter_name||'מישהו';
   const kid=r.beneficiary_name||'';
   const sex=r.beneficiary_sex||null;
@@ -3900,13 +3978,110 @@ function loginBackOut(){
   go(ONBO.welcome);
 }
 
+const JOIN_SCREEN=function(){
+  return screens.findIndex(function(x){return x.dataset.name==='הצטרפות'});
+};
+const NAMEFIX_SCREEN=function(){
+  return screens.findIndex(function(x){return x.dataset.name==='השם שלך'});
+};
+/* כתובת מוצגת ואינה נמסרת: g•••••n@gmail.com. שתי אותיות בקצוות
+   מספיקות למי שזו כתובתו לזהות אותה, ולא מספיקות לאיש אחר. */
+function maskMail(v){
+  const t=String(v||'').trim(), at=t.indexOf('@');
+  if(at<1)return t;
+  const u=t.slice(0,at), d=t.slice(at);
+  if(u.length<=2)return u[0]+'•'+d;
+  return u[0]+'•'.repeat(Math.min(7,Math.max(1,u.length-2)))+u[u.length-1]+d;
+}
+let joMail='';
 function startJoin(){
   const t=sharedTokenInUrl()||pendingInvite();
   if(!t)return;
   keepInvite(t);
   if(liveAccount()){finishJoin();return}
   onbo=false;
-  go(ONBO.login);
+  openJoin();
+}
+/* ההרשמה של מי שהוזמן. אותו רכיב לשני המסלולים, ומה שמשתנה הוא רק
+   מאיפה מגיע הערך ההתחלתי: הזמנה אישית ממלאת שם וכתובת, קישור פתוח
+   משאיר את שניהם ריקים. */
+function openJoin(){
+  const known=!!inviteKnows.mail;
+  joMail=inviteKnows.mail;
+  txt('jo-h',inviteKnows.name?('נעים להכיר, '+firstName(inviteKnows.name)):'נעים להכיר');
+  txt('jo-sub',known
+    ? 'כבר סיפרו לנו איך קוראים לך. אפשר לתקן, ולבחור איך תיראה אצל מי שנוטע איתך.'
+    : 'שני פרטים, ואפשר להיכנס.');
+  const nm=document.getElementById('jo-name');
+  if(nm)nm.value=inviteKnows.name||'';
+  pickedAv='av-parent';
+  const av=document.getElementById('jo-av');
+  if(av)av.innerHTML='<label style="margin-top:11px">תמונה</label>'+avpickHTML('av-parent');
+  txt('jo-mask',maskMail(joMail));
+  document.getElementById('jo-known').style.display=known?'':'none';
+  document.getElementById('jo-askmail').style.display=known?'none':'';
+  document.getElementById('jo-codebox').style.display='none';
+  const otp=document.getElementById('jo-otp');if(otp)otp.value='';
+  txt('jo-cta','שלח לי קוד');
+  go(JOIN_SCREEN());
+}
+/* "זו לא הכתובת שלי" פותח את השדה. מכאן ההזמנה כבר אינה מאמתת את
+   הכתובת, ולכן הצירוף יעבור דרך בקשת אישור — וזה בדיוק מה שהמסלול
+   הזה נועד לו. */
+function joUseOther(){
+  joMail='';
+  document.getElementById('jo-known').style.display='none';
+  document.getElementById('jo-askmail').style.display='';
+  const m=document.getElementById('jo-mail');if(m)m.focus();
+}
+function joBack(){
+  sharedState(sharedCardShown?'card':'card');
+}
+function joResend(){
+  if(!joMail||!netaServer)return;
+  netaServer.sendCode(joMail).then(function(){toast('נשלח קוד חדש')},
+    function(e){toast((e&&e.message)||'לא הצלחנו לשלוח')});
+}
+function joNext(){
+  const nm=((document.getElementById('jo-name')||{}).value||'').trim();
+  if(!nm){toast('צריך שם');(document.getElementById('jo-name')||{}).focus&&document.getElementById('jo-name').focus();return}
+  const box=document.getElementById('jo-codebox');
+  const btn=document.getElementById('jo-cta');
+  if(box.style.display==='none'){
+    if(!joMail){
+      const typed=((document.getElementById('jo-mail')||{}).value||'').trim();
+      if(!looksLikeEmail(typed)){toast('כתובת אימייל לא תקינה');return}
+      joMail=typed;
+    }
+    if(!netaServer){box.style.display='';txt('jo-cta','הצטרף לנטיעה');return}
+    btn.disabled=true;txt('jo-cta','שולח…');
+    netaServer.sendCode(joMail).then(function(){
+      btn.disabled=false;
+      box.style.display='';
+      txt('jo-codelbl','הקוד נשלח ל'+maskMail(joMail));
+      txt('jo-cta','הצטרף לנטיעה');
+      const o=document.getElementById('jo-otp');if(o)o.focus();
+    },function(e){
+      btn.disabled=false;txt('jo-cta','שלח לי קוד');
+      toast((e&&e.message)||'לא הצלחנו לשלוח את הקוד');
+    });
+    return;
+  }
+  const code=((document.getElementById('jo-otp')||{}).value||'').trim();
+  if(!code){toast('הזן את הקוד שנשלח אליך');return}
+  btn.disabled=true;txt('jo-cta','מאמת…');
+  netaServer.verifyCode(joMail,code)
+    .then(function(){return netaServer.ensureProfile(nm,pickedAv)})
+    .then(function(){
+      applyIdentity();
+      btn.disabled=false;txt('jo-cta','הצטרף לנטיעה');
+      /* הפרופיל נוצר כאן, ולכן introduceThen לא תשאל שוב. */
+      if(!finishJoin()){setEmpty(false);buildHomeSummary();go(0)}
+    })
+    .catch(function(e){
+      btn.disabled=false;txt('jo-cta','הצטרף לנטיעה');
+      ask('לא הצלחנו להיכנס',(e&&e.message)||'אפשר לנסות שוב.','הבנתי');
+    });
 }
 
 /* אחרי שהכניסה עברה: מה שהקישור פותח בפועל. */
@@ -3924,10 +4099,15 @@ function finishJoin(){
     history.replaceState(null,'',location.pathname);
     /* חשבון חדש עדיין בלי שם — בלעדיו הוא מופיע לבעל הנטיעה כשורה ריקה. */
     introduceThen(r.planting_id,function(){
-      setEmpty(false);
-      buildHomeSummary();
-      openDetail(r.planting_id);
-      toast('הצטרפת לנטיעה');
+      /* ולמי שכבר היה לו חשבון: השם שבחר לעצמו מופיע לכל מי שנוטע
+         איתו, ובעוד שנים גם לילד. כשההזמנה נושאת שם אחר, שווה לשאול
+         פעם אחת, לפני הנחיתה. */
+      offerInviteName(function(){
+        setEmpty(false);
+        buildHomeSummary();
+        openDetail(r.planting_id);
+        toast('הצטרפת לנטיעה');
+      });
     });
   }).catch(function(e){
     ask('לא הצלחנו לצרף אותך',(e&&e.message)||'אפשר לנסות שוב.','הבנתי');
@@ -3962,6 +4142,36 @@ function introduceThen(plantingId,next){
       });
   });
 }
+
+/* השם שההזמנה יודעת מול השם שבפרופיל. מוצג רק כששניהם קיימים ושונים
+   זה מזה — ולא כשההבדל הוא רווח או אות גדולה בלבד. */
+let nameFixNext=null;
+function offerInviteName(next){
+  const want=(inviteKnows.name||'').trim();
+  const norm=function(v){return String(v||'').trim().toLowerCase().replace(/\s+/g,' ')};
+  if(!want||!netaServer){next();return}
+  netaServer.loadProfile().then(function(prof){
+    const have=(prof&&prof.name||'').trim();
+    if(!have||norm(have)===norm(want)){next();return}
+    nameFixNext=next;
+    txt('nf-sub','מי שהזמין אותך רשם אותך כ'+want+'. ככה שמור אצלנו היום:');
+    txt('nf-cur',have);
+    txt('nf-yes','שנה ל'+want);
+    go(NAMEFIX_SCREEN());
+  },function(){next()});
+}
+function nameFixDone(){
+  const n=nameFixNext;nameFixNext=null;
+  if(n)n(); else {setEmpty(false);buildHomeSummary();go(0)}
+}
+function nameFixYes(){
+  const want=(inviteKnows.name||'').trim();
+  if(!want||!netaServer){nameFixDone();return}
+  netaServer.ensureProfile(want).then(function(){
+    applyIdentity();nameFixDone();
+  },function(e){toast((e&&e.message)||'השם לא נשמר');nameFixDone()});
+}
+function nameFixNo(){nameFixDone()}
 
 /* יציאה מהקישור כדי להיכנס בכתובת אחרת. הטוקן נשמר, ולכן הכניסה השנייה
    ממשיכה בדיוק מאותה נקודה. */
