@@ -914,7 +914,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0653769';
+window.NETA_BUILD = '0e8e669';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1228,7 +1228,7 @@ window.NETA_CONFIG = {
          הפדיון, בדיוק כמו במסלול שבו הנהנה פודה בעצמו. -->
     <div class="field"><label id="c-gcontlbl">לאן יישלח הקוד למימוש ההשקעה במועד המיוחל</label>
       <input type="email" inputmode="email" autocomplete="email" id="c-gcontact" placeholder="אימייל של המורשה">
-      <p class="fine" style="margin-top:6px" id="c-gcontfine">אימייל, לא טלפון — לפיו נמצא את החשבון שלו כדי לשלוח את האישור.</p></div>
+      <p class="fine" style="margin-top:6px" id="c-gcontfine">אימייל, לא טלפון. לפיו נמצא את החשבון שלו כדי לשלוח את האישור.</p></div>
     <!-- המשפט הזה נוסף רק עכשיו, כשהאישור באמת קיים. הוא לא נכתב יחד
          עם השדה כדי לא לחזור על התקלה שבגללה השדות האלה נגבו ונזרקו:
          מסך שמבטיח דבר שאינו קורה. -->
@@ -1725,7 +1725,7 @@ window.NETA_CONFIG = {
 
   <p class="eyebrow big">בעתיד של מי</p>
   <div id="mi-list"></div>
-  <p class="fine gap">בלחיצה על רגע נפתח מסך הרגע — ושם אפשר להוסיף, או לעצור את ההפקדה החודשית.</p>
+  <p class="fine gap">בלחיצה על רגע נפתח מסך הרגע, ושם אפשר להוסיף או לעצור את ההפקדה החודשית.</p>
 
   </div><!-- /kin-full -->
 
@@ -1764,7 +1764,7 @@ window.NETA_CONFIG = {
        והשנייה נראתה כמו מסך אחר שהתחיל. ההסבר סוגר את המסך. -->
   <p class="eyebrow big" id="inv-head" style="display:none">רגעים שהזמינו אותך אליהם</p>
   <div class="card" id="inv-list" style="display:none"></div>
-  <p class="fine gap" id="inv-fine" style="display:none">בלחיצה על רגע נפתח מסך הרגע — ושם מי נטע וכמה, ואפשר להוסיף.</p>
+  <p class="fine gap" id="inv-fine" style="display:none">בלחיצה על רגע נפתח מסך הרגע, ושם מי נטע וכמה, ואפשר להוסיף.</p>
 
   <p class="fine gap">ההזמנה היא קישור אישי, חד-פעמי, שנקשר למי שפתח אותו, קישור שהועבר הלאה לא יצרף אף אחד אחר. הזמנה במייל נשלחת אוטומטית; בוואטסאפ אתה שולח אותה בעצמך. קרוב שהצטרף רואה רק את הנטיעות שצירפת אותו אליהן, ורק התקדמות, בלי סכומים.</p>
 
@@ -2060,7 +2060,7 @@ window.NETA_CONFIG = {
        אותה אחר כך לא ימצא, ומתג בהגדרות יישאר על ברירת המחדל לנצח. -->
   <div class="card" id="py-visrow" style="display:none">
     <div class="setrow"><div class="st"><b>שהסכום שלי יהיה גלוי לשאר הקרובים</b>
-      <p>כבוי כברירת מחדל. מי שפתח את הנטיעה רואה אותו כך או כך, כבעל הנטיעה. שאתה נוטע כאן ייראה בכל מקרה — המתג הוא על הסכום.</p></div>
+      <p>כבוי כברירת מחדל. מי שפתח את הנטיעה רואה אותו כך או כך, כבעל הנטיעה. מה שאתה נוטע כאן ייראה בכל מקרה, והמתג הוא על הסכום.</p></div>
       <div class="sw" id="py-vis" onclick="this.classList.toggle('on')" role="switch"></div></div>
   </div>
 
@@ -2201,7 +2201,7 @@ window.NETA_CONFIG = {
     <div class="stat"><span class="k">מי פתח</span><span class="v" id="ga-who"></span></div>
   </div>
   <button class="btn gap" id="ga-yes" onclick="guardianYes()">כן, זה הילד שלי</button>
-  <button class="btn ghost gap-s" onclick="guardianNo()">זו טעות — אני לא מכיר</button>
+  <button class="btn ghost gap-s" onclick="guardianNo()">זו טעות, אני לא מכיר</button>
   <button class="later" onclick="go(0)">אחר כך</button>
 </section>
 
@@ -2570,11 +2570,11 @@ function openGuardian(){
   const r=guardQueue[0]; if(!r)return;
   const kid=r.beneficiary_name||'הילד';
   txt('ga-title',r.opened_by+' פתח/ה נטיעה עבור '+kid);
-  txt('ga-body','ציינו אותך כהורה של '+kid+'. אם תאשר, הרגע יופיע אצלך — תוכל לראות '+
+  txt('ga-body','ציינו אותך כהורה של '+kid+'. אם תאשר, הרגע יופיע אצלך, ותוכל לראות '+
       'מי נטע, להזמין קרובים, ולנטוע בעצמך.');
-  txt('ga-kid',(r.beneficiary_name||'—'));
-  txt('ga-when',r.target_date?monthYear(r.target_date):'—');
-  txt('ga-who',r.opened_by||'—');
+  txt('ga-kid',(r.beneficiary_name||'·'));
+  txt('ga-when',r.target_date?monthYear(r.target_date):'·');
+  txt('ga-who',r.opened_by||'·');
   txt('ga-yes','כן, '+kid+' הוא הילד שלי');
   go(27);
 }
@@ -4332,7 +4332,7 @@ const INVITE_LINE={
      המעטפה עונה על זה בדיוק, והיא גם מה שנטע היא: לא מעטפה שנותנים ביום,
      אלא כזאת שמתחילה שנים לפניו. וזו גם ההצעה שההזמנה מבקשת מהנמען. */
   bar_mitzvah:function(n,g){return n+' עוד לא '+g('יודע','יודעת')+
-    ', אבל ביום שכולם יביאו מעטפה — שלך כבר תחכה '+g('לו','לה')+' שנים.'},
+    ', אבל ביום שכולם יביאו מעטפה, שלך כבר תחכה '+g('לו','לה')+' שנים.'},
   first_car:function(n,g){return n+' עוד לא '+g('יודע','יודעת')+', אבל כש'+
     g('יקבל','תקבל')+' רישיון יחכו '+g('לו','לה')+' גם המפתחות.'},
   army_trip:function(n,g){return n+' עוד לא '+g('יודע','יודעת')+', אבל כש'+
@@ -4647,7 +4647,7 @@ function openPerson(i){
   paintPersonActs();
   txt('pv-fine',isMe
     ? 'הצפי מניח שההפקדה החודשית נמשכת עד המועד. הוא שלך בלבד ואינו מחובר לאף אחד אחר.'
-    : 'זה מה ש'+w[1]+' נטע כאן, והצפי הוא שלו בלבד. מי שעוצר או משנה — המספר משתנה איתו.');
+    : 'זה מה ש'+w[1]+' נטע כאן, והצפי הוא שלו בלבד. מי שעוצר או משנה, המספר משתנה איתו.');
   go(28);
 }
 /* שורת הפעולות מצוירת בנפרד: myStandingOrder חוזרת אחרי שהמסך כבר
@@ -7275,7 +7275,7 @@ function buildLiveActions(p){
   acts.className='';
   acts.innerHTML=actionsFor(p);
   note.innerHTML=p.co?('פרטית, רק אתה ו'+p.co+' רואים אותה')
-    :'הנטיעה הזאת פרטית — רק אתה רואה אותה';
+    :'הנטיעה הזאת פרטית, רק אתה רואה אותה';
 }
 /* חזרה מצטרפת לכל שורת פעולות באחת משתי דרכים: זוג עם כפתור בודד
    (מקבלת מקום נקי, ghost, אותו כלל שהוא ‎.two>.btn.ghost:last-child‎
@@ -7349,7 +7349,7 @@ function buildActions(p){
     if(p.mine){
       /* הקישור "פתח אותה לקרובים" ירד מכאן והפך לכפתור הראשי. */
       note.innerHTML=(p.co?'פרטית, רק אתה ו'+p.co+' רואים אותה'
-                          :'הנטיעה הזאת פרטית — רק אתה רואה אותה')+
+                          :'הנטיעה הזאת פרטית, רק אתה רואה אותה')+
         (p.co?'':' · '+addPartnerLink);
     }else{
       const o=p.who[0],f=o[3]==='f';
