@@ -774,6 +774,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #home-empty .art,#kin-empty .art,#act-empty .art,#rel-list .es .art{
   height:81px;display:grid;place-items:center}
 .es h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
+/* מצב ריק של סקשן, לא של מסך: מי שהוזמן לרגע של מישהו אחר ואין לו
+   נטיעה משלו. ‏min-height:62% של .es נועד למסך שאין בו דבר מלבד
+   ההודעה; כאן יש מתחתיה סקשן שלם, ולכן הוא יורד. */
+.es.sect{min-height:0;padding:14px 4px 4px}
+.es.sect .art{margin-bottom:13px}
+.es.sect h3{font-size:15.5px}
+.es.sect p{margin-top:8px;max-width:250px}
+.es.sect .btn{margin-top:16px;width:100%}
 .es p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin-top:10px;max-width:27ch}
 .es .btn{margin-top:18px}
 /* מסך הסיום מאמץ את אותה מוסכמת טיפוגרפיה, בלי לאמץ את .es עצמו:
@@ -957,7 +965,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '8e3bd35';
+window.NETA_BUILD = '0d6ef70';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1157,10 +1165,20 @@ window.NETA_CONFIG = {
 
   <div id="garden"></div>
   <!-- מי שהוזמן לרגע של מישהו אחר ועוד לא פתח משלו: הסקשן הראשון
-       ריק, ואין לו מספר. הכפתור שמתחת הוא הפעולה. -->
-  <p class="fine gap" id="garden-empty" style="display:none">עוד לא פתחת נטיעה משלך. כשתפתח, כאן יופיע מה שנצבר בה.</p>
+       ריק ואין לו מספר, ולכן הראש כולו יורד וזה מה שבא במקומו.
+       מצב ריק ולא שורת טקסט: המסך הראשון שהוא רואה במוצר לא יכול
+       להיפתח בהודעה על מה שאין.
 
-  <button class="btn dash gap" style="margin-top:2px" onclick="startCreate()">+ פתח נטיעה חדשה</button>
+       כותרת הסקשן יורדת איתו, כי ההודעה כאן אומרת את אותו דבר, וגם
+       הכפתור המקווקו שמתחת — הפעולה כבר יושבת כאן, מלאה. -->
+  <div class="es sect gap" id="garden-empty" style="display:none">
+    <div class="art"><svg width="52" height="61" viewBox="0 0 60 70" aria-hidden="true"><use href="#sprout-pot"/></svg></div>
+    <h3>עוד לא נטעת לעצמך</h3>
+    <p id="ge-sub">אפשר לפתוח רגע משלך. הראשון לוקח דקה.</p>
+    <button class="btn" onclick="startCreate()">פתח נטיעה ראשונה</button>
+  </div>
+
+  <button class="btn dash gap" id="garden-new" style="margin-top:2px" onclick="startCreate()">+ פתח נטיעה חדשה</button>
 
   <p class="eyebrow big" id="oth-head" style="display:none">נטיעות עבור אחרים</p>
   <div id="garden-oth"></div>
@@ -7120,6 +7138,21 @@ function buildHomeSummary(){
     if(sumBox)sumBox.style.display=noneMine?'none':'';
     const gEmpty=document.getElementById('garden-empty');
     if(gEmpty)gEmpty.style.display=noneMine?'':'none';
+    /* הכפתור המקווקו הוא הפעולה כשיש רשימה. במצב הריק הפעולה כבר
+       יושבת בתוכו, מלאה, ושני כפתורים לאותו דבר הם בחירה מדומה. */
+    const gNew=document.getElementById('garden-new');
+    if(gNew)gNew.style.display=noneMine?'none':'';
+    if(noneMine){
+      /* "נטעת אצל X" נכון רק למי שבאמת הפקיד שם. מי שהוזמנה ועוד לא
+         נטעה מקבלת "הוזמנת" — אחרת המשפט מספר לה על משהו שלא עשתה. */
+      const kids=beneficiariesOf(oth);
+      const planted=oth.some(function(p){return Number(p.mine||0)>0});
+      const at=kids.length===1?('אצל '+kids[0]):'אצל קרובים';
+      const to=kids.length===1?('לרגע של '+kids[0]):'לרגעים של קרובים';
+      txt('ge-sub',oth.length
+        ? ((planted?('נטעת '+at):('הוזמנת '+to))+', ואפשר גם לפתוח רגע משלך.')
+        : 'אפשר לפתוח רגע משלך, זה לוקח דקה.');
+    }
     const here=own;
     /* אפס גדול על חשבון חדש הוא ההיפך ממה שהמסך אמור לומר. `·` הוא
        כבר המציין של "אין ערך עדיין" בשאר המסכים, והכיתוב מספר מה
@@ -7196,7 +7229,9 @@ function buildHomeSummary(){
       }
     }
     document.getElementById('garden').innerHTML=gardenHTML(own,cardHTML);
-    document.getElementById('own-head').style.display='';
+    /* כותרת הסקשן יורדת עם הרשימה: ההודעה שבמקומה כבר אומרת את
+       אותו דבר, וכותרת מעל מצב ריק מכריזה על מדור שאין בו כלום. */
+    document.getElementById('own-head').style.display=noneMine?'none':'';
     document.getElementById('garden-oth').innerHTML=oth.map(othCardHTML).join('');
     document.getElementById('oth-head').style.display=oth.length?'':'none';
     document.getElementById('oth-fine').style.display=oth.length?'':'none';
