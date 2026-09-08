@@ -957,7 +957,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1209a32';
+window.NETA_BUILD = '576260a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7190,13 +7190,18 @@ function buildHomeSummary(){
       txt('s-fut','כ-'+shekel(projectedTotal(proj)));
       /* "יחכו לו" צריך מגדר, ורגע אחד גם נותן מועד אמיתי במקום
          "במועדים". שניהם קיימים רק כשיש רגע אחד בדיוק, ובלי מגדר
-         שמור נשארת הצורה חסרת הגוף במקום ניחוש לפי השם. */
+         שמור נשארת הצורה חסרת הגוף במקום ניחוש לפי השם.
+
+         "יחכו שם" לבד אמר "שם" מבלי לומר איפה, והשמיע את הצפי כמו
+         עובדה. "בקצב הזה" אומר גם למה המספר הזה וגם שהוא תלוי בכך
+         שההפקדה נמשכת. המועד יורד מהניסוח הזה בלבד, כי שתי מיליות
+         ב' רצופות אינן נקראות. */
       txt('s-futk',(function(){
         if(proj.length!==1)return 'יחכו להם במועדים';
         const one=proj[0], when=one.date?(' ב'+one.date):'';
         if(one.sex==='f')return 'יחכו לה'+when;
         if(one.sex==='m')return 'יחכו לו'+when;
-        return 'יחכו שם'+when;
+        return 'יחכו שם בקצב הזה';
       })());
     }
     if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();}
