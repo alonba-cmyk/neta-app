@@ -973,7 +973,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6609062';
+window.NETA_BUILD = '65041c5';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3859,13 +3859,15 @@ function sharedState(which){
    ואז הבעלים היה רואה משהו אחר ממה שהנמען מקבל. */
 /* מה שההזמנה כבר יודעת על מי שהוזמן. נשמר כשהכרטיס נטען, ומשמש את
    מסך ההצטרפות כדי לא לשאול מחדש מה שאלון כבר הקליד. */
-let inviteKnows={name:'',mail:''};
+let inviteKnows={name:'',mail:'',by:'',bySex:null};
 function paintSharedCard(r,pre){
   const q=(pre||'sl')+'-';
   /* רק מהטוקן האמיתי. מסך ההזמנה מצייר את אותו כרטיס מנתונים מקומיים
      כדי להראות לבעל הנטיעה מה הוא שולח, ומשם אין מה לשמור. */
   if(!pre)inviteKnows={name:(r.invitee_name||'').trim(),
-                       mail:(r.invitee_contact||'').trim()};
+                       mail:(r.invitee_contact||'').trim(),
+                       by:(r.inviter_name||'').trim(),
+                       bySex:r.inviter_sex||null};
   const who=r.inviter_name||'מישהו';
   const kid=r.beneficiary_name||'';
   const sex=r.beneficiary_sex||null;
@@ -4009,9 +4011,14 @@ function openJoin(){
   const known=!!inviteKnows.mail;
   joMail=inviteKnows.mail;
   txt('jo-h',inviteKnows.name?('נעים להכיר, '+firstName(inviteKnows.name)):'נעים להכיר');
-  txt('jo-sub',known
-    ? 'כבר סיפרו לנו איך קוראים לך. אפשר לתקן, ולבחור איך תיראה אצל מי שנוטע איתך.'
-    : 'שני פרטים, ואפשר להיכנס.');
+  /* בשם מי שהזמין, כשידוע מי הוא. בלי מגדר שמור הניסוח עובר לצורה
+     הסתמית: לוכסן שני באותו משפט, ליד "תרגיש/י", היה הופך אותו
+     לטופס. */
+  const by=inviteKnows.by, bySex=inviteKnows.bySex;
+  txt('jo-sub',!known ? 'שני פרטים, ואפשר להיכנס.'
+    : (by&&(bySex==='m'||bySex==='f')
+        ? (by+' כבר '+(bySex==='f'?'סיפרה':'סיפר')+' לנו איך קוראים לך, אבל תרגיש/י חופשי לשנות.')
+        : 'כבר סיפרו לנו איך קוראים לך, אבל תרגיש/י חופשי לשנות.'));
   const nm=document.getElementById('jo-name');
   if(nm)nm.value=inviteKnows.name||'';
   pickedAv='av-parent';
