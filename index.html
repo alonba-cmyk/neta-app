@@ -178,6 +178,26 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   padding:20px 16px 14px 14px;font-size:12.5px;line-height:1.65;color:#D9C9A0;font-style:italic;position:relative}
 .q-mark{position:absolute;top:2px;right:10px;font-size:26px;color:var(--sun);opacity:.5;font-style:normal;line-height:1}
 
+/* כרטיס התצוגה המקדימה במסך הסיכום. אותה שפה של הכרטיס ברשימה —
+   ריבוע אייקון, שם, סכום ירוק ושורת משנה — כי זה מה שהוא מראה. */
+.pyc{background:var(--s1);border:1px solid var(--line);border-radius:13px;padding:13px;
+  display:flex;align-items:center;gap:11px}
+.pyc-x{flex:1;min-width:0}
+.pyc-nm{font-size:13.5px;font-weight:500}
+.pyc-am{font-size:12.5px;color:var(--leaf);font-weight:500;margin-top:3px}
+.pyc-dt{font-size:11px;color:var(--tx-3);margin-top:3px;line-height:1.45}
+.pyc-side{margin-inline-start:auto;text-align:center;font-size:10px;color:var(--tx-3);
+  border-inline-start:1px solid var(--rule);padding-inline-start:11px;flex-shrink:0}
+.pyc-side b{display:block;font-size:13px;color:var(--tx-2);font-weight:500}
+/* גודל אחד לכל הערכים במסך הזה. קודם ישבו כאן שלושה — 13.5, 12.5 ו-12 —
+   הפרש קטן מכדי להיקרא ככוונה וגדול מספיק כדי להיראות רשלני. */
+[data-name="סיכום ואישור"] .stat .v{font-size:12.5px;font-weight:400;text-align:left}
+/* הרגעה שנלווית לערך יורדת מתחתיו, ולא מאריכה אותו. ריקה — ואינה
+   תופסת מקום, כדי שרגע פתוח לא יקבל שורה של אוויר. */
+[data-name="סיכום ואישור"] .stat .v i{display:block;font-style:normal;font-size:10.5px;
+  color:var(--tx-3);margin-top:3px;line-height:1.4}
+[data-name="סיכום ואישור"] .stat .v i:empty{display:none}
+[data-name="סיכום ואישור"] .stat.first-v{border-top:0}
 .hero-card{padding:22px 16px 18px}
 .amt-pill{display:inline-flex;align-items:center;gap:7px;margin-top:11px;background:var(--leaf-bg);border:1px solid #2A4530;border-radius:999px;padding:7px 14px}
 .amt-pill span{font-size:11px;color:#8FB794}.amt-pill b{font-size:13.5px;color:var(--leaf);font-weight:600}
@@ -894,7 +914,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'a364548';
+window.NETA_BUILD = '04e77a2';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2009,18 +2029,32 @@ window.NETA_CONFIG = {
 
 <!-- 24 REVIEW — the last screen before an irreversible commitment -->
 <section class="screen center-v" data-name="סיכום ואישור">
-  <h2 class="gap-x">לפני שנועלים</h2>
-  <p class="sub gap">מכאן הכסף נרשם ונעול עד המועד. זה הרגע לבדוק.</p>
+  <h2 class="gap-x" id="py-h">זה מה שייפתח</h2>
+  <p class="sub gap" id="py-sub">כך הנטיעה תיראה ברשימה שלך, ומכאן היא נעולה עד המועד.</p>
 
+  <!-- הכרטיס שייווצר, ולא טבלה של מה שהוזן. שבע שורות באותו משקל לא
+       אמרו מה נסגר כאן, והדבר היחיד שבאמת נסגר — הסכום והמועד — ישב
+       באמצע הרשימה בין "מי יכול להשקיע" לבין "אמצעי תשלום".
+
+       זה גם אותו כרטיס שיופיע ברשימה בעוד רגע, ולכן המסך מפסיק להיות
+       טופס והופך לתצוגה מקדימה של מה שנוצר. -->
+  <div class="pyc">
+    <div class="dot g" id="py-icon">🎂</div>
+    <div class="pyc-x">
+      <div class="pyc-nm" id="py-title">בר/בת מצווה של דניאל</div>
+      <div class="pyc-am" id="py-amt">100 ₪ בכל חודש</div>
+      <div class="pyc-dt" id="py-dt">עד אוגוסט 2032 · על שם דניאל</div>
+    </div>
+    <div class="pyc-side" id="py-side"><b id="py-sideb">12</b><span id="py-sidew">שנים</span></div>
+  </div>
+
+  <p class="eyebrow" id="py-detk" style="margin-top:18px">ומה נסגר עכשיו</p>
   <div class="card gap-s">
-    <div class="row gap-s" id="py-headrow"><div class="dot g" id="py-icon">🎂</div><div style="flex:1"><div class="title" id="py-title">בר/בת מצווה של דניאל</div><div class="meta" id="py-date">אוגוסט 2032</div></div></div>
-    <div class="stat" id="py-benerow"><span class="k" id="py-benek">הכסף רשום על שם</span><span class="v" style="font-size:12px;font-weight:400" id="py-bene">דניאל</span></div>
-    <div class="stat" id="py-relrow"><span class="k" id="py-relk">משתחרר</span><span class="v" style="font-size:12px;font-weight:400" id="py-rel">בגיל 18</span></div>
-    <div class="stat" id="py-ownrow"><span class="k">מי יכול להשקיע בה</span><span class="v" style="font-size:12px;font-weight:400" id="py-own">פרטית</span></div>
-    <div class="stat"><span class="k" id="pay-k">מופקד כל חודש</span><span class="v" id="pay-v">100 ₪</span></div>
-    <div class="stat" id="py-trackrow"><span class="k">מסלול</span><span class="v" style="font-size:12px;font-weight:400" id="py-track">יישמר כמו שהוא</span></div>
-    <div class="stat"><span class="k">עד</span><span class="v" style="font-size:12.5px;font-weight:400" id="pay-when">אוגוסט 2032</span></div>
-    <div class="stat"><span class="k">אמצעי תשלום</span><span class="v" style="font-size:12px;font-weight:400" id="py-method">הוראת קבע</span></div>
+    <div class="stat" id="py-benerow"><span class="k" id="py-benek">רשום על שם</span><span class="v" id="py-bene">דניאל</span></div>
+    <div class="stat" id="py-relrow"><span class="k" id="py-relk">משתחרר</span><span class="v" id="py-rel">בגיל 18</span></div>
+    <div class="stat" id="py-ownrow"><span class="k">מי יכול להשקיע</span><span class="v"><span id="py-own">פרטית</span><i id="py-ownnote">אפשר לפתוח לקרובים אחר כך</i></span></div>
+    <div class="stat" id="py-trackrow"><span class="k">מסלול</span><span class="v" id="py-track">יישמר כמו שהוא</span></div>
+    <div class="stat"><span class="k">אמצעי תשלום</span><span class="v" id="py-method">הוראת קבע</span></div>
   </div>
   <!-- ההחלטה שהאפיון סימן כלא-מעוצבת. מקומה כאן ולא בהגדרות: מי שיחפש
        אותה אחר כך לא ימצא, ומתג בהגדרות יישאר על ברירת המחדל לנצח. -->
@@ -2994,11 +3028,9 @@ function openPayment(){
   payPick=freq==='m'?'hora':'card';
   document.querySelectorAll('.opt.pay').forEach(function(x){x.classList.toggle('on',paySaved===null&&x.dataset.p===payPick)});
   renderSavedPays();renderPayFields();
-  const v=freq==='m'?+amtM.value:+amtL.value;
   txt('pay-icon',goal.icon||cIcon);
-  txt('pay-k',freq==='m'?'מופקד כל חודש':'הפקדה חד פעמית');
-  txt('pay-v',v.toLocaleString('he-IL')+' ₪');
-  txt('pay-when',goal.dateLabel);
+  /* הסכום, התדירות והמועד מורכבים עכשיו למשפט אחד בתוך כרטיס הסיכום,
+     ולכן paySummary מרכיבה אותם ולא שלוש שורות נפרדות כאן. */
   document.getElementById('pay-recurring').style.display=freq==='m'?'flex':'none';
   document.getElementById('pay-onetime').style.display=freq==='l'?'flex':'none';
   document.getElementById('pay-meta').textContent=(freq==='m'?'הפקדה חודשית':'הפקדה חד פעמית')+(goal.desig===false?' · '+goal.type:' · עבור '+goal.name);
@@ -3244,18 +3276,52 @@ function trackLabel(){
 }
 /* מאז שהשאלה ירדה מהאשף, השורה הזאת היא המקום היחיד שבו נאמר מה
    נקבע — ולכן היא אומרת גם שאפשר לשנות. */
+/* שתי חתיכות ולא מחרוזת אחת: "פרטית · אפשר לפתוח לקרובים אחר כך" הוא
+   הערך הארוך ביותר בטבלה, והוא נשבר לשתי שורות שנדחפו אל התווית שממול —
+   שתי השורות התערבבו והעין לא ידעה מה שייך למה. עכשיו הערך הוא מילה
+   אחת, וההרגעה יורדת לשורה משלה מתחתיו. */
 function opennessLabel(){
-  return shareMode==='open'?'פתוחה לאנשים אחרים':'פרטית · אפשר לפתוח לקרובים אחר כך';
+  return shareMode==='open'?'פתוחה לאנשים אחרים':'פרטית';
 }
-function paySummary(){
-  const head=document.getElementById('py-headrow');
+function opennessNote(){
+  return shareMode==='open'?'':'אפשר לפתוח לקרובים אחר כך';
+}
+/* הסכום, התדירות והמועד — הדבר היחיד שבאמת נסגר במסך הזה — מורכבים
+   למשפט אחד בתוך הכרטיס, ולא לשלוש שורות בתוך טבלה. */
+function payPreview(sub){
+  const v=freq==='m'?+amtM.value:+amtL.value;
+  const amt=v.toLocaleString('he-IL')+' ₪';
+  txt('py-amt',freq==='m'?(amt+' בכל חודש'):(amt+' · הפקדה אחת'));
+  txt('py-dt',[goal.dateLabel?('עד '+goal.dateLabel):'',sub].filter(Boolean).join(' · '));
+  /* המרחק הוא הפרט שהכי קשה לחוש ממועד לבדו, ולכן הוא בעמודה משלו.
+     שנה אחת או פחות אינה "עוד כמה שנים", ואז העמודה יורדת. */
+  const yrs=Math.round(Number(goal.years)||0);
+  const side=document.getElementById('py-side');
+  if(side)side.style.display=yrs>1?'':'none';
+  if(yrs>1){txt('py-sideb',String(yrs));txt('py-sidew','שנים')}
+}
+/* ‎.stat+.stat‎ מצייר קו לפי סדר ה-DOM, ולא לפי מה שמוצג. בהפקדה
+   לנטיעה קיימת שלוש השורות הראשונות מוסתרות, ולכן "מסלול" — השורה
+   הראשונה שנראית — קיבלה קו מעליה, כלומר קו שמפריד בינה לבין כלום. */
+function payRules(){
+  const box=document.querySelector('[data-name="סיכום ואישור"] .card.gap-s');
+  if(!box)return;
+  const all=[].slice.call(box.querySelectorAll('.stat'));
+  all.forEach(function(x){x.classList.remove('first-v')});
+  const first=all.filter(function(x){return x.style.display!=='none'})[0];
+  if(first)first.classList.add('first-v');
+}
+function paySummary(){paySummaryBody();payRules()}
+function paySummaryBody(){
   if(!isNewPlant){
     /* topping up an existing planting: the beneficiary and ownership are already settled,
        so the review shows only what this deposit actually decides */
-    head.style.display='flex';
+    /* וגם הכותרת: אין כאן מה שייפתח, יש רגע שכבר קיים שההפקדה נכנסת אליו. */
+    txt('py-h','זה הרגע שאליו זה נכנס');
+    txt('py-sub','ההפקדה מצטרפת לנטיעה שכבר קיימת, ומכאן היא נעולה עד המועד.');
     txt('py-icon',(plantAt(cur)||{}).icon||goal.icon||'🌱');
     txt('py-title',(plantAt(cur)||{}).name||goal.type||'');
-    txt('py-date',goal.dateLabel||'');
+    payPreview('');
     document.getElementById('py-benerow').style.display='none';
     document.getElementById('py-relrow').style.display='none';
     /* השאלה נשאלת רק כשיש למי להיחשף: בנטיעה שלך אתה רואה הכל ממילא. */
@@ -3267,25 +3333,29 @@ function paySummary(){
     txt('py-track',trackLabel());
     return;
   }
-  head.style.display='flex';
+  txt('py-h','זה מה שייפתח');
+  txt('py-sub','כך הנטיעה תיראה ברשימה שלך, ומכאן היא נעולה עד המועד.');
   txt('py-icon',document.getElementById('p-icon').textContent);
   txt('py-title',document.getElementById('p-title').textContent);
-  txt('py-date',document.getElementById('p-date').textContent);
   document.getElementById('py-ownrow').style.display='flex';
   txt('py-own',opennessLabel());
+  txt('py-ownnote',opennessNote());
   document.getElementById('py-trackrow').style.display='flex';
   txt('py-track',trackLabel());
   const nm=((document.getElementById('c-name')||{}).value||'הילד').trim();
   document.getElementById('py-benerow').style.display='flex';
   document.getElementById('py-relrow').style.display='flex';
   if(!designated){
+    /* קופה בלי נהנה — אין "על שם מי" לשים בשורת המשנה של הכרטיס. */
+    payPreview('רשום על שמך');
     txt('py-benek','ייעוד');
     txt('py-bene','עדיין לא נקבע · רשום על שמך');
     txt('py-relk','מי מחליט');
     txt('py-rel','אתה, בכל שלב עד המועד');
     return;
   }
-  txt('py-benek','הכסף רשום על שם');
+  payPreview('על שם '+nm);
+  txt('py-benek','רשום על שם');
   txt('py-bene',nm);
   txt('py-relk','משתחרר');
   txt('py-rel',beneMode==='guardian'?'במועד המיוחל, לידי המורשה'
