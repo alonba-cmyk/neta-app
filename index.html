@@ -1042,7 +1042,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4371faf';
+window.NETA_BUILD = '41773c2';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1224,11 +1224,12 @@ window.NETA_CONFIG = {
         <span><i class="dsw o"></i>מקרוביי<b id="s-othv">·</b></span>
       </div>
     </div>
-    <!-- הספירה עברה לכותרות הסקשנים, שם כל מספר יושב מעל הרשימה
-         שהוא סופר. כאן נשאר פריט אחד, ולכן אין נקודה מפרידה ואין
-         .grp: השורה כולה יורדת כשאין הפקדה חודשית, אחרת נשאר קו
-         עליון מעל ריק. -->
-    <div class="s-meta" id="s-facts"><span id="s-mongrp"><b id="s-mon">210 ₪</b> בכל חודש</span></div>
+    <!-- כאן ישבה שורת עובדות: ספירת הנטיעות וההפקדה החודשית שלי.
+         הספירה עברה לכותרות הסקשנים, שם כל מספר יושב מעל הרשימה
+         שהוא סופר, וההפקדה החודשית ירדה כי היא כבר יושבת ב"הנטיעות
+         שלי" באותן מילים בדיוק. שני המספרים גם לא היו זהים: כאן הוא
+         סוכם רק את הרגעים של המשפחה שלי ושם את הכול, ובחשבון עם
+         נטיעה למשפחה אחרת יצא 100 ₪ מול 150 ₪ באותו משפט. -->
   </div>
 
   <!-- שני סקשנים, והגבול ביניהם הוא family_of: רגע שייך למשפחה שלי,
@@ -6245,7 +6246,7 @@ function loadAccountLists(){
    "שלום" לבד תקין לכל אדם, ומשלים לשם המלא כשהפרופיל מגיע. */
 function blankBeforeFirstLoad(){
   if(!netaServer)return;
-  ['s-you','s-mon','s-label','s-fut','s-futk'].forEach(function(id){txt(id,'')});
+  ['s-you','s-label','s-fut','s-futk'].forEach(function(id){txt(id,'')});
   const g=document.getElementById('garden');
   if(g)g.innerHTML='';
   /* גם הפנקסים האישיים. הם מאותחלים בקובץ עם משפחת ההדגמה, וניקוי שלהם
@@ -7770,15 +7771,6 @@ function buildHomeSummary(){
       kidsHere.length>2   ? ' עבור בני משפחתי' : '';
     txt('s-label',accrued>0?('נצבר עד כה'+forWho)
                            :(coming?'ההפקדה הראשונה בדרך':'עוד לא נצבר'));
-    /* שורת העובדות מדברת על ההפקדה שלי, וכשאין כזו "0 ₪ בכל חודש"
-       נקרא כתקלה ולא כמידע. עכשיו זה הפריט היחיד בשורה, ולכן יורדת
-       השורה כולה ולא רק הוא: div ריק עם border-top הוא קו מפריד
-       שאינו מפריד בין שני דברים. */
-    const monHere=here.reduce(function(a,p){return a+Number(p.myMonthly||0)},0);
-    const facts=document.getElementById('s-facts');
-    if(facts)facts.style.display=monHere>0?'':'none';
-    txt('s-mon',shekel(monHere));
-
     /* "הושקעו" סבילה וחסרת נושא, ולכן היא נקראת כמו "זה מה שאני
        הפקדתי" — בדיוק ההפך מהמספר, שהוא מה שנצבר לרגעים האלה כולם,
        כולל כסף של קרובים. "נצבר" אומרת את זה בלי נושא כי אין לה נושא
