@@ -973,7 +973,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '5d8c75a';
+window.NETA_BUILD = 'b255b50';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1828,13 +1828,18 @@ window.NETA_CONFIG = {
   <div class="card" id="rel-list"></div>
   <button class="btn gap-s" onclick="addRelative()">+ הוסף קרוב</button>
 
-  <!-- הכיוון השני צמוד לראשון: פסקת ההסבר הארוכה ביניהם ניתקה אותם,
-       והשנייה נראתה כמו מסך אחר שהתחיל. ההסבר סוגר את המסך. -->
-  <p class="eyebrow big" id="inv-head" style="display:none">רגעים שהזמינו אותך אליהם</p>
-  <div class="card" id="inv-list" style="display:none"></div>
-  <p class="fine gap" id="inv-fine" style="display:none">בלחיצה על רגע נפתח מסך הרגע, ושם מי נטע וכמה, ואפשר להוסיף.</p>
+  <!-- "רגעים שהזמינו אותך אליהם" ירדה מכאן. המסך הזה הוא על אנשים,
+       ומאז שמסך הבית מחזיק סקשן "נטיעות עבור אחרים" אותו רגע בדיוק
+       הופיע פעמיים, בשני טאבים.
 
-  <p class="fine gap">ההזמנה היא קישור אישי, חד-פעמי, שנקשר למי שפתח אותו, קישור שהועבר הלאה לא יצרף אף אחד אחר. הזמנה במייל נשלחת אוטומטית; בוואטסאפ אתה שולח אותה בעצמך. קרוב שהצטרף רואה רק את הנטיעות שצירפת אותו אליהן, ורק התקדמות, בלי סכומים.</p>
+       ההערה שסוגרת את המסך קוצרה לטענה אחת, זו ששייכת לכאן: מה קרוב
+       רואה אחרי שהוא מצטרף. מה שירד ממנה אינו "פחות מדי" אלא במקום
+       אחר — מנגנון ההזמנה מוסבר במסך ההזמנה, שם מתקבלת ההחלטה.
+
+       והיא גם תוקנה. "ורק התקדמות, בלי סכומים" לא היה נכון: הסכום
+       שנצבר לרגע גלוי לכל מי שהצטרף, וכך גם הסכום של מי שפתח אותו.
+       ‏planting_detail מסתירה רק את הסכומים של שאר הקרובים. -->
+  <p class="fine gap">קרוב שהצטרף רואה רק את הנטיעות שצירפת אותו אליהן: כמה נצבר בהן, מי עוד נוטע, וכמה נטעת אתה.</p>
 
   <button class="btn ghost" id="rel-back" onclick="backFromRelatives()">חזרה לפרופיל</button>
 </section>
@@ -5626,7 +5631,7 @@ function openRelatives(from){
   relBack=(from==null?10:from);
   const b=document.getElementById('rel-back');
   if(b){b.style.display='';b.textContent=(relBack===7?'חזרה להזמנה':'חזרה לפרופיל')}
-  buildRequests();buildRelatives();buildInvitedTo();go(15);
+  buildRequests();buildRelatives();go(15);
 }
 function backFromRelatives(){go(relBack)}
 /* relBack=0 כשהמסך נפתח מהסרגל, ואז "חזרה" מחזירה לנטיעות ולא לפרופיל */
@@ -7600,34 +7605,14 @@ function openInvestments(){ paintInvestments(); go(14); }
    שאלה שהמשתמש אינו שואל. הגבול האמיתי, מי רשאי להזמין ולערוך, נאכף
    במסך הרגע. */
 /* ─── הכיוון ההפוך ────────────────────────────────────────────────────
-   רגעים שקרוב פתח והזמין אותי אליהם. הרשימה נגזרת מהמודל שכבר נטען
-   למסך הבית (joined/by), ולא מקריאה נוספת — אותם רגעים בדיוק, רק
-   שהשאלה כאן היא "מי הכניס אותי", ולא "מה יש לי".
+   ‏buildInvitedTo ירדה יחד עם הרשימה שהיא בנתה. השאלה "מי הכניס אותי
+   פנימה" נשארה טובה, אבל התשובה לה כבר אינה רשימת רגעים: מסך הבית
+   מחזיק סקשן "נטיעות עבור אחרים" עם אותם רגעים בדיוק, והמסך הזה הוא
+   על אנשים.
 
-   וכאן גם התשובה לשאלה שנשארה פתוחה: "פתחה סבתא רחל" יושב במסך הזה
-   ולא על הכרטיס במסך הבית. שם הוא היה מאריך כל שורת משנה כדי להבדיל
-   בין שני מצבים; כאן הוא כל מה שהרשימה אומרת. */
-function buildInvitedTo(){
-  const head=document.getElementById('inv-head'),box=document.getElementById('inv-list');
-  if(!head||!box)return;
-  const rows=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.joined});
-  const fine=document.getElementById('inv-fine');
-  head.style.display=rows.length?'':'none';
-  box.style.display=rows.length?'':'none';
-  if(fine)fine.style.display=rows.length?'':'none';
-  if(!rows.length)return;
-  box.innerHTML=rows.map(function(p){
-    /* מגדר של מי שפתח אינו ידוע כאן — profiles אינה נושאת אותו. עד
-       שיהיה, "פתח/ה", כמו בכל שאר המסכים. */
-    const mine=Number(p.mine==null?0:p.mine);
-    const sub=vb(p.bySex,'פתח','פתחה')+' '+(p.by||'קרוב')+(mine?(' · נטעת '+shekel(mine)):'');
-    return '<div class="cbr tap" onclick="openDetail(\''+p.key+'\')">'+
-      '<div class="cba pcicon">'+(p.icon||'🌱')+'</div>'+
-      '<span class="cbn"><b>'+p.name+'</b><i>'+sub+'</i></span>'+
-      '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12">'+
-      '<use href="#chev"/></svg></span></div>';
-  }).join('');
-}
+   מה שכן ירד איתה ואין לו עדיין בית: "פתח/ה אלון בר דוד", כלומר מי
+   הזמין אותי. המקום הנכון לזה הוא רשימת הקרובים עצמה, כשורה של אדם
+   ולא של רגע. פתוח. */
 function openPeople(){
   relBack=0;
   /* יעד בסרגל אינו מסך שחוזרים ממנו: "חזרה לפרופיל" יורד כשמגיעים
@@ -7635,7 +7620,7 @@ function openPeople(){
   document.querySelectorAll('#rel-back').forEach(function(b){b.style.display='none'});
   const b=document.getElementById('rel-back');
   if(b)b.style.display='none';
-  buildRequests();buildRelatives();buildInvitedTo();go(15);
+  buildRequests();buildRelatives();go(15);
 }
 function designate(){
   const p=plantAt(cur);
