@@ -1045,7 +1045,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '41c929c';
+window.NETA_BUILD = '731d084';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1967,6 +1967,9 @@ window.NETA_CONFIG = {
        הפתוח למי שאינו רוצה לנקוב בשם, וההצצה למי שרוצה לראות מה
        הנמענת תקבל. שתיהן שקטות, כי הפעולה הראשית היא השם ברשימה. -->
   <div id="rel-invite" style="display:none">
+    <!-- האזהרה שהייתה בגיליון האישור. מוצגת רק כשהנטיעה עדיין סגורה,
+         כלומר לפני ההזמנה הראשונה, וכאן היא נקראת לפני הלחיצה. -->
+    <p class="fine" id="rel-warn" style="display:none;margin:0 0 12px">מרגע שקרוב מקבל גישה אי אפשר לבטל את מה שכבר ראה. הסכומים שלך לא ייחשפו, קרובים רואים התקדמות בלבד.</p>
     <button class="btn ghost gap-s" id="rel-copy"
             onclick="copyInviteLink(this)">העתק קישור פתוח</button>
     <button class="link" onclick="previewInvite()">איך ההזמנה תיראה למי שיקבל אותה</button>
@@ -4092,6 +4095,8 @@ const LINK_HOURS=24;
    שבמסך ההזמנה, גם כשהמשתמש לחץ על השני. */
 function copyInviteLink(el){
   const p=plantAt(cur);
+  /* גם קישור פתוח הוא הזמנה, ולכן גם הוא פותח את הנטיעה. */
+  if(p)openForRelatives(p.key||cur);
   if(!liveAccount()||!p||!p.live){toast('הקישור הועתק');return}
   const btn=el||document.getElementById('inv-copy');
   const done=function(){if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='העתק קישור פתוח'}};
@@ -5711,6 +5716,8 @@ function sentSheet(k,r){
 }
 function sendInvite(r){
   if(!r.contact){toast('חסרים פרטי קשר ל'+r.name);return false}
+  /* ההזמנה הראשונה היא גם מה שפותח את הנטיעה לקרובים. ראו openToCircle. */
+  if(pickedPlant)openForRelatives(pickedPlant);
   r.chan=chanOf(r.contact)||'wa';
   r.status='invited';r.plant=pickedPlant||'';
   buildRelatives();
@@ -5965,9 +5972,17 @@ function openRelatives(from,inviteKey){
   topbars[15] = pl ? ['למי לשלוח?','ההזמנה ל'+pl.name] : REL_TOPBAR.slice();
   const inv=document.getElementById('rel-invite');
   if(inv)inv.style.display=relInviteKey?'':'none';
+  const warn=document.getElementById('rel-warn');
+  if(warn)warn.style.display=(pl&&!pl.shared)?'':'none';
   buildRequests();buildRelatives();go(15);
 }
-function backFromRelatives(){go(relBack)}
+/* חזרה לנטיעה מציירת אותה מחדש ולא רק מציגה את המסך: מ"רגע ההשקעה"
+   מגיעים לכאן בלי שמסך הנטיעה צויר אי פעם, ו-go(5) לבדו היה מציג את
+   מה שהיה שם קודם. */
+function backFromRelatives(){
+  if(relBack===5&&cur&&plantAt(cur)){openDetail(cur);return}
+  go(relBack);
+}
 /* "שלח לקרוב מהרשימה" למי שאין לו רשימה. המסך שנפתח היה מצב ריק שכל
    מה שיש בו הוא "+ הוסף קרוב", כלומר קליק שני על אותה פעולה עצמה.
    עכשיו ההוספה נפתחת מיד, ומאחוריה המסך: אחרי השמירה הרשימה כבר שם,
@@ -8252,19 +8267,29 @@ function inviteFor(key){
           percent:pct, personal_note:null, invitee_name:null}
   };
 }
-function openToCircle(){
-  const p=plantAt(cur);
-  ask('לפתוח את "'+p.name+'" לקרובים?',
-    'מרגע שקרוב מקבל גישה אי אפשר לבטל את מה שכבר ראה. הסכומים שלך לא ייחשפו, קרובים רואים התקדמות בלבד.',
-    'פתח לקרובים',
-    function(){
-      if(!p.live){p.shared=true;openInvite(inviteFor(cur));return}
-      const key=cur;
-      netaServer.openToRelatives(key)
-        .then(function(){return refreshDetail(key)})
-        .then(function(){openInvite(inviteFor(key))})
-        .catch(function(e){ask('לא הצלחנו לפתוח את הנטיעה',(e&&e.message)||'נסה שוב.','הבנתי')});
-    });
+/* קודם עמדו כאן שני מסכים: גיליון אישור ("לפתוח את X לקרובים?") ואחריו
+   מסך ההזמנה. שניהם ירדו מהנתיב. מי שלחץ "הזמן את הקרובים" כבר בחר,
+   והתצוגה המקדימה היא אפשרות ולא שער; מ"רגע ההשקעה" זה היה חמישה
+   קליקים עד שהזמנה נשלחה בפועל.
+
+   האזהרה עצמה לא ירדה, כי הפעולה בלתי הפיכה: היא עברה למסך הבחירה
+   (rel-warn), שם היא נקראת לפני הלחיצה במקום להיות מסך שצריך לסלק.
+   והפתיחה בפועל קורית ברגע השליחה הראשונה, כלומר רק אם באמת הוזמן
+   מישהו. מי שנכנס והתחרט לא פתח דבר. */
+function openToCircle(){pickRelativeToInvite(5,cur)}
+/* הפתיחה עצמה. לא ממתינים לה: מדיניות share_links ו-invitations נשענת
+   על בעלות בלבד (app.is_owner) ולא על open_to_relatives, ולכן אין כאן
+   סדר שחייב להישמר. */
+function openForRelatives(key){
+  const p=plantAt(key);
+  if(!p||p.shared)return;
+  p.shared=true;
+  const w=document.getElementById('rel-warn');
+  if(w)w.style.display='none';
+  if(!p.live||!liveAccount())return;
+  netaServer.openToRelatives(key)
+    .then(function(){return refreshDetail(key)})
+    .catch(function(){});
 }
 function showTermStep(on){
   document.getElementById('c-terms').style.display=on?'':'none';
