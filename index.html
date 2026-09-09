@@ -832,7 +832,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    קופסה בגובה שורה אחת. */
 #home-empty .art,#kin-empty .art,#act-empty .art,#rel-list .es .art{
   height:81px;display:grid;place-items:center}
-.es h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
+/* גובה של שתי שורות, גם כשהכותרת תופסת אחת. ‏.es ממרכזת אנכית, ולכן
+   גובה הגוש קובע איפה נוחת כל דבר בתוכו: ברגע שכותרת אחת נשברת לשתי
+   שורות במכשיר צר, הכפתור של אותו טאב יורד 23 פיקסלים והמעבר בין
+   הטאבים קופץ. נמדד: ב-390 כל ארבעת הכפתורים ב-223, וב-360 "הנטיעות
+   שלי" לבדו ב-246.
+
+   ‏grid ולא רק min-height: כותרת בת שורה אחת מתמרכזת במשבצת במקום
+   להיצמד לראשה, וכך המרווח מתחלק בינה לבין המשפט שמתחת. */
+.es h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance;
+  min-height:calc(17px * 1.35 * 2);display:grid;align-content:center}
 /* ערך ידוע שמוצג ואינו נשאל. מקווקו כדי שייקרא כמידע ולא כשדה ריק
    שמחכה להקלדה. */
 .fixedval{display:flex;justify-content:space-between;align-items:center;gap:8px;
@@ -1036,7 +1045,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1862419';
+window.NETA_BUILD = '177f4ca';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1622,7 +1631,7 @@ window.NETA_CONFIG = {
     </div>
   </div>
 
-  <button class="btn gap-s" onclick="openRelatives(7)">שלח לקרוב מהרשימה</button>
+  <button class="btn gap-s" onclick="inviteFromList()">שלח לקרוב מהרשימה</button>
   <button class="btn ghost" style="margin-top:8px" id="inv-copy" onclick="copyInviteLink()">העתק קישור פתוח</button>
   <p class="fine" style="margin-top:9px">הזמנה בשם נשלחת לאדם אחד ומצרפת אותו מיד. הקישור הפתוח פעיל 24 שעות, מצרף מיד, וכל מי שנכנס דרכו מופיע לכם בשמו בפעילות.</p>
 
@@ -5936,6 +5945,17 @@ function openRelatives(from){
   buildRequests();buildRelatives();go(15);
 }
 function backFromRelatives(){go(relBack)}
+/* "שלח לקרוב מהרשימה" למי שאין לו רשימה. המסך שנפתח היה מצב ריק שכל
+   מה שיש בו הוא "+ הוסף קרוב", כלומר קליק שני על אותה פעולה עצמה.
+   עכשיו ההוספה נפתחת מיד, ומאחוריה המסך: אחרי השמירה הרשימה כבר שם,
+   עם "הזמן" ליד השם שהרגע נוסף.
+
+   רק כשידוע שאין קרובים. לפני שהתשובה מהשרת חוזרת הרשימה ריקה גם
+   למי שיש לו עשרה, ופתיחת טופס במקרה הזה היא שגיאה. */
+function inviteFromList(){
+  openRelatives(7);
+  if(!relatives.length&&(relsLoaded||!liveAccount()))addRelative();
+}
 /* relBack=0 כשהמסך נפתח מהסרגל, ואז "חזרה" מחזירה לנטיעות ולא לפרופיל */
 /* המשפט האישי. האזהרה יושבת מתחת לשדה ברגע הכתיבה, ולא בהגדרות ולא
    בעזרה — זה הרגע היחיד שבו היא משנה משהו. */
@@ -6133,6 +6153,10 @@ function loadLetters(){
     buildLetters();
   }).catch(function(){});
 }
+/* האם רשימת הקרובים כבר חזרה מהשרת. ‏listsLoaded נדלק לפני הקריאות
+   ולכן אינו עונה על זה, ו"אין קרובים" לפני שהתשובה הגיעה אינו "אין
+   קרובים" אלא "עוד לא יודעים". */
+let relsLoaded=false;
 function loadAccountLists(){
   if(!liveAccount()||listsLoaded)return;
   listsLoaded=true;
@@ -6148,6 +6172,7 @@ function loadAccountLists(){
     buildPays();
   }).catch(function(){});
   netaServer.loadRelatives().then(function(rows){
+    relsLoaded=true;
     relatives.length=0;
     rows.forEach(function(r){
       relatives.push({id:r.id,av:r.avatar_key||'av-granny2',name:r.name,
@@ -6156,7 +6181,7 @@ function loadAccountLists(){
                       contact:r.contact||''});
     });
     buildRelatives();
-  }).catch(function(){});
+  }).catch(function(){relsLoaded=true});
 }
 
 /* המספרים והשם כתובים קשיח ב-HTML כדי שהפרוטוטייפ ייראה נכון מיד. בחשבון
