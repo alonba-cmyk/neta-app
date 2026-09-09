@@ -1045,7 +1045,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '177f4ca';
+window.NETA_BUILD = '41c929c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1635,11 +1635,10 @@ window.NETA_CONFIG = {
   <button class="btn ghost" style="margin-top:8px" id="inv-copy" onclick="copyInviteLink()">העתק קישור פתוח</button>
   <p class="fine" style="margin-top:9px">הזמנה בשם נשלחת לאדם אחד ומצרפת אותו מיד. הקישור הפתוח פעיל 24 שעות, מצרף מיד, וכל מי שנכנס דרכו מופיע לכם בשמו בפעילות.</p>
 
-  <!-- מי שכבר השקיע מוצג במסך הנטיעה שממנו הגעת, ולכן ירד מכאן. מה
-       שנשאר הוא החצי השני של אותה רשימה, שאינו כפילות אלא קיצור דרך:
-       קרובים שכבר בפנקס ועוד לא הוזמנו לנטיעה הזו. -->
-  <p class="eyebrow" id="inv-quick-h" style="display:none;margin-top:22px">הזמנה מהירה מהקרובים שלך</p>
-  <div class="card" id="inv-stats" style="display:none"></div>
+  <!-- "הזמנה מהירה מהקרובים שלך" ירדה מכאן. inviteExtraRows נקראה
+       פעמיים בקובץ, כאן ובכרטיס הנטיעה, ולכן אלה היו בדיוק אותן שתי
+       שורות שהמשתמש הרגע לחץ מעליהן. מי שרוצה שם ברשימה מגיע עכשיו
+       ישר לרשימה המלאה. -->
 
   <button class="btn ghost gap-s" id="inv-back" onclick="backFromInvite()">חזרה לנטיעה</button>
 </section>
@@ -1964,6 +1963,14 @@ window.NETA_CONFIG = {
   <!-- כך זה ייראה כשקרובים יצטרפו. אותו דגם דוהה שיש בשלושת המצבים
        הריקים האחרים, ומאותו מקור: שורות אמיתיות של הרשימה עם שמות
        ההדגמה, ולא ציור שלהן. -->
+  <!-- שתי האפשרויות האחרות, כשהמסך נפתח כדי לבחור למי לשלוח: הקישור
+       הפתוח למי שאינו רוצה לנקוב בשם, וההצצה למי שרוצה לראות מה
+       הנמענת תקבל. שתיהן שקטות, כי הפעולה הראשית היא השם ברשימה. -->
+  <div id="rel-invite" style="display:none">
+    <button class="btn ghost gap-s" id="rel-copy"
+            onclick="copyInviteLink(this)">העתק קישור פתוח</button>
+    <button class="link" onclick="previewInvite()">איך ההזמנה תיראה למי שיקבל אותה</button>
+  </div>
   <div class="gsample" id="rel-ghost" style="display:none" aria-hidden="true"></div>
 
   <!-- "רגעים שהזמינו אותך אליהם" ירדה מכאן. המסך הזה הוא על אנשים,
@@ -2631,6 +2638,9 @@ const topbars={
    של מישהו אחר. מסך שנפתח לפני שיש חשבון לא מציג ניווט לחשבון. */
 /* ‏29 ו-30 הם "הצטרפות" ו"השם שלך", שנוספו בסוף ה-stage. שניהם
    מסכי דרך פנימה, ולסרגל אין מה לעשות בהם. */
+/* הכיתוב המקורי של מסך הקרובים. הוא מתחלף כשהמסך נפתח כדי לבחור למי
+   לשלוח הזמנה, ואז זו שאלה ולא רשימה. */
+const REL_TOPBAR=topbars[15].slice();
 const NOCHROME=[19,20,21,22,23,25,26,27,29,30];
 const REVIEW=24;
 function go(i){
@@ -4077,10 +4087,13 @@ function copyText(t){
    אותה פעולה, ומי שישכח אותו יחלק קישור שאינו מצרף איש.
    העתקה חוזרת מאריכה את החלון מעכשיו — אותה סמנטיקה, בלי הפתעה. */
 const LINK_HOURS=24;
-function copyInviteLink(){
+/* הכפתור מגיע כפרמטר, כי אותו קישור מועתק משני מסכים: מסך ההזמנה
+   ומסך בחירת הנמען. בלעדיו החיווי "מכין קישור…" היה נכתב תמיד לכפתור
+   שבמסך ההזמנה, גם כשהמשתמש לחץ על השני. */
+function copyInviteLink(el){
   const p=plantAt(cur);
   if(!liveAccount()||!p||!p.live){toast('הקישור הועתק');return}
-  const btn=document.getElementById('inv-copy');
+  const btn=el||document.getElementById('inv-copy');
   const done=function(){if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='העתק קישור פתוח'}};
   if(btn){btn.disabled=true;btn.style.opacity='.55';btn.textContent='מכין קישור…'}
   netaServer.shareToken(p.key)
@@ -4611,21 +4624,19 @@ function sheetForm(title,html,okLabel,fn){
 function sheetClose(){document.getElementById('scrim').classList.remove('on');sheetFn=null;sheetAlt=null}
 function sheetConfirm(){const f=sheetFn;if(f&&f()===false)return;sheetClose()}
 function openInvite(key){
+  invBack=0;
   const d=typeof key==='string'?inviteFor(key):key;
   txt('inv-h2','ההזמנה ל'+d.title);
   paintSharedCard(d.card,'iv');
-  const quick=document.getElementById('inv-stats'), qh=document.getElementById('inv-quick-h');
-  quick.innerHTML=d.quick||'';
-  const has=!!(d.quick&&d.quick.length);
-  quick.style.display=has?'':'none';
-  qh.style.display=has?'':'none';
   /* אותו כלל כמו במסך הקרובים: חוזרים לנטיעה שההזמנה שייכת לה, ולא
      לבית. כשאין נטיעה טעונה הכיתוב אומר את האמת ומוביל לבית. */
   const bk=document.getElementById('inv-back');
   if(bk)bk.textContent=plantAt(cur)?'חזרה לנטיעה':'חזרה לנטיעות שלי';
   go(7);
 }
+let invBack=0;
 function backFromInvite(){
+  if(invBack===15){invBack=0;openRelatives(relBack,relInviteKey);return}
   if(cur&&plantAt(cur)){openDetail(cur);return}
   go(0);
 }
@@ -5938,10 +5949,22 @@ function relMeta(){
    מי שהגיע דרך ההזמנה נזרק למסך שלא היה בו מעולם. עכשיו הוא זוכר
    מאיפה נכנס, וגם הכיתוב על הכפתור משתנה בהתאם. */
 let relBack=10;
-function openRelatives(from){
+/* הנטיעה שאליה מזמינים, כשמסך הקרובים נפתח בשביל זה. ריק = המסך נפתח
+   בשביל עצמו, מהפרופיל או מהסרגל, ואז אין בו קישור ואין הצצה. */
+let relInviteKey='';
+function openRelatives(from,inviteKey){
   relBack=(from==null?10:from);
+  relInviteKey=inviteKey||'';
   const b=document.getElementById('rel-back');
-  if(b){b.style.display='';b.textContent=(relBack===7?'חזרה להזמנה':'חזרה לפרופיל')}
+  if(b){b.style.display='';
+    b.textContent = relBack===7 ? 'חזרה להזמנה'
+                  : relBack===5 ? 'חזרה לנטיעה'
+                  : 'חזרה לפרופיל';}
+  /* במצב הזמנה המסך עונה על שאלה אחת, ולכן גם הכותרת שלו שואלת אותה. */
+  const pl=relInviteKey?plantAt(relInviteKey):null;
+  topbars[15] = pl ? ['למי לשלוח?','ההזמנה ל'+pl.name] : REL_TOPBAR.slice();
+  const inv=document.getElementById('rel-invite');
+  if(inv)inv.style.display=relInviteKey?'':'none';
   buildRequests();buildRelatives();go(15);
 }
 function backFromRelatives(){go(relBack)}
@@ -5952,9 +5975,26 @@ function backFromRelatives(){go(relBack)}
 
    רק כשידוע שאין קרובים. לפני שהתשובה מהשרת חוזרת הרשימה ריקה גם
    למי שיש לו עשרה, ופתיחת טופס במקרה הזה היא שגיאה. */
-function inviteFromList(){
-  openRelatives(7);
+function pickRelativeToInvite(from,key){
+  openRelatives(from,key);
   if(!relatives.length&&(relsLoaded||!liveAccount()))addRelative();
+}
+function inviteFromList(){pickRelativeToInvite(7,cur)}
+/* "הזמן קרוב" שבכרטיס הנטיעה. קודם הוא פתח את מסך ההזמנה, שהחלק
+   העליון שלו הוא תצוגה מקדימה של הקישור, ומי שרצה לשלוח לאדם מסוים
+   נדרש לקליק נוסף כדי להגיע לרשימה. שלוש שורות מתוך ארבע במסלול הזה
+   לא רצו את הקישור בכלל.
+
+   עכשיו הכפתור פותח את האנשים. הקישור הפתוח וההצצה יושבים שם, בתחתית,
+   כשתי אפשרויות ולא כשער. */
+function inviteToPlanting(){pickRelativeToInvite(5,cur)}
+/* ההצצה, כשהיא נפתחת מתוך בחירת הנמען. חוזרים לרשימה ולא לנטיעה: מי
+   שהציץ באמצע בחירה עדיין באמצע בחירה. */
+function previewInvite(){
+  openInvite(relInviteKey||cur);
+  invBack=15;
+  const bk=document.getElementById('inv-back');
+  if(bk)bk.textContent='חזרה לרשימה';
 }
 /* relBack=0 כשהמסך נפתח מהסרגל, ואז "חזרה" מחזירה לנטיעות ולא לפרופיל */
 /* המשפט האישי. האזהרה יושבת מתחת לשדה ברגע הכתיבה, ולא בהגדרות ולא
@@ -8081,7 +8121,7 @@ var whoActOn=false;
 function inviteButton(p,ghost){
   const c=ghost?'btn ghost':'btn';
   return p.shared
-    ? '<button class="'+c+'" onclick="openInvite(cur)">הזמן קרוב</button>'
+    ? '<button class="'+c+'" onclick="inviteToPlanting()">הזמן קרוב</button>'
     : '<button class="'+c+'" onclick="openToCircle()">פתח לקרובים</button>';
 }
 /* בשני הנתיבים אותה שאלה, ושתי צורות: בהדגמה designated יכול להיות
@@ -8209,8 +8249,7 @@ function inviteFor(key){
           beneficiary_name:(p.designated===false?'':(p.kid||'')), target_year:p.yr||'',
           participants:(p.who||[]).length,
           occasion:p.occasion||null, beneficiary_sex:p.sex||null,
-          percent:pct, personal_note:null, invitee_name:null},
-    quick:inviteExtraRows(p)
+          percent:pct, personal_note:null, invitee_name:null}
   };
 }
 function openToCircle(){
