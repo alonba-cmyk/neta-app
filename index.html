@@ -1042,7 +1042,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6e38b21';
+window.NETA_BUILD = '4371faf';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1224,7 +1224,11 @@ window.NETA_CONFIG = {
         <span><i class="dsw o"></i>מקרוביי<b id="s-othv">·</b></span>
       </div>
     </div>
-    <div class="s-meta"><span><b id="s-cnt">2</b> <span id="s-cntw">נטיעות</span></span><span class="grp" id="s-mongrp"><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span></span></div>
+    <!-- הספירה עברה לכותרות הסקשנים, שם כל מספר יושב מעל הרשימה
+         שהוא סופר. כאן נשאר פריט אחד, ולכן אין נקודה מפרידה ואין
+         .grp: השורה כולה יורדת כשאין הפקדה חודשית, אחרת נשאר קו
+         עליון מעל ריק. -->
+    <div class="s-meta" id="s-facts"><span id="s-mongrp"><b id="s-mon">210 ₪</b> בכל חודש</span></div>
   </div>
 
   <!-- שני סקשנים, והגבול ביניהם הוא family_of: רגע שייך למשפחה שלי,
@@ -1236,7 +1240,7 @@ window.NETA_CONFIG = {
        בלבד. חיבור שלהם היה מאחד כסף של שתי משפחות למספר אחד, וזה
        בדיוק מה שסעיף 16 ב-open-decisions אוסר. -->
   <div class="hdr-row">
-    <p class="eyebrow big" id="own-head">נטיעות עבורי ובני משפחתי</p>
+    <p class="eyebrow big" id="own-head">נטיעה אחת עבורי ובני משפחתי</p>
     <button class="hdr-link" id="proj-link" style="display:none" onclick="showProjectionSheet()">הצפי לעתיד ›</button>
   </div>
 
@@ -1257,7 +1261,7 @@ window.NETA_CONFIG = {
 
   <button class="btn dash gap" id="garden-new" style="margin-top:2px" onclick="startCreate()">+ פתח נטיעה חדשה</button>
 
-  <p class="eyebrow big" id="oth-head" style="display:none">נטיעות עבור אחרים</p>
+  <p class="eyebrow big" id="oth-head" style="display:none">נטיעה אחת עבור אחרים</p>
   <div id="garden-oth"></div>
   <p class="fine" id="oth-fine" style="display:none">הכסף הזה שייך לרגעים של משפחות אחרות, ולכן הוא אינו נספר במספר שלמעלה.</p>
 
@@ -6241,7 +6245,7 @@ function loadAccountLists(){
    "שלום" לבד תקין לכל אדם, ומשלים לשם המלא כשהפרופיל מגיע. */
 function blankBeforeFirstLoad(){
   if(!netaServer)return;
-  ['s-you','s-cnt','s-mon','s-label','s-fut','s-futk'].forEach(function(id){txt(id,'')});
+  ['s-you','s-mon','s-label','s-fut','s-futk'].forEach(function(id){txt(id,'')});
   const g=document.getElementById('garden');
   if(g)g.innerHTML='';
   /* גם הפנקסים האישיים. הם מאותחלים בקובץ עם משפחת ההדגמה, וניקוי שלהם
@@ -7766,14 +7770,13 @@ function buildHomeSummary(){
       kidsHere.length>2   ? ' עבור בני משפחתי' : '';
     txt('s-label',accrued>0?('נצבר עד כה'+forWho)
                            :(coming?'ההפקדה הראשונה בדרך':'עוד לא נצבר'));
-    const nHere=here.length;
-    txt('s-cnt',nHere);
-    txt('s-cntw',nHere===1?'נטיעה':'נטיעות');
     /* שורת העובדות מדברת על ההפקדה שלי, וכשאין כזו "0 ₪ בכל חודש"
-       נקרא כתקלה ולא כמידע. הפריט יורד במקום להציג אפס. */
+       נקרא כתקלה ולא כמידע. עכשיו זה הפריט היחיד בשורה, ולכן יורדת
+       השורה כולה ולא רק הוא: div ריק עם border-top הוא קו מפריד
+       שאינו מפריד בין שני דברים. */
     const monHere=here.reduce(function(a,p){return a+Number(p.myMonthly||0)},0);
-    const monGrp=document.getElementById('s-mongrp');
-    if(monGrp)monGrp.style.display=monHere>0?'':'none';
+    const facts=document.getElementById('s-facts');
+    if(facts)facts.style.display=monHere>0?'':'none';
     txt('s-mon',shekel(monHere));
 
     /* "הושקעו" סבילה וחסרת נושא, ולכן היא נקראת כמו "זה מה שאני
@@ -7803,9 +7806,21 @@ function buildHomeSummary(){
     document.getElementById('garden').innerHTML=gardenHTML(own,cardHTML);
     /* כותרת הסקשן יורדת עם הרשימה: ההודעה שבמקומה כבר אומרת את
        אותו דבר, וכותרת מעל מצב ריק מכריזה על מדור שאין בו כלום. */
-    document.getElementById('own-head').style.display=noneMine?'none':'';
+    /* הספירה יושבת בכותרת ולא בשורת העובדות: שם היא סופרת רק את
+       הסקשן הראשון בעוד היא נקראת כמו מספר של כל המסך, ולסקשן השני
+       לא היה מספר כלל. עכשיו כל מספר יושב מעל הרשימה שהוא סופר.
+
+       "נטיעה אחת" ולא "1 נטיעה": ספרה בודדת בכותרת קטנה נקראת כמו
+       טופס. משניים ואילך ספרה, כי המילה מתארכת ואין לה יתרון. */
+    const headCount=function(n,tail){
+      return (n===1?'נטיעה אחת':n+' נטיעות')+' '+tail;
+    };
+    const ownHead=document.getElementById('own-head');
+    ownHead.style.display=noneMine?'none':'';
+    if(!noneMine)txt('own-head',headCount(here.length,'עבורי ובני משפחתי'));
     document.getElementById('garden-oth').innerHTML=oth.map(othCardHTML).join('');
     document.getElementById('oth-head').style.display=oth.length?'':'none';
+    if(oth.length)txt('oth-head',headCount(oth.length,'עבור אחרים'));
     document.getElementById('oth-fine').style.display=oth.length?'':'none';
     const proj=projectablePlantings({plantings:own});
     const projLink=document.getElementById('proj-link');
