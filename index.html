@@ -90,6 +90,23 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 .letter-card .chev{flex-shrink:0;color:var(--tx-3);display:flex;align-items:center}
 .letter-card.tap{cursor:pointer;transition:border-color .15s}
 .letter-card.tap:hover{border-color:var(--line-2)}
+/* ההזמנה שנדחתה ב"בפעם אחרת". אותו אובייקט בשני מקומות: במסך הבית
+   מתחת לפעולה של המשתמש עצמו, ובראש הפיד כשורה נעוצה. בפיד היא ירוקה,
+   כי שם היא עומדת בראש רשימה של דברים שכבר קרו וצריכה להיקרא כפתוחה;
+   בבית היא שקטה, כי מעליה יושב כפתור ירוק מלא ושני ירוקים זה מעל זה
+   מבטלים זה את זה. */
+.wait-row{display:flex;align-items:center;gap:11px;background:var(--s1);
+  border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+  cursor:pointer;transition:border-color .15s}
+.wait-row:hover{border-color:var(--line-2)}
+.wait-row .ic{font-size:14px;color:var(--tx-3);flex-shrink:0;line-height:1}
+.wait-row>div{flex:1;min-width:0}
+.wait-row b{font-size:12px;font-weight:500;display:block}
+.wait-row .s{font-size:10.5px;color:var(--tx-3);display:block;margin-top:1px}
+.wait-row .chev{flex-shrink:0;color:var(--tx-3);display:flex;align-items:center}
+.wait-row.leaf{background:var(--leaf-bg);border-color:var(--leaf-line)}
+.wait-row.leaf .ic,.wait-row.leaf b{color:var(--leaf)}
+.wait-row.leaf .s{color:var(--leaf-soft)}
 .card.tap{cursor:pointer;transition:.15s}.card.tap:hover{border-color:var(--line-2)}
 .row{display:flex;align-items:center;gap:10px}
 .dot{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:15px;flex-shrink:0}
@@ -977,7 +994,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'da2da8c';
+window.NETA_BUILD = '1ccb126';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1127,19 +1144,6 @@ window.NETA_CONFIG = {
     <p class="sub" style="color:#C4AE84" id="resume-t">בר המצווה של דניאל · 100 ₪ בחודש. נשאר רק לחבר אמצעי תשלום כדי שההפקדה הראשונה תצא.</p>
     <button class="btn" style="margin-top:12px" onclick="resumeOnbo()">השלם והפעל</button>
   </div>
-  <!-- הזמנה שנדחתה ב"בפעם אחרת". עד כה הכרטיס נפתח מעצמו בכניסה הבאה,
-       בלי שאף אחד הכין אותה לזה — אחרי "לא עכשיו" זה נקרא כנדנוד.
-       שורה שקטה שממתינה עד שילחצו עליה היא מה ש"בפעם אחרת" ביקשה.
-
-       רק למי שמחובר: מי שאין לו חשבון אינו מגיע למסך הבית בכלל, ואצלו
-       הכרטיס עדיין נפתח מעצמו, כי החלופה היא לאבד את ההזמנה. -->
-  <div class="card gap tap" id="later-card" style="display:none" onclick="openLaterInvite()">
-    <div class="row">
-      <div style="flex:1"><b style="font-size:13px;font-weight:500" id="later-card-t">ההזמנה ממתינה</b>
-        <p class="sub" style="margin-top:3px" id="later-card-s">·</p></div>
-      <span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>
-    </div>
-  </div>
   <!-- מישהו ציין את הכתובת שלי כהורה. כרטיס ולא קפיצה למסך: זו החלטה
        על הילד שלי, לא הודעה שצריך לסלק, והיא צריכה להמתין בסבלנות עד
        שאבחר לפתוח אותה. -->
@@ -1228,6 +1232,26 @@ window.NETA_CONFIG = {
          ש"אפשר לשנות" נדחק לסוף השורה הראשונה ונקרא כחלק מהתחזית. -->
     <p class="fine">100 ₪ בחודש יהפכו לכ-23,500 ₪ בעוד 13 שנה.<br>אפשר לשנות בכל עת.</p>
     <div class="gsample" id="home-ghost" aria-hidden="true"></div>
+  </div>
+
+  <!-- הזמנה שנדחתה ב"בפעם אחרת". עד כה הכרטיס ישב בראש המסך ונפתח
+       מעצמו בכניסה הבאה, בלי שאף אחד הכין אותה לזה — אחרי "לא עכשיו"
+       זה נקרא כנדנוד. עכשיו הוא בתחתית: קודם מה שהיא יכולה לעשות
+       בעצמה, ורק אחר כך מה שמישהו ביקש ממנה.
+
+       מחוץ ל-home-full ול-home-empty ואחרי שניהם, כי מי שדחתה הזמנה
+       ואין לה נטיעה משלה רואה דווקא את home-empty — בתוך home-full
+       ההזמנה שלה הייתה נעלמת לגמרי.
+
+       רק למי שמחובר: מי שאין לו חשבון אינו מגיע למסך הבית בכלל, ואצלו
+       הכרטיס עדיין נפתח מעצמו, כי החלופה היא לאבד את ההזמנה. -->
+  <div id="later-home" style="display:none">
+    <p class="eyebrow" style="margin-top:22px">ועוד דבר אחד</p>
+    <div class="wait-row" id="later-card" onclick="openLaterInvite()">
+      <span class="ic">✉</span>
+      <div><b id="later-card-t">ההזמנה ממתינה</b><span class="s" id="later-card-s">·</span></div>
+      <span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>
+    </div>
   </div>
 </section>
 
@@ -1578,6 +1602,16 @@ window.NETA_CONFIG = {
 
 <!-- 9 ACTIVITY / פעילות -->
 <section class="screen" data-name="פעילות">
+  <!-- אותה הזמנה, נעוצה בראש הפיד. מחוץ ל-act-full, כי הוא נסגר כשאין
+       פעילות — ודווקא אז, בחשבון שעוד לא קרה בו כלום, ההזמנה היא הדבר
+       היחיד שיש להראות. ירוקה כאן ולא בבית: בפיד היא עומדת בראש רשימה
+       של דברים שכבר קרו, והצבע הוא מה שאומר שזה עוד פתוח. -->
+  <div class="wait-row leaf gap" id="later-act" style="display:none" onclick="openLaterInvite()">
+    <span class="ic">✉</span>
+    <div><b id="later-act-t">·</b><span class="s" id="later-act-s">·</span></div>
+    <span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>
+  </div>
+
   <div id="act-full">
   <!-- בלי כרטיס עוטף: הוא הקיף רשימה שלמה ולא הוסיף לה גבול שיש לו
        משמעות. בלי הערת ההסבר שהייתה כאן — היא הסבירה למשתמש מה הוא
@@ -2729,21 +2763,43 @@ function checkGuardianRequests(){
     paintGuardCard();
   },function(){});
 }
-/* הכרטיס של הזמנה שנדחתה. השם של מי שהזמין נשאב מהשרת פעם אחת, ועד
-   שהוא מגיע הכרטיס אינו מוצג — שורה בלי שם אינה אומרת דבר. */
+/* הכרטיס של הזמנה שנדחתה, בשני המקומות שבהם היא מופיעה: בתחתית מסך
+   הבית ובראש הפיד. השם של מי שהזמין נשאב מהשרת פעם אחת, ועד שהוא מגיע
+   אין מציגים דבר — שורה בלי שם אינה אומרת דבר.
+
+   הנוסח שונה בין השניים בכוונה. בבית זו שורה במצב עומד ("ההזמנה של
+   אלון ממתינה"), ובפיד זו שורה ברשימה של דברים שקרו, ולכן היא נכתבת
+   כמו שכנותיה ("אלון הזמין אותך"). */
 function paintLaterCard(){
-  const box=document.getElementById('later-card');
-  if(!box)return;
+  const home=document.getElementById('later-home');
+  const act=document.getElementById('later-act');
+  /* הדגם הדוהה שבתחתית המסך הריק מראה "מה יופיע כאן". כשיש הזמנה
+     ממתינה כבר יש מה שיופיע כאן, והוא יורד: שתי כרטיסיות דהויות בין
+     הכפתור של גל לבין ההזמנה שלה הן רעש בין שני דברים אמיתיים. */
+  const ghost=document.getElementById('home-ghost');
+  const hide=function(){
+    if(home)home.style.display='none';
+    if(act)act.style.display='none';
+    if(ghost)ghost.style.display='';
+  };
+  if(!home&&!act)return;
   const t=laterInvite();
-  if(!t||!liveAccount()||!netaServer||!netaServer.sharedSummary){box.style.display='none';return}
+  if(!t||!liveAccount()||!netaServer||!netaServer.sharedSummary){hide();return}
   netaServer.sharedSummary(t).then(function(r){
-    if(!r){box.style.display='none';dropLater();return}
+    if(!r){hide();dropLater();return}
     const by=firstName(r.inviter_name||'')||'קרוב';
     const kid=r.beneficiary_name||'';
+    const sex=r.inviter_sex;
+    const to=kid?('לנטיעה לעתיד של '+kid)
+      :(sex==='f'?'לנטיעה שהיא פתחה':sex==='m'?'לנטיעה שהוא פתח':'לנטיעה שנפתחה');
     txt('later-card-t','ההזמנה של '+by+' ממתינה');
-    txt('later-card-s',kid?('לנטיעה לעתיד של '+kid):'לנטיעה שהוא פתח');
-    box.style.display='';
-  },function(){box.style.display='none'});
+    txt('later-card-s',to);
+    txt('later-act-t',by+' '+(sex==='f'?'הזמינה':sex==='m'?'הזמין':'הזמין/ה')+' אותך');
+    txt('later-act-s',to);
+    if(home)home.style.display='';
+    if(act)act.style.display='';
+    if(ghost)ghost.style.display='none';
+  },function(){hide()});
 }
 function openLaterInvite(){
   const t=laterInvite();
