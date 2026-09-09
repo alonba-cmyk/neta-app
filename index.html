@@ -1007,7 +1007,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1477ad9';
+window.NETA_BUILD = 'dfbc3fe';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1238,7 +1238,9 @@ window.NETA_CONFIG = {
          נקודתיים ולא פסיק: מה שבא אחריהן הוא רשימת דוגמאות, ופסיק היה
          נבלע בין הפסיקים של הרשימה עצמה. אז המשפט נקרא כרשימה של
          ארבעה פריטים במקום הגדרה ושלוש דוגמאות. -->
-    <p>נטיעה היא השקעה חודשית קטנה שמחכה לרגע אחד: בר מצווה, לימודים, דירה ראשונה.</p>
+    <!-- שתי שורות ב-390, כמו בכל שאר המצבים הריקים. "נטיעה היא" ירד
+         כי הכותרת שמעליו כבר בתוך ההקשר, ו"ראשונה" ירד מ"דירה". -->
+    <p>השקעה חודשית קטנה שמחכה לרגע אחד: בר מצווה, לימודים, דירה.</p>
     <button class="btn" onclick="startCreate()">פתח את הנטיעה הראשונה</button>
     <!-- השבירה מפורשת ולא זרימה: המספר בשורה אחת, וההרגעה ("אפשר לשנות")
          בשורה משלה. בזרימה חופשית "עת." נשאר לבדו בשורה שלישית, או
@@ -1644,12 +1646,20 @@ window.NETA_CONFIG = {
   <div id="feed"></div>
   </div><!-- /act-full -->
 
+  <!-- אותו מבנה כמו בשני המצבים הריקים השכנים: נבט, כותרת, משפט, כפתור,
+       ומתחתיו הדגם הדוהה. קודם ישב כאן אייקון הסרגל התחתון מוגדל ל-54
+       ומעומעם ל-75 אחוז, בלי שום פעולה, ומעליו ארבעה בלוקים שונים.
+
+       שורת "ההפקדה הבאה" ירדה: היא הייתה טקסט הדגמה קבוע, ו-setEmpty
+       הסתירה אותה בדיוק כשהמצב הריק הוצג, כלומר היא מעולם לא נראתה
+       בחשבון אמיתי. ההערה הקטנה ירדה כי היא חזרה על המשפט שמעליה.
+
+       הטקסטים נכתבים מ-paintActEmpty, כי יש כאן שני מצבים ולא אחד. -->
   <div class="es" id="act-empty" style="display:none">
-    <div class="art" style="color:var(--leaf-2);opacity:.75"><svg width="54" height="54" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></div>
-    <h3>שקט, וזה בסדר</h3>
-    <p>הכסף עובד גם כשלא קורה כלום. אין צורך לעשות דבר.</p>
-    <div class="strip" id="act-next"><b>ההפקדה הבאה · 1 בספטמבר</b><span>150 ₪ לבר המצווה של דניאל, בהוראת קבע.</span></div>
-    <p class="fine">כאן יופיעו הרגעים: קרוב שהפקיד, אבן דרך שנחצתה, מכתב שנוסף.</p>
+    <div class="art"><svg width="66" height="78" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
+    <h3 id="act-e-h">כאן יופיעו הרגעים</h3>
+    <p id="act-e-p">קרוב שהפקיד, אבן דרך שנחצתה, מכתב שנוסף. הכול מתחיל בנטיעה.</p>
+    <button class="btn" id="act-e-cta" onclick="actEmptyCta()">פתח את הנטיעה הראשונה</button>
     <div class="gsample" id="act-ghost" aria-hidden="true"></div>
   </div>
 </section>
@@ -1881,7 +1891,9 @@ window.NETA_CONFIG = {
          ל-81 בכולם, וההתאמה הידנית מיותרת. esalign בודק. -->
     <div class="art"><svg width="66" height="78" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
     <h3>כאן יופיע מה שנתת</h3>
-    <p>ברגע שתנטע, כאן יהיה כמה אתה מפקיד בכל חודש, לאן זה הולך, ולאיזה סכום זה גדל.</p>
+    <!-- שתי שורות ב-390. "לאן זה הולך" ירד: שתי השאלות שנשארו הן
+         מה אני שם ולמה זה הופך, וזה בדיוק מה שהמסך מודד. -->
+    <p>ברגע שתנטע, כאן יהיה כמה אתה מפקיד ולאיזה סכום זה גדל.</p>
     <button class="btn" onclick="startCreate()">פתח את הנטיעה הראשונה</button>
     <div class="gsample tall" id="kin-ghost" aria-hidden="true"></div>
   </div>
@@ -2853,15 +2865,42 @@ function peekRowHTML(e,icon){
     '<div class="fs">'+agoText(e.happened_at)+'</div></div></div>';
 }
 /* כשההצצה מוצגת אין מצב ריק מתחתיה: "שקט, וזה בסדר" סותר בלוק שלם
-   שמראה שדווקא כן קרו שם דברים. הדגל משותף עם setEmpty, שרצה גם היא
-   על אותו אלמנט ובסדר שאינו מובטח. */
+   שמראה שדווקא כן קרו שם דברים. */
 let peekOn=false;
+/* כמה שורות חזרו מהפיד בפעם האחרונה. null = עוד לא נטען, ואז לא מציגים
+   מצב ריק: הבהוב של "עוד לא קרה כאן כלום" לפני שהתשובה חזרה גרוע
+   משנייה של מסך ריק. */
+let feedCount=null;
+/* מצב הפעילות הוא היחיד שנשען על שני מקורות: יש נטיעות (setEmpty) ויש
+   רגעים (buildFeed), ושניהם רצים בסדר שאינו מובטח. לכן שניהם קוראים
+   לכאן, וההכרעה יושבת במקום אחד.
+
+   ובלי זה היה חור: מי שיש לו נטיעה והפיד שלו עדיין ריק קיבל מסך לבן
+   לגמרי, לא רשימה ולא מצב ריק, רק השורה העליונה והסרגל. setEmpty מדדה
+   נטיעות בלבד, ו-buildFeed רק הסתירה את #feed. */
 function syncActEmpty(){
-  const e=document.getElementById('act-empty');
-  if(!e)return;
-  if(peekOn){e.style.display='none';return}
-  /* אותו חישוב בדיוק שב-setEmpty, כדי שהמצב הריק יחזור כשההזמנה נסגרת. */
-  e.style.display=(isEmpty||(liveAccount()&&LIVE_TABS.indexOf('act')<0))?'':'none';
+  const box=document.getElementById('act-empty'),full=document.getElementById('act-full');
+  if(!box||!full)return;
+  if(peekOn){box.style.display='none';full.style.display='none';return}
+  const noPlantings=isEmpty||(liveAccount()&&LIVE_TABS.indexOf('act')<0);
+  const empty=noPlantings||feedCount===0;
+  box.style.display=empty?'':'none';
+  full.style.display=empty?'none':'';
+  if(empty)paintActEmpty(!noPlantings);
+}
+/* שני מצבים, ושתי פעולות שונות. מי שאין לו נטיעה פותח אחת; מי שכבר יש
+   לו יוצר רגעים בכך שהוא מזמין קרוב, כי כל רגע בפיד הוא מישהו שעשה
+   משהו. "שקט, וזה בסדר" נכון רק במצב השני, שם באמת יש כסף שעובד. */
+function paintActEmpty(hasPlantings){
+  txt('act-e-h',hasPlantings?'שקט, וזה בסדר':'כאן יופיעו הרגעים');
+  txt('act-e-p',hasPlantings
+    ? 'הכסף עובד גם כשלא קורה כלום. הרגעים מגיעים כשעוד מישהו נכנס.'
+    : 'קרוב שהפקיד, אבן דרך שנחצתה, מכתב שנוסף. הכול מתחיל בנטיעה.');
+  txt('act-e-cta',hasPlantings?'הזמן קרוב לנטוע איתך':'פתח את הנטיעה הראשונה');
+}
+function actEmptyCta(){
+  const noPlantings=isEmpty||(liveAccount()&&LIVE_TABS.indexOf('act')<0);
+  if(noPlantings)startCreate(); else openInvitePicker();
 }
 function paintLaterPeek(token,occasion){
   const box=document.getElementById('later-peek');
@@ -7535,6 +7574,8 @@ function buildFeed(){
     if(!box)return;
     box.innerHTML=feedHTML(rows);
     box.style.display=rows.length?'':'none';
+    feedCount=rows.length;
+    syncActEmpty();
   }).catch(function(){});
 }
 
@@ -8293,7 +8334,9 @@ function setEmpty(on){
   isEmpty=on;
   document.getElementById('empty-btn').classList.toggle('on',on);
   const live=liveAccount();
-  ['home','act','kin'].forEach(function(k){
+  /* ‏act ירד מהלולאה: הוא נשען גם על הפיד ולא רק על הנטיעות, וההכרעה
+     שלו יושבת ב-syncActEmpty שנקראת בסוף. */
+  ['home','kin'].forEach(function(k){
     /* kin נגזר ממה שחזר מהשרת ולא מהמתג הזה: המתג עוקב אחרי הנטיעות
        שלך, ולנטיעות של קרובים אין לו שום קשר.
 
@@ -8308,7 +8351,6 @@ function setEmpty(on){
     document.getElementById(k+'-full').style.display=blank?'none':'';
     document.getElementById(k+'-empty').style.display=blank?'':'none';
   });
-  document.getElementById('act-next').style.display=on?'none':'';
   syncActEmpty();
   if(on){txt('pr-mine',0);txt('pr-theirs',0);txt('pr-sum','0 ₪');}else{buildProfile();}
   txt('pm-sub',on?'כאן תחבר את ההפקדה החוזרת ותנהל אותה לאורך השנים.':'כאן מנוהלות ההפקדות החוזרות שלך, 210 ₪ בכל חודש.');
