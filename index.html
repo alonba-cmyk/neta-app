@@ -468,6 +468,17 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* פרצוף הקרוב, ועליו תג קטן שאומר לאיזו נטיעה — בלעדיו רואים מי ולא לאן. */
 .fav{position:relative;width:34px;height:34px;flex-shrink:0}
 .fav .avsvg{border-radius:10px;overflow:hidden}
+/* אותה שורת פיד, בגודל איור. .fav הוא החתימה החזותית של מסך הפעילות
+   ושל אף מסך אחר: פרצוף של מי שעשה משהו, ועליו תג הרגע שבו הוא עשה
+   את זה. במצב הריק הוא אומר בדיוק את מה שהמסך מבטיח.
+
+   קלאס נפרד ולא .fav מוגדל: .fav חי בתוך שורת פיד עם flex-shrink
+   ומידות קבועות, ושכתוב שלו כאן היה נוגע בכל שורה בפיד. */
+.bigfav{position:relative;width:70px;height:70px;display:block}
+.bigfav>.avsvg{width:100%;height:100%;border-radius:22px;overflow:hidden;display:block}
+.bigfav>i{position:absolute;bottom:-7px;left:-9px;width:34px;height:34px;border-radius:11px;
+  background:var(--bg);border:1px solid var(--line);display:grid;place-items:center;
+  font-size:17px;font-style:normal;line-height:1}
 .fbadge{position:absolute;bottom:-4px;left:-5px;width:18px;height:18px;border-radius:6px;background:var(--bg);
   border:1px solid var(--line);display:grid;place-items:center;font-size:9px}
 .fx{flex:1;min-width:0}
@@ -1018,7 +1029,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'a3c3166';
+window.NETA_BUILD = '0fc77e8';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1667,7 +1678,10 @@ window.NETA_CONFIG = {
 
        הטקסטים נכתבים מ-paintActEmpty, כי יש כאן שני מצבים ולא אחד. -->
   <div class="es" id="act-empty" style="display:none">
-    <div class="art"><svg width="66" height="78" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
+    <!-- הנבט ירד: הוא זהה לזה שב"כל הנטיעות". במקומו שורת הפיד עצמה
+         בגודל איור, פרצוף עם תג הרגע, כי זה מה שיופיע כאן. -->
+    <div class="art"><span class="bigfav" aria-hidden="true">
+      <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg><i>🎂</i></span></div>
     <h3 id="act-e-h">כאן יופיעו הרגעים</h3>
     <p id="act-e-p">קרוב שהפקיד, אבן דרך שנחצתה, מכתב שנוסף. הכול מתחיל בנטיעה.</p>
     <button class="btn" id="act-e-cta" onclick="actEmptyCta()">פתח את הנטיעה הראשונה</button>
