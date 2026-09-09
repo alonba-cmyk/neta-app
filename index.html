@@ -827,6 +827,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הסיבה שהוא נדחף פעם מתחת לקצה המכשיר לא הייתה המרווח אלא שהמסך ישב
    מחוץ ל-#stage ולכן לא נגלל כלל. */
 [data-name="אישור הנטיעה"] .es{min-height:34%;padding:10px 4px 2px}
+/* וי ירוק בעיגול, לאישור שאינו הודעת מערכת אלא סוף של החלטה. */
+.lock-ok{width:46px;height:46px;border-radius:50%;background:var(--leaf-bg);
+  border:1px solid var(--leaf-line);color:var(--leaf);display:grid;place-items:center;
+  font-size:20px;margin:0 auto}
 /* קישור שקט מתחת לכפתורים, ולא כפתור שלישי שמתחרה איתם: "אחר כך"
    במסך האישור, ו"או לעצור את ההפקדה לגמרי" בגיליון השינוי. */
 .later{display:block;width:100%;background:none;border:0;
@@ -973,7 +977,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b255b50';
+window.NETA_BUILD = 'da2da8c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1122,6 +1126,19 @@ window.NETA_CONFIG = {
     <div class="row gap-s"><span>⏸</span><b style="font-size:13px;font-weight:500;color:var(--sun)">הנטיעה שהתחלת ממתינה</b></div>
     <p class="sub" style="color:#C4AE84" id="resume-t">בר המצווה של דניאל · 100 ₪ בחודש. נשאר רק לחבר אמצעי תשלום כדי שההפקדה הראשונה תצא.</p>
     <button class="btn" style="margin-top:12px" onclick="resumeOnbo()">השלם והפעל</button>
+  </div>
+  <!-- הזמנה שנדחתה ב"בפעם אחרת". עד כה הכרטיס נפתח מעצמו בכניסה הבאה,
+       בלי שאף אחד הכין אותה לזה — אחרי "לא עכשיו" זה נקרא כנדנוד.
+       שורה שקטה שממתינה עד שילחצו עליה היא מה ש"בפעם אחרת" ביקשה.
+
+       רק למי שמחובר: מי שאין לו חשבון אינו מגיע למסך הבית בכלל, ואצלו
+       הכרטיס עדיין נפתח מעצמו, כי החלופה היא לאבד את ההזמנה. -->
+  <div class="card gap tap" id="later-card" style="display:none" onclick="openLaterInvite()">
+    <div class="row">
+      <div style="flex:1"><b style="font-size:13px;font-weight:500" id="later-card-t">ההזמנה ממתינה</b>
+        <p class="sub" style="margin-top:3px" id="later-card-s">·</p></div>
+      <span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>
+    </div>
   </div>
   <!-- מישהו ציין את הכתובת שלי כהורה. כרטיס ולא קפיצה למסך: זו החלטה
        על הילד שלי, לא הודעה שצריך לסלק, והיא צריכה להמתין בסבלנות עד
@@ -2217,6 +2234,24 @@ window.NETA_CONFIG = {
     </div>
   </div>
 
+  <!-- "בפעם אחרת" אינה יציאה מהמוצר. עד כה היא זרקה למסך הפתיחה, כלומר
+       קיר הרשמה מיד אחרי שאמרה "לא עכשיו", ובלי מילה על כך שההזמנה
+       נשמרה. עכשיו: קודם עונים למה שהיא אמרה, ורק אחר כך מציעים.
+
+       ושתי היציאות ולא אחת. "לא להזמנה" אינו "לא לנטע": מי שדחתה את
+       ההזמנה של אלון עדיין יכולה לרצות רגע לילד שלה, וזו התוצאה הכי
+       שווה בכל התרחיש הזה. -->
+  <div id="sl-later" style="display:none">
+    <div class="center gap">
+      <div class="lock-ok">✓</div>
+      <h2 style="margin:8px 0 4px">שמרנו את ההזמנה</h2>
+      <p class="sub" id="sl-later-t">אם תשנה את דעתך, היא תחכה לך כאן. הקישור עדיין עובד.</p>
+    </div>
+    <button class="btn gap-s" onclick="joinLaterSignup()">פתח חשבון משלך</button>
+    <button class="link" style="display:block;width:100%;text-align:center"
+      onclick="howOpen(true)">מה זה נטע, ואיך זה עובד</button>
+  </div>
+
   <!-- הבקשה עלתה לבעל הנטיעה. לא נחסמנו — הועברנו. -->
   <div id="sl-asked" style="display:none">
     <div class="center gap">
@@ -2693,6 +2728,26 @@ function checkGuardianRequests(){
     guardQueue=Array.isArray(rows)?rows:[];
     paintGuardCard();
   },function(){});
+}
+/* הכרטיס של הזמנה שנדחתה. השם של מי שהזמין נשאב מהשרת פעם אחת, ועד
+   שהוא מגיע הכרטיס אינו מוצג — שורה בלי שם אינה אומרת דבר. */
+function paintLaterCard(){
+  const box=document.getElementById('later-card');
+  if(!box)return;
+  const t=laterInvite();
+  if(!t||!liveAccount()||!netaServer||!netaServer.sharedSummary){box.style.display='none';return}
+  netaServer.sharedSummary(t).then(function(r){
+    if(!r){box.style.display='none';dropLater();return}
+    const by=firstName(r.inviter_name||'')||'קרוב';
+    const kid=r.beneficiary_name||'';
+    txt('later-card-t','ההזמנה של '+by+' ממתינה');
+    txt('later-card-s',kid?('לנטיעה לעתיד של '+kid):'לנטיעה שהוא פתח');
+    box.style.display='';
+  },function(){box.style.display='none'});
+}
+function openLaterInvite(){
+  const t=laterInvite();
+  if(t)openShared(t);
 }
 function paintGuardCard(){
   const box=document.getElementById('guard-card');
@@ -3845,7 +3900,7 @@ const SHARED_SCREEN=function(){
   return screens.findIndex(function(x){return x.dataset.name==='קישור לנטיעה'});
 };
 function sharedState(which){
-  ['sl-card','sl-asked','sl-dead','sl-expired'].forEach(function(id){
+  ['sl-card','sl-asked','sl-dead','sl-expired','sl-later'].forEach(function(id){
     const el=document.getElementById(id);
     if(el)el.style.display=(id==='sl-'+which)?'':'none';
   });
@@ -3959,10 +4014,25 @@ function dropLater(){try{localStorage.removeItem(LATER_KEY)}catch(e){}}
 function leaveShared(){
   const t=shownToken||sharedTokenInUrl()||pendingInvite();
   const deferredBefore=!!t&&laterInvite()===t;
-  sharedCardShown=false;shownToken=null;
   dropInvite();
   if(t&&!deferredBefore)keepLater(t); else dropLater();
   history.replaceState(null,'',location.pathname);
+  /* דחייה שנייה על אותו קישור סוגרת את העניין, ואז אין מה לשמור ואין
+     מה לאשר. אחרת נשארים כאן, עם אישור ושתי דלתות. */
+  if(!t||deferredBefore){
+    sharedCardShown=false;shownToken=null;
+    go(liveAccount()?0:ONBO.welcome);
+    return;
+  }
+  txt('sl-later-t',(inviteKnows.by?('אם תשנה את דעתך, ההזמנה של '+firstName(inviteKnows.by)+' תחכה לך כאן.')
+                                  :'אם תשנה את דעתך, ההזמנה תחכה לך כאן.')+
+      ' הקישור עדיין עובד.');
+  sharedState('later');
+}
+/* מכאן היא יוצאת לנטע בזכות עצמה. הטוקן נשאר שמור, ולכן ההזמנה תחזור
+   אליה גם אם תיפתח חשבון ותשכח ממנה. */
+function joinLaterSignup(){
+  sharedCardShown=false;shownToken=null;
   go(liveAccount()?0:ONBO.welcome);
 }
 
@@ -7498,7 +7568,7 @@ function buildHomeSummary(){
         return 'יחכו שם בקצב הזה';
       })());
     }
-    if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();}
+    if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();paintLaterCard();}
     paintInvestments();
     buildFeed();buildConnection();
     /* ההתראות ממתינות במסד למי שיפתח את האפליקציה. זו רשת הביטחון:
@@ -8172,7 +8242,9 @@ if(sharedToken&&liveAccount()){
   /* וסבב כניסה שנקטע באמצע חוזר לאותה נקודה. */
   if(liveAccount()&&pendingInvite()&&finishJoin()){}
   /* ומי שאמר "בפעם אחרת" מקבל את ההצעה שוב — ההצעה, לא הצירוף. */
-  else if(laterInvite()&&openShared(laterInvite())){}
+  /* מחובר אינו מקבל קפיצה: ההזמנה ממתינה ככרטיס במסך הבית. מי שאינו
+     מחובר אין לו מסך בית, ולכן אצלו הכרטיס נפתח כמו קודם. */
+  else if(!liveAccount()&&laterInvite()&&openShared(laterInvite())){}
   else if(liveAccount())landSignedIn();
   /* מי שהגיע עם שגיאת כניסה היה באמצע סבב, ולכן הוא נוחת על דלת
      הכניסה עם ההסבר — ולא על מסך הפתיחה, שמתחיל הכול מחדש. */
