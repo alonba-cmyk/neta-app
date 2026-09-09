@@ -784,6 +784,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .gsample:after{content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(to bottom,transparent 22%,var(--bg) 99%)}
 .gsample .ncard{margin-bottom:9px;cursor:default}
+/* הדגם של הקרובים אינו לחיץ: שורה ברשימה האמיתית פותחת עריכה, וכאן
+   אין את מי לערוך. */
+#rel-ghost{pointer-events:none;margin:16px 0 6px}
+#rel-ghost .rel{cursor:default}
+/* פרצוף מלא צבע ב-.34 ובסטורציה של 45 אחוז יוצא כתם אפור, ולא פנים.
+   שאר הדגמים מחזיקים טקסט ואמוג'י ושורדים את זה; כאן צריך קצת יותר. */
+#rel-ghost>*{opacity:.44;filter:saturate(.72)}
 .gsample.tall{height:212px}
 .gsample.tall:after{background:linear-gradient(to bottom,transparent 46%,var(--bg) 99%)}
 .gsample .feed:last-child{border-bottom:0}
@@ -1029,7 +1036,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0fc77e8';
+window.NETA_BUILD = '1862419';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1945,6 +1952,10 @@ window.NETA_CONFIG = {
        אותך אליהם" נשארה, כי היא הכיוון האחר וכן צריכה שם. -->
   <div class="card" id="rel-list"></div>
   <button class="btn gap-s" onclick="addRelative()">+ הוסף קרוב</button>
+  <!-- כך זה ייראה כשקרובים יצטרפו. אותו דגם דוהה שיש בשלושת המצבים
+       הריקים האחרים, ומאותו מקור: שורות אמיתיות של הרשימה עם שמות
+       ההדגמה, ולא ציור שלהן. -->
+  <div class="gsample" id="rel-ghost" style="display:none" aria-hidden="true"></div>
 
   <!-- "רגעים שהזמינו אותך אליהם" ירדה מכאן. המסך הזה הוא על אנשים,
        ומאז שמסך הבית מחזיק סקשן "נטיעות עבור אחרים" אותו רגע בדיוק
@@ -5540,6 +5551,11 @@ const relatives=[
   {av:'av-friend',name:'מיכל, אמא של נועה',rel:'אמא של נועה',g:'f',status:'invited',chan:'mail',contact:'michal@mail.com'},
   {av:'av-granny2',name:'סבא משה',rel:'סבא של דניאל ונועה',g:'m',status:'none',chan:'wa',contact:''}
 ];
+/* הדגם הדוהה שמתחת למצב הריק נגזר מהמערכת עצמה ואינו מועתק לצידה:
+   שינוי בשמות ההדגמה מגיע גם אליו, ואין כאן עותק שני שיישאר מאחור. */
+const REL_SAMPLE=relatives.slice(0,3).map(function(r){
+  return {av:r.av,name:r.name,rel:r.rel,contact:r.contact,status:r.status};
+});
 const CHAN={wa:'וואטסאפ',mail:'אימייל'};
 let pickedPlant='';
 /* the channel is read from the value itself — asking for it separately was a second
@@ -5739,9 +5755,11 @@ function buildRelatives(){
       }).join('')+'</span></div>'+
       '<h3>מי עוד נוטע איתך?</h3>'+
       '<p>הזמן את סבתא או את הדוד להתחיל להשקיע בעתיד של הקרובים שלך.</p></div>';
+    relGhost(true);
     relMeta();return;
   }
   box.style.border='';box.style.background='';box.style.padding='';box.style.marginBottom='';
+  relGhost(false);
   box.innerHTML=relatives.map(function(r,i){
     let right;
     /* "באפליקציה" ירד. הוא היה תג ולא פעולה, ישב במקום שבו שאר השורות
@@ -5755,12 +5773,25 @@ function buildRelatives(){
       ? '<button class="rx" onclick="event.stopPropagation();copyRelativeLink('+i+')">העתק קישור</button>'
       : '<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">שלח שוב</button>';
     else right='<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">הזמן</button>';
-    const sub=r.status==='invited'?(r.plant?'הוזמנה ל'+nameOfPlanting(r.plant)+' · ממתינה לקוד':r.rel+' · הוזמנה, טרם הצטרפה'):(r.contact?r.rel+' · '+r.contact:r.rel+' · חסרים פרטי קשר');
-    return '<div class="rel" onclick="editRelative('+i+')">'+
-      '<div class="ra"><svg viewBox="0 0 40 40"><use href="#'+r.av+'"/></svg></div>'+
-      '<span class="rn"><b>'+r.name+'</b><i>'+sub+'</i></span>'+right+'</div>';
+    return relRowHTML(r,right,' onclick="editRelative('+i+')"');
   }).join('');
   relMeta();
+}
+/* שורה אחת, שני שימושים: הרשימה האמיתית והדגם הדוהה שמתחת למצב הריק.
+   בלי זה הדגם היה עותק שני של אותו מבנה, והוא היה נשאר מאחור בכל
+   שינוי בשורה. */
+function relGhost(on){
+  const g=document.getElementById('rel-ghost');
+  if(g)g.style.display=on?'':'none';
+}
+function relRowHTML(r,right,open){
+  const sub=r.status==='invited'
+    ? (r.plant?'הוזמנה ל'+nameOfPlanting(r.plant)+' · ממתינה לקוד'
+             :r.rel+' · הוזמנה, טרם הצטרפה')
+    : (r.contact?r.rel+' · '+r.contact:r.rel+' · חסרים פרטי קשר');
+  return '<div class="rel"'+(open||'')+'>'+
+    '<div class="ra"><svg viewBox="0 0 40 40"><use href="#'+r.av+'"/></svg></div>'+
+    '<span class="rn"><b>'+r.name+'</b><i>'+sub+'</i></span>'+right+'</div>';
 }
 /* payment methods — the standing order is what actually funds the monthly deposits */
 const pays=[
@@ -7403,6 +7434,15 @@ function buildGhosts(){
                            since:g[4],designated:true,familyMine:true});
       }).join('');
   }
+
+  /* הדגם של הקרובים נבנה כאן ומוצג רק במצב הריק, כמו שאר הדגמים.
+     הוא יושב אחרי "הוסף קרוב" ולא לפניו: הפעולה קודמת, והדגם אומר
+     "כך זה ייראה" אחריה. */
+  const rel=document.getElementById('rel-ghost');
+  if(rel)rel.innerHTML='<div class="card">'+REL_SAMPLE.map(function(r){
+    return relRowHTML(r,'<span class="rx">'+
+      (r.status==='invited'?'שלח שוב':'הזמן')+'</span>');
+  }).join('')+'</div>';
 
   const act=document.getElementById('act-ghost');
   if(act)act.innerHTML=[
