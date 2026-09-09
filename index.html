@@ -107,6 +107,9 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 .wait-row.leaf{background:var(--leaf-bg);border-color:var(--leaf-line)}
 .wait-row.leaf .ic,.wait-row.leaf b{color:var(--leaf)}
 .wait-row.leaf .s{color:var(--leaf-soft)}
+/* הצצה לרגע שהוזמנה אליו: שורות פיד אמיתיות, אבל לא שלה ולא לחיצות. */
+#later-peek .fr{cursor:default}
+#later-peek .link{padding:11px 0 0}
 .card.tap{cursor:pointer;transition:.15s}.card.tap:hover{border-color:var(--line-2)}
 .row{display:flex;align-items:center;gap:10px}
 .dot{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:15px;flex-shrink:0}
@@ -994,7 +997,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1ccb126';
+window.NETA_BUILD = 'd26f818';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1610,6 +1613,18 @@ window.NETA_CONFIG = {
     <span class="ic">✉</span>
     <div><b id="later-act-t">·</b><span class="s" id="later-act-s">·</span></div>
     <span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>
+  </div>
+  <!-- ומה שכבר קרה שם. מסך הפעילות של מי שעוד לא הצטרפה היה ריק, ומה
+       שמילא אותו היה שקרי: "הכסף עובד גם כשלא קורה כלום" נאמר למי שאין
+       לה כסף שעובד, ומתחתיו דגם ההדגמה של משפחה אחרת לגמרי.
+
+       מה שכן יש לה זו נטיעה שמישהו פתח והזמין אותה אליה, ובה כבר קרו
+       דברים. הכותרת בכל שורה היא מה שקרה ולא שם הנטיעה: שם הנטיעה
+       נאמר פעם אחת, בכיתוב שמעל, וכל השורות תחתיו. -->
+  <div id="later-peek" style="display:none">
+    <div class="fday"><span id="later-peek-h">·</span></div>
+    <div id="later-peek-rows"></div>
+    <button class="link" onclick="openLaterInvite()">להצטרף ולראות הכול</button>
   </div>
 
   <div id="act-full">
@@ -2534,7 +2549,9 @@ const topbars={
      מקום ובאותו גודל, אחרת המעבר ביניהם קופץ. זה היה המסך היחיד מביניהם
      שהחזיק h2 בתוך הגלילה, ולכן גם התמונה שבפינה נעלמה בו. */
   15:['הקרובים שלי','מי נוטע איתך, ולמי נוטעים איתך'],
-  9:['מה קרה לאחרונה','הרגעים הקטנים של הנתינה במשפחה'],
+  /* "הנתינה במשפחה" נכון רק למי שיש לו משפחה במוצר. מי שהוזמנה לרגע
+     של מישהו אחר ועוד לא הצטרפה קראה כאן על משפחה שאין לה. */
+  9:['מה קרה לאחרונה','הרגעים שקרו סביבך'],
   10:['אלון','מלווה 2 נטיעות · שותף ב-2 נוספות']
 };
 /* מסכים שאין בהם סרגל תחתון. 22 ו-26 נוספו אחרי שגל, שהגיעה דרך קישור
@@ -2781,6 +2798,9 @@ function paintLaterCard(){
     if(home)home.style.display='none';
     if(act)act.style.display='none';
     if(ghost)ghost.style.display='';
+    const pk=document.getElementById('later-peek');
+    if(pk)pk.style.display='none';
+    peekOn=false;syncActEmpty();
   };
   if(!home&&!act)return;
   const t=laterInvite();
@@ -2799,7 +2819,53 @@ function paintLaterCard(){
     if(home)home.style.display='';
     if(act)act.style.display='';
     if(ghost)ghost.style.display='none';
+    paintLaterPeek(t,r.occasion);
   },function(){hide()});
+}
+/* אייקוני הרגעים, באותם ערכים שיושבים ב-data-i של הצ'יפים במסך ההקמה.
+   ‏occasion חוזר מ-share_link_summary רק בהזמנה אישית, ובקישור פתוח
+   הוא null — ואז נופלים לנבט, שהוא ממילא ברירת המחדל של שורת פיד. */
+const OCC_ICON={bar_mitzvah:'🎂',studies:'🎓',army_trip:'🎒',first_car:'🚗',
+                apartment:'🏠',wedding:'💍',open_fund:'🎁'};
+/* בלי שם ובלי פועל. כל מה שבבלוק הזה עשה אדם אחד, והוא כבר נקוב
+   בשורה שמעליו — "אלון" בכל שורה היה חוזר שלוש פעמים באותו מסך.
+
+   ובלי פועל גם מפני שאין לו מגדר: profiles.sex קיים מ-0047 ואיש אינו
+   כותב אליו, ולכן "נטע" היה יוצא "נטע/ה" ו"פתח" היה יוצא "פתח/ה",
+   שני לוכסנים נוספים על אותו מסך. צורת שם ("נטיעה של") וסביל ("נפתחה")
+   נכונים בכל מקרה ואינם ממתינים לעמודה שתתמלא. */
+function peekRowHTML(e,icon){
+  const what=e.kind==='contribution'
+    ? 'נטיעה של '+shekel(Number(e.amount_agorot||0))
+    : 'הנטיעה נפתחה';
+  return '<div class="fr"><div class="fic">'+icon+'</div>'+
+    '<div class="fx"><div class="fn">'+what+'</div>'+
+    '<div class="fs">'+agoText(e.happened_at)+'</div></div></div>';
+}
+/* כשההצצה מוצגת אין מצב ריק מתחתיה: "שקט, וזה בסדר" סותר בלוק שלם
+   שמראה שדווקא כן קרו שם דברים. הדגל משותף עם setEmpty, שרצה גם היא
+   על אותו אלמנט ובסדר שאינו מובטח. */
+let peekOn=false;
+function syncActEmpty(){
+  const e=document.getElementById('act-empty');
+  if(!e)return;
+  if(peekOn){e.style.display='none';return}
+  /* אותו חישוב בדיוק שב-setEmpty, כדי שהמצב הריק יחזור כשההזמנה נסגרת. */
+  e.style.display=(isEmpty||(liveAccount()&&LIVE_TABS.indexOf('act')<0))?'':'none';
+}
+function paintLaterPeek(token,occasion){
+  const box=document.getElementById('later-peek');
+  if(!box)return;
+  if(!netaServer||!netaServer.sharedActivity){box.style.display='none';return}
+  netaServer.sharedActivity(token).then(function(rows){
+    if(!rows||!rows.length){box.style.display='none';peekOn=false;return}
+    const icon=OCC_ICON[occasion]||'🌱';
+    txt('later-peek-h',withPrep('ב',rows[0].planting_name||'נטיעה'));
+    document.getElementById('later-peek-rows').innerHTML=
+      rows.map(function(e){return peekRowHTML(e,icon)}).join('');
+    box.style.display='';
+    peekOn=true;syncActEmpty();
+  },function(){box.style.display='none';peekOn=false});
 }
 function openLaterInvite(){
   const t=laterInvite();
@@ -6586,6 +6652,15 @@ function netaBackend(cfg){
         .then(function(r){return (r&&r[0])||null}).catch(function(){return null});
     },
 
+    /* מה שבעל הנטיעה עצמו עשה בה: מתי פתח, וכמה נטע. יש כאן סכום,
+       בשונה מ-share_link_summary, וזה מכוון: זהו הסכום של מי שפתח,
+       שכבר גלוי לכל מי שמצטרף. ההסבר המלא ב-0058. */
+    sharedActivity:function(token){
+      return send('/rest/v1/rpc/share_link_activity',{method:'POST',
+        body:JSON.stringify({p_token:token})},false).then(body)
+        .then(function(r){return Array.isArray(r)?r:[]}).catch(function(){return []});
+    },
+
     /* הצטרפות: הקישור אינו המפתח, הנמען הוא. מי שנכנס לנטע בכתובת שאליה
        נשלחה ההזמנה מוכיח בכך שהקישור הגיע אליו — קוד הכניסה הוא בדיוק
        הקוד שהאפיון מתאר, ולא עוד טקס לצידו. */
@@ -7047,7 +7122,10 @@ function faceStack(list){
    ברגע שקרוב פתח ורק הוא הפקיד, הפנים היחידות הן שלו. לכן כל בונה
    כרטיס מוסר את הכיתוב שמתאים לשאלה שהוא עונה עליה. */
 function faceCap(text){return '<i>'+(text||'&nbsp;')+'</i>'}
-function firstName(t){return String(t||'').trim().split(/\s+/)[0]||''}
+/* ‏firstName הייתה מוגדרת כאן פעם שנייה, בגרסה שחותכת תמיד במילה
+   הראשונה. שתי ההגדרות הן function declarations באותו scope, ולכן
+   האחרונה בקובץ ניצחה — והגרסה המתועדת שמכירה "בן", "בת" ו"אבו"
+   הייתה קוד מת, בלי שגיאה ובלי סימן. הכפילות ירדה; ההגדרה חיה למעלה. */
 /* מתחת לפרצוף: מי זה, ולא כמה הם. "נוטע אחד" תיאר את הכמות בזמן
    שהפרצוף ממש מעליו כבר אומר אותה — ואת מי שנטע, הדבר היחיד שהעמודה
    לא אמרה, אפשר פשוט לומר.
@@ -8228,6 +8306,7 @@ function setEmpty(on){
     document.getElementById(k+'-empty').style.display=blank?'':'none';
   });
   document.getElementById('act-next').style.display=on?'none':'';
+  syncActEmpty();
   if(on){txt('pr-mine',0);txt('pr-theirs',0);txt('pr-sum','0 ₪');}else{buildProfile();}
   txt('pm-sub',on?'כאן תחבר את ההפקדה החוזרת ותנהל אותה לאורך השנים.':'כאן מנוהלות ההפקדות החוזרות שלך, 210 ₪ בכל חודש.');
   topbars[10][1]=on?'הצטרפת היום':'מלווה 2 נטיעות · שותף ב-2 נוספות';
