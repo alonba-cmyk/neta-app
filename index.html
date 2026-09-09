@@ -255,7 +255,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .hdr-row .eyebrow.big{margin:0}
 .hdr-link{font-family:inherit;font-size:10.5px;color:var(--leaf-soft);background:none;border:none;padding:0;cursor:pointer;flex-shrink:0}
 .summary{padding:6px 2px 0}
-.s-row{display:flex;align-items:center;gap:16px}
+/* ‏flex-start ולא center: מסך הבית מחזיק רק טקסט, ו"הנטיעות שלי"
+   מחזיק גם נבט בגובה 68. במרכוז המספר של "שלי" נדחף למטה בחצי ההפרש,
+   וההפרש עצמו תלוי בכמה שורות תופס הכיתוב מתחתיו — כלומר משתנה
+   מחשבון לחשבון. מיושר לראש, שני המספרים נוחתים באותו פיקסל תמיד.
+   קודם ישב כאן ריפוד של 4 פיקסלים שכוונן ידנית לגובה אחד בלבד. */
+.s-row{display:flex;align-items:flex-start;gap:16px}
 .s-body{flex:1;min-width:0}
 .s-art{flex-shrink:0;width:68px;display:grid;place-items:center;position:relative}
 .s-art::before{content:"";position:absolute;width:78px;height:78px;border-radius:50%;
@@ -294,8 +299,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .ppav button.slot{background:transparent;font-size:17px;line-height:1;cursor:pointer;transition:.15s}
 .ppav button.slot:hover{border-color:var(--leaf-2);color:var(--leaf)}
 .ppav .avsvg{display:block;width:100%;height:100%}
-.s-num{font-size:33px;font-weight:600;color:var(--leaf);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
-.s-label{font-size:12.5px;color:var(--tx-2);margin-top:8px;line-height:1.5;text-wrap:balance}
+/* גודל אחד לכל ראש במוצר. "הנטיעות שלי" מחזיק מספר אחד ומסך הבית
+   שניים, ולכן המספר הוקטן שם בלבד ל-23px בעוד כאן הוא נשאר 33 —
+   שלושים אחוז הפרש על אותו מספר ירוק באותו מקום, והעין, שנועלת עליו
+   במעבר בין הטאבים, רואה בדיוק את הקפיצה. 27 הוא הגודל שבו שני
+   המספרים של מסך הבית עדיין נכנסים בחצאים שלהם. */
+.s-num{font-size:27px;font-weight:600;color:var(--leaf);letter-spacing:-.028em;line-height:1;font-variant-numeric:tabular-nums}
+.s-label{font-size:11.5px;color:var(--tx-2);margin-top:7px;line-height:1.5;text-wrap:balance}
 /* שני מספרים במקום אחד, במסך הבית בלבד: ירוק למה שנצבר וזהב למה
    שיחכה. עד כאן הראש היה מספר יחיד, והצפי — הדבר היחיד שמרשים
    בחודש הראשון — ישב אחרון והכי קטן בשורת העובדות.
@@ -306,20 +316,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .duo>div{flex:1;min-width:0}
 .duo>div+div{margin-inline-start:13px;border-inline-start:1px solid var(--rule)}
 .duo>div+div>*{padding-inline-start:13px}
-.duo .n{font-size:23px;font-weight:600;color:var(--leaf);letter-spacing:-.025em;
+.duo .n{font-size:27px;font-weight:600;color:var(--leaf);letter-spacing:-.028em;
   line-height:1;white-space:nowrap;font-variant-numeric:tabular-nums}
 .duo .n.fut{color:var(--sun-soft)}
-.duo .l{font-size:10.5px;color:var(--tx-3);margin-top:6px;line-height:1.45}
-/* בלי צפי אין חצי שני, והמספר חוזר לגודל שהיה לו כשהיה לבד. */
-.duo.solo .n{font-size:33px;letter-spacing:-.03em}
-.duo.solo .l{font-size:12.5px;color:var(--tx-2);margin-top:8px;line-height:1.5}
-/* המספר הוא מה שהעין עוקבת אחריו במעבר בין הטאבים, ולכן הוא חייב
-   לנחות באותו פיקסל בשניהם. ב"הנטיעות שלי" הנבט גבוה מגוש הטקסט
-   ודוחף אותו 4 פיקסלים למטה במרכוז; כאן אין נבט, ולכן ההפרש נוסף
-   ידנית. שורת העובדות שמתחת אינה מיושרת ואינה יכולה להיות: פס
-   הפילוח ממך/מקרובים מופיע רק כשקרוב הפקיד, כלומר הגובה משתנה
-   מחשבון לחשבון ממילא. */
-#home-full .summary .s-row{padding-top:4px}
+.duo .l{font-size:11.5px;color:var(--tx-2);margin-top:7px;line-height:1.5}
+/* ‏solo כבר אינו משנה גודל — הוא זהה ל-s-num ממילא — והוא נשאר ככיתה
+   שהמספר הבודד יכול להיתלות בה אם ירצה רוחב מלא בעתיד. */
 .summary+.card{margin-top:15px}
 .s-meta{display:flex;flex-wrap:wrap;gap:8px;row-gap:5px;align-items:center;font-size:11px;
   color:var(--tx-3);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
@@ -997,7 +999,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd26f818';
+window.NETA_BUILD = '7441f17';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1179,7 +1181,7 @@ window.NETA_CONFIG = {
         <span><i class="dsw o"></i>מקרוביי<b id="s-othv">·</b></span>
       </div>
     </div>
-    <div class="s-meta"><span><b id="s-cnt">2</b> <span id="s-cntw">נטיעות</span><span id="s-benw" style="display:none"> עבור <b id="s-ben"></b></span></span><span class="grp" id="s-mongrp"><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span></span></div>
+    <div class="s-meta"><span><b id="s-cnt">2</b> <span id="s-cntw">נטיעות</span></span><span class="grp" id="s-mongrp"><i></i><span><b id="s-mon">210 ₪</b> בכל חודש</span></span></div>
   </div>
 
   <!-- שני סקשנים, והגבול ביניהם הוא family_of: רגע שייך למשפחה שלי,
@@ -6055,7 +6057,7 @@ function loadAccountLists(){
    "שלום" לבד תקין לכל אדם, ומשלים לשם המלא כשהפרופיל מגיע. */
 function blankBeforeFirstLoad(){
   if(!netaServer)return;
-  ['s-you','s-cnt','s-mon','s-label','s-fut','s-futk','s-ben'].forEach(function(id){txt(id,'')});
+  ['s-you','s-cnt','s-mon','s-label','s-fut','s-futk'].forEach(function(id){txt(id,'')});
   const g=document.getElementById('garden');
   if(g)g.innerHTML='';
   /* גם הפנקסים האישיים. הם מאותחלים בקובץ עם משפחת ההדגמה, וניקוי שלהם
@@ -7596,24 +7598,6 @@ function buildHomeSummary(){
       return p.hasStandingOrder||Number(p.myMonthly||0)>0;
     });
     txt('s-you',accrued>0?shekel(accrued):'·');
-    txt('s-label',accrued>0?'נצבר עד כה':(coming?'ההפקדה הראשונה בדרך':'עוד לא נצבר'));
-    const nHere=here.length;
-    txt('s-cnt',nHere);
-    txt('s-cntw',nHere===1?'נטיעה':'נטיעות');
-    /* שורת העובדות מדברת על ההפקדה שלי, וכשאין כזו "0 ₪ בכל חודש"
-       נקרא כתקלה ולא כמידע. הפריט יורד במקום להציג אפס. */
-    const monHere=here.reduce(function(a,p){return a+Number(p.myMonthly||0)},0);
-    const monGrp=document.getElementById('s-mongrp');
-    if(monGrp)monGrp.style.display=monHere>0?'':'none';
-    txt('s-mon',shekel(monHere));
-    /* בלי שמות — המשפט נגמר ב"של " באוויר. קורה לכל חשבון חדש. */
-    /* "הושקעו" סבילה וחסרת נושא, ולכן היא נקראת כמו "זה מה שאני
-       הפקדתי" — בדיוק ההפך מהמספר, שהוא מה שנצבר לרגעים האלה כולם,
-       כולל כסף של קרובים. "נצבר" אומרת את זה בלי נושא כי אין לה נושא
-       אחד, והיא גם המילה שמסך הרגע כבר משתמש בה ("נצבר לרגע הזה"). */
-    /* קצר בכוונה. כותרת הסקשן מיד מתחת כבר אומרת "עבורי ובני משפחתי",
-       והשורה הזאת צריכה רק לומר מה המספר מודד. ניסוח ארוך יותר שבר
-       את השורה לשתיים, והנבט שלצידה נראה ננסי — homefix בודק את זה. */
     /* השמות נגזרים מהסקשן הראשון בלבד, ולא מ-home_summary.
        ‏beneficiary_names סופרת כל רגע שהפקדתי בו — כולל רגעים של
        משפחות אחרות — ולכן אצל אלון הכיתוב אמר "נצבר עבור לביא,
@@ -7626,24 +7610,35 @@ function buildHomeSummary(){
        רק משם שיש בו " של ", כדי שקופה שלא יועדה או שם חופשי לא ייכנסו
        כאילו הם ילד. */
     const kidsHere=beneficiariesOf(here);
-    /* הניסוח מתקצר ככל שיש יותר שמות, כי המקום אחד. נמדד ב-360:
-       ילד אחד מחזיק את "עד כה"; שניים דורשים לוותר עליו; שלושה
-       נשברים גם בלעדיו, ולכן השלישי ואילך הופכים ל"ועוד N".
+    /* "נצבר עד כה" לבד אינו אומר עבור מי, ומעליו מספר שהוא הסקשן
+       הראשון בלבד. שניים מתפרטים בשם; משלושה ואילך הרשימה ארוכה
+       מהחצי שיש לה, וכותרת הסקשן שמתחת כבר אומרת "עבורי ובני משפחתי".
 
-       שורה שנייה כאן מגביהה את גוש הטקסט מעל הנבט שלצידו, והוא נראה
-       ננסי — התקלה שאלון דיווח עליה בזמנו, ו-homefix שומרת עליה. */
-    /* השם ירד מהכיתוב שמעל המספר ועבר לשורת העובדות, ליד מספר
-       הנטיעות: "1 נטיעה עבור ששי". כיתוב שמעל מספר צריך לומר מה
-       המספר מודד, ובשני מספרים אין מקום גם לשמות.
+       השם ישב בשורת העובדות מאז שהראש הפך לשני מספרים, כי ב-23px
+       ובכיתוב של 10.5px לא היה לו מקום. ב-27px ו-11.5px יש. */
+    const forWho=
+      kidsHere.length===1 ? ' עבור '+kidsHere[0] :
+      kidsHere.length===2 ? ' עבור '+kidsHere[0]+' ו'+kidsHere[1] :
+      kidsHere.length>2   ? ' עבור בני משפחתי' : '';
+    txt('s-label',accrued>0?('נצבר עד כה'+forWho)
+                           :(coming?'ההפקדה הראשונה בדרך':'עוד לא נצבר'));
+    const nHere=here.length;
+    txt('s-cnt',nHere);
+    txt('s-cntw',nHere===1?'נטיעה':'נטיעות');
+    /* שורת העובדות מדברת על ההפקדה שלי, וכשאין כזו "0 ₪ בכל חודש"
+       נקרא כתקלה ולא כמידע. הפריט יורד במקום להציג אפס. */
+    const monHere=here.reduce(function(a,p){return a+Number(p.myMonthly||0)},0);
+    const monGrp=document.getElementById('s-mongrp');
+    if(monGrp)monGrp.style.display=monHere>0?'':'none';
+    txt('s-mon',shekel(monHere));
 
-       רק כשיש נהנה אחד. שניים ומעלה, השורה הייתה נשברת, והשמות
-       ממילא כתובים על הכרטיסים שמתחת. */
-    const benw=document.getElementById('s-benw');
-    if(benw){
-      const one=kidsHere.length===1?kidsHere[0]:'';
-      benw.style.display=one?'':'none';
-      if(one)txt('s-ben',one);
-    }
+    /* "הושקעו" סבילה וחסרת נושא, ולכן היא נקראת כמו "זה מה שאני
+       הפקדתי" — בדיוק ההפך מהמספר, שהוא מה שנצבר לרגעים האלה כולם,
+       כולל כסף של קרובים. "נצבר" אומרת את זה בלי נושא כי אין לה נושא
+       אחד, והיא גם המילה שמסך הרגע כבר משתמש בה ("נצבר לרגע הזה"). */
+    /* קצר בכוונה. כותרת הסקשן מיד מתחת כבר אומרת "עבורי ובני משפחתי",
+       והשורה הזאת צריכה רק לומר מה המספר מודד. ניסוח ארוך יותר שבר
+       את השורה לשתיים, והנבט שלצידה נראה ננסי — homefix בודק את זה. */
     const others=Math.max(0,tot-mineTot);
     const sm=document.getElementById('s-mine');
     if(sm){
