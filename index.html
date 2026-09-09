@@ -279,6 +279,17 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .esfaces>span:nth-child(1){z-index:3;position:relative}
 .esfaces>span:nth-child(2){z-index:2;position:relative}
 .esfaces .avsvg{width:100%;height:100%;display:block}
+/* אותו צביר, עם רגעים במקום אנשים. במצב הריק של "הנטיעות שלי", שהוא
+   על רגעים שהשקעת בהם ולא על מי שנוטע איתך.
+
+   הרקע ירוק ולא --s2: שם המשבצת מחזיקה תמונה שממלאת אותה, וכאן היא
+   מחזיקה אמוג'י על רקע חשוף.
+
+   הערה מודעת: אמוג'י בגודל הזה הוא האיור הראשי של המסך, והוא נראה
+   אחרת בכל מערכת הפעלה — אותו שיקול שבגללו סימן המותג הוא SVG. אלון
+   בחר בו ביודעין, אחרי שראה גם גרסה מצוירת. */
+.esfaces.occ>span{background:var(--leaf-bg);display:grid;place-items:center;
+  font-size:30px;line-height:1}
 .ppav{position:relative;display:flex;align-items:center}
 /* שלוש משבצות תמיד, בגודל אחד ובצורה אחת, ולכן רוחב קבוע — העמודה
    אינה קופצת כשמצטרף קרוב. שלוש·34 פחות שתיים·10 הם 82, והעמודה
@@ -1007,7 +1018,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'eb1dfa7';
+window.NETA_BUILD = 'a3c3166';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1889,7 +1900,12 @@ window.NETA_CONFIG = {
          היה 63x74 מול 66x78, כי גובה הגוש נגזר אז מהאיור עצמו והיה
          צריך לכוון אותו ידנית מול המצב הריק של הקרובים. מאז הגוש נעול
          ל-81 בכולם, וההתאמה הידנית מיותרת. esalign בודק. -->
-    <div class="art"><svg width="66" height="78" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
+    <!-- הנבט ירד מכאן. הוא זהה לזה שב"כל הנטיעות", ושני טאבים שכנים
+         שמציגים את אותו איור נראים כמו אותו מסך. הרגעים הם מה שמבדיל
+         את המסך הזה, ולכן הם האיור. הסדר כרונולוגי: בר מצווה, לימודים,
+         דירה, והראשון הוא גם העליון בערימה. -->
+    <div class="art"><span class="esfaces occ" aria-hidden="true">
+      <span>🎂</span><span>🎓</span><span>🏠</span></span></div>
     <h3>כאן יופיעו ההשקעות שלך בקרובים שלך</h3>
     <!-- שתי שורות ב-390. "לאן זה הולך" ירד: שתי השאלות שנשארו הן
          מה אני שם ולמה זה הופך, וזה בדיוק מה שהמסך מודד. -->
