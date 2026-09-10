@@ -1224,7 +1224,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7fea004';
+window.NETA_BUILD = '2575bf2';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -8698,7 +8698,11 @@ function buildHomeSummary(){
            כלומר גרפיקה שאומרת "הכל" בדיוק כשהיא אמורה לומר "כלום ממך".
            במצב הזה נשארות המילים בלבד. */
         const bar=document.querySelector('#s-mine .split-bar');
-        if(bar)bar.style.display=(mineTot>0&&others>0)?'':'none';
+        /* ‏selMine ולא mineTot. ‏mineTot הוא הסכום שלי בכל הנטיעות
+           יחד, ולכן מי שהפקיד לילד אחד וכלום לילד השני ראה אצל השני
+           פס מלא בגוון של "מהקרובים" מעל המילים "ממך 0 ₪" — בדיוק
+           הגרפיקה שההערה שמעל אוסרת. */
+        if(bar)bar.style.display=(selMine>0&&others>0)?'':'none';
       }
     }
     /* כותרת הסקשן יורדת עם הרשימה: ההודעה שבמקומה כבר אומרת את
