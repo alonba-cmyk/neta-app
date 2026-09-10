@@ -817,6 +817,23 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="כניסה"] #lg-cta,[data-name="פתיחת חשבון"] #id-cta{margin-bottom:10px}
 [data-name="כניסה"] .backlink,[data-name="פתיחת חשבון"] .backlink{margin-top:2px}
 #c-terms{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+/* ✎ על הפרצוף שנבחר בבורר "העתיד שלנו". פינה עליונה-שמאלית, כי שם
+   הפרצוף אינו מכוסה על ידי שכנו, ובגודל שמאפשר להקיש עליו בלי לפגוע
+   בבחירה שמתחתיו. */
+.fu-item{position:relative}
+.fu-pen{position:absolute;top:-2px;left:-2px;width:20px;height:20px;border-radius:50%;
+  background:var(--s2);border:1px solid var(--line-2);color:var(--tx-2);
+  display:grid;place-items:center;font-size:10px;font-style:normal;line-height:1;
+  cursor:pointer;z-index:2}
+.fu-item.on .fu-pen{border-color:var(--leaf);color:var(--leaf)}
+/* בורר הדמויות בגיליון הילד. אותה רשת כמו במסך ההקמה, ולכן אותם
+   כללים — אבל היא חיה בגיליון ולא במסך "הקמה", ולכן שם מקומי. */
+#k-av{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+#k-av button{aspect-ratio:1;border-radius:16px;overflow:hidden;padding:0;cursor:pointer;
+  border:1.5px solid var(--line);background:var(--s2);display:block;transition:.15s}
+#k-av button.on{border-color:var(--leaf);box-shadow:0 0 0 3px var(--leaf-bg)}
+#k-av svg{display:block;width:100%;height:100%}
+
 /* ── מי יקבל את הכסף: ארבעה אנשים, כל אחד עם פנים ────────────── */
 [data-name="הקמה"] .pick{display:flex;flex-direction:column;gap:7px}
 [data-name="הקמה"] .pick button{display:flex;align-items:center;gap:11px;text-align:right;
@@ -1166,7 +1183,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '24c12b6';
+window.NETA_BUILD = '1a663e4';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7025,6 +7042,9 @@ function netaBackend(cfg){
                      באחת מהן הופכת חצי מהרשימה ל-undefined בלי
                      שגיאה. */
                   av:p.beneficiary_avatar||null,
+                  /* 0061: הילד הוא ישות, ולא מחרוזת בתוך שם הרגע. */
+                  kidId:p.beneficiary_id||null,
+                  kid:p.beneficiary_name||null,
                   myMonthly:Number(p.my_monthly_agorot||0),
                   myProjection:Number(p.my_projection_agorot||0),
                   participants:p.participants||[]};
@@ -7403,10 +7423,59 @@ function netaBackend(cfg){
                              name:label,approver:'self'})}).catch(remember);
     },
 
+    /* הילד לפני הנטיעה, כדי שהנטיעה תוכל להצביע עליו. נכשל בשקט
+       ומחזיר null: רגע שנשמר בלי קישור לילד עדיין רגע תקין ומוצג
+       נכון, ואילו נטיעה שנפלה בגלל שורה נלווית היא בדיוק התקלה
+       שכבר עלתה לנו פעם (notify_guardian_requested, 0053). */
+    beneficiaryId:function(p){
+      const nm=String(p.beneficiary||'').trim();
+      const uid=sess&&sess.user?sess.user.id:null;
+      if(!p.designated||!nm||!uid)return Promise.resolve(null);
+      const find=function(){
+        /* ‏{} ולא כלום: send קוראת opts.headers, ו-GET בלי אובייקט
+           אפשרויות נופל שם על undefined. שאר הקריאות בקובץ תמיד
+           מעבירות אחד, ולכן זה לא צף עד עכשיו. */
+        return call('/rest/v1/beneficiaries?select=id,sex,avatar&created_by=eq.'+uid+
+                    '&name=eq.'+encodeURIComponent(nm),{})
+          .then(function(rows){return (rows&&rows[0])||null});
+      };
+      return find().then(function(r){
+        if(r){
+          /* מה שנבחר בשלב 1 מעדכן את הילד, ומשם הטריגר מפיץ את זה
+             לכל הנטיעות שלו. זו כל הנקודה בישות. */
+          const patch={};
+          if(p.sex&&p.sex!==r.sex)patch.sex=p.sex;
+          if(p.avatar&&p.avatar!==r.avatar)patch.avatar=p.avatar;
+          if(!Object.keys(patch).length)return r.id;
+          return call('/rest/v1/beneficiaries?id=eq.'+r.id,
+            {method:'PATCH',body:JSON.stringify(patch)})
+            .then(function(){return r.id},function(){return r.id});
+        }
+        return call('/rest/v1/beneficiaries',{method:'POST',
+          headers:{Prefer:'return=representation'},
+          body:JSON.stringify({created_by:uid,name:nm,
+                               sex:p.sex||null,avatar:p.avatar||null})})
+          .then(function(rr){return rr&&rr[0]?rr[0].id:null});
+      })
+      /* מרוץ בין שתי לשוניות נופל על האינדקס הייחודי. חיפוש שני
+         מוצא את מי שהספיק להיווצר. */
+      .catch(function(){return find().then(function(r){return r?r.id:null},
+                                           function(){return null})});
+    },
+
+    /* ‏sex ו-avatar בלבד: אלה שתי העמודות היחידות שההרשאה מתירה
+       לעדכן (0061), ולכן ניסיון לשנות שם נעצר במסד ולא רק כאן. */
+    saveBeneficiary:function(id,sex,avatar){
+      return call('/rest/v1/beneficiaries?id=eq.'+id,
+        {method:'PATCH',body:JSON.stringify({sex:sex||null,avatar:avatar||null})});
+    },
+
     create:function(p){
-      let id;
+      let id,benId=null;
       return Promise.resolve()
-        .then(function(){
+        .then(function(){return netaServer.beneficiaryId(p)})
+        .then(function(b){
+        benId=b;
         return call('/rest/v1/plantings',{method:'POST',
         headers:{Prefer:'return=representation'},
         body:JSON.stringify({name:p.name,icon:p.icon,
@@ -7414,6 +7483,7 @@ function netaBackend(cfg){
           beneficiary_name:p.designated?p.beneficiary:null,
           beneficiary_sex:p.designated?p.sex:null,
           beneficiary_avatar:p.designated?(p.avatar||null):null,
+          beneficiary_id:benId,
           beneficiary_contact:p.designated?(p.beneContact||null):null,
           target_date:p.targetDate,mode:p.mode,
           track_rate:p.mode==='keep'?null:p.rate,
@@ -8360,12 +8430,21 @@ function paintInvestments(){
    וזו גם המגבלה שצריך לזכור: שתי נטיעות מתחברות לאותו ילד רק אם
    נכתבה בהן אותה מחרוזת בדיוק. "דניאל" ו"דני" הם שני ילדים, ולתיקון
    נדרשת עמודה במסד ולא שינוי כאן. */
+/* השם להצגה. מ-0061 הוא מגיע מהעמודה, ולא מפירוק שם הרגע — הפירוק
+   נשאר כנפילה אחורה לנתוני ההדגמה ולשורות שנוצרו לפני המיגרציה. */
 function kidOf(p){
   if(!p||p.designated===false)return '';
   const k=(p.kid||'').trim();
   if(k)return k;
   const parts=String(p.name||'').split(' של ');
   return parts.length<2?'':parts[parts.length-1].trim();
+}
+/* המפתח לקיבוץ. המזהה כשיש, והשם כשאין: "דניאל" ו"דני" היו שני
+   ילדים כל עוד המפתח היה מחרוזת, ומעכשיו שתי נטיעות שמצביעות על
+   אותה ישות הן ילד אחד גם אם שם הרגע נכתב אחרת. */
+function kidKey(p){
+  if(!p||p.designated===false)return '';
+  return p.kidId||kidOf(p);
 }
 function beneficiariesOf(rows){
   const out=[];
@@ -8383,9 +8462,10 @@ function beneficiariesOf(rows){
 function kidGroups(rows){
   const map={},order=[],loose=[];
   (rows||[]).forEach(function(p){
-    const k=kidOf(p);
+    const k=kidKey(p);
     if(!k){loose.push(p);return}
-    if(!map[k]){map[k]={kid:k,rows:[],accrued:0,mine:0,proj:0,people:[],names:{}};order.push(k)}
+    if(!map[k]){map[k]={kid:kidOf(p),kidId:p.kidId||null,rows:[],accrued:0,
+                        mine:0,proj:0,people:[],names:{}};order.push(k)}
     const g=map[k];
     g.rows.push(p);
     g.accrued+=Number(p.accrued||0);
@@ -8437,7 +8517,8 @@ function kidFace(rows,name){
 function fuItems(own){
   const kg=kidGroups(own);
   const out=kg.groups.map(function(g){
-    return {id:'k:'+g.kid,name:g.kid,av:kidFace(g.rows,g.kid),
+    return {id:'k:'+(g.kidId||g.kid),name:g.kid,kidId:g.kidId,
+            av:kidFace(g.rows,g.kid),
             rows:g.rows,accrued:g.accrued,mine:g.mine,proj:g.proj,people:g.people};
   });
   kg.loose.forEach(function(p){
@@ -8472,13 +8553,60 @@ function fuPickHTML(items,sel){
     const face=it.av
       ? '<span class="fu-ring"><svg viewBox="0 0 40 40"><use href="#'+it.av+'"/></svg></span>'
       : '<span class="fu-ring emoji">'+it.icon+'</span>';
+    /* ✎ רק על מי שנבחר, ורק כשיש לו ישות במסד. הוא הדבר היחיד
+       במסך שמוביל אל הילד עצמו ולא אל הרגעים שלו. */
+    const pen=(it.id===sel&&it.kidId)
+      ? '<i class="fu-pen" onclick="event.stopPropagation();editKid(\''+it.kidId+'\')">✎</i>' : '';
     return '<button class="fu-item'+(it.id===sel?' on':'')+'" '+
       'onclick="pickFuture(\''+it.id.replace(/'/g,"\\'")+'\')">'+
-      face+'<span>'+(it.label||firstName(it.name))+'</span></button>';
+      face+pen+'<span>'+(it.label||firstName(it.name))+'</span></button>';
   }).join('')+add;
 }
 /* שורת רגע. הסכום מוצג רק כשיש כמה רגעים: ברגע אחד הראש כבר נושא
    אותו, ומספר שחוזר על עצמו הוא מה שהופך מסך לעמוס. */
+/* הילד עצמו, ולא הרגעים שלו. השם אינו כאן: הוא נעול מרגע שנטיעה
+   מיועדת מצביעה על הילד, וזו אותה הכרעה שנעולה גם על הנטיעה (0002).
+   מה שכן נפתח הוא הדמות והמין, שהם תצוגה ודקדוק. */
+function editKid(id){
+  const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
+  const it=(fuItems(own)||[]).filter(function(x){return x.kidId===id})[0];
+  if(!it)return;
+  const nm=firstName(it.name);
+  let av=it.av,sx=(it.rows[0]||{}).sex||'m';
+  window.__kidAv=av;window.__kidSex=sx;
+  sheetForm(nm,
+    '<label>דמות</label><div class="avbig" id="k-av">'+
+      KID_AV.map(function(a){
+        return '<button type="button" class="'+(a===av?'on':'')+'" '+
+          'onclick="kidPickAv(this,\''+a+'\')"><svg viewBox="0 0 40 40">'+
+          '<use href="#'+a+'"/></svg></button>'}).join('')+
+    '</div>'+
+    '<label style="margin-top:13px">בן או בת</label>'+
+    '<div class="chips" id="k-sex">'+
+      '<button type="button" class="'+(sx==='m'?'on':'')+'" onclick="kidPickSex(this,\'m\')">בן</button>'+
+      '<button type="button" class="'+(sx==='f'?'on':'')+'" onclick="kidPickSex(this,\'f\')">בת</button>'+
+    '</div>'+
+    '<p class="fine" style="margin-top:11px">מה שתבחר כאן יופיע בכל הרגעים של '+
+      attrText(nm)+'. את השם אי אפשר לשנות כאן: זו זהות הנהנה בחשבון נעול, '+
+      'והיא משתנה מול הגוף הפיננסי המנהל בלבד.</p>',
+    'שמור',function(){saveKid(id)});
+}
+function kidPickAv(el,a){
+  window.__kidAv=a;
+  [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+}
+function kidPickSex(el,x){
+  window.__kidSex=x;
+  [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+}
+function saveKid(id){
+  const src=netaSource();
+  if(!src.saveBeneficiary){toast('אפשר לערוך רק בחשבון מחובר');return}
+  src.saveBeneficiary(id,window.__kidSex,window.__kidAv)
+    .then(function(){return buildHomeSummary()})
+    .then(function(){toast('נשמר')},
+          function(){toast('לא הצלחנו לשמור')});
+}
 function fuMomentHTML(p,many){
   const yrs=p.targetYear?Math.max(0,p.targetYear-new Date().getFullYear()):0;
   const when=(targetLine(p)||'').replace(/^עד /,'')+(p.targetYear?(' · בעוד '+yrs+yrWord(yrs)):'');
