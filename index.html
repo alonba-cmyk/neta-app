@@ -292,17 +292,21 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    overflow:hidden שחותך כל דבר שחורג ממנו — ולכן העיגול הוא span
    פנימי (.fc) והמעטפת נשארת פתוחה.
 
-   התג ממורכז מתחת לפרצוף שלו ולא בפינה: בצביר חופף הפינה היא בדיוק
-   אזור החפיפה, ושלושה תגים שם נדחסים זה לזה ונקראים כשורה שנייה של
-   עיגולים. במרכז כל תג יושב מתחת לפרצוף שהוא שייך לו, והמרחק ביניהם
-   הוא המרחק בין הפרצופים.
+   התג יושב בפינה השמאלית התחתונה של כל פרצוף. זה הצד שבו הפרצוף
+   מכסה את שכנו, ולכן גם התג מצויר מעליו: לפרצוף שמימין יש z-index
+   גבוה יותר. בצד השני, הימני, התג של הפרצופים האמצעי והשמאלי היה
+   נקבר מתחת לשכן ולא נראה כלל.
 
    התג ממוקם absolute ולכן אינו משפיע על גובה הגוש, שנשאר 81 בכל
    ארבעת המצבים הריקים. */
 .esfaces.kids>span{overflow:visible;position:relative}
+/* חפיפה רדודה יותר מ-20 הפיקסלים של שאר הצבירים: שם הפרצופים הם
+   גוש אחד, וכאן על כל אחד יושב תג בקצה שלו. ב-20 התג של הפרצוף
+   הימני נחת בדיוק על מרכז האמצעי, שלושת הפרצופים והתגים נקראו
+   כשורה אחת צפופה, ומהפרצוף האמצעי נשארה רצועה. */
+.esfaces.kids>span+span{margin-right:-10px}
 .esfaces.kids .fc{display:block;width:100%;height:100%;border-radius:50%;overflow:hidden}
-.esfaces.kids>span>i{position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
-  width:25px;height:25px;
+.esfaces.kids>span>i{position:absolute;bottom:-1px;left:-4px;width:25px;height:25px;
   border-radius:50%;background:var(--bg);border:1px solid var(--line);
   display:grid;place-items:center;font-size:12px;font-style:normal;line-height:1}
 .esfaces.occ>span{background:var(--leaf-bg);display:grid;place-items:center;
@@ -1103,7 +1107,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '26b8c4c';
+window.NETA_BUILD = '91c7086';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1353,7 +1357,7 @@ window.NETA_CONFIG = {
       <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-kid4"/></svg></span><i>🎒</i></span>
       <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-kid2"/></svg></span><i>💍</i></span>
     </span></div>
-    <h3>כאן תוכל לראות מה שמחכה בעתיד לכל אחד מהיקרים שלך</h3>
+    <h3>כאן יופיע מה שמחכה לכל אחד מהיקרים שלך</h3>
     <!-- "אתה קובע מתי היא נפתחת" ירד: ברגע הזה המשתמש עוד לא יודע מה זו
          נטיעה, ולכן עוד לא הגיע לשאלה מי שולט במועד. פרט השליטה שייך
          לזרימת ההקמה, שם הוא נבחר במסך ייעודי.
