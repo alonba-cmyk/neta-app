@@ -173,8 +173,10 @@ input:focus,select:focus,textarea:focus{outline:1px solid var(--leaf);outline-of
   background:var(--s1);color:var(--tx-2);cursor:pointer;transition:.15s}
 .pill.on{background:var(--s2);border-color:var(--leaf);color:var(--tx)}
 .pills{display:flex;flex-wrap:wrap;gap:7px}
-#c-pills{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-#c-pills .pill{padding:8px 3px;font-size:10.5px;text-align:center}
+/* ‏#c-pills היה כאן רשת של ארבע עמודות עם .pill דחוס לתוכה. הכפתורים
+   הפכו לאריחים עם אייקון (.occgrid, ליד #c-terms), והכלל הישן שרד:
+   מזהה מנצח מחלקה, ולכן שלוש העמודות שנכתבו לאריחים יצאו ארבע בלי
+   ששום דבר בקוד החדש רומז על כך. */
 input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:transparent}
 
 .hero{background:var(--leaf-bg);border:1px solid #2A4530;border-radius:13px;padding:16px 15px;margin-bottom:20px;text-align:center}
@@ -802,6 +804,29 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="כניסה"] #lg-cta,[data-name="פתיחת חשבון"] #id-cta{margin-bottom:10px}
 [data-name="כניסה"] .backlink,[data-name="פתיחת חשבון"] .backlink{margin-top:2px}
 #c-terms{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+/* ── בוררי ההקמה ────────────────────────────────────────────────
+   ממוקדים למסך "הקמה" ולא לקלאסים הגלובליים: .pill ו-.chips משרתים
+   27 מסכים, והרשת כאן היא צורה של המסך הזה בלבד. */
+[data-name="הקמה"] .avbig{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+[data-name="הקמה"] .avbig button{aspect-ratio:1;border-radius:16px;overflow:hidden;padding:0;
+  cursor:pointer;border:1.5px solid var(--line);background:var(--s2);display:block;transition:.15s}
+[data-name="הקמה"] .avbig button:hover{border-color:var(--line-2)}
+/* הטבעת הפנימית ולא רק גבול: ארבעה ריבועים צמודים בגודל זהה, וגבול
+   ירוק לבדו על אחד מהם נבלע בין השלושה. */
+[data-name="הקמה"] .avbig button.on{border-color:var(--leaf);box-shadow:0 0 0 3px var(--leaf-bg)}
+[data-name="הקמה"] .avbig svg{display:block;width:100%;height:100%}
+[data-name="הקמה"] .occgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+[data-name="הקמה"] .occgrid button{border:1px solid var(--line);background:var(--s1);
+  border-radius:12px;padding:13px 5px 11px;cursor:pointer;font-family:inherit;color:var(--tx-2);
+  display:grid;gap:7px;justify-items:center;transition:.15s;line-height:1.3}
+[data-name="הקמה"] .occgrid button:hover{border-color:var(--line-2)}
+[data-name="הקמה"] .occgrid button.on{border-color:var(--leaf);background:var(--s2);color:var(--tx)}
+[data-name="הקמה"] .occgrid .em{font-size:23px;line-height:1}
+/* שתי שורות קבועות לכל תווית: "טיול אחרי צבא" נשבר לשתיים ו"דירה"
+   לא, וברשת של שלוש עמודות זה הפרש גובה בין אריחים באותה שורה. */
+[data-name="הקמה"] .occgrid .lb{font-size:11px;text-align:center;
+  min-height:calc(11px * 1.3 * 2);display:grid;align-content:center}
+
 #c-terms button{text-align:center;padding:9px 4px;font-size:11px;white-space:nowrap}
 .chk{display:flex;align-items:flex-start;gap:9px;margin-top:11px;cursor:pointer;font-size:12px;
   color:var(--tx-2);line-height:1.5}
@@ -1107,7 +1132,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '91c7086';
+window.NETA_BUILD = '7e4e904';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1389,29 +1414,56 @@ window.NETA_CONFIG = {
 <section class="screen center-v" data-name="הקמה">
 
   <div id="cp-0">
-  <h2 class="gap-x">נטיעה חדשה</h2>
+  <h2 class="gap-x">עבור מי הנטיעה?</h2>
   <p class="sub gap">בעוד כמה שנים מישהו ייהנה ממה שנטעת היום</p>
-  <div class="field"><label>בעתיד של מי תרצה להשקיע?</label>
-    <div class="row" style="gap:8px;align-items:stretch">
-      <input type="text" id="c-name" placeholder="למשל: דניאל" style="flex:1">
-      <div class="chips" id="c-sex" style="margin:0;flex:0 0 auto">
-        <button onclick="setSex(this,'m')">בן</button>
-        <button onclick="setSex(this,'f')">בת</button>
-      </div>
+  <div class="field"><label>איך קוראים לו?</label>
+    <input type="text" id="c-name" placeholder="למשל: דניאל"></div>
+  <!-- הדמות. השם קודם לה, כי הוא מה שמזהה את הרגע בכל שאר האפליקציה
+       והיא רק הפרצוף שלו.
+
+       ארבע הדמויות הן שתי בנות ושני בנים, ולכן הבחירה בהן קובעת גם
+       את beneficiary_sex, שארבע שורות באפליקציה מוטות לפיו ("יחכו
+       לו", "עבורו", "שמו", וקוד הפדיון). היא קובעת אותו כברירת מחדל
+       גלויה ולא כהסקה שקטה: שורת הצ'יפים נשארת מתחתיה, מסומנת, ומי
+       שבחר דמות בגלל צבע השיער רואה מיד מה נקבע ומתקן. -->
+  <div class="field" id="c-avfield"><label>בחר דמות</label>
+    <div class="avbig" id="c-avpick">
+      <button class="on" data-av="av-kid1" onclick="pickKidAv(this,'av-kid1')" aria-label="דמות 1"><svg viewBox="0 0 40 40"><use href="#av-kid1"/></svg></button>
+      <button data-av="av-kid2" onclick="pickKidAv(this,'av-kid2')" aria-label="דמות 2"><svg viewBox="0 0 40 40"><use href="#av-kid2"/></svg></button>
+      <button data-av="av-kid3" onclick="pickKidAv(this,'av-kid3')" aria-label="דמות 3"><svg viewBox="0 0 40 40"><use href="#av-kid3"/></svg></button>
+      <button data-av="av-kid4" onclick="pickKidAv(this,'av-kid4')" aria-label="דמות 4"><svg viewBox="0 0 40 40"><use href="#av-kid4"/></svg></button>
+    </div></div>
+  <div class="field" id="c-sexfield"><label>בן או בת</label>
+    <div class="chips" id="c-sex">
+      <button class="on" onclick="setSex(this,'m')">בן</button>
+      <button onclick="setSex(this,'f')">בת</button>
     </div>
-    <label class="chk"><input type="checkbox" id="c-undecided" onchange="toggleDesig(this)">
-      <span>עוד לא החלטתי עבור מי, כרגע אני רק רוצה לשים כסף ליום עתידי</span></label></div>
-  <div class="field">
-    <label>לאיזה רגע?</label>
-    <div class="pills" id="c-pills">
-      <button class="pill on" data-t="בר/בת מצווה" data-i="🎂">בר/בת מצווה</button>
-      <button class="pill" data-t="לימודים" data-i="🎓">לימודים</button>
-      <button class="pill" data-t="טיול אחרי צבא" data-i="🎒">טיול אחרי צבא</button>
-      <button class="pill" data-t="רכב ראשון" data-i="🚗">רכב ראשון</button>
-      <button class="pill" data-t="דירה" data-i="🏠">דירה</button>
-      <button class="pill" data-t="חתונה" data-i="💍">חתונה</button>
-      <button class="pill" data-t="קופת הפתעות" data-i="🎁">קופת הפתעות</button>
-      <button class="pill" data-t="custom" data-i="✦">משהו אחר</button>
+    <p class="fine" style="margin-top:7px">הדמות שבחרת קובעת את זה, ואפשר לשנות כאן.</p></div>
+  <label class="chk" id="c-undecidedbox"><input type="checkbox" id="c-undecided" onchange="toggleDesig(this)">
+    <span>עוד לא החלטתי עבור מי, כרגע אני רק רוצה לשים כסף ליום עתידי</span></label>
+  <button class="btn gap" style="margin-top:16px" onclick="toOccasion()">המשך</button>
+  </div><!-- /cp-0 -->
+
+  <!-- ── שלב 2: לאיזה רגע ──────────────────────────────────────
+       היה חצי התחתון של cp-0. שתי השאלות ישבו במסך אחד, ולכן אף אחת
+       מהן לא קיבלה מספיק מקום: השם והמין נדחסו לשורה אחת כדי לפנות
+       מקום לשמונה כפתורי טקסט, והרגעים הופיעו כמילים ולא כאייקונים.
+
+       כרטיס התצוגה המקדימה עבר לכאן ולא נשאר בשלב הראשון: שם בלי רגע
+       אינו כרטיס, ורק כאן שני החצאים ידועים. -->
+  <div id="cp-1" style="display:none">
+  <h2 class="gap-x" id="cp1-h">לאיזה רגע?</h2>
+  <p class="sub gap">אפשר לשנות את זה בכל שלב, גם אחרי שהנטיעה נפתחה</p>
+  <div class="field" style="margin-top:18px">
+    <div class="occgrid" id="c-pills">
+      <button class="on" data-t="בר/בת מצווה" data-i="🎂"><span class="em">🎂</span><span class="lb">בר/בת מצווה</span></button>
+      <button data-t="לימודים" data-i="🎓"><span class="em">🎓</span><span class="lb">לימודים</span></button>
+      <button data-t="טיול אחרי צבא" data-i="🎒"><span class="em">🎒</span><span class="lb">טיול אחרי צבא</span></button>
+      <button data-t="רכב ראשון" data-i="🚗"><span class="em">🚗</span><span class="lb">רכב ראשון</span></button>
+      <button data-t="דירה" data-i="🏠"><span class="em">🏠</span><span class="lb">דירה</span></button>
+      <button data-t="חתונה" data-i="💍"><span class="em">💍</span><span class="lb">חתונה</span></button>
+      <button data-t="קופת הפתעות" data-i="🎁"><span class="em">🎁</span><span class="lb">קופת הפתעות</span></button>
+      <button data-t="custom" data-i="✦"><span class="em">✦</span><span class="lb">משהו אחר</span></button>
     </div>
     <input type="text" id="c-custom" placeholder="למשל: טיול גדול, רכב ראשון" style="margin-top:8px;display:none">
   </div>
@@ -1421,11 +1473,12 @@ window.NETA_CONFIG = {
     <div class="row"><div class="dot g" id="p-icon">🎂</div><div style="flex:1"><div class="title" id="p-title">בר/בת מצווה של דניאל</div><div class="meta" id="p-date">אוגוסט 2032</div></div></div>
   </div>
   <button class="btn gap" onclick="toAmount()">המשך</button>
-  </div><!-- /cp-0 -->
+  <button class="link backlink" onclick="cStepGo(0)">חזרה</button>
+  </div><!-- /cp-1 -->
 
-  <div id="cp-1" style="display:none">
-  <h2 class="gap-x" id="cp1-h">מי יקבל את הכסף שנטעת?</h2>
-  <p class="sub gap" id="cp1-sub">זה החלק שקובע שהכסף באמת יגיע למי שנטעת עבורו.</p>
+  <div id="cp-2" style="display:none">
+  <h2 class="gap-x" id="cp2-h">מי יקבל את הכסף שנטעת?</h2>
+  <p class="sub gap" id="cp2-sub">זה החלק שקובע שהכסף באמת יגיע למי שנטעת עבורו.</p>
 
   <div id="c-benefields">
   <!-- ── של מי המשפחה ─────────────────────────────────────────────
@@ -1499,7 +1552,7 @@ window.NETA_CONFIG = {
   </div>
 
   <div class="two gap"><button class="btn" onclick="beneContinue()">המשך</button><button class="btn ghost" onclick="toAmount()">חזרה</button></div>
-  </div><!-- /cp-1 -->
+  </div><!-- /cp-2 -->
 
 </section>
 
@@ -2796,13 +2849,31 @@ let designated=true;
 /* every sentence about the beneficiary inflects in Hebrew; the app used to assume male in all of them */
 let beneSex='m';
 function bs(m,f){return beneSex==='f'?f:m}
+/* הדמות שנבחרה בשלב "עבור מי", ומה שהיא אומרת על בן או בת. ארבע
+   הדמויות הן שתי בנות ושני בנים לסירוגין, ולכן הבחירה בהן היא
+   ברירת מחדל טובה יותר מ-'m' שהיה כאן קשיח. */
+let cAvatar='av-kid1';
+const AV_SEX={'av-kid1':'m','av-kid2':'f','av-kid3':'m','av-kid4':'f'};
+function markSexChip(x){
+  document.querySelectorAll('#c-sex button').forEach(function(b,i){
+    b.classList.toggle('on',(i===0)===(x==='m'))});
+}
+function pickKidAv(el,a){
+  cAvatar=a;
+  [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+  const x=AV_SEX[a];
+  /* לא setSex: הצ'יפ נדלק ישירות, כי setSex מסמן את הכפתור שנלחץ
+     ואיש לא לחץ על צ'יפ. שאר מה שהיא עושה כן דרוש, כי ההטיה
+     כבר השתנתה. */
+  if(x&&x!==beneSex){beneSex=x;markSexChip(x);beneCopy();checkBene();updateGoal()}
+}
 function setSex(el,x){
   beneSex=x;
   [...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)});
   beneCopy();checkBene();updateGoal();
 }
 function beneCopy(){
-  txt('cp1-sub','זה החלק שקובע שהכסף באמת יגיע למי שנטעת '+bs('עבורו','עבורה')+'.');
+  txt('cp2-sub','זה החלק שקובע שהכסף באמת יגיע למי שנטעת '+bs('עבורו','עבורה')+'.');
   txt('c-selfp','קוד פדיון יישלח '+bs('אליו','אליה')+' במועד שקבעת, ישירות ולא דרכך.');
   txt('c-guardp','הכסף משתחרר בתאריך שקבעת לידי מי שתסמן, אך נשאר רשום על שם הנהנה, והמורשה מקבל אותו '+bs('עבורו','עבורה')+'.');
   txt('c-acctfine','חשבון היעד יצטרך להיות על '+bs('שמו','שמה')+'. העברה לחשבון של אדם אחר לא תאושר.');
@@ -2818,6 +2889,13 @@ const OCCASION_PHRASE={
   'חתונה':'לקראת החתונה של ',
   'קופת הפתעות':'בשביל '
 };
+/* כותרת שלב 2 נושאת את השם משלב 1: שני המסכים הם שאלה אחת מפוצלת,
+   וכותרת שאינה מזכירה את מי שנבחר קודם נקראת כמסך שאינו קשור. */
+function occHead(){
+  const nm=((document.getElementById('c-name')||{}).value||'').trim();
+  txt('cp1-h',(designated&&nm)?('לאיזה רגע '+bs('בחייו','בחייה')+' של '+nm+'?')
+                              :'לאיזה רגע?');
+}
 function occasionPhrase(){
   const nm=(cName.value||'הילד').trim();
   const t=cType==='custom'?(cCustom.value.trim()||'המטרה'):cType;
@@ -2852,7 +2930,7 @@ function openExactDate(el){
 }
 function onExactDate(){dateNote();prev();updateGoal();render();}
 const cName=document.getElementById('c-name'),cCustom=document.getElementById('c-custom'),cDate=document.getElementById('c-date');
-document.querySelectorAll('#c-pills .pill').forEach(p=>p.onclick=()=>{document.querySelectorAll('#c-pills .pill').forEach(x=>x.classList.remove('on'));p.classList.add('on');cType=p.dataset.t;cIcon=p.dataset.i;cCustom.style.display=cType==='custom'?'block':'none';prev();checkBene();render()});
+document.querySelectorAll('#c-pills button').forEach(p=>p.onclick=()=>{document.querySelectorAll('#c-pills button').forEach(x=>x.classList.remove('on'));p.classList.add('on');cType=p.dataset.t;cIcon=p.dataset.i;cCustom.style.display=cType==='custom'?'block':'none';prev();checkBene();render()});
 function prev(){
   const n=cName.value.trim()||'הילד',t=cType==='custom'?(cCustom.value.trim()||'המטרה'):cType;
   document.getElementById('p-title').textContent=designated?(t+' של '+n):t;
@@ -3687,7 +3765,10 @@ function beneFields(){
 }
 /* creating a planting is three decisions, one per screen */
 let cStep=0;
-const C_LABELS=['בשביל מי','מי יקבל את הכסף שנטעת'];
+const C_LABELS=['עבור מי','לאיזה רגע','מי יקבל את הכסף שנטעת'];
+/* שם הפאנל לפי אינדקס. cStepGo מקבל מספר כי סדר הפאנלים הוא סדר
+   הזרימה, ו-stepNo מקבל שם כי המספר שלה זז לפי designated ו-onbo. */
+const C_KEYS=['who','occ','bene'];
 let creating=false;
 /* the whole creation is one act: name, amount, recipient, sharing — then payment creates it */
 /* 1 בשביל מי · 2 כמה · [3 ייעוד — רק כשיש נהנה] · [פתיחת חשבון — רק
@@ -3698,15 +3779,16 @@ let creating=false;
    מופשט — וברירת המחדל שלו הייתה ממילא "פרטית", כך שברוב המקרים הוא
    מסך שלוחצים עליו "המשך". ההחלטה עברה למקום שיש בו הקשר: מסך הרגע,
    שבו "פתח לקרובים" הוא עכשיו הכפתור הראשי. */
-function flowSteps(){return (onbo?5:4)+(designated?1:0)}
+function flowSteps(){return (onbo?6:5)+(designated?1:0)}
 function stepNo(key){
   const d=designated?1:0;
   if(key==='who')return 1;
-  if(key==='amount')return 2;
-  if(key==='bene')return 3;
-  if(key==='identity')return 3+d;
-  if(key==='pay')return 3+d+(onbo?1:0);
-  return 4+d+(onbo?1:0); // review
+  if(key==='occ')return 2;
+  if(key==='amount')return 3;
+  if(key==='bene')return 4;
+  if(key==='identity')return 4+d;
+  if(key==='pay')return 4+d+(onbo?1:0);
+  return 5+d+(onbo?1:0); // review
 }
 function flowBar(cur,label){
   const box=document.getElementById('flowbar'),bar=document.getElementById('steps-top');
@@ -3735,6 +3817,12 @@ function startCreate(){
   document.querySelectorAll('#c-pills button').forEach(function(x,i){
     x.classList.toggle('on',i===0)});
   cType='בר/בת מצווה';cIcon='🎂';
+  /* הדמות הראשונה ואיתה הצ'יפ שהיא מסמנת. עד כה beneSex היה 'm'
+     בלי ששום צ'יפ נדלק, כלומר ברירת מחדל שאיש לא ראה ולכן איש לא
+     תיקן. */
+  cAvatar='av-kid1';
+  document.querySelectorAll('#c-avpick button').forEach(function(x,i){
+    x.classList.toggle('on',i===0)});
   const cu=document.getElementById('c-custom');
   if(cu){cu.value='';cu.style.display='none'}
   /* וכל שדות הנהנה והמורשה. השמות והכתובות האלה שייכים לרגע אחד, ואם
@@ -3743,7 +3831,7 @@ function startCreate(){
   ['c-bene','c-gname','c-gcontact'].forEach(function(id){
     const el=document.getElementById(id); if(el)el.value='';
   });
-  document.querySelectorAll('#c-sex button').forEach(function(x){x.classList.remove('on')});
+  markSexChip('m');
   beneCopy();
   cDate.value='';
   document.querySelectorAll('#c-terms button').forEach(function(x){x.classList.remove('on')});
@@ -3763,13 +3851,25 @@ function startCreate(){
 function toAmount(){
   commitGoal();
 }
-/* order: בשביל מי -> מי עוד שותף -> כמה תשקיע -> [מי יקבל את הכסף, רק אם יש נהנה] -> תשלום.
+/* השם נבדק כאן ולא ב-commitGoal בלבד: אחרי הפיצול commitGoal רצה
+   שני מסכים אחרי השדה, וטוסט שמפנה לשדה שאינו על המסך אינו עוזר
+   לאיש. הבדיקה שם נשארת כרשת ביטחון, כי גם "חזרה" ממסך הסכום
+   מגיעה אליה. */
+function toOccasion(){
+  if(designated && !((document.getElementById('c-name')||{}).value||'').trim()){
+    toast('צריך שם, כדי שנדע עבור מי');
+    const f=document.getElementById('c-name'); if(f)f.focus();
+    return;
+  }
+  cStepGo(1);
+}
+/* order: עבור מי -> לאיזה רגע -> כמה תשקיע -> [מי יקבל את הכסף, רק אם יש נהנה] -> תשלום.
    השותפות יושבת מיד אחרי "בשביל מי" כי שתיהן אותה שאלה — מי, ועם מי — ולא רוצים שהן יתקררו זו מזו */
-function backFromAmount(){cStepGo(0);go(1)}
+function backFromAmount(){cStepGo(1);go(1)}
 function backFromPay(){
   if(onbo){go(ONBO.identity);return}
   if(creating){
-    if(designated){cStepGo(1);go(1);return}
+    if(designated){cStepGo(2);go(1);return}
     go(2);return; // בלי נהנה, השלב שלפני תשלום הוא מסך הסכום עצמו
   }
   goHome();
@@ -3784,7 +3884,7 @@ function afterAmount(){
     if(b&&b.scrollIntoView)b.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
-  if(creating && designated){cStepGo(1);go(1);return}
+  if(creating && designated){cStepGo(2);go(1);return}
   toPayment();
 }
 /* כתובת שאינה מייל לא תמצא איש: auth.users נושאת email, ו-guardian_requests
@@ -3823,9 +3923,10 @@ function beneContinue(){
 }
 function cStepGo(n){
   cStep=n;
-  [0,1].forEach(function(i){document.getElementById('cp-'+i).style.display=i===n?'block':'none'});
-  flowBar(stepNo(n===0?'who':'bene'),C_LABELS[n]);
-  if(n===1)checkBene();
+  [0,1,2].forEach(function(i){document.getElementById('cp-'+i).style.display=i===n?'block':'none'});
+  flowBar(stepNo(C_KEYS[n]),C_LABELS[n]);
+  if(n===1)occHead();
+  if(n===2)checkBene();
   document.querySelector('.stage').scrollTo?.(0,0);
 }
 /* the wizard produces one true review, right before the lock — not a recap at every step along the way */
@@ -3934,12 +4035,17 @@ function toggleDesig(cb){
   designated=!cb.checked;
   const nm=document.getElementById('c-name');
   nm.disabled=!designated;nm.style.opacity=designated?'':'.4';
+  /* השדות של הנהנה יורדים ולא מתעמעמים: דמות ומין של ילד שאין לו
+     שם אינם שאלה שאפשר לענות עליה, ובורר דמויות דהוי שעדיין נלחץ
+     הוא הזמנה לבחור משהו שלא יישמר. */
+  ['c-avfield','c-sexfield'].forEach(function(id){
+    const el=document.getElementById(id); if(el)el.style.display=designated?'':'none'});
   document.getElementById('c-sex').style.display=designated?'':'none';
   document.getElementById('c-approvefield').style.display=designated?'':'none';
   document.getElementById('c-benefields').style.display=designated?'block':'none';
   document.getElementById('c-safebtn').style.display=designated?'':'none';
   if(!designated)document.getElementById('c-safe').style.display='none';
-  prev();checkBene();
+  prev();checkBene();occHead();
   if(creating)flowBar(stepNo('who'),C_LABELS[0]);
 }
 function checkBene(){
@@ -3947,11 +4053,11 @@ function checkBene(){
      בלבד, לעולם לא ערך שנשמר. */
   const nm=((document.getElementById('c-name')||{}).value||'').trim()||'הילד';
   if(!designated){
-    txt('cp1-h','הכסף עד שתחליט');
-    txt('cp1-sub','לא חייבים לדעת עכשיו למי. זה מה שקורה בינתיים.');
+    txt('cp2-h','הכסף עד שתחליט');
+    txt('cp2-sub','לא חייבים לדעת עכשיו למי. זה מה שקורה בינתיים.');
     return;
   }
-  txt('cp1-h','מי יקבל את הכסף שנטעת?');
+  txt('cp2-h','מי יקבל את הכסף שנטעת?');
   beneCopy();
   const dispNm=nm;
   beneFields();
@@ -4907,6 +5013,7 @@ function plantingFromFlow(){
     designated:desig,
     beneficiary:goal.name,
     sex:desig?beneSex:null,
+    avatar:desig?cAvatar:null,
     targetDate:cDate?cDate.value:null,
     targetYear:d?d.getFullYear():null,
     targetMonth:d?d.getMonth():null,
@@ -6796,6 +6903,11 @@ function netaBackend(cfg){
                      נכון: עד שההורה מאשר, הרגע אינו של המשפחה שלי. */
                   familyMine:p.family_of_me===true,
                   familyName:p.family_name||null,
+                  /* 0059 הוסיפה את העמודה לשתי הפונקציות ולא לאחת:
+                     הן נשפכות שתיהן לתוך shape(), ועמודה שחסרה
+                     באחת מהן הופכת חצי מהרשימה ל-undefined בלי
+                     שגיאה. */
+                  av:p.beneficiary_avatar||null,
                   myMonthly:Number(p.my_monthly_agorot||0),
                   myProjection:Number(p.my_projection_agorot||0),
                   participants:p.participants||[]};
@@ -7184,6 +7296,7 @@ function netaBackend(cfg){
           occasion:p.occasion,designated:p.designated,
           beneficiary_name:p.designated?p.beneficiary:null,
           beneficiary_sex:p.designated?p.sex:null,
+          beneficiary_avatar:p.designated?(p.avatar||null):null,
           beneficiary_contact:p.designated?(p.beneContact||null):null,
           target_date:p.targetDate,mode:p.mode,
           track_rate:p.mode==='keep'?null:p.rate,
@@ -8192,12 +8305,22 @@ function kidAvatar(name){
   for(let i=0;i<t.length;i++)h=(h*31+t.charCodeAt(i))>>>0;
   return KID_AV[h%KID_AV.length];
 }
+/* מה שנבחר בהקמה גובר על הגזירה מהשם, וקבוצה מחזיקה כמה רגעים ולכן
+   הראשון שנושא ערך הוא זה שקובע. ערך שאינו אחד מהארבעה נדחה ולא
+   מוצג: הוא היה יוצא <use href="#..."> שאינו קיים, כלומר עיגול ריק
+   בלי שגיאה. */
+function kidFace(rows,name){
+  let pick=null;
+  (rows||[]).forEach(function(p){
+    if(!pick&&p&&p.av&&KID_AV.indexOf(p.av)>=0)pick=p.av});
+  return pick||kidAvatar(name);
+}
 /* פריט אחד בבורר: קבוצה של נהנה, או נטיעה שלא יועדה. המזהה נושא
    תחילית כי שם ילד ומפתח נטיעה חיים באותה רשימה. */
 function fuItems(own){
   const kg=kidGroups(own);
   const out=kg.groups.map(function(g){
-    return {id:'k:'+g.kid,name:g.kid,av:kidAvatar(g.kid),
+    return {id:'k:'+g.kid,name:g.kid,av:kidFace(g.rows,g.kid),
             rows:g.rows,accrued:g.accrued,mine:g.mine,proj:g.proj,people:g.people};
   });
   kg.loose.forEach(function(p){
