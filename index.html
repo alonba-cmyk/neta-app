@@ -1166,7 +1166,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6168a9e';
+window.NETA_BUILD = '24c12b6';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2476,11 +2476,15 @@ window.NETA_CONFIG = {
     <div class="stat"><span class="k">אמצעי תשלום</span><span class="v" id="py-method">הוראת קבע</span></div>
   </div>
   <!-- ההחלטה שהאפיון סימן כלא-מעוצבת. מקומה כאן ולא בהגדרות: מי שיחפש
-       אותה אחר כך לא ימצא, ומתג בהגדרות יישאר על ברירת המחדל לנצח. -->
+       אותה אחר כך לא ימצא, ומתג בהגדרות יישאר על ברירת המחדל לנצח.
+
+       דלוק כברירת מחדל מ-0060. ההסתרה לא החזיקה מתמטית: המסך מציג את
+       הסך הכולל ולידו את הסכום של מי שפתח, ולכן בשני תורמים כל קורא
+       מחסר ומקבל את השני. היא עובדת רק משלושה ומעלה. -->
   <div class="card" id="py-visrow" style="display:none">
     <div class="setrow"><div class="st"><b>שהסכום שלי יהיה גלוי לשאר הקרובים</b>
-      <p>כבוי כברירת מחדל. מי שפתח את הנטיעה רואה אותו כך או כך, כבעל הנטיעה. מה שאתה נוטע כאן ייראה בכל מקרה, והמתג הוא על הסכום.</p></div>
-      <div class="sw" id="py-vis" onclick="this.classList.toggle('on')" role="switch"></div></div>
+      <p>מי שפתח את הרגע רואה אותו כך או כך, כבעל הרגע. מה שאתה נוטע כאן ייראה בכל מקרה, והמתג הוא על הסכום.</p></div>
+      <div class="sw on" id="py-vis" onclick="this.classList.toggle('on')" role="switch"></div></div>
   </div>
 
   <p class="fine gap" id="pay-fine">ההפקדה עוברת ישירות לחשבון הנעול על שם דניאל, אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.</p>
@@ -4073,6 +4077,11 @@ function paySummaryBody(){
     const p=plantAt(cur),guest=!!(p&&p.live&&!p.mine);
     const vis=document.getElementById('py-visrow');
     if(vis)vis.style.display=guest?'':'none';
+    /* דלוק בכל כניסה. בלי זה מי שכיבה פעם אחת היה מפקיד מוסתר לנצח
+       בלי לשים לב, כי המתג יורד מהמסך ברגע שהוא לא רלוונטי וחוזר
+       במצב שבו הושאר. */
+    const sw=document.getElementById('py-vis');
+    if(sw&&guest)sw.classList.add('on');
     document.getElementById('py-ownrow').style.display='none';
     document.getElementById('py-trackrow').style.display='flex';
     txt('py-track',trackLabel());
