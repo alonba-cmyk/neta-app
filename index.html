@@ -817,6 +817,27 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="כניסה"] #lg-cta,[data-name="פתיחת חשבון"] #id-cta{margin-bottom:10px}
 [data-name="כניסה"] .backlink,[data-name="פתיחת חשבון"] .backlink{margin-top:2px}
 #c-terms{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+/* ── מי יקבל את הכסף: ארבעה אנשים, כל אחד עם פנים ────────────── */
+[data-name="הקמה"] .pick{display:flex;flex-direction:column;gap:7px}
+[data-name="הקמה"] .pick button{display:flex;align-items:center;gap:11px;text-align:right;
+  font-family:inherit;border:1px solid var(--line);border-radius:12px;background:var(--s1);
+  padding:9px 11px;cursor:pointer;transition:.15s;width:100%}
+[data-name="הקמה"] .pick button:hover{border-color:var(--line-2)}
+[data-name="הקמה"] .pick button.on{border-color:var(--leaf);background:var(--leaf-bg)}
+[data-name="הקמה"] .pick .fc{width:38px;height:38px;border-radius:11px;overflow:hidden;
+  flex-shrink:0;background:var(--s2);display:grid;place-items:center}
+[data-name="הקמה"] .pick .fc svg{display:block;width:100%;height:100%}
+/* המשבצת של "מישהו אחר" היא היחידה בלי אדם ידוע. מסגרת מקווקוות ולא
+   פלוס מלא: פלוס בגודל הזה ליד שלושה פרצופים נקרא ככפתור הוספה. */
+[data-name="הקמה"] .pick .fc.plus{background:none;border:1px dashed var(--line-2);
+  color:var(--tx-3);font-size:17px;line-height:1}
+[data-name="הקמה"] .pick button.on .fc.plus{border-color:var(--leaf);color:var(--leaf)}
+[data-name="הקמה"] .pick .nm{flex:1;min-width:0}
+[data-name="הקמה"] .pick .nm b{display:block;font-size:13px;font-weight:500;color:var(--tx)}
+[data-name="הקמה"] .pick .nm > span{display:block;font-size:10.5px;color:var(--tx-3);
+  margin-top:1px;line-height:1.4}
+[data-name="הקמה"] .pick button.on .nm > span{color:var(--leaf-soft)}
+
 /* ── בוררי ההקמה ────────────────────────────────────────────────
    ממוקדים למסך "הקמה" ולא לקלאסים הגלובליים: .pill ו-.chips משרתים
    27 מסכים, והרשת כאן היא צורה של המסך הזה בלבד. */
@@ -1145,7 +1166,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4b751b9';
+window.NETA_BUILD = '6168a9e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1506,37 +1527,37 @@ window.NETA_CONFIG = {
 
        מכאן נגזר גם הטאב "נטעו למשפחתי" אצל ההורה: אותה תשובה, מהצד
        השני. -->
-  <div class="field" id="c-famfield">
-    <p class="eyebrow">של מי המשפחה שהרגע הזה שייך לה?</p>
-    <div class="stack gap">
-      <div class="opt fam on" data-f="mine"><b>המשפחה שלי</b><p>הילד שלך, או מישהו שאתה ההורה או האפוטרופוס שלו.</p></div>
-      <div class="opt fam" data-f="kin"><b>משפחה של קרוב</b><p>הילד של אח, של חבר או של בן/בת הזוג. נבקש את ההורה, כדי שהרגע יופיע גם אצלו.</p></div>
-    </div>
-  </div>
-  <!-- "שם מלא של הנהנה" ירד מכאן. הוא נכתב למסד ואיש לא קרא אותו: אפס
-       פונקציות, אפס views, אפס טריגרים, ובלקוח כתיבה בלבד. ובפועל הוא
-       גם לא היה שם מלא — checkBene מילא אותו מראש בשם הפרטי, ולכן בשתי
-       השורות החיות הוא החזיק עותק של beneficiary_name.
+  <!-- ── מי יקבל את הכסף ────────────────────────────────────────
+       שתי שאלות התאחדו לאחת. הן מעולם לא היו שש אפשרויות אלא ארבעה
+       אנשים: "משפחה של קרוב" כבר ביטלה את שאלת המאשר (ההורה הוא
+       שמאשר, אחרת אין דרך לדעת של מי הילד), ו"אחליט בהמשך" לא הייתה
+       תשובה אלא דחייה של אותה שאלה בדיוק.
 
-       והוא גם לא מה שמגן על הנהנה. מה שמגן זה הכתובת שאליה נשלח קוד
-       הפדיון, אישור המורשה מול חשבון מאומת (confirm_guardian משווה את
-       המייל של המשתמש המחובר ל-guardian_contact), ואימות הזהות בגוף
-       הפיננסי מול תעודה. שם בשדה חופשי, עשר שנים מראש, אינו מאמת דבר —
-       הוא רק נראה כאילו כן.
+       "אני, עבורו" חדשה כאן, ואינה מסלול חדש במסד: היא כותבת את השם
+       והמייל שלי לשדות המורשה, ו-self_guardian שבמסד מזהה שהכתובת
+       היא של מי שפתח ומאשר אוטומטית. עד היום מי שרצה בזה היה צריך
+       להקליד את הפרטים של עצמו.
 
-       זו אותה הכרעה בדיוק שהורידה מכאן את תעודת הזהות: נחוצה בפדיון,
-       ואי אפשר לאמת אותה בלקוח. העמודה beneficiary_full_name נשארת
-       במסד ריקה, עד שהפדיון ייבנה וימלא אותה מול מסמך. -->
-  <div class="field" id="c-approvefield">
-    <p class="eyebrow">מי יאשר את הפדיון כשיגיע המועד?</p>
-    <div class="stack gap">
-      <div class="opt ben on" data-b="self"><b id="c-selfb">דניאל עצמו</b><p id="c-selfp">קוד פדיון יישלח אליו במועד שקבעת, ישירות ולא דרכך.</p><p class="fine" id="c-selfhint" style="display:none;margin-top:6px"></p></div>
-      <div class="opt ben" data-b="guardian"><b>מי שאני קובע היום</b><p id="c-guardp">הכסף משתחרר בתאריך שקבעת לידי מי שתסמן, אך נשאר רשום על שם הנהנה, והמורשה מקבל אותו עבורו.</p></div>
-      <div class="opt ben" data-b="later"><b>אחליט בהמשך</b><p>אפשר לקבוע זאת בכל שלב עד המועד, כל שינוי כזה נשלח בהתראה לכל מי שהשקיע.</p></div>
+       כל תשובה נושאת פנים: של הנהנה זו הדמות שנבחרה בשלב 1, ושלי
+       זו שבפרופיל. -->
+  <div class="field" id="c-whofield">
+    <div class="pick" id="c-who">
+      <button type="button" class="on" data-w="self" onclick="pickWho(this,'self')">
+        <span class="fc" id="cw-self-av"><svg viewBox="0 0 40 40"><use href="#av-kid1"/></svg></span>
+        <span class="nm"><b id="cw-self-b">דניאל</b><span id="cw-self-s">הקוד יישלח אליו, ישירות ולא דרכך</span></span></button>
+      <button type="button" data-w="me" onclick="pickWho(this,'me')">
+        <span class="fc" id="cw-me-av"><svg viewBox="0 0 40 40"><use href="#av-parent"/></svg></span>
+        <span class="nm"><b id="cw-me-b">אני, עבורו</b><span>לא צריך למלא כלום</span></span></button>
+      <button type="button" data-w="other" onclick="pickWho(this,'other')">
+        <span class="fc plus">+</span>
+        <span class="nm"><b>מישהו אחר</b><span>נבקש את השם והמייל שלו</span></span></button>
+      <button type="button" data-w="parent" onclick="pickWho(this,'parent')">
+        <span class="fc"><svg viewBox="0 0 40 40"><use href="#av-granny2"/></svg></span>
+        <span class="nm"><b id="cw-parent-b">ההורה של דניאל</b><span id="cw-parent-s">כשדניאל אינו הילד שלך</span></span></button>
     </div>
   </div>
   <div class="field" id="c-codefield">
-    <label>לאן יישלח הקוד למימוש ההשקעה במועד המיוחל</label>
+    <label id="c-benelbl">לאן יישלח הקוד במועד</label>
     <input type="text" id="c-bene" placeholder="אימייל או טלפון של הנהנה">
   </div>
   <div id="c-guard" style="display:none">
@@ -2889,11 +2910,11 @@ function setSex(el,x){
   [...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)});
   beneCopy();checkBene();updateGoal();
 }
+/* מה שנשאר מוטה למין הנהנה אחרי שהכרטיסים ירדו. ‏c-selfp ו-c-guardp
+   היו התיאורים שבתוכם, והם נאמרים היום בבורר עצמו. */
 function beneCopy(){
-  txt('cp2-sub','זה החלק שקובע שהכסף באמת יגיע למי שנטעת '+bs('עבורו','עבורה')+'.');
-  txt('c-selfp','קוד פדיון יישלח '+bs('אליו','אליה')+' במועד שקבעת, ישירות ולא דרכך.');
-  txt('c-guardp','הכסף משתחרר בתאריך שקבעת לידי מי שתסמן, אך נשאר רשום על שם הנהנה, והמורשה מקבל אותו '+bs('עבורו','עבורה')+'.');
   txt('c-acctfine','חשבון היעד יצטרך להיות על '+bs('שמו','שמה')+'. העברה לחשבון של אדם אחר לא תאושר.');
+  if(document.getElementById('c-who'))whoCopy();
 }
 /* ties the projected total to what the occasion actually is, not just the date it lands on —
    phrased as "toward" rather than a promise, since released money is fully his to do anything with */
@@ -3774,34 +3795,37 @@ document.querySelectorAll('.opt.pay').forEach(el=>el.onclick=()=>{
   payPick=el.dataset.p;paySaved=null;
   renderSavedPays();renderPayFields();
 });
-/* who approves the redemption is a decision the creator makes now, not a prediction about a future age */
-let beneMode='self';
-document.querySelectorAll('.opt.ben').forEach(el=>el.onclick=()=>{
-  document.querySelectorAll('.opt.ben').forEach(x=>x.classList.remove('on'));
-  el.classList.add('on');beneMode=el.dataset.b;
-  beneFields();
-});
+/* מי יקבל את הכסף במועד. ‏whoMode הוא מה שהמסך שואל, ו-beneMode
+   ו-famMode נגזרים ממנו: הם עדיין מה שהרשומה נבנית לפיו, ולכן הם
+   נשארים ולא הופכים לשם חדש שצריך לרדוף אחריו בעשרה מקומות.
+
+     self   → הנהנה פודה בעצמו            · mine + self
+     me     → אני פודה עבורו              · mine + guardian, עם הפרטים שלי
+     other  → מישהו אחר שאני קובע         · mine + guardian
+     parent → ההורה של הילד, שאינו אני    · kin  + guardian */
+let beneMode='self',whoMode='self';
+const WHO_MAP={self:['mine','self'],me:['mine','guardian'],
+               other:['mine','guardian'],parent:['kin','guardian']};
+function pickWho(el,w){
+  whoMode=w;
+  [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+  famMode=WHO_MAP[w][0];beneMode=WHO_MAP[w][1];
+  beneFields();checkBene();
+}
 /* של מי המשפחה. "kin" אינו שדה שנשמר אלא פיצול: הוא קובע שההורה הוא
    שנשאל, ושהרגע אינו מסומן כמשפחה שלי עד שאותו הורה יאשר. */
 let famMode='mine';
-document.querySelectorAll('.opt.fam').forEach(el=>el.onclick=()=>{
-  document.querySelectorAll('.opt.fam').forEach(x=>x.classList.remove('on'));
-  el.classList.add('on');famMode=el.dataset.f;
-  /* במשפחה של קרוב אין מה לשאול מי מאשר: ההורה הוא שמאשר, אחרת אין
-     דרך לדעת של מי הילד — וזה כל מה שהעוגן הזה קיים בשבילו. */
-  if(famMode==='kin')beneMode='guardian';
-  beneFields();
-});
 /* מי מציג מה, במקום אחד: כתובת הנהנה כשהוא פודה בעצמו, וגוש המורשה
    (שם + כתובת) כשמישהו אחר יפדה עבורו. בענף של קרוב הגוש הזה הופך
    לגוש ההורה, ושאלת המאשר יורדת מהמסך. */
 function beneFields(){
   const kin=famMode==='kin';
-  const g=document.getElementById('c-guard'),c=document.getElementById('c-codefield'),
-        a=document.getElementById('c-approvefield');
-  if(a)a.style.display=kin?'none':'block';
-  if(g)g.style.display=(kin||beneMode==='guardian')?'block':'none';
-  if(c)c.style.display=(!kin&&beneMode==='self')?'block':'none';
+  const g=document.getElementById('c-guard'),c=document.getElementById('c-codefield');
+  /* "אני, עבורו" אינה פותחת שדות: השם והכתובת שלי כבר ידועים, והם
+     נכתבים ברשומה מהפרופיל. גוש המורשה פתוח רק כשצריך לשאול על
+     מישהו שאיננו יודעים מיהו. */
+  if(g)g.style.display=(whoMode==='other'||whoMode==='parent')?'block':'none';
+  if(c)c.style.display=whoMode==='self'?'block':'none';
   txt('c-gnamelbl',kin?'שם ההורה':'שם המורשה');
   txt('c-gcontlbl',kin?'האימייל של ההורה'
                       :'לאן יישלח הקוד למימוש ההשקעה במועד המיוחל');
@@ -3816,7 +3840,7 @@ function beneFields(){
 }
 /* creating a planting is three decisions, one per screen */
 let cStep=0;
-const C_LABELS=['עבור מי','לאיזה רגע','מי יקבל את הכסף שנטעת'];
+const C_LABELS=['עבור מי','לאיזה רגע','מי יקבל את הכסף'];
 /* שם הפאנל לפי אינדקס. cStepGo מקבל מספר כי סדר הפאנלים הוא סדר
    הזרימה, ו-stepNo מקבל שם כי המספר שלה זז לפי designated ו-onbo. */
 const C_KEYS=['who','occ','bene'];
@@ -3891,11 +3915,9 @@ function startCreate(){
   /* every new planting starts from a clean sheet, including the designation choice */
   const u=document.getElementById('c-undecided');
   if(u){u.checked=false;toggleDesig(u);}
-  beneMode='self';famMode='mine';
-  document.querySelectorAll('.opt.ben').forEach(function(x){x.classList.remove('on')});
-  document.querySelector('.opt.ben[data-b="self"]').classList.add('on');
-  document.querySelectorAll('.opt.fam').forEach(function(x){x.classList.remove('on')});
-  document.querySelector('.opt.fam[data-f="mine"]').classList.add('on');
+  whoMode='self';beneMode='self';famMode='mine';
+  document.querySelectorAll('#c-who button').forEach(function(x,i){
+    x.classList.toggle('on',i===0)});
   beneFields();
   cStepGo(0);go(1);
 }
@@ -3949,6 +3971,13 @@ function looksLikeEmail(v){
 }
 function beneContinue(){
   const kin=famMode==='kin';
+  /* "אני, עבורו" נשען על הכתובת שבחשבון. בלעדיה הרשומה הייתה נשמרת
+     עם approver=guardian ובלי מורשה, כלומר רגע שאיש אינו יכול לפדות.
+     בהדגמה אין חשבון וגם אין שמירה, ולכן הבדיקה חיה בלבד. */
+  if(designated&&whoMode==='me'&&liveAccount()&&!myEmail()){
+    toast('לא מצאנו את הכתובת שלך. בחר מישהו אחר, או השלם את הפרופיל');
+    return;
+  }
   const guard=document.getElementById('c-guard');
   const guardOpen=guard&&guard.style.display!=='none';
   if(designated&&kin&&!fieldVal('c-gname')){
@@ -4074,8 +4103,9 @@ function paySummaryBody(){
   txt('py-benek','רשום על שם');
   txt('py-bene',nm);
   txt('py-relk','משתחרר');
-  txt('py-rel',beneMode==='guardian'?'במועד המיוחל, לידי המורשה'
-    :beneMode==='later'?'טרם נקבע · תוכל לעדכן בכל שלב עד המועד'
+  txt('py-rel',whoMode==='me'?'במועד המיוחל, לידיך עבורו'
+    :whoMode==='parent'?'במועד המיוחל, לידי ההורה'
+    :whoMode==='other'?'במועד המיוחל, לידי המורשה'
     :('במועד המיוחל, '+bs('לידיו','לידיה')));
 }
 function toggleSafe(){
@@ -4092,12 +4122,31 @@ function toggleDesig(cb){
   const avf=document.getElementById('c-avfield');
   if(avf)avf.style.display=designated?'':'none';
   document.getElementById('c-sex').style.display=designated?'':'none';
-  document.getElementById('c-approvefield').style.display=designated?'':'none';
+  document.getElementById('c-whofield').style.display=designated?'':'none';
   document.getElementById('c-benefields').style.display=designated?'block':'none';
   document.getElementById('c-safebtn').style.display=designated?'':'none';
   if(!designated)document.getElementById('c-safe').style.display='none';
   prev();checkBene();occHead();
   if(creating)flowBar(stepNo('who'),C_LABELS[0]);
+}
+/* שמות ופנים בבורר. הם משתנים עם השם שהוקלד בשלב 1 ועם הדמות
+   שנבחרה שם, ולכן הם נכתבים כאן ולא ב-HTML. */
+function whoCopy(){
+  const nm=((document.getElementById('c-name')||{}).value||'').trim()||'הילד';
+  txt('cw-self-b',nm);
+  txt('cw-self-s','הקוד יישלח '+bs('אליו','אליה')+', ישירות ולא דרכך');
+  txt('cw-me-b','אני, '+bs('עבורו','עבורה'));
+  txt('cw-parent-b','ההורה של '+nm);
+  txt('cw-parent-s','כש'+nm+bs(' אינו הילד שלך',' אינה הילדה שלך'));
+  txt('c-benelbl','לאן יישלח הקוד '+bs('אליו','אליה')+' במועד');
+  /* "הנהנה" הוא מונח מהמסד. המסך הזה מדבר בשמות, ולכן גם השדה. */
+  const bf=document.getElementById('c-bene');
+  if(bf)bf.placeholder='אימייל או טלפון של '+nm;
+  const a=document.querySelector('#cw-self-av use');
+  if(a)a.setAttribute('href','#'+cAvatar);
+  const m=document.querySelector('#cw-me-av use');
+  if(m)m.setAttribute('href','#'+((liveAccount()&&netaServer.profile&&
+        netaServer.profile.avatar_key)||'av-parent'));
 }
 function checkBene(){
   /* מקור אחד לשם: מה שהוקלד בשלב 1. "הילד" הוא מילת מילוי לכיתובים
@@ -4108,19 +4157,13 @@ function checkBene(){
     txt('cp2-sub','לא חייבים לדעת עכשיו למי. זה מה שקורה בינתיים.');
     return;
   }
-  txt('cp2-h','מי יקבל את הכסף שנטעת?');
-  beneCopy();
-  const dispNm=nm;
+  /* השאלה נושאת את המועד, כי בלעדיו היא מופשטת: "מי יקבל את הכסף"
+     הוא דיון, ו"מי יקבל את הכסף באוגוסט 2036" הוא רגע. */
+  const t=(document.getElementById('c-date')||{}).value;
+  txt('cp2-h',t?('מי יקבל את הכסף ב'+monthYear(t)+'?'):'מי יקבל את הכסף במועד?');
+  txt('cp2-sub','אפשר לשנות את זה בכל שלב עד המועד.');
+  whoCopy();
   beneFields();
-  txt('c-selfb',dispNm+bs(' עצמו',' עצמה'));
-  /* "he'll redeem it himself" only holds if he's actually grown by then — a short horizon makes that
-     unlikely, so nudge toward the fact that the approver can still be changed, without asking his age */
-  const selfHint=document.getElementById('c-selfhint'),t=(document.getElementById('c-date')||{}).value;
-  if(selfHint){
-    const short=t && yearsUntil(t)<3;
-    selfHint.style.display=short?'block':'none';
-    if(short)selfHint.textContent='אם עד אז '+dispNm+' עדיין '+bs('יהיה קטין','תהיה קטינה')+', אפשר לעדכן את זה למי שתבחר, בכל שלב עד המועד.';
-  }
 }
 document.querySelectorAll('.opt.dest').forEach(el=>el.onclick=()=>{
   document.querySelectorAll('.opt.dest').forEach(x=>x.classList.remove('on'));
@@ -5080,11 +5123,16 @@ function plantingFromFlow(){
        תעודת הזהות עדיין אינה נשמרת: אין לה עמודה, ואין לה שימוש עד
        הפדיון. */
     approver:desig?(APPROVER_ENUM[beneMode]||'self'):null,
-    guardName:(desig&&beneMode==='guardian')?(fieldVal('c-gname')||null):null,
+    /* ב"אני, עבורו" השדות אינם על המסך, והערכים באים מהפרופיל.
+       ‏self_guardian שבמסד מזהה שהכתובת היא של מי שפתח ומאשר
+       אוטומטית, ולכן אין כאן בקשת אישור לעצמי. */
+    guardName:!desig?null:whoMode==='me'?(myName()||null)
+      :beneMode==='guardian'?(fieldVal('c-gname')||null):null,
     /* שדה הכתובת מוצג רק כשהנהנה פודה בעצמו (c-codefield), ולכן רק אז
        יש בו ערך שמישהו באמת הזין. */
     beneContact:(desig&&famMode!=='kin'&&beneMode==='self')?(fieldVal('c-bene')||null):null,
-    guardContact:(desig&&beneMode==='guardian')?(fieldVal('c-gcontact')||null):null,
+    guardContact:!desig?null:whoMode==='me'?(myEmail()||null)
+      :beneMode==='guardian'?(fieldVal('c-gcontact')||null):null,
     /* רגע ללא נהנה הוא קופה שלי, ולכן הוא של המשפחה שלי. הפיצול עצמו
        אינו נשמר — רק התוצאה שלו: אצלי, או ריק עד שההורה יאשר. */
     familyMine:!desig||famMode==='mine'
@@ -6574,6 +6622,15 @@ function buildConnection(){
 /* השם מופיע בשלושה מקומות — הברכה בבית, כותרת הפרופיל, והשורה שממנה
    משנים אותו — ומגיע משניים: טעינת הפרופיל, ועריכה ידנית. שורה אחת
    ששניהם קוראים לה, כדי שלא יסתרו זה את זה. */
+/* השם והכתובת שלי, לשימוש "אני, עבורו". בהדגמה אין חשבון, ואז
+   guardContact יוצא null והרשומה נשמרת בלי מורשה — נכון יותר
+   מלהמציא כתובת. */
+function myName(){
+  return (liveAccount()&&netaServer.profile&&netaServer.profile.name)||'';
+}
+function myEmail(){
+  return (liveAccount()&&netaServer.email&&netaServer.email())||'';
+}
 function setMyName(name){
   if(!name)return;
   topbars[14][0]='שלום '+name;
