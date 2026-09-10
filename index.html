@@ -385,10 +385,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .pc{display:flex;align-items:center;gap:9px}
 .pc-ic{width:32px;height:32px;border-radius:11px;background:var(--leaf-bg);
   display:grid;place-items:center;font-size:15px;flex-shrink:0}
-/* כרטיס של ילד נושא אות ולא אמוג'י. אות בגודל של אמוג'י נראית קטנה
-   בתוך הריבוע, ולכן היא מקבלת משקל וגודל משלה. */
-.pc-ic.mono{font-size:14px;font-weight:600;color:var(--leaf-soft);
-  letter-spacing:.01em}
+/* הדמות של הילד. עיגול ולא ריבוע מעוגל: ריבוע מעוגל הוא האייקון של
+   הרגע (🎂, 🎓), ועיגול הוא אדם — כך זה בכל מקום אחר בקובץ. */
+.kidav{width:32px;height:32px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  background:var(--s2);display:block}
+.kidav svg{display:block;width:100%;height:100%}
 .pc-x{flex:1;min-width:0}
 /* בלי nowrap ובלי ellipsis: כותרת שנחתכת באמצע מילה גרועה מכותרת
    שנשברת לשתי שורות. זה גם מה שהיה כתוב כאן קודם, ובצדק. */
@@ -1059,7 +1060,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f25b13f';
+window.NETA_BUILD = '1e56007';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1075,6 +1076,15 @@ window.NETA_CONFIG = {
   <symbol id="av-granny" viewBox="0 0 40 40"><rect width="40" height="40" fill="#322A31"/><circle cx="20" cy="7.5" r="4.2" fill="#BCB6AB"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#7C5C70"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#D8B090"/><circle cx="20" cy="16" r="8.2" fill="#E7C2A2"/><path d="M11 16 C11 8.5 29 8.5 29 16 C29 12.5 27 11 20 11 C13 11 11 12.5 11 16Z" fill="#BCB6AB"/></symbol>
   <symbol id="av-uncle" viewBox="0 0 40 40"><rect width="40" height="40" fill="#26303B"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#3B5B7B"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#C7935F"/><circle cx="20" cy="16" r="8.2" fill="#D8A472"/><path d="M11 15.5 C11 8 29 8 29 15.5 C29 12 27.5 10.8 20 10.8 C12.5 10.8 11 12 11 15.5Z" fill="#362B22"/><g stroke="#161A20" stroke-width="1.1" fill="none"><circle cx="16.6" cy="16.4" r="2.5"/><circle cx="23.4" cy="16.4" r="2.5"/><line x1="19.1" y1="16.4" x2="20.9" y2="16.4"/></g></symbol>
   <symbol id="av-granny2" viewBox="0 0 40 40"><rect width="40" height="40" fill="#31291F"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#6F5A45"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#DBB489"/><circle cx="20" cy="16" r="8.2" fill="#EACAA8"/><path d="M10.5 16.5 C10.5 8 29.5 8 29.5 16.5 C29 12 27 10.5 20 10.5 C13 10.5 11 12 10.5 16.5Z" fill="#C8C3B9"/></symbol>
+  <!-- ארבע דמויות ילדים. אותו מבנה בדיוק כמו המבוגרים (רקע, כתפיים,
+       צוואר, ראש, שיער), עם שלושה הבדלים שגורמים להן להיקרא צעירות:
+       הראש גדול ב-7 אחוז ויושב נמוך יותר, הכתפיים צרות ומתחילות
+       נמוך, ואין זקן ואין משקפיים. הן משמשות נהנים בלבד; רשימת
+       AVATARS שממנה בוחר מי שמוסיף קרוב לא כוללת אותן. -->
+  <symbol id="av-kid1" viewBox="0 0 40 40"><rect width="40" height="40" fill="#26302B"/><path d="M7.5 40 C7.5 32.6 13 29.2 20 29.2 C27 29.2 32.5 32.6 32.5 40Z" fill="#4E7358"/><rect x="17" y="23.4" width="6" height="5.6" fill="#C99A78"/><circle cx="20" cy="17.2" r="8.8" fill="#DDAF8A"/><path d="M10.8 17.4 C10.8 8.8 29.2 8.8 29.2 17.4 C28.6 13.8 26 12.4 20 12.4 C14 12.4 11.4 13.8 10.8 17.4Z" fill="#5A3E2B"/></symbol>
+  <symbol id="av-kid2" viewBox="0 0 40 40"><rect width="40" height="40" fill="#2E2733"/><path d="M7.5 40 C7.5 32.6 13 29.2 20 29.2 C27 29.2 32.5 32.6 32.5 40Z" fill="#7C5C70"/><rect x="17" y="23.4" width="6" height="5.6" fill="#D8B090"/><path d="M10.4 17.4 C10.4 8.6 29.6 8.6 29.6 17.4 L29.6 25.6 C29.6 27 27.2 27 27.2 25.6 L27.2 17.4 C25.6 13.4 14.4 13.4 12.8 17.4 L12.8 25.6 C12.8 27 10.4 27 10.4 25.6Z" fill="#4B3324"/><circle cx="20" cy="17.2" r="8.8" fill="#E7C2A2"/><path d="M11 17 C11 9 29 9 29 17 C27.6 12.6 24.6 11.2 20 11.2 C15.4 11.2 12.4 12.6 11 17Z" fill="#4B3324"/></symbol>
+  <symbol id="av-kid3" viewBox="0 0 40 40"><rect width="40" height="40" fill="#2A2E38"/><path d="M7.5 40 C7.5 32.6 13 29.2 20 29.2 C27 29.2 32.5 32.6 32.5 40Z" fill="#4A6488"/><rect x="17" y="23.4" width="6" height="5.6" fill="#C7935F"/><circle cx="20" cy="17.2" r="8.8" fill="#D8A472"/><path d="M11 17.6 C9.6 12.6 12.8 8.4 17 8.4 C18.6 7 21.4 7 23 8.4 C27.2 8.4 30.4 12.6 29 17.6 C28.6 13.6 26 12 20 12 C14 12 11.4 13.6 11 17.6Z" fill="#241B14"/><circle cx="12.6" cy="13.4" r="2.4" fill="#241B14"/><circle cx="27.4" cy="13.4" r="2.4" fill="#241B14"/></symbol>
+  <symbol id="av-kid4" viewBox="0 0 40 40"><rect width="40" height="40" fill="#312A22"/><path d="M7.5 40 C7.5 32.6 13 29.2 20 29.2 C27 29.2 32.5 32.6 32.5 40Z" fill="#8A7355"/><rect x="17" y="23.4" width="6" height="5.6" fill="#DBB489"/><circle cx="20" cy="17.2" r="8.8" fill="#EACAA8"/><path d="M11 17.2 C11 9 29 9 29 17.2 C28.4 13.6 26.6 12.4 23.4 12 C22 14.2 16.6 14.6 14.4 13 C12.6 13.8 11.4 15 11 17.2Z" fill="#C8A05C"/><circle cx="27.6" cy="12" r="2.2" fill="#C8A05C"/></symbol>
   <symbol id="av-friend" viewBox="0 0 40 40"><rect width="40" height="40" fill="#2B3A2E"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#4E7358"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#C99A78"/><circle cx="20" cy="16" r="8.2" fill="#DDAF8A"/><path d="M11.5 15 C12.5 8 27.5 8 28.5 15 C27 11.5 13 11.5 11.5 15Z" fill="#2E2018"/></symbol>
   <!-- איור הסיכום, ולא סמל המותג: ארבעה עלים בשני גוונים על אדמה.
        הוא יושב בראש שני מסכי הסיכום — "כל הנטיעות" ו"הנטיעות שלי" —
@@ -7841,12 +7851,14 @@ function buildHomeSummary(){
     const nKids=kg.groups.length;
     const ownHead=document.getElementById('own-head');
     ownHead.style.display=noneMine?'none':'';
-    /* הקופה שלא יועדה אינה ילד ואינה נספרת כאן, גם כשהיא מצוירת
-       ברשימה. "3 ילדים" על שניים וקופה הוא בדיוק סוג הספירה
-       שהורדנו מהראש כדי שלא תתאר רשימה שאינה שלה. */
+    /* "קרוב" ולא "ילד": הנהנה אינו תמיד ילד שלי, הוא יכול להיות נכד,
+       אחיין או בת של חברה, וזו בדיוק הסיבה שהסקשן הישן נקרא "עבורי
+       ובני משפחתי" ולא "הילדים שלי".
+
+       הקופה שלא יועדה אינה נספרת כאן, גם כשהיא מצוירת ברשימה. */
     if(!noneMine)txt('own-head',
       nKids===0 ? 'נטיעה שעוד לא יועדה'
-      : nKids===1 ? 'ילד אחד' : nKids+' ילדים');
+      : nKids===1 ? 'קרוב אחד' : nKids+' קרובים');
 
     /* ההצעה מופיעה רק כשבאמת אין עוד נוטע. את המספר שבתוכה גוזרים
        מהצפי הקיים ולא ממציאים: אם 30 ₪ בחודש מגיעים ל-7,139, אז 50
@@ -8062,6 +8074,19 @@ function nearestOf(rows){
   });
   return best;
 }
+/* לילד אין תמונה במסד, ואין עמודה שתחזיק אחת. עד שתהיה, כל ילד מקבל
+   דמות קבועה מתוך הארבע: הגזירה היא מהשם עצמו, ולכן אותו ילד מקבל
+   תמיד את אותה דמות, בכל מכשיר ובכל טעינה, בלי לשמור כלום.
+
+   ‏charCodeAt ולא אינדקס ברשימה: רשימה משנה סדר כשנוספת נטיעה, והפנים
+   של נועה היו מתחלפות ביום שדניאל נולד. */
+const KID_AV=['av-kid1','av-kid2','av-kid3','av-kid4'];
+function kidAvatar(name){
+  let h=0;
+  const t=String(name||'');
+  for(let i=0;i<t.length;i++)h=(h*31+t.charCodeAt(i))>>>0;
+  return KID_AV[h%KID_AV.length];
+}
 function kidCardHTML(g){
   const near=nearestOf(g.rows);
   const yrs=near?Math.max(0,near.d.getFullYear()-new Date().getFullYear()):0;
@@ -8072,7 +8097,8 @@ function kidCardHTML(g){
      לא קיים, ופתיחה לשום מקום גרועה מפתיחה למשהו נכון. */
   const open=near?near.p.key:(g.rows[0]&&g.rows[0].key);
   return '<div class="ncard pc" onclick="openDetail(\''+open+'\')">'+
-    '<div class="pc-ic mono">'+(g.kid.charAt(0))+'</div>'+
+    '<div class="kidav"><svg viewBox="0 0 40 40" aria-hidden="true">'+
+      '<use href="#'+kidAvatar(g.kid)+'"/></svg></div>'+
     '<div class="pc-x"><div class="pc-nm">'+g.kid+'</div>'+
       '<div class="pc-amt">נצבר עד כה '+shekel(g.accrued)+'</div>'+
       (when?'<div class="pc-dt">'+when+'</div>':'')+'</div>'+
