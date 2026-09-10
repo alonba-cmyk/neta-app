@@ -1132,7 +1132,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7e4e904';
+window.NETA_BUILD = 'a26a5e3';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1416,8 +1416,17 @@ window.NETA_CONFIG = {
   <div id="cp-0">
   <h2 class="gap-x">עבור מי הנטיעה?</h2>
   <p class="sub gap">בעוד כמה שנים מישהו ייהנה ממה שנטעת היום</p>
+  <!-- בן/בת חזר לשורה של השם. כשדה משלו, עם תווית ועם שורת הסבר,
+       הוא תפס שלושה בלוקים על שאלה בת מילה אחת ודחף את הכפתור
+       הראשי מתחת לקיפול. -->
   <div class="field"><label>איך קוראים לו?</label>
-    <input type="text" id="c-name" placeholder="למשל: דניאל"></div>
+    <div class="row" style="gap:8px;align-items:stretch">
+      <input type="text" id="c-name" placeholder="למשל: דניאל" style="flex:1">
+      <div class="chips" id="c-sex" style="margin:0;flex:0 0 auto">
+        <button class="on" onclick="setSex(this,'m')">בן</button>
+        <button onclick="setSex(this,'f')">בת</button>
+      </div>
+    </div></div>
   <!-- הדמות. השם קודם לה, כי הוא מה שמזהה את הרגע בכל שאר האפליקציה
        והיא רק הפרצוף שלו.
 
@@ -1433,12 +1442,6 @@ window.NETA_CONFIG = {
       <button data-av="av-kid3" onclick="pickKidAv(this,'av-kid3')" aria-label="דמות 3"><svg viewBox="0 0 40 40"><use href="#av-kid3"/></svg></button>
       <button data-av="av-kid4" onclick="pickKidAv(this,'av-kid4')" aria-label="דמות 4"><svg viewBox="0 0 40 40"><use href="#av-kid4"/></svg></button>
     </div></div>
-  <div class="field" id="c-sexfield"><label>בן או בת</label>
-    <div class="chips" id="c-sex">
-      <button class="on" onclick="setSex(this,'m')">בן</button>
-      <button onclick="setSex(this,'f')">בת</button>
-    </div>
-    <p class="fine" style="margin-top:7px">הדמות שבחרת קובעת את זה, ואפשר לשנות כאן.</p></div>
   <label class="chk" id="c-undecidedbox"><input type="checkbox" id="c-undecided" onchange="toggleDesig(this)">
     <span>עוד לא החלטתי עבור מי, כרגע אני רק רוצה לשים כסף ליום עתידי</span></label>
   <button class="btn gap" style="margin-top:16px" onclick="toOccasion()">המשך</button>
@@ -1468,10 +1471,12 @@ window.NETA_CONFIG = {
     <input type="text" id="c-custom" placeholder="למשל: טיול גדול, רכב ראשון" style="margin-top:8px;display:none">
   </div>
 
-  <p class="eyebrow" style="margin-top:20px">כך זה ייראה אצלך</p>
-  <div class="card">
-    <div class="row"><div class="dot g" id="p-icon">🎂</div><div style="flex:1"><div class="title" id="p-title">בר/בת מצווה של דניאל</div><div class="meta" id="p-date">אוגוסט 2032</div></div></div>
-  </div>
+  <!-- כרטיס "כך זה ייראה אצלך" ירד מכאן. הוא נולד כשהשם והרגע נשאלו
+       באותו מסך, ואז הוא באמת חיבר שתי תשובות לדבר אחד. אחרי הפיצול
+       הוא חוזר על מה שכבר על המסך: הכותרת אומרת את השם, והאריח
+       הדולק אומר את הרגע. תצוגה מקדימה שמראה רק את מה שנבחר בשורה
+       שמעליה אינה תצוגה מקדימה. מה שהיא כן חיברה, השם והרגע יחד,
+       נאמר במסך הסיכום שלפני הנעילה. -->
   <button class="btn gap" onclick="toAmount()">המשך</button>
   <button class="link backlink" onclick="cStepGo(0)">חזרה</button>
   </div><!-- /cp-1 -->
@@ -2865,9 +2870,14 @@ function pickKidAv(el,a){
   /* לא setSex: הצ'יפ נדלק ישירות, כי setSex מסמן את הכפתור שנלחץ
      ואיש לא לחץ על צ'יפ. שאר מה שהיא עושה כן דרוש, כי ההטיה
      כבר השתנתה. */
-  if(x&&x!==beneSex){beneSex=x;markSexChip(x);beneCopy();checkBene();updateGoal()}
+  if(!sexTouched&&x&&x!==beneSex){beneSex=x;markSexChip(x);beneCopy();checkBene();updateGoal()}
 }
+/* בחירה מפורשת בצ'יפ. מרגע שנעשתה, הדמות אינה דורסת אותה: הצ'יפים
+   יושבים מעל הדמויות, ובלי הדגל הזה מי שסימן "בת" ואז בחר דמות היה
+   רואה את התשובה שלו מתהפכת בלי שנגע בה. */
+let sexTouched=false;
 function setSex(el,x){
+  sexTouched=true;
   beneSex=x;
   [...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)});
   beneCopy();checkBene();updateGoal();
@@ -2931,14 +2941,15 @@ function openExactDate(el){
 function onExactDate(){dateNote();prev();updateGoal();render();}
 const cName=document.getElementById('c-name'),cCustom=document.getElementById('c-custom'),cDate=document.getElementById('c-date');
 document.querySelectorAll('#c-pills button').forEach(p=>p.onclick=()=>{document.querySelectorAll('#c-pills button').forEach(x=>x.classList.remove('on'));p.classList.add('on');cType=p.dataset.t;cIcon=p.dataset.i;cCustom.style.display=cType==='custom'?'block':'none';prev();checkBene();render()});
+/* שם הרגע והאייקון שלו, כפי שייכתבו. עד כה הם נכתבו ל-DOM של כרטיס
+   התצוגה המקדימה, ומסך הסיכום קרא אותם משם — כלומר הכרטיס היה גם
+   תצוגה וגם מקום האחסון, והורדתו הייתה מרוקנת את הסיכום. עכשיו הם
+   אובייקט, והתצוגה נגזרת ממנו ולא להפך. */
+const preview={title:'',icon:'🎂'};
 function prev(){
   const n=cName.value.trim()||'הילד',t=cType==='custom'?(cCustom.value.trim()||'המטרה'):cType;
-  document.getElementById('p-title').textContent=designated?(t+' של '+n):t;
-  document.getElementById('p-icon').textContent=cIcon;
-  const el=document.getElementById('p-date');
-  if(!cDate.value){el.textContent='המועד ייבחר בשלב הבא';return}
-  const d=new Date(cDate.value),y=yearsUntil(cDate.value);
-  el.textContent=months[d.getMonth()]+' '+d.getFullYear()+' · עוד '+y+yrWord(y);
+  preview.title=designated?(t+' של '+n):t;
+  preview.icon=cIcon;
 }
 [cName,cCustom,cDate].forEach(el=>el.addEventListener('input',function(){prev();checkBene();render()}));prev();
 /* shareMode עדיין נקרא ונכתב — investIn טוענת אותו מהנטיעה שמפקידים
@@ -3799,7 +3810,7 @@ function flowBar(cur,label){
   txt('flowlbl','שלב '+cur+' מתוך '+t+' · '+label);
 }
 function startCreate(){
-  creating=true;dateTouched=false;beneSex='m';modeTouched=false;
+  creating=true;dateTouched=false;beneSex='m';sexTouched=false;modeTouched=false;
   /* כל רגע נולד פרטי מאז ששלב הפתיחות ירד מהאשף. במפורש, ולא בהסתמכות
      על הערך שנשאר מנטיעה קודמת — investIn טוענת אותו מהרגע שמפקידים בו. */
   shareMode='private';
@@ -4000,8 +4011,8 @@ function paySummaryBody(){
   }
   txt('py-h','זה מה שייפתח');
   txt('py-sub','כך הנטיעה תיראה ברשימה שלך, ומכאן היא נעולה עד המועד.');
-  txt('py-icon',document.getElementById('p-icon').textContent);
-  txt('py-title',document.getElementById('p-title').textContent);
+  txt('py-icon',preview.icon);
+  txt('py-title',preview.title);
   document.getElementById('py-ownrow').style.display='flex';
   txt('py-own',opennessLabel());
   txt('py-ownnote',opennessNote());
@@ -4038,8 +4049,8 @@ function toggleDesig(cb){
   /* השדות של הנהנה יורדים ולא מתעמעמים: דמות ומין של ילד שאין לו
      שם אינם שאלה שאפשר לענות עליה, ובורר דמויות דהוי שעדיין נלחץ
      הוא הזמנה לבחור משהו שלא יישמר. */
-  ['c-avfield','c-sexfield'].forEach(function(id){
-    const el=document.getElementById(id); if(el)el.style.display=designated?'':'none'});
+  const avf=document.getElementById('c-avfield');
+  if(avf)avf.style.display=designated?'':'none';
   document.getElementById('c-sex').style.display=designated?'':'none';
   document.getElementById('c-approvefield').style.display=designated?'':'none';
   document.getElementById('c-benefields').style.display=designated?'block':'none';
