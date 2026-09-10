@@ -817,6 +817,39 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="כניסה"] #lg-cta,[data-name="פתיחת חשבון"] #id-cta{margin-bottom:10px}
 [data-name="כניסה"] .backlink,[data-name="פתיחת חשבון"] .backlink{margin-top:2px}
 #c-terms{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+/* ── הוספת אדם ─────────────────────────────────────────────────── */
+[data-name="הוספת אדם"] .pick{display:flex;flex-direction:column;gap:7px}
+[data-name="הוספת אדם"] .pick button{display:flex;align-items:center;gap:11px;
+  text-align:right;font-family:inherit;border:1px solid var(--line);border-radius:12px;
+  background:var(--s1);padding:9px 11px;cursor:pointer;transition:.15s;width:100%}
+[data-name="הוספת אדם"] .pick button:hover{border-color:var(--line-2)}
+[data-name="הוספת אדם"] .pick button.on{border-color:var(--leaf);background:var(--leaf-bg)}
+[data-name="הוספת אדם"] .pick .fc{width:38px;height:38px;border-radius:11px;overflow:hidden;
+  flex-shrink:0;background:var(--s2);display:grid;place-items:center}
+[data-name="הוספת אדם"] .pick .fc svg{display:block;width:100%;height:100%}
+[data-name="הוספת אדם"] .pick .nm{flex:1;min-width:0}
+[data-name="הוספת אדם"] .pick .nm b{display:block;font-size:13px;font-weight:500;color:var(--tx)}
+[data-name="הוספת אדם"] .pick .nm > span{display:block;font-size:10.5px;color:var(--tx-3);
+  margin-top:2px;line-height:1.45}
+[data-name="הוספת אדם"] .pick button.on .nm > span{color:var(--leaf-soft)}
+/* חמש משבצות: ההעלאה ראשונה, ואחריה ארבע הדמויות. */
+[data-name="הוספת אדם"] .avbig{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+[data-name="הוספת אדם"] .avbig button{aspect-ratio:1;border-radius:14px;overflow:hidden;
+  padding:0;cursor:pointer;border:1.5px solid var(--line);background:var(--s2);
+  display:block;transition:.15s}
+[data-name="הוספת אדם"] .avbig button.on{border-color:var(--leaf);box-shadow:0 0 0 3px var(--leaf-bg)}
+[data-name="הוספת אדם"] .avbig svg,[data-name="הוספת אדם"] .avbig img{display:block;
+  width:100%;height:100%;object-fit:cover}
+[data-name="הוספת אדם"] .avbig .up{border-style:dashed;border-color:var(--line-2);
+  color:var(--tx-3);font-size:17px;line-height:1;display:grid;place-items:center}
+[data-name="הוספת אדם"] .avbig .up:hover{border-color:var(--tx-2);color:var(--tx-2)}
+[data-name="הוספת אדם"] .esfaces.one{justify-content:center}
+[data-name="הוספת אדם"] .esfaces.one > span{width:64px;height:64px;border-radius:50%;
+  overflow:hidden;display:block;border:1px solid var(--leaf-line);background:var(--s2)}
+[data-name="הוספת אדם"] .esfaces.one > span > *{display:block;width:100%;height:100%}
+/* תמונה אמיתית בכל מקום שבו יושבת דמות: אותו עיגול, ולכן cover. */
+.kidimg{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit}
+
 /* ✎ על הפרצוף שנבחר בבורר "העתיד שלנו". פינה עליונה-שמאלית, כי שם
    הפרצוף אינו מכוסה על ידי שכנו, ובגודל שמאפשר להקיש עליו בלי לפגוע
    בבחירה שמתחתיו. */
@@ -858,14 +891,18 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ── בוררי ההקמה ────────────────────────────────────────────────
    ממוקדים למסך "הקמה" ולא לקלאסים הגלובליים: .pill ו-.chips משרתים
    27 מסכים, והרשת כאן היא צורה של המסך הזה בלבד. */
-[data-name="הקמה"] .avbig{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
-[data-name="הקמה"] .avbig button{aspect-ratio:1;border-radius:16px;overflow:hidden;padding:0;
+[data-name="הקמה"] .avbig{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+[data-name="הקמה"] .avbig button{aspect-ratio:1;border-radius:14px;overflow:hidden;padding:0;
   cursor:pointer;border:1.5px solid var(--line);background:var(--s2);display:block;transition:.15s}
 [data-name="הקמה"] .avbig button:hover{border-color:var(--line-2)}
 /* הטבעת הפנימית ולא רק גבול: ארבעה ריבועים צמודים בגודל זהה, וגבול
    ירוק לבדו על אחד מהם נבלע בין השלושה. */
 [data-name="הקמה"] .avbig button.on{border-color:var(--leaf);box-shadow:0 0 0 3px var(--leaf-bg)}
-[data-name="הקמה"] .avbig svg{display:block;width:100%;height:100%}
+[data-name="הקמה"] .avbig svg,[data-name="הקמה"] .avbig img{display:block;
+  width:100%;height:100%;object-fit:cover}
+[data-name="הקמה"] .avbig .up{border-style:dashed;border-color:var(--line-2);
+  color:var(--tx-3);font-size:17px;line-height:1;display:grid;place-items:center}
+[data-name="הקמה"] .avbig .up:hover{border-color:var(--tx-2);color:var(--tx-2)}
 [data-name="הקמה"] .occgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 [data-name="הקמה"] .occgrid button{border:1px solid var(--line);background:var(--s1);
   border-radius:12px;padding:13px 5px 11px;cursor:pointer;font-family:inherit;color:var(--tx-2);
@@ -1183,7 +1220,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1a663e4';
+window.NETA_BUILD = '96483d5';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1486,13 +1523,9 @@ window.NETA_CONFIG = {
        לו", "עבורו", "שמו", וקוד הפדיון). היא קובעת אותו כברירת מחדל
        גלויה ולא כהסקה שקטה: שורת הצ'יפים נשארת מתחתיה, מסומנת, ומי
        שבחר דמות בגלל צבע השיער רואה מיד מה נקבע ומתקן. -->
-  <div class="field" id="c-avfield"><label>בחר דמות</label>
-    <div class="avbig" id="c-avpick">
-      <button class="on" data-av="av-kid1" onclick="pickKidAv(this,'av-kid1')" aria-label="דמות 1"><svg viewBox="0 0 40 40"><use href="#av-kid1"/></svg></button>
-      <button data-av="av-kid2" onclick="pickKidAv(this,'av-kid2')" aria-label="דמות 2"><svg viewBox="0 0 40 40"><use href="#av-kid2"/></svg></button>
-      <button data-av="av-kid3" onclick="pickKidAv(this,'av-kid3')" aria-label="דמות 3"><svg viewBox="0 0 40 40"><use href="#av-kid3"/></svg></button>
-      <button data-av="av-kid4" onclick="pickKidAv(this,'av-kid4')" aria-label="דמות 4"><svg viewBox="0 0 40 40"><use href="#av-kid4"/></svg></button>
-    </div></div>
+  <div class="field" id="c-avfield"><label>בחר דמות, או העלה תמונה</label>
+    <div class="avbig" id="c-avpick"></div>
+    <p class="fine" id="c-upnote" style="margin-top:8px;display:none"></p></div>
   <label class="chk" id="c-undecidedbox"><input type="checkbox" id="c-undecided" onchange="toggleDesig(this)">
     <span>עוד לא החלטתי עבור מי, כרגע אני רק רוצה לשים כסף ליום עתידי</span></label>
   <button class="btn gap" style="margin-top:16px" onclick="toOccasion()">המשך</button>
@@ -2174,7 +2207,7 @@ window.NETA_CONFIG = {
        הראשונה היא נושא המסך וממילא אינה צריכה תווית; "רגעים שהזמינו
        אותך אליהם" נשארה, כי היא הכיוון האחר וכן צריכה שם. -->
   <div class="card" id="rel-list"></div>
-  <button class="btn gap-s" onclick="addRelative()">+ הוסף קרוב</button>
+  <button class="btn gap-s" onclick="openAddPerson()">+ הוסף אדם</button>
   <!-- כך זה ייראה כשקרובים יצטרפו. אותו דגם דוהה שיש בשלושת המצבים
        הריקים האחרים, ומאותו מקור: שורות אמיתיות של הרשימה עם שמות
        ההדגמה, ולא ציור שלהן. -->
@@ -2797,6 +2830,105 @@ window.NETA_CONFIG = {
   <button class="btn ghost" style="margin-top:9px" onclick="nameFixNo()">להשאיר כמו שזה</button>
 </section>
 
+
+<!-- ── הוספת אדם ────────────────────────────────────────────────
+     מסך אחד עם שישה פאנלים, ולא שישה מסכים: כל go(N) בקובץ נשען על
+     המספר, וזה הדפוס שכבר שימש את אשף ההקמה (cp-0..cp-2).
+
+     שני מסלולים יוצאים מהפאנל הראשון. "איתו" הוא מי שנוטע איתי,
+     והוא ממשיך לשלושה; "עבורו" הוא מי שנוטעים לו, והוא ממשיך
+     לשניים. שתי התשובות נבדלות במילה אחת, וזו בדיוק ההבחנה. -->
+<section class="screen center-v" data-name="הוספת אדם">
+  <div class="steps" id="ap-steps"></div>
+  <p class="steplbl" id="ap-lbl"></p>
+
+  <div id="ap-0">
+  <h2 class="gap" style="margin-bottom:18px">את מי תרצה להוסיף?</h2>
+  <div class="pick" id="ap-kind">
+    <button type="button" class="on" data-k="with" onclick="apKind(this,'with')">
+      <span class="fc"><svg viewBox="0 0 40 40"><use href="#av-granny2"/></svg></span>
+      <span class="nm"><b>מישהו שאני נוטע איתו</b>
+        <span>סבתא, דוד, חבר, אח, מישהו שארצה להזמין להשקיע איתי</span></span></button>
+    <button type="button" data-k="for" onclick="apKind(this,'for')">
+      <span class="fc"><svg viewBox="0 0 40 40"><use href="#av-kid2"/></svg></span>
+      <span class="nm"><b>מישהו שאני נוטע עבורו</b>
+        <span>קרוב יקר לי שארצה להשקיע בעתידו</span></span></button>
+  </div>
+  <button class="btn gap" style="margin-top:18px" onclick="apNext()">המשך</button>
+  <button class="link backlink" onclick="apExit()">חזרה</button>
+  </div><!-- /ap-0 -->
+
+  <div id="ap-1" style="display:none">
+  <h2 class="gap-x">את מי אתה מזמין?</h2>
+  <p class="sub gap">השם והתמונה הם מה שהילדים יראו לצידו.</p>
+  <div class="field"><label>השם</label>
+    <input type="text" id="ap-name" placeholder="למשל: מרים" oninput="apRelHint()"></div>
+  <!-- הקשר היה שדה טקסט חופשי שביקש מהמשתמש לנסח משפט. תשע מתוך עשר
+       התשובות הן אחת מהמילים כאן, והמשפט המלא נבנה מעצמו. "אחר" פותח
+       את השדה החופשי למי שבאמת צריך. -->
+  <div class="field"><label id="ap-rellbl">מה הוא לילדים שלך?</label>
+    <div class="chips" id="ap-rel"></div>
+    <input type="text" id="ap-relfree" placeholder="למשל: המורה של נועה"
+           style="margin-top:8px;display:none" oninput="apRelHint()">
+    <p class="fine" id="ap-relhint" style="margin-top:7px"></p></div>
+  <div class="field"><label>תמונה</label><div id="ap-avpick"></div></div>
+  <button class="btn gap" onclick="apNext()">המשך</button>
+  <button class="link backlink" onclick="apBack()">חזרה</button>
+  </div><!-- /ap-1 -->
+
+  <div id="ap-2" style="display:none">
+  <h2 class="gap-x" id="ap-2h">לאן לשלוח את ההזמנה?</h2>
+  <p class="sub gap">בוואטסאפ אם תזין מספר, ובאימייל אם תזין כתובת.</p>
+  <div class="field"><label>טלפון או אימייל</label>
+    <input type="text" id="ap-contact" placeholder="050-0000000 או name@mail.com"></div>
+  <p class="fine" id="ap-skip">אפשר גם בלי. הוא יישמר אצלך ברשימה, ותוכל לשלוח מתי שתרצה.</p>
+  <button class="btn gap" style="margin-top:18px" onclick="apNext()">המשך</button>
+  <button class="link backlink" onclick="apBack()">חזרה</button>
+  </div><!-- /ap-2 -->
+
+  <div id="ap-3" style="display:none">
+  <h2 class="gap-x" id="ap-3h">לאיזה רגע להזמין?</h2>
+  <p class="sub gap">הוא יראה כמה נצבר בו ומי עוד נוטע, ויוכל להשקיע בעצמו.</p>
+  <div class="field"><div class="chips" id="ap-plant"></div></div>
+  <div class="field"><label>משפט אישי · לא חובה</label>
+    <textarea id="ap-note" maxlength="240" style="min-height:58px"
+      placeholder="פתחתי משהו קטן לעתיד, ישמח אותי אם תהיה חלק."></textarea>
+    <p class="fine" style="margin-top:6px;color:#C9A2AC">מה שתכתוב כאן יראה כל מי שיפתח את הקישור.</p></div>
+  <button class="btn gap" id="ap-send" onclick="apSave()">שלח את ההזמנה</button>
+  <button class="link backlink" onclick="apBack()">חזרה</button>
+  </div><!-- /ap-3 -->
+
+  <div id="ap-4" style="display:none">
+  <h2 class="gap-x">עבור מי תרצה להשקיע?</h2>
+  <p class="sub gap">אפשר להוסיף אותו עכשיו ולפתוח לו רגע מתי שתרצה.</p>
+  <div class="field"><label>איך קוראים לו?</label>
+    <div class="row" style="gap:8px;align-items:stretch">
+      <input type="text" id="ap-kidname" placeholder="למשל: עופרי" style="flex:1">
+      <div class="chips" id="ap-kidsex" style="margin:0;flex:0 0 auto">
+        <button class="on" onclick="apKidSex(this,'m')">בן</button>
+        <button onclick="apKidSex(this,'f')">בת</button>
+      </div>
+    </div></div>
+  <div class="field"><label>בחר דמות, או העלה תמונה</label>
+    <div class="avbig" id="ap-kidav"></div>
+    <p class="fine" id="ap-upnote" style="margin-top:8px;display:none"></p></div>
+  <p class="fine">אחרי שתיפתח לו נטיעה, את השם כבר לא נוכל לשנות כאן: זו זהות הנהנה
+    בחשבון נעול. הדמות והמין נשארים פתוחים תמיד.</p>
+  <button class="btn gap" style="margin-top:16px" onclick="apSave()">המשך</button>
+  <button class="link backlink" onclick="apBack()">חזרה</button>
+  </div><!-- /ap-4 -->
+
+  <div id="ap-5" style="display:none">
+  <div class="es" style="min-height:0;padding:10px 4px 0">
+    <div class="art"><span class="esfaces one" aria-hidden="true"><span id="ap-doneav"></span></span></div>
+    <h3 id="ap-doneh">·</h3>
+    <p class="sub" style="margin:10px 0 20px">עוד לא נפתח לו רגע. אפשר עכשיו, ואפשר מתי שתרצה.</p>
+    <button class="btn" id="ap-doneb" onclick="apOpenMoment()">·</button>
+    <button class="link" onclick="apExit()">לא עכשיו</button>
+  </div>
+  </div><!-- /ap-5 -->
+</section>
+
 </div><!-- /stage -->
 <!-- BOTTOM TAB BAR -->
 <!-- סדר ה-DOM הוא ימין→שמאל: הראשון הוא הימני ביותר.
@@ -2912,9 +3044,51 @@ function markSexChip(x){
   document.querySelectorAll('#c-sex button').forEach(function(b,i){
     b.classList.toggle('on',(i===0)===(x==='m'))});
 }
+/* אותו בורר בשני המקומות שבהם בוחרים פרצוף לילד: שלב 1 בהקמה, ושלב
+   "עבור מי" בהוספת אדם. חמש משבצות, וההעלאה ראשונה כי היא הדבר היחיד
+   שאינו ברירת מחדל. */
+function kidAvGridHTML(sel,photo,onPick,onUp){
+  const shot=photo
+    ? '<button type="button" class="on" onclick="'+onUp+'"><img class="kidimg" src="'+attrText(photo.url)+'" alt=""></button>'
+    : '<button type="button" class="up" onclick="'+onUp+'" aria-label="העלה תמונה">＋</button>';
+  return shot+KID_AV.map(function(a){
+    return '<button type="button" class="'+(!photo&&a===sel?'on':'')+'" data-av="'+a+'" '+
+      'onclick="'+onPick+'(this,\''+a+'\')" aria-label="דמות"><svg viewBox="0 0 40 40">'+
+      '<use href="#'+a+'"/></svg></button>'}).join('');
+}
+/* בוחר קובץ, מכווץ אותו ל-256 ומחזיר blob. הכיווץ אינו קישוט: תמונה
+   מהטלפון היא 3 עד 8 מגה, וה-bucket חוסם מעל 2. */
+function pickPhotoInto(cb){
+  const inp=document.createElement('input');
+  inp.type='file';inp.accept='image/*';
+  inp.onchange=function(){
+    const f=inp.files&&inp.files[0];
+    if(!f)return;
+    shrinkImage(f,256).then(function(blob){
+      cb({blob:blob,url:URL.createObjectURL(blob)});
+    },function(){toast('לא הצלחנו לקרוא את התמונה')});
+  };
+  inp.click();
+}
+let cPhoto=null;
+function paintCAv(){
+  const box=document.getElementById('c-avpick');
+  if(box)box.innerHTML=kidAvGridHTML(cAvatar,cPhoto,'pickKidAv','cPickPhoto()');
+}
+function cPickPhoto(){
+  pickPhotoInto(function(ph){
+    if(cPhoto&&cPhoto.url)URL.revokeObjectURL(cPhoto.url);
+    cPhoto=ph;
+    const n=document.getElementById('c-upnote');
+    if(n){n.style.display='block';
+          n.textContent='התמונה תישמר יחד עם הנטיעה. אפשר להחליף אותה בכל שלב.'}
+    paintCAv();
+  });
+}
 function pickKidAv(el,a){
-  cAvatar=a;
-  [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+  cAvatar=a;cPhoto=null;
+  const n=document.getElementById('c-upnote'); if(n)n.style.display='none';
+  paintCAv();
   const x=AV_SEX[a];
   /* לא setSex: הצ'יפ נדלק ישירות, כי setSex מסמן את הכפתור שנלחץ
      ואיש לא לחץ על צ'יפ. שאר מה שהיא עושה כן דרוש, כי ההטיה
@@ -3917,8 +4091,10 @@ function startCreate(){
      בלי ששום צ'יפ נדלק, כלומר ברירת מחדל שאיש לא ראה ולכן איש לא
      תיקן. */
   cAvatar='av-kid1';
-  document.querySelectorAll('#c-avpick button').forEach(function(x,i){
-    x.classList.toggle('on',i===0)});
+  if(cPhoto&&cPhoto.url)URL.revokeObjectURL(cPhoto.url);
+  cPhoto=null;
+  const un=document.getElementById('c-upnote'); if(un)un.style.display='none';
+  paintCAv();
   const cu=document.getElementById('c-custom');
   if(cu){cu.value='';cu.style.display='none'}
   /* וכל שדות הנהנה והמורשה. השמות והכתובות האלה שייכים לרגע אחד, ואם
@@ -5134,6 +5310,9 @@ function plantingFromFlow(){
     beneficiary:goal.name,
     sex:desig?beneSex:null,
     avatar:desig?cAvatar:null,
+    /* הקובץ עצמו, לא נתיב. ההעלאה קורית ב-beneficiaryId, כי רק שם
+       ידוע אם בכלל יש ילד לשמור עליו. */
+    photo:desig?(cPhoto&&cPhoto.blob)||null:null,
     targetDate:cDate?cDate.value:null,
     targetYear:d?d.getFullYear():null,
     targetMonth:d?d.getMonth():null,
@@ -6446,6 +6625,242 @@ function chooseAv(el,a){
   pickedAv=a;
   [...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)});
 }
+/* ── הוספת אדם ────────────────────────────────────────────────────
+   שני מסלולים מפאנל אחד. apKindMode הוא 'with' (מי שנוטע איתי) או
+   'for' (מי שנוטעים עבורו), והוא קובע גם את אורך הסרגל וגם לאן
+   "המשך" מוביל.
+
+   הפאנלים הם מסך אחד ולא שישה, כי כל go(N) בקובץ נשען על המספר. */
+const AP_SCREEN=function(){
+  return screens.findIndex(function(x){return x.dataset.name==='הוספת אדם'});
+};
+const AP_WITH=['ap-0','ap-1','ap-2','ap-3'];
+const AP_FOR=['ap-0','ap-4','ap-5'];
+const AP_LBL_WITH=['את מי','מי זה','לאן','לאיזה רגע'];
+const AP_LBL_FOR=['את מי','עבור מי','נוסף'];
+const AP_RELS=['סבתא','סבא','דודה','דוד','אח','אחות','חבר','אחר'];
+let apKindMode='with',apStep=0,apRel='סבתא',apAv='av-granny2',
+    apKidAv='av-kid1',apKidSexV='m',apPhoto=null,apPlant='';
+function apPanels(){return apKindMode==='for'?AP_FOR:AP_WITH}
+function apShow(){
+  const list=apPanels();
+  ['ap-0','ap-1','ap-2','ap-3','ap-4','ap-5'].forEach(function(id){
+    const el=document.getElementById(id);
+    if(el)el.style.display=(list[apStep]===id)?'block':'none';
+  });
+  const lbls=apKindMode==='for'?AP_LBL_FOR:AP_LBL_WITH;
+  document.getElementById('ap-steps').innerHTML=
+    list.map(function(_,i){return '<i class="'+(i<=apStep?'on':'')+'"></i>'}).join('');
+  txt('ap-lbl','שלב '+(apStep+1)+' מתוך '+list.length+' · '+lbls[apStep]);
+  document.querySelector('.stage').scrollTo?.(0,0);
+}
+function openAddPerson(){
+  apKindMode='with';apStep=0;apRel='סבתא';apAv='av-granny2';
+  apKidAv='av-kid1';apKidSexV='m';apPhoto=null;apPlant='';
+  document.querySelectorAll('#ap-kind button').forEach(function(x,i){
+    x.classList.toggle('on',i===0)});
+  ['ap-name','ap-relfree','ap-contact','ap-kidname'].forEach(function(id){
+    const el=document.getElementById(id); if(el)el.value='';
+  });
+  const nt=document.getElementById('ap-note'); if(nt)nt.value='';
+  document.getElementById('ap-relfree').style.display='none';
+  document.getElementById('ap-upnote').style.display='none';
+  document.getElementById('ap-rel').innerHTML=AP_RELS.map(function(r){
+    return '<button type="button" class="'+(r===apRel?'on':'')+'" '+
+      'onclick="apPickRel(this,\''+r+'\')">'+r+'</button>'}).join('');
+  document.getElementById('ap-avpick').innerHTML=avpickHTML('av-granny2');
+  pickedAv='av-granny2';
+  apPaintKidAv();
+  apRelHint();
+  document.querySelectorAll('#ap-kidsex button').forEach(function(x,i){
+    x.classList.toggle('on',i===0)});
+  apShow();go(AP_SCREEN());
+}
+function apKind(el,k){
+  apKindMode=k;
+  [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+}
+function apPickRel(el,r){
+  apRel=r;
+  [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+  document.getElementById('ap-relfree').style.display=(r==='אחר')?'block':'none';
+  apRelHint();
+}
+/* "סבתא של נועה ושל דניאל" נבנה מהצ'יפ ומהילדים שיש, ולא מהמשתמש.
+   בלי ילדים הוא נשאר הצ'יפ לבדו, כי "סבתא של" בלי שם אינו משפט. */
+function apRelText(){
+  if(apRel==='אחר')return (fieldVal('ap-relfree')||'קרוב משפחה');
+  const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
+  const kids=kidGroups(own).groups.map(function(g){return g.kid}).filter(Boolean);
+  if(!kids.length)return apRel;
+  const last=kids.slice(0,3);
+  return apRel+' של '+last.map(function(k,i){return (i?'של ':'')+k}).join(' ו');
+}
+function apRelHint(){
+  const nm=(fieldVal('ap-name')||'').trim();
+  txt('ap-relhint',nm?(nm+' יופיע כ"'+apRelText()+'".'):'');
+}
+function apKidSex(el,x){
+  apKidSexV=x;
+  [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+}
+/* ארבע הדמויות, ולפניהן משבצת ההעלאה. היא ראשונה ולא אחרונה כי היא
+   הדבר היחיד כאן שאינו ברירת מחדל, ומי שיש לו תמונה מחפש אותה. */
+function apPaintKidAv(){
+  const box=document.getElementById('ap-kidav');
+  if(box)box.innerHTML=kidAvGridHTML(apKidAv,apPhoto,'apPickKidAv','apPickPhoto()');
+}
+function apPickKidAv(el,a){
+  apKidAv=a;apPhoto=null;
+  document.getElementById('ap-upnote').style.display='none';
+  apPaintKidAv();
+}
+/* קובץ מקומי, מכווץ בדפדפן ל-256 ומועלה כ-JPEG. הכיווץ אינו קישוט:
+   תמונה מהטלפון היא 3 עד 8 מגה, וה-bucket חוסם מעל 2. */
+function apPickPhoto(){
+  pickPhotoInto(function(ph){
+    if(apPhoto&&apPhoto.url)URL.revokeObjectURL(apPhoto.url);
+    apPhoto=ph;
+    const n=document.getElementById('ap-upnote');
+    n.style.display='block';
+    n.textContent='התמונה תישמר כשתמשיך. אפשר להחליף אותה בכל שלב.';
+    apPaintKidAv();
+  });
+}
+/* ריבוע ממורכז ולא הקטנה של הפרופורציות: הפרצוף מוצג בעיגול בכל
+   מקום באפליקציה, ותמונה רחבה הייתה נחתכת שם ממילא — עדיף לחתוך
+   כאן, פעם אחת, ולשמור רק את מה שנראה. */
+function shrinkImage(file,size){
+  return new Promise(function(res,rej){
+    const img=new Image(),url=URL.createObjectURL(file);
+    img.onload=function(){
+      const c=document.createElement('canvas');c.width=c.height=size;
+      const g=c.getContext('2d');
+      const m=Math.min(img.width,img.height);
+      g.drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,size,size);
+      URL.revokeObjectURL(url);
+      c.toBlob(function(b){b?res(b):rej()}, 'image/jpeg', .82);
+    };
+    img.onerror=function(){URL.revokeObjectURL(url);rej()};
+    img.src=url;
+  });
+}
+function apBack(){if(apStep>0){apStep--;apShow()}else apExit()}
+function apExit(){openPeople()}
+function apNext(){
+  const list=apPanels();
+  if(apStep===0){apStep=1;apShow();return}
+  if(apKindMode==='with'){
+    if(apStep===1){
+      if(!fieldVal('ap-name')){toast('צריך שם');document.getElementById('ap-name').focus();return}
+      apAv=pickedAv;
+      txt('ap-2h','לאן לשלוח ל'+fieldVal('ap-name')+' את ההזמנה?');
+      apStep=2;apShow();return;
+    }
+    if(apStep===2){
+      const v=fieldVal('ap-contact');
+      if(v&&!chanOf(v)){toast('צריך טלפון או כתובת אימייל תקינה');return}
+      /* בלי רגע לצרף אליו אין מה לשאול בשלב הבא, והשמירה קורית כאן. */
+      const opts=invitablePlantings();
+      if(!opts.length){apSave();return}
+      txt('ap-3h','לאיזה רגע להזמין את '+fieldVal('ap-name')+'?');
+      apPlant=opts[0].key;
+      document.getElementById('ap-plant').innerHTML=opts.map(function(o,i){
+        return '<button type="button" class="'+(i?'':'on')+'" '+
+          'onclick="apPlant=\''+o.key+'\';markChip(this)">'+o.icon+' '+o.name+'</button>'}).join('');
+      txt('ap-send',v?'שלח את ההזמנה':'הוסף');
+      apStep=3;apShow();return;
+    }
+  }
+  if(apStep>=list.length-1)return;
+  apStep++;apShow();
+}
+/* השמירה, לשני המסלולים. "איתו" נשען על addRelative שכבר קיימת
+   ועל sendInvite; "עבורו" יוצר ישות ב-beneficiaries, ומעלה תמונה
+   כשיש. */
+function apSave(){
+  if(apKindMode==='for')return apSaveKid();
+  const nm=fieldVal('ap-name');
+  if(!nm){toast('צריך שם');return}
+  const c=fieldVal('ap-contact');
+  const r={av:pickedAv||apAv,name:nm,rel:apRelText(),g:'m',status:'none',
+           chan:chanOf(c)||'wa',contact:c,note:fieldVal('ap-note')};
+  const done=function(saved){
+    if(saved&&saved.id)r.id=saved.id;
+    relatives.push(r);
+    pickedPlant=apPlant;
+    if(c)sendInvite(r);
+    else{buildRelatives();openPeople();toast(r.name+' נוסף לקרובים שלך')}
+  };
+  if(liveAccount()){
+    netaServer.addRelative({name:r.name,relation:r.rel,avatar:r.av,
+                            contact:c,channel:r.chan==='wa'?'whatsapp':'email'})
+      .then(done)
+      .catch(function(e){ask('הקרוב לא נשמר',(e&&e.message)||'לא הצלחנו להגיע לשרת.','הבנתי')});
+    return;
+  }
+  done();
+}
+function apSaveKid(){
+  const nm=fieldVal('ap-kidname');
+  if(!nm){toast('צריך שם');document.getElementById('ap-kidname').focus();return}
+  const src=netaSource();
+  const finish=function(av){
+    apKidSaved={name:nm,av:av||apKidAv};
+    document.getElementById('ap-doneav').innerHTML=kidFaceHTML(apKidSaved.av,64);
+    txt('ap-doneh',nm+' נוסף');
+    txt('ap-doneb','פתח ל'+nm+' רגע');
+    apStep=2;apShow();
+  };
+  if(!src.addBeneficiary){finish(apKidAv);return}
+  const btn=document.querySelector('#ap-4 .btn');
+  if(btn){btn.disabled=true;btn.style.opacity='.55';btn.textContent='שומר…'}
+  src.addBeneficiary(nm,apKidSexV,apKidAv,apPhoto&&apPhoto.blob)
+    .then(function(b){
+      if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='המשך'}
+      apKidId=b&&b.id||null;
+      return buildHomeSummary().then(function(){finish(b&&b.avatar)},
+                                     function(){finish(b&&b.avatar)});
+    })
+    .catch(function(e){
+      if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='המשך'}
+      ask('לא נשמר',(e&&e.message)||'לא הצלחנו להגיע לשרת.','הבנתי');
+    });
+}
+let apKidSaved=null,apKidId=null;
+function apOpenMoment(){
+  startCreate();
+  if(apKidSaved){
+    const f=document.getElementById('c-name');
+    if(f){f.value=apKidSaved.name;f.dispatchEvent(new Event('input'))}
+    if(apKidSaved.av&&KID_AV.indexOf(apKidSaved.av)>=0){
+      const b=document.querySelector('#c-avpick button[data-av="'+apKidSaved.av+'"]');
+      if(b)pickKidAv(b,apKidSaved.av);
+    }
+    markSexChip(apKidSexV);beneSex=apKidSexV;
+  }
+}
+/* פרצוף אחד, משתי הצורות שהעמודה יכולה להחזיק. תמונה שהנתיב שלה
+   עוד לא נחתם מוצגת כדמות עד שהוא יגיע, ולא כעיגול ריק. */
+function kidFaceHTML(av,px){
+  const url=(av&&av.indexOf('av-')!==0)?photoUrl(av):'';
+  if(url)return '<img class="kidimg" src="'+attrText(url)+'" alt="" width="'+px+'" height="'+px+'">';
+  const id=(av&&av.indexOf('av-')===0)?av:'av-kid1';
+  return '<svg viewBox="0 0 40 40" width="'+px+'" height="'+px+'"><use href="#'+id+'"/></svg>';
+}
+/* קישורים חתומים, בבת אחת אחרי טעינת המודל ולא בזמן הציור: הציור
+   סינכרוני, ותמונה שמגיעה אחריו הייתה דורשת ציור שני. */
+const photoCache={};
+function photoUrl(path){return photoCache[path]||''}
+function signPhotos(paths){
+  const need=(paths||[]).filter(function(p){
+    return p&&p.indexOf('av-')!==0&&!photoCache[p]});
+  const src=netaSource();
+  if(!need.length||!src.signPhotos)return Promise.resolve();
+  return src.signPhotos(need).then(function(map){
+    Object.keys(map||{}).forEach(function(k){photoCache[k]=map[k]});
+  },function(){});
+}
 function addRelative(){
   pickedAv='av-granny2';
   sheetForm('הוסף קרוב',
@@ -7423,6 +7838,55 @@ function netaBackend(cfg){
                              name:label,approver:'self'})}).catch(remember);
     },
 
+    /* ילד שנוסף בלי נטיעה. התמונה מועלית קודם, כי הנתיב שלה הוא
+       הערך שנשמר ב-avatar — ואם ההעלאה נכשלת נשמרת הדמות שנבחרה
+       ולא נתיב לקובץ שאינו שם. */
+    addBeneficiary:function(name,sex,avatar,blob){
+      const uid=sess&&sess.user?sess.user.id:null;
+      const nm=String(name||'').trim();
+      if(!uid||!nm)return Promise.reject(new Error('חסר שם או חשבון'));
+      const put=blob?netaServer.uploadPhoto(uid,blob).catch(function(){return null})
+                    :Promise.resolve(null);
+      return put.then(function(path){
+        return call('/rest/v1/beneficiaries',{method:'POST',
+          headers:{Prefer:'return=representation'},
+          body:JSON.stringify({created_by:uid,name:nm,sex:sex||null,
+                               avatar:path||avatar||null})})
+          .then(function(rows){return rows&&rows[0]?rows[0]:null});
+      });
+    },
+    /* ‏POST לאובייקט חדש. שם הקובץ נגזר מ-crypto ולא מהשם של הילד:
+       שם ילד בנתיב הוא מידע שדולף בכל קישור חתום. */
+    uploadPhoto:function(uid,blob){
+      const rnd=(self.crypto&&self.crypto.randomUUID)?self.crypto.randomUUID()
+               :String(Date.now())+Math.random().toString(16).slice(2);
+      const path=uid+'/'+rnd+'.jpg';
+      return fetch(base+'/storage/v1/object/kid-photos/'+path,{
+        method:'POST',
+        headers:{apikey:cfg.key,
+                 Authorization:'Bearer '+((sess&&sess.access_token)||''),
+                 'Content-Type':'image/jpeg','x-upsert':'false'},
+        body:blob
+      }).then(function(r){
+        if(!r.ok)throw new Error('העלאה נכשלה');
+        return path;
+      });
+    },
+    /* חתימה אחת לכל הנתיבים יחד. הקישור תקף לשעה, וזה מספיק
+       לסשן אחד; מי שמשאיר את המסך פתוח יותר יקבל אותו מחדש
+       בטעינה הבאה. */
+    signPhotos:function(paths){
+      return call('/storage/v1/object/sign/kid-photos',
+        {method:'POST',body:JSON.stringify({expiresIn:3600,paths:paths})})
+        .then(function(rows){
+          const out={};
+          (rows||[]).forEach(function(r){
+            if(r&&r.path&&r.signedURL)out[r.path]=base+'/storage/v1'+r.signedURL;
+          });
+          return out;
+        });
+    },
+
     /* הילד לפני הנטיעה, כדי שהנטיעה תוכל להצביע עליו. נכשל בשקט
        ומחזיר null: רגע שנשמר בלי קישור לילד עדיין רגע תקין ומוצג
        נכון, ואילו נטיעה שנפלה בגלל שורה נלווית היא בדיוק התקלה
@@ -7439,13 +7903,19 @@ function netaBackend(cfg){
                     '&name=eq.'+encodeURIComponent(nm),{})
           .then(function(rows){return (rows&&rows[0])||null});
       };
+      /* התמונה מועלית פעם אחת, לפני החיפוש, ורק אם באמת נבחרה. אם
+         ההעלאה נכשלת נשמרת הדמות שנבחרה ולא נתיב לקובץ שאינו שם. */
+      const up=p.photo?netaServer.uploadPhoto(uid,p.photo).catch(function(){return null})
+                      :Promise.resolve(null);
+      return up.then(function(path){
+      const want=path||p.avatar;
       return find().then(function(r){
         if(r){
           /* מה שנבחר בשלב 1 מעדכן את הילד, ומשם הטריגר מפיץ את זה
              לכל הנטיעות שלו. זו כל הנקודה בישות. */
           const patch={};
           if(p.sex&&p.sex!==r.sex)patch.sex=p.sex;
-          if(p.avatar&&p.avatar!==r.avatar)patch.avatar=p.avatar;
+          if(want&&want!==r.avatar)patch.avatar=want;
           if(!Object.keys(patch).length)return r.id;
           return call('/rest/v1/beneficiaries?id=eq.'+r.id,
             {method:'PATCH',body:JSON.stringify(patch)})
@@ -7454,8 +7924,9 @@ function netaBackend(cfg){
         return call('/rest/v1/beneficiaries',{method:'POST',
           headers:{Prefer:'return=representation'},
           body:JSON.stringify({created_by:uid,name:nm,
-                               sex:p.sex||null,avatar:p.avatar||null})})
+                               sex:p.sex||null,avatar:want||null})})
           .then(function(rr){return rr&&rr[0]?rr[0].id:null});
+      });
       })
       /* מרוץ בין שתי לשוניות נופל על האינדקס הייחודי. חיפוש שני
          מוצא את מי שהספיק להיווצר. */
@@ -8112,6 +8583,13 @@ function buildHomeSummary(){
        לפי מי שהכסף מחכה לו ולא לפי רגע: בר מצווה וגיוס של אותו ילד
        הם פריט אחד, כי השאלה כאן היא כמה יש לו ולא כמה רגעים פתוחים. */
     const fuAll=fuItems(own);
+    /* הקישורים החתומים מגיעים אחרי הציור הראשון, ולכן הציור נקרא
+       שוב כשהם כאן. התנאי הוא "מה שעוד לא היה במטמון והגיע", ולא
+       "יש קישור": השני נכון גם בציור השני, וזו לולאה אינסופית. */
+    const missing=photoPaths(fuAll).filter(function(x){return !photoUrl(x)});
+    if(missing.length)signPhotos(missing).then(function(){
+      if(missing.some(function(x){return photoUrl(x)}))buildHomeSummary();
+    });
     if(!fuAll.some(function(x){return x.id===fuPick}))fuPick=fuDefault(fuAll);
     const sel=fuAll.filter(function(x){return x.id===fuPick})[0]||fuAll[0];
     document.getElementById('fu-pick').innerHTML=
@@ -8543,6 +9021,12 @@ function fuDefault(items){
 }
 let fuPick='';
 function pickFuture(id){fuPick=id;buildHomeSummary();}
+/* נתיבי התמונות שברשימה. הם נחתמים לפני הציור ולא בתוכו, ולכן
+   הציור נשאר סינכרוני. */
+function photoPaths(items){
+  return (items||[]).map(function(x){return x.av}).filter(function(a){
+    return a&&a.indexOf('av-')!==0});
+}
 function fuPickHTML(items,sel){
   /* משישה ואילך השורה גוללת וצ'יפ ההוספה ממילא מחוץ למסך, כלומר
      הוא לא מעודד איש. מי שיש לו חמישה כבר לא צריך תזכורת. */
@@ -8551,7 +9035,7 @@ function fuPickHTML(items,sel){
       '<span class="fu-ring">+</span><span>הוסף</span></button>' : '';
   return items.map(function(it){
     const face=it.av
-      ? '<span class="fu-ring"><svg viewBox="0 0 40 40"><use href="#'+it.av+'"/></svg></span>'
+      ? '<span class="fu-ring">'+kidFaceHTML(it.av,40)+'</span>'
       : '<span class="fu-ring emoji">'+it.icon+'</span>';
     /* ✎ רק על מי שנבחר, ורק כשיש לו ישות במסד. הוא הדבר היחיד
        במסך שמוביל אל הילד עצמו ולא אל הרגעים שלו. */
