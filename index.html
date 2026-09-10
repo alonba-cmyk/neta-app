@@ -99,7 +99,9 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
   border:1px solid var(--line);border-radius:10px;padding:10px 12px;
   cursor:pointer;transition:border-color .15s}
 .wait-row:hover{border-color:var(--line-2)}
-.wait-row .ic{font-size:14px;color:var(--tx-3);flex-shrink:0;line-height:1}
+.wait-row .ic{font-size:14px;color:var(--tx-3);flex-shrink:0;line-height:0;
+  display:grid;place-items:center;width:15px}
+.wait-row .ic svg{display:block}
 .wait-row>div{flex:1;min-width:0}
 .wait-row b{font-size:12px;font-weight:500;display:block}
 .wait-row .s{font-size:10.5px;color:var(--tx-3);display:block;margin-top:1px}
@@ -755,7 +757,18 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   padding:9px 12px 4px;background:rgba(18,20,17,.94);backdrop-filter:blur(9px);
   border-top:1px solid var(--line)}
 .tab{flex:1;background:none;border:none;font-family:inherit;color:var(--tx-3);cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;gap:4px;font-size:9.5px;padding:3px 0;transition:.15s}
+  display:flex;flex-direction:column;align-items:center;gap:4px;font-size:9.5px;padding:3px 0;
+  transition:.15s;position:relative}
+/* נקודה ולא מספר: בקשת אישור אחת או שתיים הן המקסימום הריאלי, והמספר
+   אינו משנה מה תעשה. היא נדלקת כשיש משהו שממתין לתשובה שלך, ונכבית
+   כשענית — לא כשנכנסת לטאב. זו משימה ולא חדשות, וטאב שנצפה אינו
+   תשובה.
+
+   בצד השמאלי, כי בממשק ימין-לשמאל זו הפינה החיצונית של האייקון.
+   טבעת ברוחב הרקע מפרידה אותה מהאייקון שמתחתיה. */
+.tab.pend::after{content:"";position:absolute;top:0;left:calc(50% - 15px);
+  width:7px;height:7px;border-radius:50%;background:var(--leaf);
+  box-shadow:0 0 0 2.5px var(--bg)}
 .tab .lb{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
   min-height:24px;line-height:1.25}
 .tab .lb span{white-space:nowrap}
@@ -1132,7 +1145,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'a26a5e3';
+window.NETA_BUILD = '4b751b9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1789,15 +1802,15 @@ window.NETA_CONFIG = {
 
 <!-- 9 ACTIVITY / פעילות -->
 <section class="screen" data-name="פעילות">
-  <!-- אותה הזמנה, נעוצה בראש הפיד. מחוץ ל-act-full, כי הוא נסגר כשאין
-       פעילות — ודווקא אז, בחשבון שעוד לא קרה בו כלום, ההזמנה היא הדבר
-       היחיד שיש להראות. ירוקה כאן ולא בבית: בפיד היא עומדת בראש רשימה
-       של דברים שכבר קרו, והצבע הוא מה שאומר שזה עוד פתוח. -->
-  <div class="wait-row leaf gap" id="later-act" style="display:none" onclick="openLaterInvite()">
-    <span class="ic">✉</span>
-    <div><b id="later-act-t">·</b><span class="s" id="later-act-s">·</span></div>
-    <span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>
-  </div>
+  <!-- אותן הזמנות, נעוצות בראש הפיד. מחוץ ל-act-full, כי הוא נסגר
+       כשאין פעילות — ודווקא אז, בחשבון שעוד לא קרה בו כלום, הן הדבר
+       היחיד שיש להראות. ומעל שורת התאריך ולא בתוכה: הן אינן "קרו ביום
+       שלישי" אלא פתוחות עכשיו, ובתוך הכרונולוגיה הן היו יורדות מתחת
+       לקיפול ביום שקרוב מפקיד 50 ₪.
+
+       ירוקות כאן ובבית כאחד: בשני המקומות הן עומדות בין דברים סגורים,
+       והצבע הוא מה שאומר שזה עוד פתוח. -->
+  <div id="pend-act" class="gap" style="display:none"></div>
   <!-- ומה שכבר קרה שם. מסך הפעילות של מי שעוד לא הצטרפה היה ריק, ומה
        שמילא אותו היה שקרי: "הכסף עובד גם כשלא קורה כלום" נאמר למי שאין
        לה כסף שעובד, ומתחתיו דגם ההדגמה של משפחה אחרת לגמרי.
@@ -2031,15 +2044,10 @@ window.NETA_CONFIG = {
     <p class="sub" style="color:#C4AE84" id="resume-t">בר המצווה של דניאל · 100 ₪ בחודש. נשאר רק לחבר אמצעי תשלום כדי שההפקדה הראשונה תצא.</p>
     <button class="btn" style="margin-top:12px" onclick="resumeOnbo()">השלם והפעל</button>
   </div>
-  <!-- מישהו ציין את הכתובת שלי כהורה. כרטיס ולא קפיצה למסך: זו החלטה
-       על הילד שלי, לא הודעה שצריך לסלק, והיא צריכה להמתין בסבלנות עד
-       שאבחר לפתוח אותה. -->
-  <div class="card gap" id="guard-card" style="display:none;background:var(--leaf-bg);border-color:var(--leaf-line)">
-    <div class="row gap-s"><span class="ic-lf" style="color:var(--leaf);line-height:0"><svg width="15" height="18" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span>
-      <b style="font-size:13px;font-weight:500;color:var(--leaf)">ממתין לאישור שלך</b></div>
-    <p class="sub" style="color:var(--leaf-soft)" id="guard-card-t"></p>
-    <button class="btn" style="margin-top:12px" onclick="openGuardian()">לראות ולהחליט</button>
-  </div>
+  <!-- כרטיס "ממתין לאישור שלך" ישב כאן, בראש המסך מעל הכול. הוא ירד
+       לתחתית, אל pend-home, ואיתו התאחד עם ההזמנה שנדחתה: שתיהן
+       "מישהו מחכה לתשובה שלך", שתיהן ישבו בשני מקומות שונים בשתי
+       צורות שונות, ושתיהן נכתבו בשני זמנים. -->
   <div id="kin-full">
   <div class="summary">
     <div class="s-row">
@@ -2104,13 +2112,12 @@ window.NETA_CONFIG = {
     <p class="fine">100 ₪ בחודש יהפכו לכ-23,500 ₪ בעוד 13 שנה.<br>אפשר לשנות בכל עת.</p>
     <div class="gsample tall" id="kin-ghost" aria-hidden="true"></div>
   </div>
-  <div id="later-home" style="display:none">
-    <p class="eyebrow" style="margin-top:22px">ועוד דבר אחד</p>
-    <div class="wait-row" id="later-card" onclick="openLaterInvite()">
-      <span class="ic">✉</span>
-      <div><b id="later-card-t">ההזמנה ממתינה</b><span class="s" id="later-card-s">·</span></div>
-      <span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>
-    </div>
+  <!-- מה שממתין לתשובה שלך: בקשת אישור כהורה, הזמנה שנדחתה, או
+       שתיהן. השורות נבנות ב-pendRowsHTML ומוזרקות לשני המקומות מאותו
+       מקור, כדי שלא יהיו שוב שתי צורות לאותו דבר. -->
+  <div id="pend-home" style="display:none">
+    <p class="eyebrow" style="margin-top:22px" id="pend-home-h">ועוד דבר אחד</p>
+    <div id="pend-home-list"></div>
   </div>
 </section>
 
@@ -2764,7 +2771,7 @@ window.NETA_CONFIG = {
   <button class="tab" onclick="openFuture()"><span class="ic"><svg width="13" height="18.5" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>העתיד</span><span>שלנו</span></span></button>
   <button class="tab center" onclick="startCreate()"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg></span><span class="lb"><span>נטיעה</span></span></button>
   <button class="tab" onclick="openPeople()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-kin"/></svg></span><span class="lb"><span>הקרובים</span><span>שלי</span></span></button>
-  <button class="tab" onclick="go(9)"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></span><span class="lb"><span>פעילות</span></span></button>
+  <button class="tab" id="tab-act" onclick="go(9)"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></span><span class="lb"><span>פעילות</span></span></button>
 </nav>
 <div class="home-indicator"><span></span></div>
 
@@ -3078,25 +3085,71 @@ function checkGuardianRequests(){
    הנוסח שונה בין השניים בכוונה. בבית זו שורה במצב עומד ("ההזמנה של
    אלון ממתינה"), ובפיד זו שורה ברשימה של דברים שקרו, ולכן היא נכתבת
    כמו שכנותיה ("אלון הזמין אותך"). */
-function paintLaterCard(){
-  const home=document.getElementById('later-home');
-  const act=document.getElementById('later-act');
-  /* הדגם הדוהה שבתחתית המסך הריק מראה "מה יופיע כאן". כשיש הזמנה
-     ממתינה כבר יש מה שיופיע כאן, והוא יורד: שתי כרטיסיות דהויות בין
-     הכפתור של גל לבין ההזמנה שלה הן רעש בין שני דברים אמיתיים. */
-  /* ההזמנה עברה למסך 14 יחד עם תפקיד הבית, ולכן הדגם הדוהה שצריך
-     לרדת מפניה הוא זה שלידה עכשיו, kin-ghost, ולא זה שנשאר במסך
-     "העתיד שלנו" ואינו נמצא איתה על אותו מסך. */
+/* ההזמנה שנדחתה, אחרי שהשם חזר מהשרת. עד אז היא null ואינה מצוירת:
+   שורה בלי שם אינה אומרת דבר. */
+let laterRow=null;
+/* שורה אחת של "מישהו מחכה לתשובה שלך". שני הסוגים נכתבים כאן ולא
+   בשני מקומות, כי המקור היחיד הוא מה שמנע מהם עד היום להיראות אותו
+   דבר. */
+function pendRowHTML(it){
+  const ic=it.kind==='guard'
+    ? '<svg width="12" height="15" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg>'
+    : '✉';
+  return '<div class="wait-row leaf" onclick="'+it.act+'">'+
+    '<span class="ic">'+ic+'</span>'+
+    '<div><b>'+attrText(it.t)+'</b><span class="s">'+attrText(it.s)+'</span></div>'+
+    '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>'+
+    '</div>';
+}
+/* בקשות האישור קודמות להזמנה שנדחתה. זו החלטה על הילד שלך, וזו הזמנה
+   להצטרף לרגע של מישהו אחר. */
+function pendItems(){
+  const out=guardQueue.map(function(r){
+    const who=firstName(r.opened_by||'')||'קרוב';
+    const ask=r.opened_by_sex==='f'?'מבקשת':r.opened_by_sex==='m'?'מבקש':'מבקש/ת';
+    const kid=r.beneficiary_name||'';
+    return {kind:'guard',act:'openGuardian()',
+            t:who+' '+ask+' את האישור שלך',
+            s:kid?('לנטיעה לעתיד של '+kid):'לנטיעה שפתח'};
+  });
+  if(laterRow)out.push(laterRow);
+  return out;
+}
+function paintPending(){
+  const items=pendItems();
+  const home=document.getElementById('pend-home');
+  const list=document.getElementById('pend-home-list');
+  const act=document.getElementById('pend-act');
+  const tab=document.getElementById('tab-act');
+  const html=items.map(pendRowHTML).join('');
+  if(home&&list){
+    home.style.display=items.length?'':'none';
+    list.innerHTML=html;
+    /* "ועוד דבר אחד" נכון לאחד. בשניים הוא סופר לא נכון. */
+    txt('pend-home-h',items.length>1?'ועוד שני דברים':'ועוד דבר אחד');
+  }
+  if(act){act.style.display=items.length?'':'none';act.innerHTML=html}
+  if(tab)tab.classList.toggle('pend',items.length>0);
+  /* הדגם הדוהה שבתחתית המסך הריק מראה "מה יופיע כאן". כשמשהו ממתין
+     כבר יש מה שיופיע כאן, והוא יורד: כרטיסייה דהויה בין הכפתור לבין
+     ההזמנה היא רעש בין שני דברים אמיתיים. */
   const ghost=document.getElementById('kin-ghost');
+  if(ghost)ghost.style.display=items.length?'none':'';
+}
+/* ההזמנה שנדחתה, בשני המקומות שבהם היא מופיעה. השם של מי שהזמין נשאב
+   מהשרת פעם אחת.
+
+   הנוסח כאן הוא של רשימה ("אלון הזמין אותך") ולא של מצב עומד
+   ("ההזמנה של אלון ממתינה"): מאז שהשורה זהה בבית ובפיד, ניסוח אחד
+   צריך לעבוד בשניהם, וזה שמתאר מה מישהו עשה עובד בשניהם.  */
+function paintLaterCard(){
   const hide=function(){
-    if(home)home.style.display='none';
-    if(act)act.style.display='none';
-    if(ghost)ghost.style.display='';
+    laterRow=null;
     const pk=document.getElementById('later-peek');
     if(pk)pk.style.display='none';
-    peekOn=false;syncActEmpty();
+    peekOn=false;paintPending();syncActEmpty();
   };
-  if(!home&&!act)return;
+  if(!document.getElementById('pend-home')&&!document.getElementById('pend-act'))return;
   const t=laterInvite();
   if(!t||!liveAccount()||!netaServer||!netaServer.sharedSummary){hide();return}
   netaServer.sharedSummary(t).then(function(r){
@@ -3106,13 +3159,9 @@ function paintLaterCard(){
     const sex=r.inviter_sex;
     const to=kid?('לנטיעה לעתיד של '+kid)
       :(sex==='f'?'לנטיעה שהיא פתחה':sex==='m'?'לנטיעה שהוא פתח':'לנטיעה שנפתחה');
-    txt('later-card-t','ההזמנה של '+by+' ממתינה');
-    txt('later-card-s',to);
-    txt('later-act-t',by+' '+(sex==='f'?'הזמינה':sex==='m'?'הזמין':'הזמין/ה')+' אותך');
-    txt('later-act-s',to);
-    if(home)home.style.display='';
-    if(act)act.style.display='';
-    if(ghost)ghost.style.display='none';
+    laterRow={kind:'later',act:'openLaterInvite()',
+              t:by+' '+(sex==='f'?'הזמינה':sex==='m'?'הזמין':'הזמין/ה')+' אותך',s:to};
+    paintPending();
     paintLaterPeek(t,r.occasion);
   },function(){hide()});
 }
@@ -3192,18 +3241,9 @@ function openLaterInvite(){
   const t=laterInvite();
   if(t)openShared(t);
 }
-function paintGuardCard(){
-  const box=document.getElementById('guard-card');
-  if(!box)return;
-  const r=guardQueue[0];
-  if(!r){box.style.display='none';return}
-  box.style.display='';
-  txt('guard-card-t', guardOpened(r)+' נטיעה לעתיד של '+(r.beneficiary_name||'הילד')+', '+
-      (r.guardian_is_parent===false
-        ? 'ורשם אותך כמי שיקבל את הכסף במועד.'
-        : 'וציין אותך כהורה.')+
-      (guardQueue.length>1?' ועוד '+(guardQueue.length-1)+'.':''));
-}
+/* הכרטיס הנפרד ירד, והבקשה מצוירת עם ההזמנה השנייה. השם נשאר כדי
+   שקוראיו לא יצטרכו לדעת את זה. */
+function paintGuardCard(){paintPending()}
 /* "פתח" או "פתחה" לפי מי שבאמת פתח. הפרופיל מחזיק את זה מ-0047,
    וה-RPC מעביר את זה מ-0055; בשורה ישנה שאין בה מגדר נשארת הצורה
    הכפולה במקום ניחוש לפי השם. */
