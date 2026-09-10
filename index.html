@@ -829,8 +829,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="הוספת אדם"] .pick .fc svg{display:block;width:100%;height:100%}
 [data-name="הוספת אדם"] .pick .nm{flex:1;min-width:0}
 [data-name="הוספת אדם"] .pick .nm b{display:block;font-size:13px;font-weight:500;color:var(--tx)}
-[data-name="הוספת אדם"] .pick .nm > span{display:block;font-size:10.5px;color:var(--tx-3);
-  margin-top:2px;line-height:1.45}
+/* שתי שורות קבועות לכל שורת משנה. אחת מהן נשברת לשתיים והשנייה לא,
+   ובלי זה שתי הכרטיסיות נבדלות בגובה על הבדל שאינו אומר דבר. אותו
+   פתרון כמו ב-.es h3: min-height, ו-grid כדי ששורה אחת תתמרכז בו. */
+[data-name="הוספת אדם"] .pick .nm > span{display:grid;align-content:center;
+  font-size:10.5px;color:var(--tx-3);margin-top:2px;line-height:1.45;
+  min-height:calc(10.5px * 1.45 * 2)}
 [data-name="הוספת אדם"] .pick button.on .nm > span{color:var(--leaf-soft)}
 /* חמש משבצות: ההעלאה ראשונה, ואחריה ארבע הדמויות. */
 [data-name="הוספת אדם"] .avbig{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
@@ -1220,7 +1224,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '96483d5';
+window.NETA_BUILD = '7fea004';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
