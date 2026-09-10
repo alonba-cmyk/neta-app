@@ -354,6 +354,17 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .s-meta b{color:var(--tx-2);font-weight:600;font-variant-numeric:tabular-nums}
 .s-meta b.fut{color:var(--sun-soft)}
 .s-meta i{width:3px;height:3px;border-radius:50%;background:var(--line-2);font-style:normal;flex-shrink:0}
+/* ההצעה שמופיעה כשאין עוד נוטע. מסגרת ירוקה ולא כרטיס אפור: זו
+   הפעולה של המסך, לא עוד פריט ברשימה. */
+.nudge{background:var(--s1);border:1px solid var(--leaf-line);border-radius:13px;
+  padding:13px;margin-top:16px}
+.nudge .nh{font-size:13px;font-weight:500;line-height:1.4}
+.nudge .np{font-size:11px;color:var(--tx-3);margin:5px 0 0;line-height:1.55}
+.nudge .btn{margin-top:11px}
+/* עמודת הצפי בכרטיס שבבית. הערך זהוב כי הוא כסף שצפוי, והכיתוב
+   מתחתיו אפור כמו בכל שאר העמודות. */
+.pc-fc .g{font-size:11.5px;font-weight:600;color:var(--sun-soft);
+  font-variant-numeric:tabular-nums;line-height:1.3}
 .ncard{background:var(--s1);border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:9px;
   transition:border-color .16s;cursor:pointer}
 .ncard:hover{border-color:var(--line-2)}
@@ -374,6 +385,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .pc{display:flex;align-items:center;gap:9px}
 .pc-ic{width:32px;height:32px;border-radius:11px;background:var(--leaf-bg);
   display:grid;place-items:center;font-size:15px;flex-shrink:0}
+/* כרטיס של ילד נושא אות ולא אמוג'י. אות בגודל של אמוג'י נראית קטנה
+   בתוך הריבוע, ולכן היא מקבלת משקל וגודל משלה. */
+.pc-ic.mono{font-size:14px;font-weight:600;color:var(--leaf-soft);
+  letter-spacing:.01em}
 .pc-x{flex:1;min-width:0}
 /* בלי nowrap ובלי ellipsis: כותרת שנחתכת באמצע מילה גרועה מכותרת
    שנשברת לשתי שורות. זה גם מה שהיה כתוב כאן קודם, ובצדק. */
@@ -381,6 +396,8 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   overflow-wrap:anywhere}
 .pc-amt{font-size:13px;font-weight:600;color:var(--leaf);
   font-variant-numeric:tabular-nums;margin-top:4px}
+/* שורת מצב במקום סכום. ירוק אומר כסף שקיים, וכאן עוד אין. */
+.pc-amt.q{color:var(--tx-2);font-weight:500}
 .pc-dt{font-size:10.5px;color:var(--tx-3);margin-top:4px}
 /* inline-start ב-RTL הוא הצד הימני — הצד של העמודה שפונה אל הטקסט. */
 /* רוחב קבוע ולא לפי תוכן: מאז שהכיתוב הוא שם, אורכו משתנה מכרטיס
@@ -1042,7 +1059,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '41773c2';
+window.NETA_BUILD = 'f25b13f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1186,21 +1203,7 @@ window.NETA_CONFIG = {
 <div class="stage" id="stage">
 
 <!-- 0 HOME -->
-<section class="screen on" data-name="כל הנטיעות">
-  <div class="card gap" id="resume-card" style="display:none;background:var(--sun-bg);border-color:var(--sun-line)">
-    <div class="row gap-s"><span>⏸</span><b style="font-size:13px;font-weight:500;color:var(--sun)">הנטיעה שהתחלת ממתינה</b></div>
-    <p class="sub" style="color:#C4AE84" id="resume-t">בר המצווה של דניאל · 100 ₪ בחודש. נשאר רק לחבר אמצעי תשלום כדי שההפקדה הראשונה תצא.</p>
-    <button class="btn" style="margin-top:12px" onclick="resumeOnbo()">השלם והפעל</button>
-  </div>
-  <!-- מישהו ציין את הכתובת שלי כהורה. כרטיס ולא קפיצה למסך: זו החלטה
-       על הילד שלי, לא הודעה שצריך לסלק, והיא צריכה להמתין בסבלנות עד
-       שאבחר לפתוח אותה. -->
-  <div class="card gap" id="guard-card" style="display:none;background:var(--leaf-bg);border-color:var(--leaf-line)">
-    <div class="row gap-s"><span class="ic-lf" style="color:var(--leaf);line-height:0"><svg width="15" height="18" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span>
-      <b style="font-size:13px;font-weight:500;color:var(--leaf)">ממתין לאישור שלך</b></div>
-    <p class="sub" style="color:var(--leaf-soft)" id="guard-card-t"></p>
-    <button class="btn" style="margin-top:12px" onclick="openGuardian()">לראות ולהחליט</button>
-  </div>
+<section class="screen on" data-name="העתיד שלנו">
   <div id="home-full">
   <div class="summary" id="home-sum">
     <div class="s-row">
@@ -1241,7 +1244,7 @@ window.NETA_CONFIG = {
        בלבד. חיבור שלהם היה מאחד כסף של שתי משפחות למספר אחד, וזה
        בדיוק מה שסעיף 16 ב-open-decisions אוסר. -->
   <div class="hdr-row">
-    <p class="eyebrow big" id="own-head">נטיעה אחת עבורי ובני משפחתי</p>
+    <p class="eyebrow big" id="own-head">ילד אחד</p>
     <button class="hdr-link" id="proj-link" style="display:none" onclick="showProjectionSheet()">הצפי לעתיד ›</button>
   </div>
 
@@ -1260,11 +1263,19 @@ window.NETA_CONFIG = {
     <button class="btn" onclick="startCreate()">פתח נטיעה ראשונה</button>
   </div>
 
-  <button class="btn dash gap" id="garden-new" style="margin-top:2px" onclick="startCreate()">+ פתח נטיעה חדשה</button>
 
-  <p class="eyebrow big" id="oth-head" style="display:none">נטיעה אחת עבור אחרים</p>
-  <div id="garden-oth"></div>
-  <p class="fine" id="oth-fine" style="display:none">הכסף הזה שייך לרגעים של משפחות אחרות, ולכן הוא אינו נספר במספר שלמעלה.</p>
+  <!-- הסקשן "נטיעות עבור אחרים" ירד מכאן. רגע של משפחה אחרת אינו
+       שייך למסך ששואל מה מחכה לילדים שלי, והוא נספר במלואו בבית,
+       שם השאלה היא כמה נתתי. כך גם נעלם המשפט "אינו נספר במספר
+       שלמעלה", שהיה העדות לכך ששני נושאים ישבו על מסך אחד. -->
+
+  <!-- מה שנטיעה אחת לבד לא יכולה לומר: שאין לצידה איש. ההצעה נגזרת
+       מהנתון עצמו ולא מטיימר, ומופיעה רק כשבאמת אין עוד נוטע. -->
+  <div class="nudge" id="alone-box" style="display:none">
+    <div class="nh" id="alone-h">אתה נוטע לבד</div>
+    <p class="np" id="alone-p">·</p>
+    <button class="btn" onclick="inviteFromFuture()">הזמן קרוב לנטוע איתך</button>
+  </div>
 
   </div><!-- /home-full -->
 
@@ -1300,14 +1311,6 @@ window.NETA_CONFIG = {
 
        רק למי שמחובר: מי שאין לו חשבון אינו מגיע למסך הבית בכלל, ואצלו
        הכרטיס עדיין נפתח מעצמו, כי החלופה היא לאבד את ההזמנה. -->
-  <div id="later-home" style="display:none">
-    <p class="eyebrow" style="margin-top:22px">ועוד דבר אחד</p>
-    <div class="wait-row" id="later-card" onclick="openLaterInvite()">
-      <span class="ic">✉</span>
-      <div><b id="later-card-t">ההזמנה ממתינה</b><span class="s" id="later-card-s">·</span></div>
-      <span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>
-    </div>
-  </div>
 </section>
 
 <!-- 1 CREATE -->
@@ -1888,7 +1891,25 @@ window.NETA_CONFIG = {
 
      המזהים kin-full ו-kin-empty נשמרו: applyTabSources ו-setEmpty
      מכירים אותם בשם, והחלפת שם כאן הייתה משאירה טאב שלא נסגר. -->
-<section class="screen" data-name="הנטיעות שלי">
+<section class="screen" data-name="הבית">
+  <!-- שלושת הכרטיסים שמחכים לך ישבו במסך 0, שהיה הבית. הם עברו איתו
+       ולא השתנו: נטיעה שלא הושלמה, בקשת אישור כהורה, והזמנה שנדחתה
+       לפעם אחרת. הם מחוץ ל-kin-full בכוונה, כדי שגם חשבון ריק יראה
+       אותם. -->
+  <div class="card gap" id="resume-card" style="display:none;background:var(--sun-bg);border-color:var(--sun-line)">
+    <div class="row gap-s"><span>⏸</span><b style="font-size:13px;font-weight:500;color:var(--sun)">הנטיעה שהתחלת ממתינה</b></div>
+    <p class="sub" style="color:#C4AE84" id="resume-t">בר המצווה של דניאל · 100 ₪ בחודש. נשאר רק לחבר אמצעי תשלום כדי שההפקדה הראשונה תצא.</p>
+    <button class="btn" style="margin-top:12px" onclick="resumeOnbo()">השלם והפעל</button>
+  </div>
+  <!-- מישהו ציין את הכתובת שלי כהורה. כרטיס ולא קפיצה למסך: זו החלטה
+       על הילד שלי, לא הודעה שצריך לסלק, והיא צריכה להמתין בסבלנות עד
+       שאבחר לפתוח אותה. -->
+  <div class="card gap" id="guard-card" style="display:none;background:var(--leaf-bg);border-color:var(--leaf-line)">
+    <div class="row gap-s"><span class="ic-lf" style="color:var(--leaf);line-height:0"><svg width="15" height="18" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span>
+      <b style="font-size:13px;font-weight:500;color:var(--leaf)">ממתין לאישור שלך</b></div>
+    <p class="sub" style="color:var(--leaf-soft)" id="guard-card-t"></p>
+    <button class="btn" style="margin-top:12px" onclick="openGuardian()">לראות ולהחליט</button>
+  </div>
   <div id="kin-full">
   <div class="summary">
     <div class="s-row">
@@ -1920,6 +1941,7 @@ window.NETA_CONFIG = {
 
   <p class="eyebrow big">בעתיד של מי</p>
   <div id="mi-list"></div>
+  <button class="btn dash gap" id="garden-new" style="margin-top:2px" onclick="startCreate()">+ פתח נטיעה חדשה</button>
   <p class="fine gap">בלחיצה על רגע נפתח מסך הרגע, ושם אפשר להוסיף או לעצור את ההפקדה החודשית.</p>
 
   </div><!-- /kin-full -->
@@ -1942,6 +1964,14 @@ window.NETA_CONFIG = {
     <p>ברגע שתנטע, כאן יהיה כמה אתה מפקיד ולאיזה סכום זה גדל.</p>
     <button class="btn" onclick="startCreate()">פתח את הנטיעה הראשונה</button>
     <div class="gsample tall" id="kin-ghost" aria-hidden="true"></div>
+  </div>
+  <div id="later-home" style="display:none">
+    <p class="eyebrow" style="margin-top:22px">ועוד דבר אחד</p>
+    <div class="wait-row" id="later-card" onclick="openLaterInvite()">
+      <span class="ic">✉</span>
+      <div><b id="later-card-t">ההזמנה ממתינה</b><span class="s" id="later-card-s">·</span></div>
+      <span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>
+    </div>
   </div>
 </section>
 
@@ -2442,7 +2472,7 @@ window.NETA_CONFIG = {
   </div>
   <button class="btn gap" id="ga-yes" onclick="guardianYes()">כן, זה הילד שלי</button>
   <button class="btn ghost gap-s" onclick="guardianNo()">זו טעות, אני לא מכיר</button>
-  <button class="later" onclick="go(0)">אחר כך</button>
+  <button class="later" onclick="goHome()">אחר כך</button>
 </section>
 
 <!-- 29 PERSON'S INVESTMENT / ההשקעה של -->
@@ -2587,12 +2617,12 @@ window.NETA_CONFIG = {
      מגירת הגדרות שנכנסים אליה לעיתים רחוקות, ולא יעד שמתחרה על משבצת.
      כך הטאב הנכנס נכנס בלי שאיש שילם עליו. -->
 <nav class="tabbar" id="tabbar">
-  <!-- "שלי" ירדה מהטאב הראשון: הוא מכיל גם רגעים שקרוב פתח, והמילה
-       הזאת היא בדיוק מה שנשבר. הטאב השני החליף תוכן ולא מקום — הוא
-       יושב על אותו אינדקס (14) שנשא את "נטעו למשפחתי", שהתמזג לסקשן
-       במסך הבית. -->
-  <button class="tab on" onclick="go(0)"><span class="ic"><svg width="13" height="18.5" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>כל</span><span>הנטיעות</span></span></button>
-  <button class="tab" onclick="openInvestments()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-can"/></svg></span><span class="lb"><span>הנטיעות</span><span>שלי</span></span></button>
+  <!-- הבית הוא מה שאני נותן, והעתיד שלנו הוא מה שמחכה להם. שני
+       הנושאים ישבו קודם באותו מסך, וזה מה שהיה קשה לקרוא. כל אייקון
+       נשאר עם המסך שלו: המשפך של "מה אני שם" בבית, והנבט של הצמיחה
+       בעתיד. -->
+  <button class="tab on" onclick="openHome()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-can"/></svg></span><span class="lb"><span>הבית</span></span></button>
+  <button class="tab" onclick="openFuture()"><span class="ic"><svg width="13" height="18.5" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>העתיד</span><span>שלנו</span></span></button>
   <button class="tab center" onclick="startCreate()"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg></span><span class="lb"><span>נטיעה</span></span></button>
   <button class="tab" onclick="openPeople()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-kin"/></svg></span><span class="lb"><span>הקרובים</span><span>שלי</span></span></button>
   <button class="tab" onclick="go(9)"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></span><span class="lb"><span>פעילות</span></span></button>
@@ -2621,17 +2651,22 @@ window.NETA_CONFIG = {
 <script>
 const screens=[...document.querySelectorAll('.screen')],nav=document.getElementById('nav');
 screens.forEach((s,i)=>{const b=document.createElement('button');b.textContent=(i+1)+' · '+s.dataset.name;b.onclick=()=>go(i);nav.appendChild(b)});
-const tabScreens={0:0,14:1,1:2,6:3,7:3,15:3,9:4};
+/* הבית הוא 14 והעתיד שלנו הוא 0. המסכים לא זזו במיקום ב-DOM,
+   כי כל go(N) בקובץ נשען על המספר; רק התפקידים התחלפו. */
+const tabScreens={14:0,0:1,1:2,6:3,7:3,15:3,9:4};
 const ONBO={welcome:19,login:20,how:21,identity:22,done:23};
 let onbo=false;
 const topbars={
-  0:['שלום אלון','הכסף גדל בזמן שהם גדלים'],
+  0:['העתיד שלנו','כמה נצבר לכל אחד, ומי נוטע איתך'],
   /* "נותן" היא שפה של תרומה, וכל שאר המוצר מדבר על השקעה ועל נטיעה. */
-  14:['הנטיעות שלי','מה שאתה משקיע, ולמה זה יהפוך'],
+  /* הברכה עברה לבית יחד עם התפקיד. השם נכתב לתוכה ב-setMyName. */
+  14:['שלום אלון','מה שאתה משקיע, ולמה זה יהפוך'],
   /* גם כאן, ולא ככותרת בתוך המסך: ארבעת יעדי הסרגל צריכים כותרת באותו
      מקום ובאותו גודל, אחרת המעבר ביניהם קופץ. זה היה המסך היחיד מביניהם
      שהחזיק h2 בתוך הגלילה, ולכן גם התמונה שבפינה נעלמה בו. */
-  15:['הקרובים שלי','מי נוטע איתך, ולמי נוטעים איתך'],
+  /* החצי השני, "ולמי נוטעים איתך", מעולם לא הוצג כאן והוא
+     עכשיו מסך משלו. הכותרת אומרת רק את מה שהמסך באמת מחזיק. */
+  15:['הקרובים שלי','מי נוטע איתך'],
   /* "הנתינה במשפחה" נכון רק למי שיש לו משפחה במוצר. מי שהוזמנה לרגע
      של מישהו אחר ועוד לא הצטרפה קראה כאן על משפחה שאין לה. */
   9:['מה קרה לאחרונה','הרגעים שקרו סביבך'],
@@ -2836,12 +2871,12 @@ function onboAbandon(){
   txt('resume-t',(goal.type||'בר/בת מצווה')+' של '+(goal.name||'דניאל')+' · '+
     (freq==='m'?(+amtM.value).toLocaleString('he-IL')+' ₪ בחודש':'הפקדה חד פעמית')+
     '. נשאר רק לחבר אמצעי תשלום כדי שההפקדה הראשונה תצא.');
-  go(0);
+  goHome();
 }
 function resumeOnbo(){onbo=true;document.getElementById('resume-card').style.display='none';openPayment()}
 /* the empty home carries the pitch and the number — a new account lands there and starts the flow by choice.
-   go(0) clears onbo (leaving a flow by tab cancels it), so the flag is re-set after it. */
-function onboStart(){setEmpty(true);go(0);onbo=true;}
+   goHome() clears onbo (leaving a flow by tab cancels it), so the flag is re-set after it. */
+function onboStart(){setEmpty(true);goHome();onbo=true;}
 /* משתמש חדש עובר "מי אתה" לפני מסך הבית, לא אחריו — אם עוד לא עשה זאת.
    idDone נשאר false עד ששלב הזהות אכן הושלם, כך שחזרה לכאן (לדוגמה אחרי
    ריענון) לא מדלגת עליו בטעות. */
@@ -2879,7 +2914,10 @@ function paintLaterCard(){
   /* הדגם הדוהה שבתחתית המסך הריק מראה "מה יופיע כאן". כשיש הזמנה
      ממתינה כבר יש מה שיופיע כאן, והוא יורד: שתי כרטיסיות דהויות בין
      הכפתור של גל לבין ההזמנה שלה הן רעש בין שני דברים אמיתיים. */
-  const ghost=document.getElementById('home-ghost');
+  /* ההזמנה עברה למסך 14 יחד עם תפקיד הבית, ולכן הדגם הדוהה שצריך
+     לרדת מפניה הוא זה שלידה עכשיו, kin-ghost, ולא זה שנשאר במסך
+     "העתיד שלנו" ואינו נמצא איתה על אותו מסך. */
+  const ghost=document.getElementById('kin-ghost');
   const hide=function(){
     if(home)home.style.display='none';
     if(act)act.style.display='none';
@@ -3033,17 +3071,17 @@ function monthYear(iso){
 function guardianAnswer(fn,msg){
   const r=guardQueue[0]; if(!r)return;
   const src=netaSource();
-  if(!src[fn]){guardQueue.shift();paintGuardCard();go(0);return}
+  if(!src[fn]){guardQueue.shift();paintGuardCard();goHome();return}
   src[fn](r.planting_id).then(function(){
     guardQueue.shift();paintGuardCard();
     toast(msg);
-    if(guardQueue.length)openGuardian(); else {go(0);buildHomeSummary();}
+    if(guardQueue.length)openGuardian(); else {goHome();buildHomeSummary();}
   },function(){toast('לא הצלחנו לשמור, נסה שוב')});
 }
 function guardianYes(){guardianAnswer('confirmGuardian','הרגע נוסף אליך')}
 function guardianNo(){guardianAnswer('declineGuardian','תודה. לא נטריד בזה שוב')}
 function landSignedIn(){
-  if(!netaServer){go(0);return}
+  if(!netaServer){goHome();return}
   /* מסך הבית מסומן on כבר ב-HTML, ולכן הוא נראה לפני שידוע אם בכלל יש
      פרופיל — ואז הוא מוחלף ב"מי אתה" והמסך קופץ. מסתירים עד שההחלטה
      ידועה. הטיימר הוא רשת ביטחון: אם השרת לא עונה, עדיף מסך בית מלא
@@ -3052,23 +3090,23 @@ function landSignedIn(){
   let shown=false;
   const show=function(){if(shown)return;shown=true;if(stage)stage.style.visibility=''};
   if(stage)stage.style.visibility='hidden';
-  const bail=setTimeout(function(){go(0);show()},4000);
+  const bail=setTimeout(function(){goHome();show()},4000);
   const done=function(){clearTimeout(bail);show()};
   netaServer.loadProfile().then(function(prof){
-    if(prof&&prof.name){go(0);applyIdentity();done();checkGuardianRequests();return null}
+    if(prof&&prof.name){goHome();applyIdentity();done();checkGuardianRequests();return null}
     return netaServer.providerName().then(function(n){
       const f=document.getElementById('id-name');
       if(f&&n&&!f.value)f.value=n;
       onbo=true;idDone=false;go(ONBO.identity);done();
     });
-  }).catch(function(){go(0);done()});
+  }).catch(function(){goHome();done()});
 }
 function afterVerifiedNewUser(){
   if(onbo&&!idDone){go(ONBO.identity);return}
   onboStart();
 }
 function onboDone(){onboEnd()}
-function onboEnd(){onbo=false;setEmpty(false);document.getElementById('resume-card').style.display='none';go(0)}
+function onboEnd(){onbo=false;setEmpty(false);document.getElementById('resume-card').style.display='none';goHome()}
 let mySex=null;
 function pickMySex(el,x){
   const on=el.classList.contains('on');
@@ -3138,7 +3176,7 @@ function socialIn(w){
   }
   userPhone='';toast('התחברות עם '+w);
   if(onbo){onboStart();return}
-  go(0);
+  goHome();
 }
 
 /* סרגל המסכים וכפתורי המצבים הם כלי עבודה של הפרוטוטייפ. באפליקציה חיה
@@ -3255,7 +3293,7 @@ function loginNext(){
     txt('id-verified','המספר '+userPhone+' אומת');
     box.style.display='none';txt('lg-cta','שלח קוד');
     if(onbo){afterVerifiedNewUser();return}
-    toast('ברוך שובך, אלון');go(0);
+    toast('ברוך שובך, אלון');goHome();
     return;
   }
 
@@ -3272,7 +3310,7 @@ function loginNext(){
       /* מי שנכנס כדי להצטרף לנטיעה מגיע אליה, ולא למסך הבית שלו. */
       if(pendingInvite()&&finishJoin()){onbo=false;return}
       /* מי שכבר יש לו פרופיל לא עובר שוב בפתיחת החשבון. */
-      if(known){onbo=false;setEmpty(false);go(0);buildHomeSummary();toast('ברוך שובך');return}
+      if(known){onbo=false;setEmpty(false);goHome();buildHomeSummary();toast('ברוך שובך');return}
       /* משתמש חדש עובר קודם "מי אתה", ורק אז נוחת על מסך הבית הריק ולא
          על טופס ההקמה — מסך הבית הוא הפיץ' של המוצר, וקפיצה ישר לטופס
          מדלגת על הטיעון החזק ביותר שיש לו.
@@ -3302,7 +3340,7 @@ function loginWithPassword(){
       loginBusy(false,'כניסה');
       txt('id-verified',userPhone+' אומת');
       if(pendingInvite()&&finishJoin()){onbo=false;return}
-      if(known){onbo=false;setEmpty(false);go(0);buildHomeSummary();toast('ברוך שובך');return}
+      if(known){onbo=false;setEmpty(false);goHome();buildHomeSummary();toast('ברוך שובך');return}
       afterVerifiedNewUser();
     })
     .catch(function(e){
@@ -3653,7 +3691,7 @@ function backFromPay(){
     if(designated){cStepGo(1);go(1);return}
     go(2);return; // בלי נהנה, השלב שלפני תשלום הוא מסך הסכום עצמו
   }
-  go(0);
+  goHome();
 }
 function afterAmount(){
   /* בלי בחירה, mode נשאר null ו-plantingFromFlow ממיר אותו ל-guaranteed
@@ -4261,7 +4299,7 @@ function leaveShared(){
      מה לאשר. אחרת נשארים כאן, עם אישור ושתי דלתות. */
   if(!t||deferredBefore){
     sharedCardShown=false;shownToken=null;
-    go(liveAccount()?0:ONBO.welcome);
+    if(liveAccount())goHome(); else go(ONBO.welcome);
     return;
   }
   txt('sl-later-t',(inviteKnows.by?('אם תשנה את דעתך, ההזמנה של '+firstName(inviteKnows.by)+' תחכה לך כאן.')
@@ -4273,7 +4311,7 @@ function leaveShared(){
    אליה גם אם תיפתח חשבון ותשכח ממנה. */
 function joinLaterSignup(){
   sharedCardShown=false;shownToken=null;
-  go(liveAccount()?0:ONBO.welcome);
+  if(liveAccount())goHome(); else go(ONBO.welcome);
 }
 
 /* ─── הצטרפות ─────────────────────────────────────────────────────────
@@ -4403,7 +4441,7 @@ function joNext(){
       applyIdentity();
       btn.disabled=false;txt('jo-cta','הצטרף לנטיעה');
       /* הפרופיל נוצר כאן, ולכן introduceThen לא תשאל שוב. */
-      if(!finishJoin()){setEmpty(false);buildHomeSummary();go(0)}
+      if(!finishJoin()){setEmpty(false);buildHomeSummary();goHome()}
     })
     .catch(function(e){
       btn.disabled=false;txt('jo-cta','הצטרף לנטיעה');
@@ -4491,7 +4529,7 @@ function offerInviteName(next){
 }
 function nameFixDone(){
   const n=nameFixNext;nameFixNext=null;
-  if(n)n(); else {setEmpty(false);buildHomeSummary();go(0)}
+  if(n)n(); else {setEmpty(false);buildHomeSummary();goHome()}
 }
 function nameFixYes(){
   const want=(inviteKnows.name||'').trim();
@@ -4547,7 +4585,7 @@ function requestSheet(token,why){
       const rel=((document.getElementById('ja-rel')||{}).value||'').trim();
       netaServer.requestAccess(token,n,rel).then(function(res){
         if(res==='dead_link'){dropInvite();sharedState('dead');return}
-        if(res==='already'){dropInvite();buildHomeSummary();go(0);return}
+        if(res==='already'){dropInvite();buildHomeSummary();goHome();return}
         dropInvite();sharedState('asked');
       }).catch(function(e){
         ask('הבקשה לא נשלחה',(e&&e.message)||'נסה שוב.','הבנתי');
@@ -4644,7 +4682,7 @@ let invBack=0;
 function backFromInvite(){
   if(invBack===15){invBack=0;openRelatives(relBack,relInviteKey);return}
   if(cur&&plantAt(cur)){openDetail(cur);return}
-  go(0);
+  goHome();
 }
 /* המועד יושב בכותרת הכרטיס ולא בכיתוב של הסכום, ולכן כאן נשאר רק מה
    שקורה לכסף. "שם" מפנה ליום שהמשפט שמעליו כבר תיאר. */
@@ -4914,7 +4952,7 @@ function celebrate(){
 let ahaToDetail=false;
 function ahaNext(){
   if(ahaToDetail&&cur){ahaToDetail=false;openDetail(cur);return}
-  go(0);
+  goHome();
 }
 /* אותה פעולה בדיוק כמו במסך הרגע, ובאותן מילים: פותחת לקרובים ונוחתת
    על ההזמנה כפי שהיא תיראה. הגיליון שבדרך אינו חיכוך מיותר — הוא
@@ -4925,10 +4963,10 @@ function ahaNext(){
    ‏refreshDetail אינה הפתרון: היא יוצאת מיד כשאין עדיין רשומה. לכן
    טעינה מפורשת, ורק אחריה השאלה. */
 function shareFromAha(){
-  if(!cur){go(0);return}
+  if(!cur){goHome();return}
   if(plantAt(cur)){openToCircle();return}
   const src=netaSource();
-  if(!src.detail){go(0);return}
+  if(!src.detail){goHome();return}
   const btn=document.getElementById('a-share');
   if(btn){btn.disabled=true;btn.style.opacity='.55'}
   src.detail(cur).then(function(r){
@@ -5967,6 +6005,7 @@ function openRelatives(from,inviteKey){
   if(b){b.style.display='';
     b.textContent = relBack===7 ? 'חזרה להזמנה'
                   : relBack===5 ? 'חזרה לנטיעה'
+                  : relBack===0 ? 'חזרה לעתיד שלנו'
                   : 'חזרה לפרופיל';}
   /* במצב הזמנה המסך עונה על שאלה אחת, ולכן גם הכותרת שלו שואלת אותה. */
   const pl=relInviteKey?plantAt(relInviteKey):null;
@@ -6252,11 +6291,11 @@ function blankBeforeFirstLoad(){
   /* גם הפנקסים האישיים. הם מאותחלים בקובץ עם משפחת ההדגמה, וניקוי שלהם
      היה תלוי עד כה במתג "מצב ריק" — שזז פעם אחת בלבד. */
   relatives.length=0;letters.length=0;requests.length=0;pays.length=0;
-  topbars[0][0]='שלום';
+  topbars[14][0]='שלום';
   topbars[10][0]='';
   txt('pf-name','');
-  const tb=topbars[0];
-  if(document.querySelector('.screen.on')===screens[0]){txt('tb-t',tb[0]);txt('tb-s',tb[1]);}
+  const tb=topbars[14];
+  if(document.querySelector('.screen.on')===screens[14]){txt('tb-t',tb[0]);txt('tb-s',tb[1]);}
 }
 
 function buildConnection(){
@@ -6298,7 +6337,7 @@ function buildConnection(){
    ששניהם קוראים לה, כדי שלא יסתרו זה את זה. */
 function setMyName(name){
   if(!name)return;
-  topbars[0][0]='שלום '+name;
+  topbars[14][0]='שלום '+name;
   topbars[10][0]=name;
   txt('pf-name',name);
   /* הכותרת נצבעת בתוך go(), אז מסך שכבר פתוח צריך רענון ידני. */
@@ -7350,10 +7389,12 @@ function plantCard(o){
   return '<div class="ncard pc" onclick="openDetail(\''+o.key+'\')">'+
     '<div class="pc-ic">'+(o.icon||'🌱')+'</div>'+
     '<div class="pc-x"><div class="pc-nm">'+o.name+'</div>'+
-      '<div class="pc-amt">'+o.verb+' '+shekel(o.amount)+'</div>'+
+      '<div class="pc-amt'+(o.amountText?' q':'')+'">'+
+        (o.amountText||(o.verb+' '+shekel(o.amount)))+'</div>'+
       (dt?'<div class="pc-dt">'+dt+'</div>':'')+'</div>'+
     (o.nofaces
-      ? '<div class="pc-fc"><i>'+(o.cap||'&nbsp;')+'</i></div>'
+      ? '<div class="pc-fc">'+(o.capTop?'<span class="g">'+o.capTop+'</span>':'')+
+        '<i>'+(o.cap||'&nbsp;')+'</i></div>'
       : '<div class="pc-fc">'+faceStack(o.people)+faceCap(o.cap)+'</div>')+
   '</div>';
 }
@@ -7375,26 +7416,11 @@ function cardHTML(p){
                     by:p.by,when:targetLine(p),
                     designated:p.designated,people:p.participants});
 }
-/* הכרטיס בסקשן "נטיעות עבור אחרים". המספר הוא מה שנצבר לרגע, כמו
-   בסקשן הראשון: המסך הזה מתאר רגעים, ומי שהוזמן ועוד לא הפקיד קיבל
-   "נטעת עד כה 0 ₪" על רגע שכבר יש בו כסף — מספר שקיומו מודיע על
-   היעדרו, בדיוק התקלה ש-cardHTML כבר תוקן ממנה.
-
-   וגם: כך סכום הכרטיסים שווה למספר הגדול שמעליהם בשני הסקשנים.
-   "כמה אני נתתי" נשאלת ונענית ב"הנטיעות שלי", וזו כל ההבחנה בין
-   שני המסכים. שורת המשנה ממשיכה לומר של מי הרגע. */
 /* "עד ספטמבר 2036" — המועד שהרגע מחכה לו. */
 function targetLine(p){
   const m=months[Number(p.targetMonth)],y=p.targetYear;
   if(!y)return '';
   return 'עד '+(m?m+' ':'')+y;
-}
-function othCardHTML(p){
-  return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נצבר עד כה',
-                    amount:Number(p.accrued||0),
-                    cap:planterCap(p.participants,(p.mine==null?p.accrued:p.mine)),
-                    note:p.familyName?('המשפחה של '+p.familyName):'משפחה של קרוב',
-                    designated:p.designated,people:p.participants});
 }
 /* יותר משתי נטיעות מציפות את המסך, אז רק כרטיס אחד נוסף — הצצה דהויה —
    מצטרף לשתיים הראשונות. השאר לא נכנסים ל-DOM בכלל עד שמבקשים, כדי
@@ -7795,7 +7821,12 @@ function buildHomeSummary(){
         if(bar)bar.style.display=(mineTot>0&&others>0)?'':'none';
       }
     }
-    document.getElementById('garden').innerHTML=gardenHTML(own,cardHTML);
+    /* הרשימה כאן מקובצת לפי מי שהכסף מחכה לו, ולא לפי רגע. בר מצווה
+       וגיוס של אותו ילד הם שורה אחת, כי השאלה במסך הזה היא כמה יש לו
+       ולא כמה רגעים פתוחים. הקופה שלא יועדה חוזרת אחרונה, ככרטיס רגע. */
+    const kg=kidGroups(own);
+    document.getElementById('garden').innerHTML=
+      gardenHTML(kg.groups,kidCardHTML)+kg.loose.map(cardHTML).join('');
     /* כותרת הסקשן יורדת עם הרשימה: ההודעה שבמקומה כבר אומרת את
        אותו דבר, וכותרת מעל מצב ריק מכריזה על מדור שאין בו כלום. */
     /* הספירה יושבת בכותרת ולא בשורת העובדות: שם היא סופרת רק את
@@ -7804,16 +7835,41 @@ function buildHomeSummary(){
 
        "נטיעה אחת" ולא "1 נטיעה": ספרה בודדת בכותרת קטנה נקראת כמו
        טופס. משניים ואילך ספרה, כי המילה מתארכת ואין לה יתרון. */
-    const headCount=function(n,tail){
-      return (n===1?'נטיעה אחת':n+' נטיעות')+' '+tail;
-    };
+    /* הכותרת סופרת את מה שברשימה, וברשימה יושבים ילדים. "ילד אחד"
+       ולא "1 ילד", מאותה סיבה שהספירה כאן במילים: ספרה בודדת בכותרת
+       קטנה נקראת כמו טופס. */
+    const nKids=kg.groups.length;
     const ownHead=document.getElementById('own-head');
     ownHead.style.display=noneMine?'none':'';
-    if(!noneMine)txt('own-head',headCount(here.length,'עבורי ובני משפחתי'));
-    document.getElementById('garden-oth').innerHTML=oth.map(othCardHTML).join('');
-    document.getElementById('oth-head').style.display=oth.length?'':'none';
-    if(oth.length)txt('oth-head',headCount(oth.length,'עבור אחרים'));
-    document.getElementById('oth-fine').style.display=oth.length?'':'none';
+    /* הקופה שלא יועדה אינה ילד ואינה נספרת כאן, גם כשהיא מצוירת
+       ברשימה. "3 ילדים" על שניים וקופה הוא בדיוק סוג הספירה
+       שהורדנו מהראש כדי שלא תתאר רשימה שאינה שלה. */
+    if(!noneMine)txt('own-head',
+      nKids===0 ? 'נטיעה שעוד לא יועדה'
+      : nKids===1 ? 'ילד אחד' : nKids+' ילדים');
+
+    /* ההצעה מופיעה רק כשבאמת אין עוד נוטע. את המספר שבתוכה גוזרים
+       מהצפי הקיים ולא ממציאים: אם 30 ₪ בחודש מגיעים ל-7,139, אז 50
+       מגיעים לאותו סכום ביחס, וזו החזרה הכי גדולה שיש כאן על פעולה
+       אחת. בלי הוראת קבע אין ממה לגזור, ואז נשארת האמירה בלבד. */
+    const solo=kg.groups.filter(function(g){
+      return (g.people||[]).length<=1;
+    });
+    const aloneBox=document.getElementById('alone-box');
+    if(aloneBox){
+      const show=!noneMine&&solo.length>0;
+      aloneBox.style.display=show?'':'none';
+      if(show){
+        const g=solo[0];
+        const mo=g.rows.reduce(function(a,p){return a+Number(p.myMonthly||0)},0);
+        txt('alone-h',solo.length===1?('ל'+g.kid+' אתה נוטע לבד')
+                                     :'אתה נוטע לבד');
+        txt('alone-p', mo>0&&g.proj>0
+          ? ('קרוב שמפקיד 50 ₪ בחודש מוסיף ל'+g.kid+' כ-'+
+             shekel(Math.round(g.proj*5000/mo))+', יותר מכל מה שהצטבר עד היום.')
+          : ('כל קרוב שמצטרף מגדיל את מה שיחכה ל'+g.kid+', ואת אותו רגע עצמו.'));
+      }
+    }
     const proj=projectablePlantings({plantings:own});
     const projLink=document.getElementById('proj-link');
     if(projLink)projLink.style.display=proj.length?'':'none';
@@ -7870,9 +7926,22 @@ function buildHomeSummary(){
 function ivCardHTML(p){
   const mine=Number(p.mine==null?p.accrued:p.mine);
   const mo=Number(p.myMonthly||0);
+  /* בעמודה ישבה ההפקדה החודשית, שהיא חזרה על מה שהשורה כבר אומרת:
+     מי שנטע 30 ₪ בהוראת קבע של 30 ₪ קרא את אותו מספר פעמיים. עכשיו
+     יושב שם הצפי — הכסף שלך בעוד שנים — כלומר הדבר היחיד בכרטיס
+     שאינו ידוע ממנו ממילא.
+
+     והוא הצפי שלך ולא של הרגע: כל מספר במסך הזה הוא שלך, ובנטיעה
+     שקרובים נוטעים בה גם הם, הצפי של הרגע גדול משלך. */
+  const pj=Number(p.myProjection||0);
+  /* "נטעת 0 ₪" הוא מספר שקיומו מודיע על היעדרו. במקומו נאמר מה כן
+     קרה: הוזמנת, והרגע מחכה להפקדה הראשונה שלך. */
   return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נטעת',
                     amount:mine,
-                    cap:mo>0?(shekel(mo)+' בחודש'):'ללא קבע',
+                    amountText:mine>0?'':'הוזמנת, עוד לא נטעת',
+                    capTop:mine>0&&pj>mine?shekel(pj):'',
+                    cap:mine<=0?(targetLine(p)||'')
+                       :pj>mine?'הצפי שלך':(mo>0?(shekel(mo)+' בחודש'):'ללא קבע'),
                     note:p.familyMine?'עבור המשפחה שלי'
                         :(p.familyName?('עבור המשפחה של '+p.familyName):'עבור משפחה של קרוב'),
                     /* בלי תאריך: השורה כבר נושאת את מי שהרגע שייך לו,
@@ -7881,8 +7950,13 @@ function ivCardHTML(p){
                     since:null,designated:p.designated,nofaces:true});
 }
 function paintInvestments(){
+  /* הסינון היה "כסף שלי גדול מאפס", וזה השאיר את מי שהוזמנה לרגע של
+     קרוב ועוד לא הפקידה בלי שום מסך שמראה לה אותו: בעתיד שלנו הוא
+     אינו, כי הוא של משפחה אחרת, וכאן הוא נשר על האפס. רגע שצירפו
+     אותי אליו הוא שלי גם לפני ההפקדה הראשונה, והכרטיס אומר את מצבו
+     במקום להציג "נטעת 0 ₪". */
   const rows=((lastModel&&lastModel.plantings)||[]).filter(function(p){
-    return Number(p.mine==null?p.accrued:p.mine)>0;
+    return Number(p.mine==null?p.accrued:p.mine)>0||p.joined||p.familyMine===false;
   });
   const full=document.getElementById('kin-full'),empty=document.getElementById('kin-empty');
   const any=rows.length>0;
@@ -7932,24 +8006,102 @@ function paintInvestments(){
    ‏kid קיים רק במקור החי; בהדגמה השם נגזר מ"בר המצווה של דניאל".
    רק שם שיש בו " של ", כדי שקופה שלא יועדה או שם חופשי לא ייכנסו
    כאילו הם ילד. */
+/* שם הנהנה של רגע אחד. במקור החי אין עמודת kid בשורה שחוזרת, ולכן
+   השם נגזר מ" של " שבשם הרגע — בדיוק כמו שהיה כאן קודם, רק שעכשיו
+   שתי פונקציות נשענות על אותה גזירה ולא כל אחת על שלה.
+
+   וזו גם המגבלה שצריך לזכור: שתי נטיעות מתחברות לאותו ילד רק אם
+   נכתבה בהן אותה מחרוזת בדיוק. "דניאל" ו"דני" הם שני ילדים, ולתיקון
+   נדרשת עמודה במסד ולא שינוי כאן. */
+function kidOf(p){
+  if(!p||p.designated===false)return '';
+  const k=(p.kid||'').trim();
+  if(k)return k;
+  const parts=String(p.name||'').split(' של ');
+  return parts.length<2?'':parts[parts.length-1].trim();
+}
 function beneficiariesOf(rows){
   const out=[];
   (rows||[]).forEach(function(p){
-    if(p.designated===false)return;
-    let k=(p.kid||'').trim();
-    if(!k){
-      const parts=String(p.name||'').split(' של ');
-      if(parts.length<2)return;
-      k=parts[parts.length-1].trim();
-    }
+    const k=kidOf(p);
     if(k&&out.indexOf(k)<0)out.push(k);
   });
   return out;
+}
+/* קיבוץ הרגעים לפי מי שהכסף מחכה לו. הסדר נקבע לפי ההופעה הראשונה
+   ברשימה, שכבר ממוינת לפי מה שנפתח לאחרונה, ולכן הוא יציב.
+
+   נטיעה שלא יועדה אינה שייכת לאף ילד ואינה נזרקת: היא חוזרת ב-loose
+   ומצוירת בסוף הרשימה ככרטיס משלה. */
+function kidGroups(rows){
+  const map={},order=[],loose=[];
+  (rows||[]).forEach(function(p){
+    const k=kidOf(p);
+    if(!k){loose.push(p);return}
+    if(!map[k]){map[k]={kid:k,rows:[],accrued:0,mine:0,proj:0,people:[],names:{}};order.push(k)}
+    const g=map[k];
+    g.rows.push(p);
+    g.accrued+=Number(p.accrued||0);
+    g.mine+=Number(p.mine==null?p.accrued:p.mine);
+    g.proj+=Number(p.projection||0);
+    (p.participants||[]).forEach(function(x){
+      const nm=(x&&x.name)||String(x||'');
+      if(nm&&!g.names[nm]){g.names[nm]=1;g.people.push(x)}
+    });
+  });
+  return {groups:order.map(function(k){return map[k]}),loose:loose};
+}
+/* כמה שנים עד הרגע הקרוב ביותר בקבוצה. הקבוצה מחזיקה כמה רגעים,
+   וזה שקורה ראשון הוא היחיד שאפשר לומר עליו משהו קונקרטי. */
+function nearestOf(rows){
+  let best=null;
+  (rows||[]).forEach(function(p){
+    if(!p.targetYear)return;
+    const d=new Date(p.targetYear,Number(p.targetMonth||0),1);
+    if(!best||d<best.d)best={d:d,p:p};
+  });
+  return best;
+}
+function kidCardHTML(g){
+  const near=nearestOf(g.rows);
+  const yrs=near?Math.max(0,near.d.getFullYear()-new Date().getFullYear()):0;
+  const when=!near ? ''
+    : (g.rows.length===1 ? near.p.name.replace(/ של .*$/,'')+', בעוד '+yrs+yrWord(yrs)
+                         : g.rows.length+' רגעים · הקרוב בעוד '+yrs+yrWord(yrs));
+  /* הכרטיס נפתח לרגע כשיש אחד, ולרגע הקרוב כשיש כמה. מסך "ילד" עוד
+     לא קיים, ופתיחה לשום מקום גרועה מפתיחה למשהו נכון. */
+  const open=near?near.p.key:(g.rows[0]&&g.rows[0].key);
+  return '<div class="ncard pc" onclick="openDetail(\''+open+'\')">'+
+    '<div class="pc-ic mono">'+(g.kid.charAt(0))+'</div>'+
+    '<div class="pc-x"><div class="pc-nm">'+g.kid+'</div>'+
+      '<div class="pc-amt">נצבר עד כה '+shekel(g.accrued)+'</div>'+
+      (when?'<div class="pc-dt">'+when+'</div>':'')+'</div>'+
+    '<div class="pc-fc">'+faceStack(g.people)+
+      faceCap(planterCap(g.people,g.mine))+'</div>'+
+  '</div>';
 }
 /* מספרים קטנים במילים, כמו בשאר המסכים. מעל עשרה חוזרים לספרה. */
 const HEB_COUNT=['','אחד','שני','שלושה','ארבעה','חמישה','שישה','שבעה','שמונה','תשעה','עשרה'];
 function hebCount(n){return HEB_COUNT[n]||String(n)}
 function openInvestments(){ paintInvestments(); go(14); }
+/* שני יעדי הסרגל הראשונים. openHome הוא מסך 14 ו-openFuture הוא 0,
+   כי המסכים החליפו תפקיד ולא מיקום: כל go(N) בקובץ נשען על המספר. */
+function openHome(){ openInvestments(); }
+function openFuture(){ go(0); }
+/* "חזרה למסך הבית" בכל הקובץ. מסך 0 היה הבית וכל go(0) התכוון אליו;
+   מרגע שהבית הוא 14, קריאה ישירה ל-go(0) מחזירה את המשתמש לטאב
+   הלא נכון. openFuture נשארה הקריאה היחידה שבאמת מתכוונת ל-0. */
+function goHome(){ openInvestments(); }
+/* ההזמנה שיוצאת מ"העתיד שלנו" נכנסת לאותו מסלול של כל שאר ההזמנות,
+   ופותחת את רשימת הקרובים עם הרגע הקרוב של הילד שאין לו עוד נוטע. */
+function inviteFromFuture(){
+  const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
+  const solo=kidGroups(own).groups.filter(function(g){return (g.people||[]).length<=1})[0];
+  const near=solo&&nearestOf(solo.rows);
+  const key=near?near.p.key:(solo&&solo.rows[0]&&solo.rows[0].key)||'';
+  if(key){cur=key;pickRelativeToInvite(0,key);return}
+  openRelatives(0);
+}
 
 /* ─── הסתירה שהייתה במסך הבית, ואיך היא נסגרה סופית ────────────────
    home_summary סופרת את כל ההפקדות של המשתמש, גם לנטיעות שאחרים פתחו.
@@ -8043,7 +8195,7 @@ function acceptPartner(){
   document.querySelector('.screen[data-name="הזמנה לשותפות"] .two').style.display='none';
   document.getElementById('pi-done').style.display='block';
 }
-function declinePartner(){go(0)}
+function declinePartner(){goHome()}
 /* בנטיעה אמיתית מוצע רק מה שבאמת נשמר בשרת. פעולה שמשנה אובייקט בזיכרון
    נראית כאילו קרתה ונעלמת ברענון — וזה גרוע מכפתור שאינו קיים. */
 function buildLiveActions(p){
@@ -8083,7 +8235,7 @@ function buildLiveActions(p){
    שכבר קובע ימין/שמאל), או קישור שקט מתחת לזוג שכבר משמעותי ואין לו
    מקום לפנות. חוזרת בדיוק כמו הטאב התחתון "כל הנטיעות". */
 function pairWithBack(primaryBtn){
-  return '<div class="two">'+primaryBtn+'<button class="btn ghost" onclick="go(0)">חזרה</button></div>';
+  return '<div class="two">'+primaryBtn+'<button class="btn ghost" onclick="goHome()">חזרה</button></div>';
 }
 /* כל פעולה יושבת ליד הדבר שהיא משנה: "השקע עוד" בכרטיס הכסף,
    ההזמנה בתחתית רשימת הנוטעים. מה שנשאר בתחתית המסך הוא היציאה
@@ -8114,7 +8266,7 @@ function buildWhoAction(p){
 }
 function actionsFor(p){
   if(p.designated===false)
-    return '<button class="btn ghost" onclick="go(0)">חזרה</button>';
+    return '<button class="btn ghost" onclick="goHome()">חזרה</button>';
   /* מי שאינו הבעלים הוזמן כדי לנטוע — וזה בדיוק מה שלא היה לו איך
      לעשות. "השקע עוד" יושב במסך האדם, ולמי שעוד לא הפקיד אין שם
      שורה בכלל; אמיר אישר כהורה, קיבל planting_access ברמת contribute,
@@ -8124,7 +8276,7 @@ function actionsFor(p){
     return pairWithBack('<button class="btn" onclick="investIn(cur)">נטע כאן</button>');
   /* ההזמנה כבר יושבת בתחתית רשימת הנוטעים, ולכן כאן נשארת רק היציאה. */
   if(whoActOn)
-    return '<button class="btn ghost" onclick="go(0)">חזרה</button>';
+    return '<button class="btn ghost" onclick="goHome()">חזרה</button>';
   return pairWithBack(inviteButton(p,false));
 }
 function buildActions(p){
