@@ -1234,7 +1234,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '207e8db';
+window.NETA_BUILD = '5e064c4';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1473,7 +1473,7 @@ window.NETA_CONFIG = {
     <div class="art"><svg width="52" height="61" viewBox="0 0 60 70" aria-hidden="true"><use href="#sprout-pot"/></svg></div>
     <h3 id="ge-h">עוד לא נטעת בעצמך</h3>
     <p id="ge-sub">אפשר לפתוח רגע משלך. הראשון לוקח דקה.</p>
-    <button class="btn" onclick="startCreate()">פתח נטיעה ראשונה</button>
+    <button class="btn" id="ge-cta" onclick="gardenEmptyCta()">פתח נטיעה ראשונה</button>
   </div>
 
 
@@ -6793,7 +6793,20 @@ function shrinkImage(file,size){
   });
 }
 function apBack(){if(apStep>0){apStep--;apShow()}else apExit()}
-function apExit(){openPeople()}
+/* היציאה מובילה למסך שמראה את מה שנוצר, ולא תמיד לקרובים. ילד אינו
+   קרוב שנוטע איתי אלא מי שנוטעים עבורו, ולכן הוא אינו ברשימת הקרובים
+   בכוונה: הפעולה על כל שורה שם היא "הזמן", ואין לה משמעות על ילד.
+   הוא יושב בבורר של "העתיד שלנו", ולשם היציאה מחזירה. עד כה "לא
+   עכשיו" החזיר לקרובים, כלומר לרשימה שהילד שהרגע נוסף אינו בה. */
+function apExit(){
+  if(apKindMode==='for'){
+    if(apKidSaved)fuPick='k:'+(apKidSaved.id||apKidSaved.name);
+    openFuture();
+    buildHomeSummary();
+    return;
+  }
+  openPeople();
+}
 function apNext(){
   const list=apPanels();
   if(apStep===0){apStep=1;apShow();return}
@@ -6852,8 +6865,15 @@ function apSaveKid(){
   const nm=fieldVal('ap-kidname');
   if(!nm){toast('צריך שם');document.getElementById('ap-kidname').focus();return}
   const src=netaSource();
-  const finish=function(av){
-    apKidSaved={name:nm,av:av||apKidAv};
+  const finish=function(av,id){
+    apKidSaved={name:nm,av:av||apKidAv,id:id||null};
+    /* נדחף לרשימה המקומית ולא רק נשמר בשרת: הציור הבא קורא את benes,
+       וסבב נוסף לשרת רק כדי לראות את מה שהרגע נשמר הוא המתנה מיותרת.
+       ‏listBeneficiaries תחזיר את אותה שורה בטעינה הבאה, ו-fuWithBenes
+       מנקה כפילות לפי מזהה ולפי שם. */
+    if(!benes.some(function(b){return (id&&b.id===id)||
+        String(b.name||'').trim()===nm}))
+      benes.push({id:id||null,name:nm,sex:apKidSexV,avatar:av||apKidAv});
     document.getElementById('ap-doneav').innerHTML=kidFaceHTML(apKidSaved.av,64);
     txt('ap-doneh',nm+' נוסף');
     txt('ap-doneb','פתח ל'+nm+' רגע');
@@ -6866,8 +6886,11 @@ function apSaveKid(){
     .then(function(b){
       if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='המשך'}
       apKidId=b&&b.id||null;
-      return buildHomeSummary().then(function(){finish(b&&b.avatar)},
-                                     function(){finish(b&&b.avatar)});
+      /* finish לפני buildHomeSummary ולא אחריו: הוא מה שדוחף את הילד
+         ל-benes, והציור קורא משם. בסדר ההפוך הציור היה רץ על רשימה
+         שאין בה את מי שהרגע נוסף. */
+      finish(b&&b.avatar,apKidId);
+      return buildHomeSummary().then(function(){},function(){});
     })
     .catch(function(e){
       if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='המשך'}
@@ -6875,17 +6898,26 @@ function apSaveKid(){
     });
 }
 let apKidSaved=null,apKidId=null;
-function apOpenMoment(){
+/* פותח הקמה על ילד ידוע. שני מקומות מגיעים לכאן: סוף "+ הוסף קרוב ·
+   עבורו", והכפתור של המצב הריק כשנבחר בבורר ילד שעוד אין לו רגע. */
+function prefillKid(name,av,sex){
   startCreate();
-  if(apKidSaved){
-    const f=document.getElementById('c-name');
-    if(f){f.value=apKidSaved.name;f.dispatchEvent(new Event('input'))}
-    if(apKidSaved.av&&KID_AV.indexOf(apKidSaved.av)>=0){
-      const b=document.querySelector('#c-avpick button[data-av="'+apKidSaved.av+'"]');
-      if(b)pickKidAv(b,apKidSaved.av);
-    }
-    markSexChip(apKidSexV);beneSex=apKidSexV;
+  const f=document.getElementById('c-name');
+  if(f){f.value=name||'';f.dispatchEvent(new Event('input'))}
+  if(av&&KID_AV.indexOf(av)>=0){
+    const b=document.querySelector('#c-avpick button[data-av="'+av+'"]');
+    if(b)pickKidAv(b,av);
   }
+  if(sex==='m'||sex==='f'){markSexChip(sex);beneSex=sex}
+}
+function apOpenMoment(){
+  if(apKidSaved)prefillKid(apKidSaved.name,apKidSaved.av,apKidSexV);
+  else startCreate();
+}
+function gardenEmptyCta(){
+  const sel=lastFuSel;
+  if(sel&&sel.pending)prefillKid(sel.name,sel.av,sel.sex);
+  else startCreate();
 }
 /* פרצוף אחד, משתי הצורות שהעמודה יכולה להחזיק. תמונה שהנתיב שלה
    עוד לא נחתם מוצגת כדמות עד שהוא יגיע, ולא כעיגול ריק. */
@@ -7988,6 +8020,22 @@ function netaBackend(cfg){
         {method:'PATCH',body:JSON.stringify({sex:sex||null,avatar:avatar||null})});
     },
 
+    /* כל הנהנים שלי, כולל מי שעוד אין לו רגע. עד כה הטבלה נקראה רק
+       בחיפוש לפי שם בזמן שמירה (beneficiaryId), ולכן ילד שנוסף
+       ב"+ הוסף קרוב · עבורו" היה קיים במסד ולא מופיע בשום מסך עד
+       שנפתחה לו נטיעה: fuItems נבנית מהנטיעות, ו-beneficiariesOf
+       גוזרת שמות מתוכן. כלומר המסלול כולו נגמר בלי שדבר ממנו נראה.
+
+       ‏{} ולא כלום, מאותה סיבה שב-beneficiaryId: send קוראת
+       opts.headers ונופלת על undefined בלעדיו. */
+    listBeneficiaries:function(){
+      const uid=sess&&sess.user?sess.user.id:null;
+      if(!uid)return Promise.resolve([]);
+      return call('/rest/v1/beneficiaries?select=id,name,sex,avatar&created_by=eq.'+uid+
+                  '&order=created_at.asc',{})
+        .then(function(rows){return rows||[]});
+    },
+
     create:function(p){
       let id,benId=null;
       return Promise.resolve()
@@ -8595,7 +8643,17 @@ function buildFeed(){
 }
 
 function buildHomeSummary(){
-  return netaSource().load().then(function(model){
+  const src=netaSource();
+  /* במקביל ולא בשרשור: זו קריאה שנייה שאינה תלויה במודל, ושרשור
+     שלה היה מוסיף סבב שלם לפני הציור. מקור שאין לו את המתודה
+     (הדגמה, וחשבון שעוד לא נכנס) שומר את מה שכבר נדחף מקומית. */
+  return Promise.all([src.load(),
+      src.listBeneficiaries
+        ? src.listBeneficiaries().catch(function(){return benes})
+        : Promise.resolve(benes)])
+    .then(function(res){
+    const model=res[0];
+    benes=res[1]||[];
     lastModel=model;
     const s=model.summary;
     /* בחשבון אמיתי המצב הריק נגזר ממה שיש במסד ולא מדגל שנקבע בכניסה —
@@ -8629,7 +8687,7 @@ function buildHomeSummary(){
     /* המסך מציג נהנה אחד בכל פעם, והבורר הוא הדרך לעבור. הקיבוץ הוא
        לפי מי שהכסף מחכה לו ולא לפי רגע: בר מצווה וגיוס של אותו ילד
        הם פריט אחד, כי השאלה כאן היא כמה יש לו ולא כמה רגעים פתוחים. */
-    const fuAll=fuItems(own);
+    const fuAll=fuWithBenes(fuItems(own));
     /* הקישורים החתומים מגיעים אחרי הציור הראשון, ולכן הציור נקרא
        שוב כשהם כאן. התנאי הוא "מה שעוד לא היה במטמון והגיע", ולא
        "יש קישור": השני נכון גם בציור השני, וזו לולאה אינסופית. */
@@ -8639,9 +8697,18 @@ function buildHomeSummary(){
     });
     if(!fuAll.some(function(x){return x.id===fuPick}))fuPick=fuDefault(fuAll);
     const sel=fuAll.filter(function(x){return x.id===fuPick})[0]||fuAll[0];
+    /* יש במי לבחור גם כשאין עדיין אף רגע: ילד שנוסף ב"עבורו" ועוד
+       לא נפתחה לו נטיעה הוא פריט בבורר, וזה המסך היחיד שמראה אותו. */
+    const anyPick=fuAll.length>0;
+    /* והמצב הריק הוא של מי שנבחר ולא של המסך כולו: ילד אחד יכול
+       להחזיק רגעים בעוד שהשני עוד לא. קודם כל ארבעת המתגים נשענו
+       על noneMine, ולכן די היה בנטיעה אחת לילד אחר כדי שהבורר יראה
+       את השני ומתחתיו כרטיס של הראשון. */
+    const selEmpty=!(sel&&sel.rows&&sel.rows.length);
+    lastFuSel=sel||null;
     document.getElementById('fu-pick').innerHTML=
-      noneMine?'':fuPickHTML(fuAll,fuPick);
-    document.getElementById('fu-pick').style.display=noneMine?'none':'';
+      anyPick?fuPickHTML(fuAll,fuPick):'';
+    document.getElementById('fu-pick').style.display=anyPick?'':'none';
     /* המסך הזה מתאר רגעים, לא את חלקי בהם. זה מה שמבדיל אותו
        מ"הנטיעות שלי", ולכן גם בסקשן השני המספר הוא מה שנצבר לרגע.
 
@@ -8650,14 +8717,24 @@ function buildHomeSummary(){
        נושאים שונים באותו ראש: החלק שלה מול הצפי של הרגע. המספר
        שהיא צריכה הוא של הרגע, כמו הצפי שלידו. */
     const sumBox=document.getElementById('home-sum');
-    if(sumBox)sumBox.style.display=noneMine?'none':'';
+    if(sumBox)sumBox.style.display=selEmpty?'none':'';
     const gEmpty=document.getElementById('garden-empty');
-    if(gEmpty)gEmpty.style.display=noneMine?'':'none';
+    if(gEmpty)gEmpty.style.display=selEmpty?'':'none';
     /* הכפתור המקווקו הוא הפעולה כשיש רשימה. במצב הריק הפעולה כבר
        יושבת בתוכו, מלאה, ושני כפתורים לאותו דבר הם בחירה מדומה. */
     const gNew=document.getElementById('garden-new');
-    if(gNew)gNew.style.display=noneMine?'none':'';
-    if(noneMine){
+    if(gNew)gNew.style.display=selEmpty?'none':'';
+    /* ילד שנבחר ועוד אין לו רגע: המצב הריק מדבר אליו בשמו, והכפתור
+       פותח נטיעה שכבר ממולאת בו. "עוד לא נטעת בעצמך" היה אומר לו
+       משהו שאינו נכון, כי הוא אולי נטע לילד אחר. */
+    if(selEmpty&&sel&&sel.pending){
+      const fn=firstName(sel.name);
+      const geh=document.getElementById('ge-h');
+      if(geh)geh.innerHTML='עוד לא נפתח ל'+fn+' רגע';
+      txt('ge-sub','אפשר לפתוח עכשיו, וזה לוקח דקה.');
+      txt('ge-cta','פתח ל'+fn+' רגע');
+    }else if(selEmpty){
+      txt('ge-cta','פתח נטיעה ראשונה');
       /* "נטעת אצל X" נכון רק למי שבאמת הפקיד שם. מי שהוזמנה ועוד לא
          נטעה מקבלת "הוזמנת" — אחרת המשפט מספר לה על משהו שלא עשתה. */
       const kids=beneficiariesOf(oth);
@@ -8760,9 +8837,9 @@ function buildHomeSummary(){
        ולא "1 ילד", מאותה סיבה שהספירה כאן במילים: ספרה בודדת בכותרת
        קטנה נקראת כמו טופס. */
     const ownHead=document.getElementById('own-head');
-    ownHead.style.display=noneMine?'none':'';
+    ownHead.style.display=selEmpty?'none':'';
     /* הכותרת מתארת את הרשימה שמתחתיה, שהיא הרגעים של מי שנבחר. */
-    if(!noneMine&&sel)txt('own-head',
+    if(!selEmpty&&sel)txt('own-head',
       sel.rows.length===1 ? ('הרגע של '+firstName(sel.name))
                           : (hebCount(sel.rows.length)+' הרגעים של '+firstName(sel.name)));
 
@@ -8776,9 +8853,9 @@ function buildHomeSummary(){
     const fuCard=document.getElementById('fu-card');
     const fuFine=document.getElementById('fu-fine');
     if(fuCard&&fuFine){
-      fuCard.style.display=(noneMine||!sel)?'none':'';
+      fuCard.style.display=(selEmpty||!sel)?'none':'';
       fuFine.style.display='none';
-      if(!noneMine&&sel){
+      if(!selEmpty&&sel){
         const many=sel.rows.length>1;
         const ppl=sel.people||[];
         const alone=ppl.length<=1;
@@ -9077,6 +9154,27 @@ function pickFuture(id){fuPick=id;buildHomeSummary();}
 function photoPaths(items){
   return (items||[]).map(function(x){return x.av}).filter(function(a){
     return a&&a.indexOf('av-')!==0});
+}
+/* הנהנים שלי כישות, ולא רק כשמות שנגזרים מהנטיעות. הרשימה נטענת
+   ליד המודל, ומי שנוסף מקומית נדחף אליה מיד כדי שהמסך יראה אותו
+   בלי סבב נוסף לשרת. */
+let benes=[],lastFuSel=null;
+function fuWithBenes(items){
+  const byId={},byName={};
+  items.forEach(function(it){
+    if(it.kidId)byId[it.kidId]=1;
+    if(it.name)byName[String(it.name).trim()]=1;
+  });
+  /* גם לפי שם ולא רק לפי מזהה: נטיעה שנוצרה לפני 0061 אין לה kidId,
+     ובלי ההשוואה הזאת אותו ילד היה מופיע פעמיים בבורר. */
+  const extra=(benes||[]).filter(function(b){
+    return b&&b.name&&!(b.id&&byId[b.id])&&!byName[String(b.name).trim()];
+  }).map(function(b){
+    return {id:'k:'+(b.id||b.name),name:b.name,kidId:b.id||null,sex:b.sex||null,
+            av:b.avatar||kidAvatar(b.name),rows:[],accrued:0,mine:0,proj:0,
+            people:[],pending:true};
+  });
+  return items.concat(extra);
 }
 function fuPickHTML(items,sel){
   /* משישה ואילך השורה גוללת וצ'יפ ההוספה ממילא מחוץ למסך, כלומר
