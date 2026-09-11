@@ -1234,7 +1234,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'e57798d';
+window.NETA_BUILD = '207e8db';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1317,11 +1317,30 @@ window.NETA_CONFIG = {
 
        הנבט אינו במרכז הריבוע אלא נדחק ימינה, כדי לפנות לפלוס מקום
        אמיתי משמאלו: פלוס קטן מדי נקרא ב-19px כנקודה ולא כסימן. -->
+  <!-- שלושה נבטים בגבהים שונים על קו קרקע: הטאב מחזיק אוסף של רגעים
+       ולא רגע אחד, וההפרש בגבהים אומר שלא כולם נשתלו באותו יום.
+       ic-can, נבט עם פלוס, ירד ממנו: הוא אמר "פתח נטיעה", שזו העבודה
+       של הכפתור הירוק שלידו, ולא "מה כבר השקעתי".
+
+       ה-viewBox חתוך לדיו עצמו ולא 0 0 24 24, כדי שאפשר יהיה לתת לסימן
+       גובה שמתאים לנבט של "העתיד שלנו". בקופסה מלאה הדיו תופס 55 אחוז
+       מהגובה בעוד שהנבט תופס 96, ולכן באותו height הוא היה יוצא נמוך
+       בשליש. -->
   <g id="ic-can" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <path d="M16.7 21.3 V11.9"/>
     <path d="M16.7 15.7 C13.8 15.7 12.1 13.9 12.1 11.1 C14.9 11.1 16.7 12.9 16.7 15.7 Z"/>
     <path d="M16.7 14.4 C19.4 14.4 21.2 12.6 21.2 9.8 C18.4 9.8 16.7 11.6 16.7 14.4 Z"/>
     <path d="M6.8 2.7 V10.8 M2.8 6.7 H10.8"/>
+  </g>
+  <g id="ic-garden" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3.2 20.8 H20.8"/>
+    <path d="M6.6 20.8 V15.6"/>
+    <path d="M6.6 17.8 C4.3 17.4 3.2 15.6 4.3 14.3 C5.7 15.2 6.4 16.6 6.6 17.8 Z" fill="currentColor" stroke="none"/>
+    <path d="M12 20.8 V10.6"/>
+    <path d="M12 13.8 C9.2 13 8 10.2 9.6 8.6 C11.4 10.2 11.8 12.2 12 13.8 Z" fill="currentColor" stroke="none"/>
+    <path d="M12 13.8 C14.8 13 16 10.2 14.4 8.6 C12.6 10.2 12.2 12.2 12 13.8 Z" fill="currentColor" stroke="none" opacity=".68"/>
+    <path d="M17.4 20.8 V14.2"/>
+    <path d="M17.4 16.6 C19.7 16.2 20.8 14.4 19.7 13.1 C18.3 14 17.6 15.4 17.4 16.6 Z" fill="currentColor" stroke="none"/>
   </g>
   <!-- כף יד ולב, ולא שני אנשים. קרוב אינו רק עוד אדם ברשימה — הוא מי
        שבחר להחזיק משהו בשביל מישהו אחר, וזה מה שהאייקון מראה.
@@ -2949,11 +2968,20 @@ window.NETA_CONFIG = {
      מגירת הגדרות שנכנסים אליה לעיתים רחוקות, ולא יעד שמתחרה על משבצת.
      כך הטאב הנכנס נכנס בלי שאיש שילם עליו. -->
 <nav class="tabbar" id="tabbar">
-  <!-- הבית הוא מה שאני נותן, והעתיד שלנו הוא מה שמחכה להם. שני
-       הנושאים ישבו קודם באותו מסך, וזה מה שהיה קשה לקרוא. כל אייקון
-       נשאר עם המסך שלו: המשפך של "מה אני שם" בבית, והנבט של הצמיחה
-       בעתיד. -->
-  <button class="tab on" onclick="openHome()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-can"/></svg></span><span class="lb"><span>הבית</span></span></button>
+  <!-- "ההשקעות שלי" הוא מה שאני שם, ו"העתיד שלנו" הוא מה שמחכה להם.
+       שני הנושאים ישבו קודם באותו מסך, וזה מה שהיה קשה לקרוא.
+
+       הטאב נקרא "הבית" ונשא את ic-can, נבט עם סימן פלוס. השם היה תווית
+       ניווט בין שלוש תוויות תוכן, והאייקון אמר "פתח נטיעה", שזו העבודה
+       של הכפתור הירוק שלידו. שלושה מתוך חמישה סימנים בסרגל היו צמח.
+       שלוש מחרוזות במסך כבר אמרו "השקעה" (הסרגל העליון, הכיתוב מתחת
+       למספר, וכותרת המצב הריק), והטאב פשוט מסכים איתן עכשיו.
+
+       ‏width ו-height שבורים ו-viewBox חתוך: הדיו של ic-garden תופס
+       55 אחוז מגובה קופסת 24 על 24 בעוד שהנבט תופס 96, ולכן באותו
+       height הגן היה יוצא נמוך בשליש. החיתוך הוא לתיבת הדיו כולל עובי
+       הקו, והגובה מכוון לגובה הדיו של הנבט. נמדד בסריקת פיקסלים. -->
+  <button class="tab on" onclick="openHome()"><span class="ic"><svg width="27.32" height="18.45" viewBox="2.3 8.6 19.4 13.1" aria-hidden="true"><use href="#ic-garden"/></svg></span><span class="lb"><span>ההשקעות</span><span>שלי</span></span></button>
   <button class="tab" onclick="openFuture()"><span class="ic"><svg width="13" height="18.5" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>העתיד</span><span>שלנו</span></span></button>
   <button class="tab center" onclick="startCreate()"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg></span><span class="lb"><span>נטיעה</span></span></button>
   <button class="tab" onclick="openPeople()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-kin"/></svg></span><span class="lb"><span>הקרובים</span><span>שלי</span></span></button>
