@@ -1287,7 +1287,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '9490db9';
+window.NETA_BUILD = 'f8b60d1';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3841,6 +3841,7 @@ function loginNext(){
       loginBusy(false,'אשר והמשך');
       box.style.display='block';
       txt('lg-codelbl','קוד אימות נשלח ל'+userPhone);
+      keepCodeSent({where:'login',mail:userPhone,onbo:onbo});
     }).catch(function(e){
       loginBusy(false,'שלח קוד');
       toast(e.message||'לא הצלחנו לשלוח את הקוד');
@@ -3864,7 +3865,7 @@ function loginNext(){
     .then(function(){return netaServer.loadProfile()})
     .then(function(prof){
       const known=!!prof;
-      applyIdentity();
+      applyIdentity();dropCodeSent();
       loginBusy(false,'שלח קוד');
       txt('id-verified',userPhone+' אומת');
       box.style.display='none';
@@ -4946,6 +4947,60 @@ function joinLaterSignup(){
    הכניסה לנטע היא האימות. הקוד שנשלח לכתובת הוא בדיוק הקוד שהאפיון
    מתאר — ולכן אין כאן שלב אימות שני, יש את הדלת הרגילה. הטוקן נשמר כי
    הכניסה יכולה לעבור דרך קישור במייל שטוען את הדף מחדש. */
+/* ── קוד שנשלח ועדיין לא הוזן ──────────────────────────────────────
+   מי שיוצא לתיבת הדואר כדי להעתיק את הקוד חוזר לטאב שהדפדפן כבר
+   שחרר מהזיכרון, והאפליקציה נטענת מחדש. המסך שבו הוא עמד, הכתובת
+   שאליה נשלח הקוד והעובדה שהוא נשלח בכלל חיים בזיכרון בלבד, ולכן הוא
+   נחת במסך הפתיחה בלי שום דרך לחזור ולהזין אותו. הקוד עצמו עדיין תקף.
+
+   עשרים דקות, כמו תוקף הקוד אצל הספק. ישן מזה נמחק, כדי שלא נחזיר
+   מישהו למסך קוד שאי אפשר לסיים בו. */
+const CODE_KEY='neta.codesent';
+const CODE_TTL=20*60*1000;
+function keepCodeSent(o){
+  try{localStorage.setItem(CODE_KEY,JSON.stringify(Object.assign({at:Date.now()},o)))}catch(e){}
+}
+function codeSent(){
+  try{
+    const o=JSON.parse(localStorage.getItem(CODE_KEY)||'null');
+    if(!o||!o.mail||!o.at||(Date.now()-o.at)>CODE_TTL)return null;
+    return o;
+  }catch(e){return null}
+}
+function dropCodeSent(){try{localStorage.removeItem(CODE_KEY)}catch(e){}}
+/* חוזרים בדיוק לאותו מסך, עם תיבת הקוד פתוחה. מוקדם בשרשרת הנחיתה:
+   מי שכבר ביקש קוד אינו רוצה לראות שוב את כרטיס ההזמנה או את מסך
+   הפתיחה, הוא רוצה את השדה. */
+function resumeCodeSent(){
+  const c=codeSent();
+  if(!c||!netaServer||liveAccount())return false;
+  if(c.where==='join'){
+    if(!pendingInvite())return false;
+    inviteKnows={name:c.name||'',mail:c.mail,by:c.by||'',bySex:c.bySex||null};
+    openJoin();
+    const box=document.getElementById('jo-codebox');
+    const kn=document.getElementById('jo-known');
+    const am=document.getElementById('jo-askmail');
+    if(box)box.style.display='';
+    if(kn)kn.style.display='none';
+    if(am)am.style.display='none';
+    txt('jo-codelbl','הקוד נשלח ל'+maskMail(c.mail));
+    txt('jo-cta','הצטרף לנטיעה');
+    const o=document.getElementById('jo-otp');if(o)o.focus();
+    return true;
+  }
+  onbo=!!c.onbo;
+  userPhone=c.mail;
+  go(ONBO.login);
+  loginAsVerify(true);
+  const ph=document.getElementById('lg-phone');if(ph)ph.value=c.mail;
+  const box=document.getElementById('lg-codebox');
+  if(box)box.style.display='block';
+  txt('lg-codelbl','קוד אימות נשלח ל'+c.mail);
+  txt('lg-cta','אשר והמשך');
+  const o=document.getElementById('lg-otp');if(o)o.focus();
+  return true;
+}
 const INVITE_KEY='neta.invite';
 function keepInvite(t){try{localStorage.setItem(INVITE_KEY,t)}catch(e){}}
 function pendingInvite(){try{return localStorage.getItem(INVITE_KEY)||''}catch(e){return ''}}
@@ -5023,12 +5078,19 @@ function joUseOther(){
   const m=document.getElementById('jo-mail');if(m)m.focus();
 }
 function joBack(){
+  dropCodeSent();
   sharedState(sharedCardShown?'card':'card');
 }
 function joResend(){
   if(!joMail||!netaServer)return;
-  netaServer.sendCode(joMail).then(function(){toast('נשלח קוד חדש')},
-    function(e){toast((e&&e.message)||'לא הצלחנו לשלוח')});
+  netaServer.sendCode(joMail).then(function(){
+    /* השעון מתחיל מחדש: החלון נמדד מהקוד האחרון שנשלח, לא מהראשון. */
+    const c=codeSent()||{};
+    keepCodeSent({where:'join',mail:joMail,name:c.name||
+      ((document.getElementById('jo-name')||{}).value||'').trim(),
+      by:inviteKnows.by,bySex:inviteKnows.bySex});
+    toast('נשלח קוד חדש');
+  },function(e){toast((e&&e.message)||'לא הצלחנו לשלוח')});
 }
 function joNext(){
   const nm=((document.getElementById('jo-name')||{}).value||'').trim();
@@ -5053,6 +5115,8 @@ function joNext(){
       if(kn)kn.style.display='none';
       txt('jo-codelbl','הקוד נשלח ל'+maskMail(joMail));
       txt('jo-cta','הצטרף לנטיעה');
+      keepCodeSent({where:'join',mail:joMail,name:nm,
+                    by:inviteKnows.by,bySex:inviteKnows.bySex});
       const o=document.getElementById('jo-otp');if(o)o.focus();
     },function(e){
       btn.disabled=false;txt('jo-cta','שלח לי קוד');
@@ -5066,7 +5130,7 @@ function joNext(){
   netaServer.verifyCode(joMail,code)
     .then(function(){return netaServer.ensureProfile(nm,pickedAv)})
     .then(function(){
-      applyIdentity();
+      applyIdentity();dropCodeSent();
       btn.disabled=false;txt('jo-cta','הצטרף לנטיעה');
       /* הפרופיל נוצר כאן, ולכן introduceThen לא תשאל שוב. */
       if(!finishJoin()){setEmpty(false);buildHomeSummary();goHome()}
@@ -10611,7 +10675,10 @@ if(authErr){
 }
 
 const sharedToken=sharedTokenInUrl();
-if(sharedToken&&liveAccount()){
+/* לפני הכול: מי שכבר ביקש קוד ויצא להביא אותו חוזר לשדה, ולא לכרטיס
+   ההזמנה או למסך הפתיחה. */
+if(resumeCodeSent()){}
+else if(sharedToken&&liveAccount()){
   /* מחובר שפתח קישור — אין טעם להראות לו כרטיס אנונימי ולבקש שיתחבר. */
   keepInvite(sharedToken);finishJoin();
 } else if(!sharedToken||!openShared(sharedToken)){
