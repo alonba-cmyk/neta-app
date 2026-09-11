@@ -1234,7 +1234,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '5e064c4';
+window.NETA_BUILD = 'fe2d5b9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6174,11 +6174,21 @@ function chanHint(){
   const v=(document.getElementById('r-contact')||{}).value,c=chanOf(v);
   txt('ch-hint',c?'ההזמנה תישלח ב'+CHAN[c]:'ההזמנה תישלח בוואטסאפ אם תזין מספר, ובאימייל אם תזין כתובת.');
 }
-function plantHTML(){
-  pickedPlant='';
-  return '<div class="chips">'+invitablePlantings().map(function(p){
-    return '<button onclick="pickedPlant=\''+p.key+'\';markChip(this)">'+p.icon+' '+p.name+'</button>';
-  }).join('')+'<button class="on" onclick="pickedPlant=\'\';markChip(this)">לא עכשיו</button></div>';
+/* ‏req: הטופס הזה שולח הזמנה, ולכן חייב לבחור רגע.
+   ‏invitations.planting_id אינו יכול להיות null, ובלי רגע אין מה
+   לשלוח. "לא עכשיו" ישב כאן כברירת מחדל גם בטופס שכפתורו "שלח
+   הזמנה", ואז sendInvite נפל לענף האחרון והציג טוסט "הזמנה נשלחה"
+   בלי שנרשמה שורה, בלי מייל ובלי קישור. בטופס ההוספה הוא נשאר,
+   כי שם באמת אפשר להוסיף אדם בלי להזמין אותו לשום מקום. */
+function plantHTML(req){
+  const opts=invitablePlantings();
+  pickedPlant=(req&&opts.length)?opts[0].key:'';
+  return '<div class="chips">'+opts.map(function(p,i){
+    return '<button'+((req&&!i)?' class="on"':'')+
+      ' onclick="pickedPlant=\''+p.key+'\';markChip(this)">'+p.icon+' '+p.name+'</button>';
+  }).join('')+
+  (req?'':'<button class="on" onclick="pickedPlant=\'\';markChip(this)">לא עכשיו</button>')+
+  '</div>';
 }
 function markChip(el){[...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)})}
 /* requests the system could not verify — the owner decides, by name */
@@ -6318,8 +6328,12 @@ function sendInvite(r){
       .catch(function(e){ask('ההזמנה לא נרשמה',(e&&e.message)||'נסה שוב.','הבנתי')});
     return;
   }
-  if(pickedPlant)sentSheet(pickedPlant,r);
-  else toast('הזמנה נשלחה ל'+r.name+' ב'+CHAN[r.chan]);
+  if(pickedPlant){sentSheet(pickedPlant,r);return}
+  /* בלי רגע לא נשלח דבר: אין שורה ב-invitations, אין מייל ואין
+     קישור. הטוסט שהיה כאן הכריז על שליחה שלא קרתה. הסימון בזיכרון
+     נסוג, אחרת השורה הייתה מציגה "העתק קישור" על הזמנה שאינה. */
+  r.status='none';r.plant='';buildRelatives();
+  toast(r.name+' נוסף לקרובים שלך. ההזמנה נשלחת מתוך רגע.');
 }
 
 /* כשהמייל נשלח בפועל (emailed=true) הגיליון אומר זאת בגוף ראשון — זו
@@ -6649,9 +6663,17 @@ function suggestSomeone(plantingId){
 }
 function inviteRelative(i){
   const r=relatives[i];
+  /* בלי רגע פתוח אין למה להזמין, ואמירה מפורשת עדיפה על טופס
+     שנראה שלם ואין מאחוריו כלום. */
+  if(!invitablePlantings().length){
+    ask('אין עדיין רגע להזמין אליו',
+        'הזמנה היא תמיד לרגע מסוים. פתח נטיעה, ואז אפשר להזמין את '+r.name+' אליה.',
+        'הבנתי');
+    return;
+  }
   sheetForm('הזמנת '+r.name,
     '<label>לאן לשלוח</label>'+contactHTML(r.contact)+
-    '<label>לצרף לנטיעה</label>'+plantHTML()+noteHTML(),
+    '<label>לאיזה רגע</label>'+plantHTML(true)+noteHTML(),
     'שלח הזמנה',
     function(){
       const c=(document.getElementById('r-contact')||{}).value;
@@ -7059,6 +7081,32 @@ function loadLetters(){
    ולכן אינו עונה על זה, ו"אין קרובים" לפני שהתשובה הגיעה אינו "אין
    קרובים" אלא "עוד לא יודעים". */
 let relsLoaded=false;
+/* אין FK בין relatives ל-invitations, ולכן החיבור היחיד הוא פרטי
+   הקשר. הם נשמרים כפי שהוקלדו: כתובת באות גדולה וטלפון עם מקפים הם
+   אותו אדם, והשוואת מחרוזות גולמית הייתה מפספסת אותו. */
+function normContact(v){
+  const t=String(v||'').trim();
+  if(!t)return '';
+  if(t.indexOf('@')>=0)return t.toLowerCase();
+  return t.replace(/[^0-9]/g,'');
+}
+/* מסמן על כל קרוב את ההזמנות הפתוחות שלו, ואת הרגעים שאליהם הוזמן. */
+function markInvited(rows){
+  const byContact={};
+  (rows||[]).forEach(function(v){
+    const k=normContact(v.contact);
+    if(!k)return;
+    (byContact[k]=byContact[k]||[]).push(v);
+  });
+  relatives.forEach(function(r){
+    const hit=byContact[normContact(r.contact)];
+    if(!hit||!hit.length)return;
+    r.status='invited';
+    r.invitedTo=hit.map(function(v){return v.planting_id});
+    r.plant=r.invitedTo[0]||'';
+  });
+  buildRelatives();
+}
 function loadAccountLists(){
   if(!liveAccount()||listsLoaded)return;
   listsLoaded=true;
@@ -7083,6 +7131,9 @@ function loadAccountLists(){
                       contact:r.contact||''});
     });
     buildRelatives();
+    /* אחרי הרשימה ולא במקביל לה: הסימון נכתב על השורות שהרגע נבנו. */
+    if(netaServer.loadInvitations)
+      netaServer.loadInvitations().then(markInvited,function(){});
   }).catch(function(){relsLoaded=true});
 }
 
@@ -7853,6 +7904,17 @@ function netaBackend(cfg){
     },
     /* קישור משלו לכל הזמנה אישית — הוא מה שמאפשר לכרטיס לפנות בשם
        ולהציג את המשפט שנכתב דווקא לאדם הזה. */
+    /* כל ההזמנות הפתוחות שלי. ‏RLS מצמצמת לנטיעות שאני בעליהן
+       (invitations_read), ולכן אין כאן תנאי על המזמין.
+
+       בלי זה הסטטוס נמחק בכל רענון: loadRelatives כותב status:'none'
+       קשיח, sendInvite מסמן 'invited' בזיכרון בלבד, והשורה חזרה
+       להציג "הזמן" על מי שכבר הוזמן. */
+    loadInvitations:function(){
+      return call('/rest/v1/invitations?select=id,planting_id,invitee_name,contact,state'+
+                  '&state=in.(sent,needs_approval)&order=created_at.desc',{method:'GET'})
+        .then(function(r){return r||[]},function(){return []});
+    },
     /* ההזמנה שכבר נשלחה לאדם הזה, אם יש. */
     findInvitation:function(contact){
       return call('/rest/v1/invitations?select=id,planting_id,invitee_name'+
@@ -9423,7 +9485,10 @@ function inviteButton(p,ghost){
   const c=ghost?'btn ghost':'btn';
   return p.shared
     ? '<button class="'+c+'" onclick="inviteToPlanting()">הזמן קרוב</button>'
-    : '<button class="'+c+'" onclick="openToCircle()">פתח לקרובים</button>';
+    /* "הזמן קרובים" ולא "פתח לקרובים": הכפתור מוביל לבחירת האנשים,
+       והפתיחה בפועל קורית ברגע השליחה הראשונה (openForRelatives).
+       "פתח" תיאר את תופעת הלוואי ולא את מה שהמשתמש בא לעשות. */
+    : '<button class="'+c+'" onclick="openToCircle()">הזמן קרובים</button>';
 }
 /* בשני הנתיבים אותה שאלה, ושתי צורות: בהדגמה designated יכול להיות
    undefined ופירושו מיועדת, ובנטיעה חיה הוא תמיד בוליאני. */
@@ -9500,20 +9565,31 @@ function inviteExtraRows(p){
     }).join('');
   }
   const inNames=p.who.map(function(w){return w[1]});
-  const idxs=[];
+  /* מי שהוזמן דווקא לרגע הזה מול מי שרק אפשר להזמין. עד כה שניהם
+     נראו זהים והוצעו ב"הזמן", ולכן רגע שהוזמנו אליו שלושה אנשים
+     נראה כמו רגע שלא הוזמן אליו איש: אין במסך שום עדות לכך שמשהו
+     בדרך. */
+  const asked=[],could=[];
   relatives.forEach(function(r,i){
-    if(r.contact&&inNames.indexOf(r.name)<0)idxs.push(i);
+    if(!r.contact||inNames.indexOf(r.name)>=0)return;
+    const here=r.status==='invited'&&
+      (r.invitedTo||[]).indexOf(p.key)>=0;
+    (here?asked:could).push(i);
   });
-  /* pend, לא ghost: זה קרוב אמיתי שאפשר להזמין עכשיו, לא דוגמה מוחשכת
-     ולא-לחיצה. אותה שקיפות חלקית שכבר קיימת ב"הקרובים שלי" למי שהוזמן
-     וטרם הצטרף — כדי שהעין תבדיל בבירור בין מי שכבר משקיע לבין מי
-     שרק אפשרות. */
-  return idxs.slice(0,2).map(function(i){
+  const row=function(i,waiting){
     const r=relatives[i];
+    /* בלי סכום, גם לא אפס ולא `·`: מספר בשורה הזאת נקרא כאילו הפקיד,
+       וזה בדיוק ההפך ממה שהיא אומרת. */
+    const sub=waiting
+      ? ('הוזמן · ממתין ל'+(r.g==='f'?'תשובתה':'תשובתו'))
+      : ('מהקרובים שלך · עדיין '+(r.g==='f'?'לא הצטרפה':'לא הצטרף'));
+    const act=waiting?'' : '<span class="rx" onclick="quickInvite('+i+')">הזמן</span>';
     return '<div class="cbr pend"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+(r.av||'av-granny2')+'"/></svg></div>'+
-      '<span class="cbn">'+r.name+'<i>מהקרובים שלך · עדיין '+(r.g==='f'?'לא הצטרפה':'לא הצטרף')+'</i></span>'+
-      '<span class="rx" onclick="quickInvite('+i+')">הזמן</span></div>';
-  }).join('');
+      '<span class="cbn">'+r.name+'<i>'+sub+'</i></span>'+act+'</div>';
+  };
+  /* מי שכבר הוזמן קודם, והצעות ממלאות את מה שנשאר עד שתיים. */
+  return asked.map(function(i){return row(i,true)}).join('')+
+    could.slice(0,Math.max(0,2-asked.length)).map(function(i){return row(i,false)}).join('');
 }
 /* השורה הקבועה בתחתית "מי השקיע" — מי שלא ברשימת הקרובים השמורים,
    או שרוצים פשוט לפתוח את מסך ההזמנה המלא. נשארת בכל מצב, כולל כשאין
