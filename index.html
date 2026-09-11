@@ -88,6 +88,11 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 /* הכרטיס הפך לניווט, ולכן יש בו חץ והטקסט תופס את מה שביניהם. */
 .letter-card>div{flex:1;min-width:0}
 .letter-card .chev{flex-shrink:0;color:var(--tx-3);display:flex;align-items:center}
+/* הציטוט: שתי שורות ממה שנכתב. הכרטיס מראה מה יש, כמו כל שאר המסך. */
+.letter-card .lq{font-size:11px;color:var(--tx-2);font-style:italic;margin-top:3px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.letter-card.done::before{background:var(--leaf)}
+.letter-card.done .ic{color:var(--leaf)}
 .letter-card.tap{cursor:pointer;transition:border-color .15s}
 .letter-card.tap:hover{border-color:var(--line-2)}
 /* ההזמנה שנדחתה ב"בפעם אחרת". אותו אובייקט בשני מקומות: במסך הבית
@@ -1282,7 +1287,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b3b6084';
+window.NETA_BUILD = '9490db9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1884,9 +1889,9 @@ window.NETA_CONFIG = {
        מכתב לא ראה אותו כלל — כלומר ההזמנה לכתוב לא הייתה בשום מקום
        שמישהו מגיע אליו. עכשיו הוא גם הכניסה לכתיבה, וזה המקום הנכון
        לה: כאן ממילא כתוב מתי הרגע נפתח. -->
-  <div class="letter-card" id="d-letters" onclick="openEditLetter()">
+  <div class="letter-card" id="d-letters" onclick="openLetterSheet()">
     <span class="ic">✉</span>
-    <div><b id="d-lcount">ולא רק כסף, 3 מכתבים חתומים: מסבתא, מדוד יוסי וממך</b><span id="d-lett">המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.</span></div>
+    <div><b id="d-lcount">ולא רק כסף, 3 מכתבים חתומים: מסבתא, מדוד יוסי וממך</b><span class="lq" id="d-lquote" style="display:none"></span><span id="d-lett">המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.</span></div>
     <span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>
   </div>
 
@@ -5400,6 +5405,108 @@ function ahaCopy(){
 
    הבית החדש הוא כרטיס המכתבים במסך הנטיעה, לפי הכלל שפעולה יושבת
    ליד הדבר שהיא משנה: שם ממילא כתוב מתי הרגע נפתח. */
+/* ── המכתב ─────────────────────────────────────────────────────────
+   הכתיבה ישבה במסך עריכת הנטיעה, בין תאריך היעד, מתגי הפרטיות ורשימת
+   ההרשאות. מי שרצה לכתוב שלוש שורות לילד שלו נחת במסך הגדרות. עכשיו
+   היא גיליון שנפתח מעל מסך הרגע, במקום שבו לחצו.
+
+   התבנית יושבת בתוך התיבה ולא כרמז: רוב האנשים רוצים בדיוק את המשפט
+   הזה, ולמי שלא, מחיקה היא פעולה אחת. משפט אחד לכל הרגעים היה יוצא
+   כללי, ולכן הוא נגזר מסוג הרגע וממין הנהנה. */
+const LETTER_TPL={
+  bar_mitzvah:{m:'NAME, כשתחגוג את בר המצווה תקבל המון מעטפות, אבל שלנו כבר תחכה לך שם שנים.',
+               f:'NAME, כשתחגגי את בת המצווה תקבלי המון מעטפות, אבל שלנו כבר תחכה לך שם שנים.'},
+  studies:{m:'NAME, פתחנו את זה כשעוד לא ידעת מה תרצה ללמוד. תבחר מה שתרצה, החלק שלנו כבר מחכה.',
+           f:'NAME, פתחנו את זה כשעוד לא ידעת מה תרצי ללמוד. תבחרי מה שתרצי, החלק שלנו כבר מחכה.'},
+  wedding:{m:'NAME, ביום שתעמוד שם, תדע שהתחלנו להתכונן אליו הרבה לפני.',
+           f:'NAME, ביום שתעמדי שם, תדעי שהתחלנו להתכונן אליו הרבה לפני.'},
+  army_trip:{m:'NAME, כשתצא לדרך, קח איתך גם את זה. שמנו בצד מהיום שבו היית קטן.',
+             f:'NAME, כשתצאי לדרך, קחי איתך גם את זה. שמנו בצד מהיום שבו היית קטנה.'},
+  first_car:{m:'NAME, המפתחות יהיו שלך. ההתחלה הזאת חיכתה לך שנים.',
+             f:'NAME, המפתחות יהיו שלך. ההתחלה הזאת חיכתה לך שנים.'},
+  apartment:{m:'NAME, כשתהיה לך דלת משלך, תדע שהתחלנו לבנות אותה מזמן.',
+             f:'NAME, כשתהיה לך דלת משלך, תדעי שהתחלנו לבנות אותה מזמן.'}
+};
+const LETTER_TPL_ANY='NAME, שמנו את זה בצד ביום רגיל לגמרי, בלי סיבה, חוץ מזה שחשבנו עליך.';
+function letterTemplate(p){
+  const byOcc=LETTER_TPL[p&&p.occasion];
+  /* בלי מין שמור אין להטות, ולכן הנוסח חסר הגוף. ניחוש לפי השם היה
+     יוצא הפוך בחצי מהמקרים. */
+  const t=(byOcc&&(byOcc[p.sex]||''))||LETTER_TPL_ANY;
+  const nm=(p&&p.kid)||'';
+  return nm?t.replace('NAME',nm):t.replace(/^NAME, /,'').replace('NAME','');
+}
+/* "נועה יקרא" הוא ניחוש הפוך. בלי מין שמור נשארת הצורה חסרת הגוף,
+   בדיוק כמו בכיתוב הזהוב של "העתיד שלנו". */
+function letterWhen(p){
+  const when=(p&&p.date)||'מועד הרגע';
+  if(p&&p.kid&&p.sex==='f')return p.kid+' תקרא אותו ב'+when+', יחד עם מה שהשקעת.';
+  if(p&&p.kid&&p.sex==='m')return p.kid+' יקרא אותו ב'+when+', יחד עם מה שהשקעת.';
+  return 'ייפתח ב'+when+', יחד עם מה שהשקעת.';
+}
+let ltKey='',ltTpl='',ltAsked=false;
+function openLetterSheet(){
+  const p=plantAt(cur);
+  if(!p)return;
+  ltKey=cur;ltAsked=false;
+  const mine=myLetterOf(cur);
+  const has=!!(mine&&(mine.body||'').trim());
+  ltTpl=letterTemplate(p);
+  const body=has?mine.body:ltTpl;
+  const who=p.kid||'הרגע הזה';
+  sheetForm(has?('המכתב שלך ל'+who):('מכתב ל'+who),
+    '<p class="fine" style="color:var(--sun-soft);margin:0 0 10px">'+
+      letterWhen(p)+'</p>'+
+    '<textarea id="lt-body" maxlength="2000" style="min-height:104px">'+
+      attrText(body)+'</textarea>'+
+    '<p class="fine" id="lt-hint" style="margin-top:7px">רק אתה רואה אותו, גם לא שאר '+
+      'הנוטעים. הוא יחכה חתום עד המועד, ואפשר לערוך אותו עד אז.</p>',
+    has?'שמור שינויים':'שמור את המכתב',
+    saveLetterSheet);
+}
+/* התבנית נשמרת רק אחרי אישור: טקסט שנכתב מראש ונשמר כמו שהוא הוא
+   המכתב שלנו ולא שלו. אישור בתוך הגיליון ולא גיליון שני, כי שני
+   גיליונות זה על זה דורסים זה את זה. */
+function saveLetterSheet(){
+  const el=document.getElementById('lt-body');
+  const t=((el&&el.value)||'').trim();
+  if(!t){toast('המכתב ריק');return false}
+  if(t===ltTpl.trim()&&!ltAsked){
+    ltAsked=true;
+    txt('lt-hint','זה הנוסח שהצענו. אפשר לשמור אותו כמו שהוא, או להוסיף משפט משלך.');
+    const b=document.querySelector('#sh-acts .btn');
+    if(b)b.textContent='שמור כמו שהוא';
+    return false;
+  }
+  const key=ltKey;
+  /* sheetConfirm סוגר את הגיליון אחרי הקריאה, ולכן ask על כישלון היה
+     נפתח ומיד נסגר. אותו דחייה כמו ב-sendInvites. */
+  setTimeout(function(){commitLetter(key,t)},0);
+}
+function commitLetter(key,body){
+  const p=plantAt(key);
+  const had=myLetterOf(key);
+  if(!liveAccount()||!p||!p.live){
+    myLetters[key]={body:body,signed_at:(had&&had.signed_at)||new Date().toISOString()};
+    if(p)paintLetterCard(p,key);
+    toast('המכתב נשמר');
+    return;
+  }
+  /* חותמים בשמירה הראשונה בלבד: signed_at נשלח רק כשהוא חסר, אחרת
+     עריכה הייתה מאפסת את תאריך החתימה. */
+  netaServer.saveLetter(key,body,!(had&&had.signed_at))
+    .then(function(row){
+      myLetters[key]=row||{body:body};
+      liveLetter=myLetters[key];
+      return refreshDetail(key).then(function(){},function(){});
+    })
+    .then(function(){
+      const cp=plantAt(key);
+      if(cp)paintLetterCard(cp,key);
+      toast('המכתב נשמר');
+    })
+    .catch(function(e){ask('המכתב לא נשמר',(e&&e.message)||'נסה שוב.','הבנתי')});
+}
 function openEditLetter(){
   openEdit();
   setTimeout(function(){
@@ -6023,8 +6130,46 @@ function plantTrackLabel(p){
   if(p.rate===0)return 'יישמר כמו שהוא (ללא ריבית)';
   return TRACK_LABELS[p.rate]||('כ-'+(+(p.rate*100).toFixed(2))+'% בשנה');
 }
+/* המכתב שלי בכל נטיעה, כדי שהכרטיס במסך הרגע יוכל לצטט אותו. הוא אינו
+   מגיע עם פרטי הנטיעה: ‏planting_detail סופרת מכתבים ואינה חושפת גוף,
+   וזה נכון — מכתב הוא פרטי גם מול שאר הנוטעים. */
+let myLetters={};
+function myLetterOf(key){return myLetters[key]||null}
+/* שלושה מצבים לכרטיס: כתבתי, ואז הוא מצטט; לא כתבתי, ואז הוא מזמין;
+   ולא שלי, ואז הוא סופר מכתבים של אחרים.
+
+   הציטוט ולא היעלמות: כרטיס שיורד מהמסך אחרי השמירה נקרא כמכתב שלא
+   נשמר, וזו בדיוק המשפחה של הבאג ששכן כאן פעם. */
+/* המפתח נמסר ואינו נגזר מ-p: נטיעות ההדגמה הן ערכים ב-plants{} ואין
+   להן שדה key, ולכן myLetterOf(p.key) חיפש תמיד את undefined. */
+function paintLetterCard(p,key){
+  const lt=document.getElementById('d-letters');
+  if(!lt)return;
+  key=key||p.key||cur;
+  const mine=myLetterOf(key);
+  const body=(mine&&mine.body||'').trim();
+  const invite=!p.lCount&&p.mine&&p.designated!==false;
+  const show=!!(body||p.lCount||invite);
+  lt.style.display=show?'':'none';
+  lt.classList.toggle('tap',show);
+  lt.classList.toggle('done',!!body);
+  const q=document.getElementById('d-lquote');
+  if(q){
+    q.style.display=body?'':'none';
+    q.textContent=body?('"'+body+'"'):'';
+  }
+  if(body){
+    txt('d-lcount','המכתב שלך ל'+(p.kid||'רגע הזה'));
+    txt('d-lett','ייפתח ב'+(p.date||'מועד הרגע')+' · אפשר לערוך עד אז');
+    return;
+  }
+  txt('d-lcount',p.lCount||('רוצה לצרף מכתב ל'+(p.kid||'רגע הזה')+'?'));
+  txt('d-lett',p.lCount?p.lSub
+    :('הוא ייפתח ב'+(p.date||'מועד הרגע')+', יחד עם מה שהשקעת.'));
+}
 function openDetail(key){
   const known=plantAt(key);
+  loadMyLetter(key);
   paintOrder(key);
   if(known){paintDetail(key,known);return}
   if(!netaServer)return;
@@ -6033,6 +6178,20 @@ function openDetail(key){
     livePlants[key]=liveDetail(r);
     paintDetail(key,livePlants[key]);
   }).catch(function(){toast('לא הצלחנו לטעון את הנטיעה')});
+}
+/* פעם אחת לכל נטיעה, ואז מהזיכרון. undefined פירושו "עוד לא נשאלנו",
+   ו-null פירושו "אין מכתב" — שני מצבים שונים, כי בלי ההבחנה הטעינה
+   הייתה חוזרת בכל כניסה למסך. */
+function loadMyLetter(key){
+  if(!key||myLetters[key]!==undefined)return;
+  const p=plantAt(key);
+  if(!liveAccount()||(p&&!p.live)){myLetters[key]=null;return}
+  myLetters[key]=null;
+  netaServer.myLetter(key).then(function(row){
+    myLetters[key]=row||null;
+    const cp=plantAt(key);
+    if(cp&&cur===key&&document.querySelector('.screen.on')===screens[5])paintLetterCard(cp,key);
+  }).catch(function(){});
 }
 /* טעינה מחדש של נטיעה חיה אחרי שינוי, כדי שהמסך יראה את מה שנשמר.
    מצייר מחדש רק אם מסך הנטיעה הוא זה שפתוח — אחרת הוא היה קופץ לשם
@@ -6087,15 +6246,7 @@ function paintDetail(key,p){
 
      ההזמנה מוצגת רק לבעל הנטיעה, כי מסך העריכה שאליו היא מובילה
      פתוח רק לו. */
-  const lt=document.getElementById('d-letters');
-  const invite=!p.lCount&&p.mine&&p.designated!==false;
-  if(lt){
-    lt.style.display=(p.lCount||invite)?'':'none';
-    lt.classList.toggle('tap',!!(p.lCount||invite));
-  }
-  txt('d-lcount',p.lCount||('רוצה לצרף מכתב ל'+(p.kid||'רגע הזה')+'?'));
-  txt('d-lett',p.lCount?p.lSub
-    :('הוא ייפתח ב'+(p.date||'מועד הרגע')+', יחד עם מה שהשקעת.'));
+  paintLetterCard(p,key);
   /* ההזמנה גרה כאן, לא בשורת הפעולות: מי שכבר משקיע נמצא באותה רשימה,
      והזמנה היא בדיוק אותה פעולה — להצטרף אליהם. מוצגת רק כשמותר להזמין
      בכלל (שלך ופתוחה לקרובים), אחרת זו רשימה של מישהו אחר. */
