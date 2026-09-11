@@ -1287,7 +1287,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f8b60d1';
+window.NETA_BUILD = 'd69dd1b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -5128,7 +5128,15 @@ function joNext(){
   if(!code){toast('הזן את הקוד שנשלח אליך');return}
   btn.disabled=true;txt('jo-cta','מאמת…');
   netaServer.verifyCode(joMail,code)
-    .then(function(){return netaServer.ensureProfile(nm,pickedAv)})
+    .then(function(){return netaServer.loadProfile()})
+    .then(function(prof){
+      /* למי שכבר יש חשבון, השם שבחר לעצמו נשאר שלו. השדה בטופס הזה
+         נושא את מה שהמזמין כתב עליו ("סבתא רחל"), ו-ensureProfile
+         דרס בו בשקט את השם שמופיע לכל מי שנוטע איתו. השאלה אם לשנות
+         כבר קיימת, והיא נשאלת פעם אחת ב-offerInviteName. */
+      if(prof&&prof.name)return prof;
+      return netaServer.ensureProfile(nm,pickedAv);
+    })
     .then(function(){
       applyIdentity();dropCodeSent();
       btn.disabled=false;txt('jo-cta','הצטרף לנטיעה');
@@ -6479,6 +6487,13 @@ function chanOf(v){
 /* ‏chanOf מסווג בלבד: כל מחרוזת בלי @ היא "וואטסאפ", ולכן הבדיקה
    "צריך כתובת תקינה" שנשענה עליה מעולם לא נכשלה — "לא כתובת" נשמר
    כמספר טלפון. מרגע שהשדה הוא חובה, זו כבר לא בדיקה תיאורטית. */
+/* הכתובת שלי אינה יעד להזמנה: הזמנה כזאת נרשמת, המייל יוצא אליי,
+   והקישור שבו מחזיר 'already' כי אני כבר רואה את הנטיעה — כלומר שורה
+   שנשארת "ממתין לתשובתו" לנצח ליד השורה שאומרת "אתה". */
+function isMyAddress(v){
+  const me=normContact(myEmail()),t=normContact(v);
+  return !!me&&!!t&&me===t;
+}
 function contactOk(v){
   const t=String(v||'').trim();
   if(!t)return false;
@@ -7247,6 +7262,7 @@ function inviteRelative(i){
       const c=(document.getElementById('r-contact')||{}).value;
       if(!c||!c.trim()){toast('צריך טלפון או אימייל כדי לשלוח');return false}
       if(!contactOk(c)){toast('צריך טלפון או כתובת אימייל תקינה');return false}
+      if(isMyAddress(c)){toast('זו הכתובת שלך. הזמנה נשלחת למישהו אחר.');return false}
       r.contact=c.trim();
       r.note=((document.getElementById('r-note')||{}).value||'').trim();
       return sendInvite(r);
@@ -7450,6 +7466,8 @@ function apNext(){
            document.getElementById('ap-contact').focus();return}
     if(!contactOk(v)){toast('צריך טלפון או כתובת אימייל תקינה');
                       document.getElementById('ap-contact').focus();return}
+    if(isMyAddress(v)){toast('זו הכתובת שלך. הזמנה נשלחת למישהו אחר.');
+                       document.getElementById('ap-contact').focus();return}
     /* הרגע ידוע מהמסך שממנו נכנסתי, ולכן הפאנל שלו לא הוצג. */
     if(apFrom)apPlants=[apFrom];
     apSave();return;
@@ -7529,6 +7547,7 @@ function apSave(){
      שבו הפאנל הזה אינו האחרון. שדה חובה שנבדק במקום אחד בלבד הוא
      שדה חובה עד למסלול הבא. */
   if(!contactOk(c)){toast('צריך טלפון או כתובת אימייל תקינה');return}
+  if(isMyAddress(c)){toast('זו הכתובת שלך. הזמנה נשלחת למישהו אחר.');return}
   const r={av:pickedAv||apAv,name:nm,rel:apRelText(),g:'m',status:'none',
            chan:chanOf(c),contact:c,note:fieldVal('ap-note')};
   const done=function(saved){
@@ -7651,6 +7670,7 @@ function addRelative(){
          דבר. */
       if(!c){toast('צריך טלפון או כתובת אימייל');return false}
       if(!contactOk(c)){toast('צריך טלפון או כתובת אימייל תקינה');return false}
+      if(isMyAddress(c)){toast('זו הכתובת שלך. הזמנה נשלחת למישהו אחר.');return false}
       const r={av:pickedAv,name:n.trim(),rel:(rl||'').trim()||'קרוב משפחה',g:'m',status:'none',
                chan:chanOf(c),contact:c,
                note:((document.getElementById('r-note')||{}).value||'').trim()};
