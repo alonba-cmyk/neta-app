@@ -1295,7 +1295,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '8325eea';
+window.NETA_BUILD = 'ef13fb9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1766,11 +1766,10 @@ window.NETA_CONFIG = {
   </div>
   <p class="fine" id="c-datehint" style="margin:8px 0 16px"></p>
 
-  <!-- מפקיד לרגע קיים אינו בוחר מסלול: זו קופה אחת, והמסלול נקבע
-       כשהיא נפתחה. עד כה הבורר נשאר על המסך ו-investIn דרסה את הבחירה
-       בשקט — כלומר מסך שהראה תחזית של 9% על כסף שגדל ב-3.5%. -->
-  <p class="fine" id="amt-track" style="display:none;margin:14px 0 0"></p>
   <p class="eyebrow" id="eb-mode">3 · מה יקרה לכסף עד אז</p>
+  <!-- בהפקדה לרגע קיים: המסלול שנבחר כשהרגע נפתח הוא ברירת המחדל, ולא
+       הכלל. הכסף של כל נוטע גדל לפי מה שהוא בחר (0066). -->
+  <p class="fine" id="amt-track" style="display:none;margin:-4px 0 11px"></p>
   <div class="stack gap" id="mode-block">
     <div class="opt" data-m="keep"><b>שיישמר כמו שהוא</b><p id="keep-desc">הסכום שתפקיד כל חודש יחכה במלואו בהגעה למועד המיוחל.</p></div>
     <div class="opt" data-m="safe"><div class="row" style="gap:6px"><b>שיצבור ריבית מובטחת</b><span class="tag">מתאים לרוב</span></div><p>הסכום רק גדל. הריבית ידועה מראש ואינה יורדת.</p></div>
@@ -4031,8 +4030,7 @@ function commitGoal(){
     return;
   }
   showTermStep(true);
-  /* נטיעה חדשה: הבורר חוזר. בלי זה הוא היה נשאר מוסתר מהפקדה קודמת. */
-  showModeStep(true);
+  trackNote('');
   if(!cDate.value){ // arrive with a working projection rather than an empty one
     const def=document.querySelectorAll('#c-terms button')[1];
     if(def)setTerm(def,10);
@@ -4060,6 +4058,29 @@ function setFreq(f){freq=f;document.querySelectorAll('.pill[data-f]').forEach(b=
    השאלה נשאלת בשלב 3 ונענית שם בלבד. */
 function setMode(m){mode=m;document.querySelectorAll('.opt[data-m]').forEach(el=>el.classList.toggle('on',el.dataset.m===m));document.getElementById('safe-block').style.display=m==='safe'?'block':'none';document.getElementById('market-block').style.display=m==='market'?'block':'none';if(m==='safe'){setTrack(document.querySelector('.trk[data-r="0.035"]'));return}if(m==='market'){setTrack(document.querySelector('.trk[data-r="0.06"]'));return}render()}
 function setTrack(el){rate=parseFloat(el.dataset.r);document.querySelectorAll('.trk').forEach(t=>t.classList.toggle('on',t===el));render()}
+/* המסד מכיר keep/guaranteed/market, והטופס מדבר keep/safe/market. בלי
+   התרגום הזה "guaranteed" נפל לענף האחרון בכל מקום שבודק mode, כלומר
+   נטיעה בריבית מובטחת הציגה את הסיכון של שוק ההון. */
+const MODE_FROM_DB={keep:'keep',guaranteed:'safe',market:'market'};
+/* מדליק את מה שכבר נבחר, בלי לדרוס את הקצב: setMode קופצת לברירת
+   המחדל של כל מסלול (3.5% או 6%), וכאן הקצב מגיע מהנטיעה. קצב שאינו
+   אחד מהמוצעים משאיר את הכרטיסיות כבויות, וזה נכון: אין מה לסמן. */
+function preselectTrack(m,r){
+  document.querySelectorAll('.opt[data-m]').forEach(function(el){
+    el.classList.toggle('on',el.dataset.m===m)});
+  const sb=document.getElementById('safe-block'),mb=document.getElementById('market-block');
+  if(sb)sb.style.display=m==='safe'?'block':'none';
+  if(mb)mb.style.display=m==='market'?'block':'none';
+  document.querySelectorAll('.trk').forEach(function(el){
+    el.classList.toggle('on',Math.abs(parseFloat(el.dataset.r)-r)<1e-9)});
+}
+/* השורה שמעל הבורר, כשהמסלול של הרגע הוא ברירת המחדל ולא הכלל. */
+function trackNote(t){
+  const el=document.getElementById('amt-track');
+  if(!el)return;
+  el.textContent=t||'';
+  el.style.display=t?'':'none';
+}
 function fvCalc(v,r){const y=goal.years;if(r===0)return freq==='m'?v*y*12:v;if(freq==='m'){const m=r/12,n=y*12;return v*((Math.pow(1+m,n)-1)/m)}return v*Math.pow(1+r,y)}
 function render(){const v=freq==='m'?+amtM.value:+amtL.value;if(freq==='m')document.getElementById('out-m').textContent=v.toLocaleString('he-IL')+' ₪';else document.getElementById('out-l').textContent=v.toLocaleString('he-IL')+' ₪';const label=document.getElementById('hero-label'),mid=document.getElementById('hero-mid'),num=document.getElementById('hero-num'),sub=document.getElementById('hero-sub'),fine=document.getElementById('fine');if(mode===null){label.textContent='בחרו למטה מה יקרה לכסף עד אז';mid.style.display='none';num.textContent='·';num.classList.add('idle');sub.textContent='';fine.textContent='';
     /* הסכום ידוע כבר עכשיו, והצפי עוד לא. הסרגל הדביק היה ריק עד
@@ -5710,8 +5731,17 @@ function finishDeposit(){
   const save=isNewPlant ? (src.create&&function(){return src.create(rec)})
                         : (src.deposit&&cur&&function(){
                             const sw=document.getElementById('py-vis');
-                            return src.deposit(cur,rec.amount,rec.recurring,
-                              !!(sw&&sw.classList.contains('on')));
+                            /* המסלול שנבחר נשמר לפני הכסף: הוא מה שקובע
+                               איך הכסף הזה יגדל, והטריגר שגוזר את הצפי
+                               רץ על ההפקדה. בסדר ההפוך הצפי היה נכתב
+                               פעם אחת לפי הקצב הישן. */
+                            const t=src.setTrack
+                              ? src.setTrack(cur,rec.mode,rec.rate)
+                              : Promise.resolve();
+                            return t.then(function(){
+                              return src.deposit(cur,rec.amount,rec.recurring,
+                                !!(sw&&sw.classList.contains('on')));
+                            });
                           });
   if(!save){celebrate();return}
 
@@ -5974,7 +6004,10 @@ function liveDetail(r){
             !!w.is_me,
             w.amount==null?null:Number(w.amount),
             /* מה הוא לילד, ומאז מתי — שניהם מ-0047. */
-            w.relation||null, w.since||null];
+            w.relation||null, w.since||null,
+            /* 0066: הקצב שלו. הגרף האישי כבר צויר מהמספרים שלו, ורק
+               שורת ההסתייגות עוד נשענה על הקצב של הנטיעה. */
+            w.rate==null?null:Number(w.rate)];
   });
   const others=who.filter(function(w){return w[1]!=='אתה'}).map(function(w){return w[1]});
   const n=Number(r.signed_letters||0);
@@ -6171,8 +6204,11 @@ function openPerson(i){
   /* אותו גרף בדיוק שהיה במסך הרגע — עם המחוון והנבט שנע על העקומה —
      רק שהוא מוזן במספרים של האדם הזה. זה מה שהופך אותו לנכון: עד כה
      הוא תיאר את הרגע כולו והוצג ליד השם של אדם אחד. */
+  const wr=w[11]!=null?Number(w[11]):null;
   buildChart(Object.assign({},p,{now:accrued/100,end:Math.max(accrued,proj)/100,
-                                 monthly:(w[6]!=null?Number(w[6])/100:0)}));
+                                 monthly:(w[6]!=null?Number(w[6])/100:0),
+                                 rate:wr!=null?wr:p.rate,
+                                 mode:wr!=null?(wr>0?'safe':'keep'):p.mode}));
   const sl=document.getElementById('d-time');
   if(sl)sl.value=0;
   const md0=document.getElementById('d-medal');
@@ -6420,8 +6456,11 @@ function paintSoloMoney(p){
   const ratio=(p.now>0&&p.end>p.now)?(p.end/p.now):1;
   const proj=w[5]!=null?Number(w[5]):Math.round(accrued*ratio);
   const mon=w[6]!=null?Number(w[6]):(p.monthly!=null?Math.round(p.monthly*100):null);
+  const wr=w[11]!=null?Number(w[11]):null;
   buildChart(Object.assign({},p,{now:accrued/100,end:Math.max(accrued,proj)/100,
-                                 monthly:mon?mon/100:0}));
+                                 monthly:mon?mon/100:0,
+                                 rate:wr!=null?wr:p.rate,
+                                 mode:wr!=null?(wr>0?'safe':'keep'):p.mode}));
   const sl=document.getElementById('d-time');
   if(sl)sl.value=0;
   const md=document.getElementById('d-medal');
@@ -8432,6 +8471,15 @@ function netaBackend(cfg){
        כך אין שני צדדים שצריכים להסכים על מי אני. */
     /* הפקדה לנטיעה שכבר קיימת. עד כה "השקע עוד" עבר את כל מסע התשלום,
        הציג את מסך החגיגה — ולא כתב כלום. הסכום חזר לקדמותו ברענון. */
+    /* המסלול שלי ברגע הזה (0066). שורה אחת לכל (רגע, אדם), ולכן upsert:
+       מי שמפקיד פעם שנייה במסלול אחר מחליף את השורה, ולא מוסיף. */
+    setTrack:function(plantingId,mode,rate){
+      return call('/rest/v1/planting_tracks?on_conflict=planting_id,user_id',{method:'POST',
+        headers:{Prefer:'resolution=merge-duplicates,return=representation'},
+        body:JSON.stringify({planting_id:plantingId,mode:mode,
+                             track_rate:mode==='keep'?null:rate})})
+        .then(function(r){return (r&&r[0])||null}).catch(remember);
+    },
     deposit:function(id,amount,recurring,visible){
       return andDrain(call('/rest/v1/contributions',{method:'POST',
         body:JSON.stringify({planting_id:id,amount_agorot:amount,
@@ -10471,28 +10519,6 @@ function openForRelatives(key){
     .then(function(){return refreshDetail(key)})
     .catch(function(){});
 }
-/* המסלול של רגע קיים הוא עובדה ולא שאלה. שלושת הגושים יורדים, ובמקומם
-   שורה שאומרת מה נקבע — ומי שנטיעה זו שלו יכול לשנות אותה במסך העריכה. */
-function showModeStep(on,mine){
-  ['eb-mode','mode-block','safe-block','market-block'].forEach(function(id){
-    const el=document.getElementById(id);
-    if(el)el.style.display=on?(id==='eb-mode'||id==='mode-block'?'':'none'):'none';
-  });
-  const line=document.getElementById('amt-track');
-  if(line){
-    line.style.display=on?'none':'';
-    /* לבעלים יש מה לעשות עם המידע הזה, ולמי שאינו הבעלים אין — ולכן
-       ההפניה לעריכה נאמרת רק לו. */
-    line.textContent=on?'':('המסלול נקבע כשהרגע נפתח: '+trackLabel()+'.'+
-      (mine?' אפשר לשנות אותו בעריכת הנטיעה.':''));
-  }
-  if(!on){
-    modeTouched=true;
-    /* נטיעה שהמסלול שלה לא נשמר (רשומה ישנה) הייתה משאירה את הכותרת
-       "בחרו למטה מה יקרה לכסף" בלי שיש למטה מה לבחור. */
-    if(mode==null)mode=rate?(rate>=0.06?'market':'safe'):'keep';
-  }
-}
 function showTermStep(on){
   document.getElementById('c-terms').style.display=on?'':'none';
   document.getElementById('eb-term').style.display=on?'':'none';
@@ -10512,10 +10538,15 @@ function investIn(key){
      זרימת הפתיחה, נטענים כאן מהנטיעה עצמה. בלי זה שורת "מסלול" במסך
      האישור הציגה את ברירת המחדל של פתיחת נטיעה חדשה. */
   if(p.live){
-    mode=p.mode||(p.rate?null:'keep');
+    mode=MODE_FROM_DB[p.mode]||p.mode||(p.rate?null:'keep');
     rate=p.rate==null?rate:p.rate;
   }
-  showModeStep(false,!!p.mine);
+  /* המסלול של הרגע הוא ברירת המחדל שלי, לא הכלוב שלי: הכסף שכל נוטע
+     מכניס גדל לפי המסלול שהוא בחר (0066). הבורר נפתח על מה שהרגע
+     נפתח בו, והשורה אומרת שאפשר אחרת. */
+  modeTouched=true;
+  preselectTrack(mode,rate);
+  trackNote(mode?('המסלול של הרגע הוא '+trackLabel()+'. מה שתבחר כאן חל על הכסף שלך בלבד.'):'');
   txt('ct-title','השקע עבור '+p.kid);
   txt('ct-meta',p.name+' · המועד המיוחל '+p.date);
   goal={name:p.kid,type:p.name,icon:p.icon,dateLabel:p.date,years:p.yl};
