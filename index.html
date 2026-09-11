@@ -340,7 +340,17 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שלושים אחוז הפרש על אותו מספר ירוק באותו מקום, והעין, שנועלת עליו
    במעבר בין הטאבים, רואה בדיוק את הקפיצה. 27 הוא הגודל שבו שני
    המספרים של מסך הבית עדיין נכנסים בחצאים שלהם. */
-.s-num{font-size:clamp(20px,6.9vw,27px);font-weight:600;color:var(--leaf);letter-spacing:-.028em;line-height:1;font-variant-numeric:tabular-nums}
+/* גדול מ-.duo .n בכוונה, ולא בטעות. הכלל "אותו גודל בכל טאב" נכתב
+   כשהשניים נבדלו ב-33 מול 23, והמרחק כאן הוא 30 מול 27.
+
+   מה שמצדיק אותו: המסך הזה מחזיק מספר אחד עם כל הרוחב, ו"העתיד שלנו"
+   מחזיק שניים שחולקים אותו. ‏.duo אינו יכול לגדול איתו: בחצי של 390
+   נשארים שם שלושה פיקסלים, ו-fitm בודק את זה. כלומר זו אינה בחירה
+   בין שני גדלים אלא בין להגדיל אחד או אף אחד.
+
+   נמדד: ב-320, הרוחב הצר ביותר, מספר בן שש ספרות ב-30px תופס 111
+   מתוך 165 זמינים. */
+.s-num{font-size:clamp(22px,7.6vw,30px);font-weight:600;color:var(--leaf);letter-spacing:-.028em;line-height:1;font-variant-numeric:tabular-nums}
 .s-label{font-size:11.5px;color:var(--tx-2);margin-top:7px;line-height:1.5;text-wrap:balance}
 /* שני מספרים במקום אחד, במסך הבית בלבד: ירוק למה שנצבר וזהב למה
    שיחכה. עד כאן הראש היה מספר יחיד, והצפי — הדבר היחיד שמרשים
@@ -359,7 +369,8 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .duo>div+div>*{padding-inline-start:13px}
 /* ‏27 במכשיר של 390 ויורד איתו: גם אחרי שהחצאים נגזרים מהתוכן, מסך
    של 320 אינו מחזיק שני מספרים בני חמש ספרות בגודל מלא. אותו clamp
-   בדיוק ב-s-num, כדי ששני הטאבים יישארו זהים בכל רוחב. */
+   קטן מ-s-num: כאן שני מספרים חולקים את הרוחב, ושם יש אחד. ראו
+   ההערה שם. */
 .duo .n{font-size:clamp(20px,6.9vw,27px);font-weight:600;color:var(--leaf);letter-spacing:-.028em;
   line-height:1;white-space:nowrap;font-variant-numeric:tabular-nums}
 .duo .n.fut{color:var(--sun-soft)}
@@ -1254,7 +1265,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '62e947b';
+window.NETA_BUILD = 'dd5aa71';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
