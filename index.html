@@ -1287,7 +1287,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '53de600';
+window.NETA_BUILD = '625acc0';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2231,7 +2231,7 @@ window.NETA_CONFIG = {
          כרטיס בן שתי שורות, שהחזיק את אותן שתי עובדות במשקל של טבלה
          ודחף את הרשימה למטה. -->
     <div class="s-meta">
-      <span><b id="mi-mon">·</b> בכל חודש</span>
+      <span id="mi-mongrp"><b id="mi-mon">·</b> בכל חודש</span>
       <span class="grp" id="mi-cntgrp"><i></i><span id="mi-cnt">בשני רגעים</span></span>
       <span class="grp" id="mi-projgrp"><i></i><span>יגדל ל<b class="fut" id="mi-proj">·</b></span></span>
     </div>
@@ -6068,8 +6068,13 @@ function personSub(w,long){
   if(w[4])return isMe?('פתחת את הרגע'+(long?' הזה':''))
                     :(vb(w[3],'פתח','פתחה')+' את הרגע'+(long?' הזה':''));
   const m=sinceMonth(w[10]);
-  const verb=isMe?('נוטע'+(m?' מאז '+m:''))
-                 :(vb(w[3],'נוטע','נוטעת')+(m?' מאז '+m:''));
+  /* "נוטע/ת מאז ספטמבר" מבטיח שזה נמשך, ולמי שהפקיד פעם אחת אין הוראת
+     קבע שתמשיך. ‏w[6] הוא הקצב של האדם הזה בלבד, ו-0 אומר שאין; null
+     אומר שאסור לי לראות, ואז נשארת הצורה הכללית. */
+  const once=w[6]!=null&&Number(w[6])<=0;
+  const verb=once
+    ? (isMe?'הפקדת':vb(w[3],'הפקיד','הפקידה'))+(m?' ב'+m:' פעם אחת')
+    : (isMe?'נוטע':vb(w[3],'נוטע','נוטעת'))+(m?' מאז '+m:'');
   return [w[9]||'',verb].filter(Boolean).join(' · ');
 }
 function normWho(p){
@@ -9801,7 +9806,12 @@ function paintInvestments(){
      בלי ריבית — מוותרים על השורה ולא ממציאים מספר. */
   const proj=rows.reduce(function(a,p){return a+Number(p.myProjection||0)},0);
   txt('mi-num',shekel(total));
-  txt('mi-mon',monthly>0?shekel(monthly):'אין הוראת קבע פעילה');
+  /* בלי הוראת קבע השורה כולה יורדת, ולא מודיעה על היעדרה. הכיתוב
+     "בכל חודש" יושב במבנה ולא בטקסט, ולכן כתיבת "אין הוראת קבע פעילה"
+     לתוך המספר הרכיבה "אין הוראת קבע פעילה בכל חודש". */
+  const mg=document.getElementById('mi-mongrp');
+  if(mg)mg.style.display=monthly>0?'':'none';
+  txt('mi-mon',monthly>0?shekel(monthly):'·');
   const pr=document.getElementById('mi-projgrp');
   if(pr)pr.style.display=proj>total?'':'none';
   txt('mi-proj','כ-'+shekel(proj));
@@ -9809,6 +9819,18 @@ function paintInvestments(){
   if(cg){
     cg.style.display=rows.length>1?'':'none';
     txt('mi-cnt','ב'+hebCount(rows.length)+' רגעים');
+  }
+  /* הנקודה המפרידה שייכת למי שאינו ראשון בשורה. כשהראשון יורד, זו
+     שאחריו הייתה פותחת את השורה בנקודה תלויה. ‏.nodot כבר קיים
+     בגיליון בשביל אותו מקרה בהגדלת טקסט. */
+  const meta=document.querySelector('#kin-full .s-meta');
+  if(meta){
+    let first=true;
+    [].slice.call(meta.children).forEach(function(el){
+      if(getComputedStyle(el).display==='none')return;
+      el.classList.toggle('nodot',first);
+      first=false;
+    });
   }
   /* הכיתוב אומר עבור מי, וזו כל ההבדלה בין שני המסכים: במסך הבית
      המספר הוא של הילד, וכאן הוא שלי. "הסכום שעד כה השקעת" ולא
