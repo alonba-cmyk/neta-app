@@ -1234,7 +1234,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'fba3cbc';
+window.NETA_BUILD = '18b914a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -9490,14 +9490,20 @@ function pairWithBack(primaryBtn){
    רשימה (רגע בלי אף נוטע) היא חוזרת לשורת הפעולות, כי פעולה שאין
    לה מקום עדיפה על פעולה שאין לה בכלל. */
 var whoActOn=false;
+/* "הזמן קרובים" ולא "פתח לקרובים": הכפתור מוביל לבחירת האנשים,
+   והפתיחה בפועל קורית ברגע השליחה הראשונה (openForRelatives). "פתח"
+   תיאר את תופעת הלוואי ולא את מה שהמשתמש בא לעשות.
+
+   ובלי אף קרוב שמור, "הזמן קרובים" מצביע על רשימה שאינה קיימת:
+   המסך שנפתח הוא ריק, ו-pickRelativeToInvite ממילא פותח שם מיד את
+   טופס ההוספה. הכיתוב אומר את זה מראש. */
 function inviteButton(p,ghost){
   const c=ghost?'btn ghost':'btn';
+  const first=!relatives.length;
+  const fn=function(){return first?'הזמן את הקרוב הראשון':null};
   return p.shared
-    ? '<button class="'+c+'" onclick="inviteToPlanting()">הזמן קרוב</button>'
-    /* "הזמן קרובים" ולא "פתח לקרובים": הכפתור מוביל לבחירת האנשים,
-       והפתיחה בפועל קורית ברגע השליחה הראשונה (openForRelatives).
-       "פתח" תיאר את תופעת הלוואי ולא את מה שהמשתמש בא לעשות. */
-    : '<button class="'+c+'" onclick="openToCircle()">הזמן קרובים</button>';
+    ? '<button class="'+c+'" onclick="inviteToPlanting()">'+(fn()||'הזמן קרוב')+'</button>'
+    : '<button class="'+c+'" onclick="openToCircle()">'+(fn()||'הזמן קרובים')+'</button>';
 }
 /* בשני הנתיבים אותה שאלה, ושתי צורות: בהדגמה designated יכול להיות
    undefined ופירושו מיועדת, ובנטיעה חיה הוא תמיד בוליאני. */
