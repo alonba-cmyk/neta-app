@@ -1295,7 +1295,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6b4fede';
+window.NETA_BUILD = '8325eea';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -10473,7 +10473,7 @@ function openForRelatives(key){
 }
 /* המסלול של רגע קיים הוא עובדה ולא שאלה. שלושת הגושים יורדים, ובמקומם
    שורה שאומרת מה נקבע — ומי שנטיעה זו שלו יכול לשנות אותה במסך העריכה. */
-function showModeStep(on){
+function showModeStep(on,mine){
   ['eb-mode','mode-block','safe-block','market-block'].forEach(function(id){
     const el=document.getElementById(id);
     if(el)el.style.display=on?(id==='eb-mode'||id==='mode-block'?'':'none'):'none';
@@ -10481,7 +10481,10 @@ function showModeStep(on){
   const line=document.getElementById('amt-track');
   if(line){
     line.style.display=on?'none':'';
-    line.textContent=on?'':('המסלול נקבע כשהרגע נפתח: '+trackLabel()+'.');
+    /* לבעלים יש מה לעשות עם המידע הזה, ולמי שאינו הבעלים אין — ולכן
+       ההפניה לעריכה נאמרת רק לו. */
+    line.textContent=on?'':('המסלול נקבע כשהרגע נפתח: '+trackLabel()+'.'+
+      (mine?' אפשר לשנות אותו בעריכת הנטיעה.':''));
   }
   if(!on){
     modeTouched=true;
@@ -10512,7 +10515,7 @@ function investIn(key){
     mode=p.mode||(p.rate?null:'keep');
     rate=p.rate==null?rate:p.rate;
   }
-  showModeStep(false);
+  showModeStep(false,!!p.mine);
   txt('ct-title','השקע עבור '+p.kid);
   txt('ct-meta',p.name+' · המועד המיוחל '+p.date);
   goal={name:p.kid,type:p.name,icon:p.icon,dateLabel:p.date,years:p.yl};
