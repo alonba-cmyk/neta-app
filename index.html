@@ -1287,7 +1287,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd69dd1b';
+window.NETA_BUILD = '53de600';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6490,6 +6490,14 @@ function chanOf(v){
 /* הכתובת שלי אינה יעד להזמנה: הזמנה כזאת נרשמת, המייל יוצא אליי,
    והקישור שבו מחזיר 'already' כי אני כבר רואה את הנטיעה — כלומר שורה
    שנשארת "ממתין לתשובתו" לנצח ליד השורה שאומרת "אתה". */
+/* 0065 חוסמת הזמנה לעצמי גם במסד, והשגיאה משם היא באנגלית ולמפתחים.
+   הלקוח כבר חוסם, ולכן מי שמגיע לכאן הוא מי שעקף — או מי שמריץ גרסה
+   ישנה מהמטמון. */
+function inviteErr(e){
+  const m=(e&&e.message)||'';
+  if(/invitation to self/i.test(m))return 'זו הכתובת שלך. הזמנה נשלחת למישהו אחר.';
+  return m||'נסה שוב.';
+}
 function isMyAddress(v){
   const me=normContact(myEmail()),t=normContact(v);
   return !!me&&!!t&&me===t;
@@ -6662,7 +6670,7 @@ function sendInvite(r){
         return netaServer.sendInvitationEmail(invId)
           .then(function(res){personalInviteSheet(key,r,url,!!(res&&res.sent))});
       })
-      .catch(function(e){ask('ההזמנה לא נרשמה',(e&&e.message)||'נסה שוב.','הבנתי')});
+      .catch(function(e){ask('ההזמנה לא נרשמה',inviteErr(e),'הבנתי')});
     return;
   }
   if(pickedPlant){sentSheet(pickedPlant,r);return}
