@@ -1248,7 +1248,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7c5152b';
+window.NETA_BUILD = '1570862';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6376,6 +6376,9 @@ function personalInviteSheet(key,r,url,emailed){
 }
 function buildRelatives(){
   const box=document.getElementById('rel-list');
+  /* בראש ולא בכל ענף: לפונקציה שלושה מסלולי יציאה, ומי שנשכח בהם
+     השאיר את הכיתוב של מצב ההזמנה על מסך שאינו במצב הזמנה. */
+  paintInvSend();
   if(!relatives.length){
     box.style.border='none';box.style.background='none';box.style.padding='0';
     /* הכפתור "הוסף קרוב" יושב אחרי הקופסה ולא בתוך המצב הריק, ולכן
@@ -6396,7 +6399,6 @@ function buildRelatives(){
       '<h3>מי עוד נוטע איתך?<br>הזמן את סבתא, אח או דוד קרוב</h3>'+
       '<p>מזמינים את הקרובים להשקיע<br>בעתיד של היקרים לך מכל</p></div>';
     relGhost(true);
-    paintInvSend();
     relMeta();return;
   }
   box.style.border='';box.style.background='';box.style.padding='';box.style.marginBottom='';
@@ -6413,7 +6415,6 @@ function buildRelatives(){
         :'<span class="relbox'+(invSel[i]?' on':'')+'">'+(invSel[i]?TICK:'')+'</span>';
       return relRowHTML(r,right,(already||cant)?'':' onclick="toggleInvSel('+i+')"');
     }).join('');
-    paintInvSend();
     relMeta();return;
   }
   box.innerHTML=relatives.map(function(r,i){
@@ -6606,7 +6607,12 @@ function toggleInvSel(i){
    את כל מה שמתחתיו בכל סימון. */
 function paintInvSend(){
   const b=document.getElementById('rel-send'),add=document.getElementById('rel-add');
-  if(add)add.className=relInviteKey?'btn ghost gap-s':'btn gap-s';
+  if(add){
+    add.className=relInviteKey?'btn ghost gap-s':'btn gap-s';
+    /* במצב הזמנה זו אינה הוספה לרשימה אלא הזמנה למי שאינו בה,
+       וזה גם מה שבאמת קורה: האשף מסתיים בשליחה. */
+    add.textContent=relInviteKey?'הזמן קרוב שלא ברשימה':'+ הוסף קרוב';
+  }
   if(!b)return;
   if(!relInviteKey){b.style.display='none';return}
   const idx=invSelIdx();
@@ -6886,20 +6892,35 @@ const AP_LBL_FOR=['את מי','עבור מי','נוסף'];
 const AP_RELS=['סבתא','סבא','דודה','דוד','אח','אחות','חבר','אחר'];
 let apKindMode='with',apStep=0,apRel='סבתא',apAv='av-granny2',
     apKidAv='av-kid1',apKidSexV='m',apPhoto=null,apPlant='';
-function apPanels(){return apKindMode==='for'?AP_FOR:AP_WITH}
+/* הרגע שממנו נפתחה ההוספה, כשהיא נפתחה ממצב הזמנה. כשהוא קיים שתי
+   שאלות באשף כבר נענו: "את מי" (בהכרח מישהו שנוטע איתי, כי לילד לא
+   שולחים הזמנה) ו"לאיזה רגע" (הרגע שממנו נכנסתי). אשף ששואל שאלה
+   שהתשובה עליה כבר על המסך הקודם הוא שני מסכים מיותרים. */
+let apFrom='';
+function apPanels(){
+  if(apKindMode==='for')return AP_FOR;
+  return apFrom?['ap-1','ap-2']:AP_WITH;
+}
+function apLabels(){
+  if(apKindMode==='for')return AP_LBL_FOR;
+  return apFrom?AP_LBL_WITH.slice(1,3):AP_LBL_WITH;
+}
 function apShow(){
   const list=apPanels();
   ['ap-0','ap-1','ap-2','ap-3','ap-4','ap-5'].forEach(function(id){
     const el=document.getElementById(id);
     if(el)el.style.display=(list[apStep]===id)?'block':'none';
   });
-  const lbls=apKindMode==='for'?AP_LBL_FOR:AP_LBL_WITH;
+  const lbls=apLabels();
   document.getElementById('ap-steps').innerHTML=
     list.map(function(_,i){return '<i class="'+(i<=apStep?'on':'')+'"></i>'}).join('');
   txt('ap-lbl','שלב '+(apStep+1)+' מתוך '+list.length+' · '+lbls[apStep]);
   document.querySelector('.stage').scrollTo?.(0,0);
 }
 function openAddPerson(){
+  /* מצב הזמנה: הרגע ידוע, ולכן גם הסוג. relInviteKey הוא המקור
+     היחיד לשניהם, ואין פרמטר שאפשר לשכוח להעביר. */
+  apFrom=relInviteKey||'';
   apKindMode='with';apStep=0;apRel='סבתא';apAv='av-granny2';
   apKidAv='av-kid1';apKidSexV='m';apPhoto=null;apPlant='';
   document.querySelectorAll('#ap-kind button').forEach(function(x,i){
@@ -7005,30 +7026,34 @@ function apExit(){
   }
   openPeople();
 }
+/* לפי שם הפאנל ולא לפי מספרו: הרשימה מתקצרת כשההקשר ידוע, ואז
+   apStep=0 הוא ap-1 ולא ap-0. בדיקה על מספר הייתה מדלגת על אימות
+   השם בלי שדבר יצעק. אותה הפרדה בדיוק כמו cStepGo מול stepNo. */
 function apNext(){
   const list=apPanels();
-  if(apStep===0){apStep=1;apShow();return}
-  if(apKindMode==='with'){
-    if(apStep===1){
-      if(!fieldVal('ap-name')){toast('צריך שם');document.getElementById('ap-name').focus();return}
-      apAv=pickedAv;
-      txt('ap-2h','לאן לשלוח ל'+fieldVal('ap-name')+' את ההזמנה?');
-      apStep=2;apShow();return;
-    }
-    if(apStep===2){
-      const v=fieldVal('ap-contact');
-      if(v&&!chanOf(v)){toast('צריך טלפון או כתובת אימייל תקינה');return}
-      /* בלי רגע לצרף אליו אין מה לשאול בשלב הבא, והשמירה קורית כאן. */
-      const opts=invitablePlantings();
-      if(!opts.length){apSave();return}
-      txt('ap-3h','לאיזה רגע להזמין את '+fieldVal('ap-name')+'?');
-      apPlant=opts[0].key;
-      document.getElementById('ap-plant').innerHTML=opts.map(function(o,i){
-        return '<button type="button" class="'+(i?'':'on')+'" '+
-          'onclick="apPlant=\''+o.key+'\';markChip(this)">'+o.icon+' '+o.name+'</button>'}).join('');
-      txt('ap-send',v?'שלח את ההזמנה':'הוסף');
-      apStep=3;apShow();return;
-    }
+  const id=list[apStep];
+  if(id==='ap-0'){apStep=1;apShow();return}
+  if(id==='ap-1'){
+    if(!fieldVal('ap-name')){toast('צריך שם');document.getElementById('ap-name').focus();return}
+    apAv=pickedAv;
+    txt('ap-2h','לאן לשלוח ל'+fieldVal('ap-name')+' את ההזמנה?');
+    apStep++;apShow();return;
+  }
+  if(id==='ap-2'){
+    const v=fieldVal('ap-contact');
+    if(v&&!chanOf(v)){toast('צריך טלפון או כתובת אימייל תקינה');return}
+    /* הרגע ידוע מהמסך הקודם, או שאין אף רגע לצרף אליו. בשני המקרים
+       אין מה לשאול בשלב הבא, והשמירה קורית כאן. */
+    const opts=invitablePlantings();
+    if(apFrom){apPlant=apFrom;apSave();return}
+    if(!opts.length){apSave();return}
+    txt('ap-3h','לאיזה רגע להזמין את '+fieldVal('ap-name')+'?');
+    apPlant=opts[0].key;
+    document.getElementById('ap-plant').innerHTML=opts.map(function(o,i){
+      return '<button type="button" class="'+(i?'':'on')+'" '+
+        'onclick="apPlant=\''+o.key+'\';markChip(this)">'+o.icon+' '+o.name+'</button>'}).join('');
+    txt('ap-send',v?'שלח את ההזמנה':'הוסף');
+    apStep++;apShow();return;
   }
   if(apStep>=list.length-1)return;
   apStep++;apShow();
@@ -9546,6 +9571,12 @@ function inviteFromFuture(){
    ולא של רגע. פתוח. */
 function openPeople(){
   relBack=0;
+  /* הטאב אינו מצב הזמנה. relInviteKey נשאר עד כה מהכניסה הקודמת,
+     ומאז שהרשימה קוראת אותו הוא היה מצייר כאן בחירה מרובה לרגע
+     שאיש לא בחר. קודם הדליפה הייתה שקטה יותר: רק גוש ההזמנה נשאר
+     גלוי. */
+  relInviteKey='';invSel={};
+  paintInviteMode();
   /* יעד בסרגל אינו מסך שחוזרים ממנו: "חזרה לפרופיל" יורד כשמגיעים
      מהטאב, ונשאר כשנכנסים לכאן מתוך הפרופיל או מתוך הזמנה. */
   document.querySelectorAll('#rel-back').forEach(function(b){b.style.display='none'});
