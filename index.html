@@ -728,6 +728,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .invprev span{display:block}
 .invprev i{display:block;font-style:normal;color:var(--tx);margin-top:8px;
   border-top:1px solid var(--line);padding-top:8px}
+/* שורת ההוספה בסוף הרשימה. מקווקוות כי היא אינה אדם אלא מקום
+   פנוי, אותו רמז בדיוק כמו .btn.dash. */
+.reladd{display:flex;align-items:center;justify-content:center;
+  border:1px dashed var(--line-2);border-radius:9px;padding:11px 0;margin-top:9px;
+  color:var(--tx-3);font-size:12.5px;cursor:pointer;transition:.15s}
+.reladd:hover{border-color:var(--tx-3);color:var(--tx-2)}
 .relbox{width:19px;height:19px;border-radius:6px;border:1.5px solid var(--line-2);
   flex-shrink:0;display:grid;place-items:center}
 .relbox.on{background:var(--leaf);border-color:var(--leaf)}
@@ -1248,7 +1254,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1570862';
+window.NETA_BUILD = '62e947b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2270,9 +2276,14 @@ window.NETA_CONFIG = {
     <!-- האזהרה שהייתה בגיליון האישור. מוצגת רק כשהנטיעה עדיין סגורה,
          כלומר לפני ההזמנה הראשונה, וכאן היא נקראת לפני הלחיצה. -->
     <p class="fine" id="rel-warn" style="display:none;margin:0 0 12px">מרגע שקרוב מקבל גישה אי אפשר לבטל את מה שכבר ראה. הסכומים שלך לא ייחשפו, קרובים רואים התקדמות בלבד.</p>
-    <button class="btn ghost gap-s" id="rel-copy"
-            onclick="copyInviteLink(this)">העתק קישור פתוח</button>
-    <button class="link" onclick="previewInvite()">איך ההזמנה תיראה למי שיקבל אותה</button>
+    <!-- קישור ולא כפתור: זה מנגנון אחר, קישור בלי נמען, ולא שליחה
+         לאדם. ככפתור מלא הוא נקרא כאפשרות שקולה לשליחה בשם.
+
+         "איך ההזמנה תיראה" ירדה: התצוגה המקדימה יושבת בתוך גיליון
+         השליחה עצמו מאז הבחירה המרובה, וזו הייתה לחיצה נוספת לאותו
+         מידע בדיוק. -->
+    <button class="link" id="rel-copy"
+            onclick="copyInviteLink(this)">או העתק קישור והעבר לקרובים</button>
   </div>
   <div class="gsample" id="rel-ghost" style="display:none" aria-hidden="true"></div>
 
@@ -4687,7 +4698,8 @@ function copyInviteLink(el){
   if(p)openForRelatives(p.key||cur);
   if(!liveAccount()||!p||!p.live){toast('הקישור הועתק');return}
   const btn=el||document.getElementById('inv-copy');
-  const done=function(){if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='העתק קישור פתוח'}};
+  const done=function(){if(btn){btn.disabled=false;btn.style.opacity='';
+    btn.textContent=btn.id==='rel-copy'?'או העתק קישור והעבר לקרובים':'העתק קישור פתוח'}};
   if(btn){btn.disabled=true;btn.style.opacity='.55';btn.textContent='מכין קישור…'}
   netaServer.shareToken(p.key)
     .then(function(token){
@@ -6414,7 +6426,11 @@ function buildRelatives(){
         :cant?'<span class="rx done">אין פרטי קשר</span>'
         :'<span class="relbox'+(invSel[i]?' on':'')+'">'+(invSel[i]?TICK:'')+'</span>';
       return relRowHTML(r,right,(already||cant)?'':' onclick="toggleInvSel('+i+')"');
-    }).join('');
+    }).join('')+
+    /* ההוספה היא פעולת רשימה: היא מוסיפה שורה, ולכן מקומה בסוף
+       הרשימה ולא בשורת הפעולות שמתחתיה. שם היא גם נקראה כאלטרנטיבה
+       שקולה לשליחה, שאינה. */
+    '<div class="reladd" onclick="openAddPerson()">+ הזמן מישהו שאינו ברשימה</div>';
     relMeta();return;
   }
   box.innerHTML=relatives.map(function(r,i){
@@ -6607,11 +6623,12 @@ function toggleInvSel(i){
    את כל מה שמתחתיו בכל סימון. */
 function paintInvSend(){
   const b=document.getElementById('rel-send'),add=document.getElementById('rel-add');
+  /* במצב הזמנה ההוספה יושבת בסוף הרשימה, ולכן הכפתור שמתחתיה יורד.
+     מחוץ למצב הזמנה הוא הפעולה הראשית של המסך ונשאר. */
   if(add){
-    add.className=relInviteKey?'btn ghost gap-s':'btn gap-s';
-    /* במצב הזמנה זו אינה הוספה לרשימה אלא הזמנה למי שאינו בה,
-       וזה גם מה שבאמת קורה: האשף מסתיים בשליחה. */
-    add.textContent=relInviteKey?'הזמן קרוב שלא ברשימה':'+ הוסף קרוב';
+    add.style.display=relInviteKey?'none':'';
+    add.className='btn gap-s';
+    add.textContent='+ הוסף קרוב';
   }
   if(!b)return;
   if(!relInviteKey){b.style.display='none';return}
