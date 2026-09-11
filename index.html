@@ -1265,7 +1265,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'eef6e60';
+window.NETA_BUILD = '6941586';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3112,6 +3112,19 @@ function go(i){
 
 const months=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
 const monthsShort=['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
+/* "בספט׳ 2036" משני המודלים: הרשימה מחזיקה targetMonth/targetYear
+   ומסך הרגע מחזיק date כמחרוזת עם שם החודש המלא. */
+function bShortWhen(o){
+  if(!o)return '';
+  if(o.targetMonth!=null&&o.targetYear!=null)
+    return 'ב'+monthsShort[o.targetMonth]+' '+o.targetYear;
+  if(o.date){
+    const parts=String(o.date).split(' ');
+    const i=months.indexOf(parts[0]);
+    return 'ב'+(i>=0?monthsShort[i]:parts[0])+(parts[1]?' '+parts[1]:'');
+  }
+  return '';
+}
 let cType='בר/בת מצווה',cIcon='🎂',dateTouched=false;
 /* a fund without a named beneficiary is a different instrument, and says so */
 let designated=true;
@@ -9262,9 +9275,9 @@ function buildHomeSummary(){
            ו-targetMonth, ולכן התנאי הזה היה תמיד שקרי והתאריך נשמט
            בשקט משני המקורות, החי וההדגמה כאחד. */
         const one=proj[0];
-        const when=one.date?(' ב'+one.date)
-          :(one.targetYear!=null&&one.targetMonth!=null
-              ? (' ב'+months[one.targetMonth]+' '+one.targetYear) : '');
+        /* החודש בקיצור: "יחכו לשימי בספטמבר 2036" מגיע ל-130 פיקסלים
+           בחצי שרוחבו 134, ועם שם ארוך יותר הוא נשבר לשתי שורות. */
+        const w=bShortWhen(one),when=w?(' '+w):'';
         /* השם ולא הכינוי: המקור החי אינו מחזיר את מין הנהנה, ולכן
            "יחכו לו" היה ניחוש. עם השם אין מה לנחש. */
         if(nm)return 'יחכו ל'+nm+when;
