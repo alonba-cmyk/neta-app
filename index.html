@@ -1295,7 +1295,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'c667b23';
+window.NETA_BUILD = '6fd9edb';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6700,6 +6700,7 @@ function sendSuggested(i){
       const r={av:'av-friend',name:n.trim(),rel:'קרוב משפחה',g:'m',status:'none',
                chan:chanOf(c)||'wa',contact:c,
                note:((document.getElementById('r-note')||{}).value||'').trim()};
+      inviteFromPlanting=false;
       const ok=sendInvite(r);
       if(ok===false)return false;
       if(liveAccount())netaServer.resolveSuggestion(q.id,'sent').catch(function(){});
@@ -6761,22 +6762,70 @@ function sendInvite(r){
   toast(r.name+' נוסף לקרובים שלך. ההזמנה נשלחת מתוך רגע.');
 }
 
-/* כשהמייל נשלח בפועל (emailed=true) הגיליון אומר זאת בגוף ראשון — זו
-   עובדה, לא הבטחה. בכל מקרה אחר (וואטסאפ, או שמייל לא יצא) שליחת ההודעה
-   עצמה נשארת בידיים שלך, והגיליון מוסר את הקישור בלי להצהיר שנשלח משהו. */
+/* מאיפה יצאה ההזמנה. היעד של הכפתור בסוף הוא המקום שבו השורה שנוצרה
+   באמת נראית: מסך הרגע כשהזמנו מתוכו, ורשימת הקרובים בכל מקרה אחר.
+   דגל מפורש ולא ניחוש מ-cur ומ-relInviteKey: שניהם נשארים מהכניסה
+   הקודמת, ובדיקה עליהם הייתה נכונה ברוב המקרים ולא בכולם. */
+let inviteFromPlanting=false;
+function afterInviteGo(key){
+  if(inviteFromPlanting&&key&&plantAt(key)){openDetail(key);return}
+  openPeople();
+}
+function afterInviteLabel(key){
+  return (inviteFromPlanting&&key&&plantAt(key))
+    ? ('חזרה ל'+nameOfPlanting(key)) : 'חזרה לקרובים שלי';
+}
+/* גיליון בלי "ביטול": ההזמנה כבר יצאה ואין מה לבטל. כפתור ראשי אחד
+   ברוחב מלא, ומתחתיו קישור שקט — אותו כלל כמו בשאר המסכים. */
+function sheetDone(title,html,okLabel,okFn,altLabel,altFn){
+  txt('sh-t',title);
+  document.getElementById('sh-b').innerHTML=html;
+  sheetFn=okFn||null;sheetAlt=altFn||null;
+  document.getElementById('sh-acts').innerHTML=
+    '<button class="btn" onclick="sheetConfirm()">'+okLabel+'</button>'+
+    (altLabel?'<button type="button" class="link" onclick="sheetAltGo()">'+altLabel+'</button>':'');
+  sheetShow();
+}
+/* אותן עובדות שהיו כאן, כל אחת בשורה משלה במקום פסקה אחת: למי, לאן,
+   לאיזה רגע, ומה המצב. הכתובת עומדת לבדה ובכיוון LTR, כי היא כל
+   המנגנון — מי שנכנס איתה מצטרף מיד — והיא גם הדבר היחיד כאן שאי
+   אפשר לתקן אחר כך. טעות הקלדה בה נראית עכשיו במבט.
+
+   הקישור ירד מ-textarea: שדה עם מסגרת הוא הזמנה להקליד, ואין כאן מה
+   להקליד. כשהמייל יצא ההעתקה היא הפעולה המשנית והיא קישור שקט;
+   בוואטסאפ אין מה "לשלוח" מהשרת, ולכן שם היא הראשית. */
 function personalInviteSheet(key,r,url,emailed){
-  const openLine=emailed
-    ? 'ההזמנה נשלחה למייל של '+r.name+', קישור אישי אליה בלבד'+
-      (r.note?', ונושא את מה שכתבת':'')+'. אפשר גם להעתיק את הקישור ולשלוח אותו בעצמך, כגיבוי.'
-    : 'הקישור הזה אישי לה: הוא פונה אליה בשם'+(r.note?' ונושא את מה שכתבת':'')+
-      '. העבר לה אותו ב'+CHAN[r.chan]+'.';
-  sheetForm('ההזמנה ל'+r.name+' נרשמה',
-    openLine+' וכשהיא תיכנס לנטע עם '+
-    attrText(r.contact)+', היא תצורף ל'+nameOfPlanting(key)+' מיד, בלי שתצטרך לאשר.'+
-    '<label>הקישור</label><textarea readonly style="min-height:52px">'+attrText(url)+'</textarea>'+
-    '<p class="fine" style="margin-top:8px">מי שיפתח את אותו קישור עם כתובת אחרת יגיע אליך לאישור, בשמו.</p>',
-    'העתק וסגור',
-    function(){copyText(url).then(function(){toast('הקישור הועתק')},function(){})});
+  const p=plantAt(key);
+  const face='<div class="cba"><svg viewBox="0 0 40 40"><use href="#'+(r.av||'av-granny2')+'"/></svg></div>';
+  /* בלי תג "יצא": הכותרת אומרת "נשלחה" והמפתח אומר "נשלח אל". תג
+     שלישי על אותה עובדה הוא רעש. */
+  const copyFn=function(){copyText(url).then(function(){toast('הקישור הועתק')},function(){})};
+  const body=
+    '<div class="cbr" style="border-bottom:none;padding-top:0">'+face+
+      '<span class="cbn"><b>'+attrText(r.name)+'</b>'+
+      (r.rel?'<i>'+attrText(r.rel)+'</i>':'')+'</span></div>'+
+    '<div class="card" style="margin:4px 0 0;padding:4px 12px">'+
+      '<div class="stat"><span class="k">'+(emailed?'נשלח אל':'לשליחה אל')+'</span>'+
+        '<span class="v" style="direction:ltr;unicode-bidi:isolate">'+attrText(r.contact)+'</span></div>'+
+      '<div class="stat"><span class="k">לרגע</span><span class="v">'+
+        (p&&p.icon?p.icon+' ':'')+attrText(nameOfPlanting(key))+'</span></div>'+
+      '<div class="stat"><span class="k">בהמתנה</span>'+
+        '<span class="v" style="font-weight:400;color:var(--tx-2)">עד שהקישור ייפתח מהכתובת הזאת</span></div>'+
+    '</div>'+
+    '<p class="fine" style="margin-top:9px">'+
+      (r.note?'ההזמנה נושאת את מה שכתבת. ':'')+
+      'מי שיפתח את הקישור מכתובת אחרת יגיע אליך לאישור, בשמו.</p>';
+  if(emailed){
+    sheetDone('ההזמנה ל'+r.name+' נשלחה',body,
+      afterInviteLabel(key),function(){afterInviteGo(key)},
+      'העתק את הקישור האישי',copyFn);
+    return;
+  }
+  /* לא יצא מייל: הקישור הוא כל מה שיש, ולכן ההעתקה היא הפעולה
+     הראשית וההמשך הוא הקישור השקט. */
+  sheetDone('ההזמנה ל'+r.name+' נרשמה',body,
+    'העתק ושלח ב'+CHAN[r.chan],function(){copyFn();afterInviteGo(key)},
+    afterInviteLabel(key),function(){afterInviteGo(key)});
 }
 /* הזמנה אחת לכמה רגעים. במסד נרשמת הזמנה לכל רגע, כי הקישור האישי
    הוא מה שמצרף לנטיעה מסוימת ואין קישור שפותח שתיים — אבל יוצא מייל
@@ -6840,14 +6889,19 @@ function apSentSheet(r,keys,emailed){
     : 'לכל רגע קישור אישי משלו. אפשר להעביר את כולם ב'+CHAN[r.chan]+', בהודעה אחת.';
   const all=lastInvLinks.filter(function(l){return l.url})
     .map(function(l){return l.name+': '+l.url}).join('\n');
-  sheetForm('ההזמנה ל'+r.name+' נרשמה',
+  /* אותו מבנה כמו באחות שלה: בלי "ביטול", כפתור ראשי אחד, והיעד הוא
+     המקום שבו ההזמנה נראית. השתיים נפרדו כאן פעם אחת — זו ניווטה
+     וזו לא — ומשם הבאג. */
+  sheetDone('ההזמנה ל'+r.name+(emailed?' נשלחה':' נרשמה'),
     head+' מי שייכנס לנטע עם '+attrText(r.contact)+' יצורף ל'+
     countWord(keys.length)+' הרגעים מיד, בלי שתצטרך לאשר.'+
     '<div class="card" style="margin-top:12px">'+rows+'</div>'+
     '<p class="fine" style="margin-top:8px">מי שיפתח את אותם קישורים עם כתובת אחרת יגיע אליך לאישור, בשמו.</p>',
-    (emailed||!all)?'סיימתי':'העתק הכול',
+    (emailed||!all)?afterInviteLabel(keys[0]):'העתק את כל הקישורים',
     function(){if(!emailed&&all)copyText(all).then(function(){toast('הקישורים הועתקו')},function(){});
-               openPeople()});
+               afterInviteGo(keys[0])},
+    (emailed||!all)?'':afterInviteLabel(keys[0]),
+    function(){afterInviteGo(keys[0])});
 }
 function buildRelatives(){
   const box=document.getElementById('rel-list');
@@ -7414,6 +7468,7 @@ function inviteRelative(i){
       if(isMyAddress(c)){toast('זו הכתובת שלך. הזמנה נשלחת למישהו אחר.');return false}
       r.contact=c.trim();
       r.note=((document.getElementById('r-note')||{}).value||'').trim();
+      inviteFromPlanting=false;
       return sendInvite(r);
     });
 }
@@ -7712,6 +7767,7 @@ function apSave(){
       toast(r.name+' נוסף לקרובים שלך. ההזמנה נשלחת מתוך רגע.');return;
     }
     pickedPlant=apPlants[0];
+    inviteFromPlanting=!!apFrom;
     sendInvite(r);
   };
   if(liveAccount()){
@@ -10549,6 +10605,7 @@ function quickInvite(i){
   const r=relatives[i];
   if(!r||!r.contact){toast('חסרים פרטי קשר');return}
   pickedPlant=cur;
+  inviteFromPlanting=true;
   sendInvite(r);
 }
 /* an invite card built from the planting itself — never from a fixed one */
