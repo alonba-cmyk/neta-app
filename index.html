@@ -1234,7 +1234,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'fe2d5b9';
+window.NETA_BUILD = 'fba3cbc';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7627,6 +7627,8 @@ function netaBackend(cfg){
         return (rows||[]).map(function(r){
           return {kind:r.kind,actor:r.actor_name,avatar:r.actor_avatar,
                   key:r.planting_id,name:r.planting_name,
+                  /* מי הוזמן. null בכל שורה שאינה הזמנה (0063). */
+                  subject:r.subject_name||null,
                   icon:r.planting_icon,isMe:r.is_me,years:r.years,
                   amount:r.amount_agorot==null?null:Number(r.amount_agorot),
                   contribKind:r.contrib_kind,
@@ -8644,6 +8646,13 @@ function feedRowHTML(e){
   }else if(e.kind==='relative_joined'){
     glyph='👥';
     amount='<div class="fa let">הצטרפות</div>';
+  }else if(e.kind==='invitation_sent'){
+    glyph='📩';
+    amount='<div class="fa let">הזמנה</div>';
+    /* היחידה שדורסת את הכלל "בשורה שלך אין שורת משנה": שם המוזמן הוא
+       כל המידע בשורה הזאת, ובלעדיו היא אומרת רק שהזמנת מישהו. */
+    sub=mine?('הזמנת את '+(e.subject||'קרוב'))
+            :(who(e.actor)+' הזמין את '+(e.subject||'קרוב'));
   }else{
     amount='<div class="fa let">'+yearsWord(e.years)+'</div>';
     sub='אבן דרך';
