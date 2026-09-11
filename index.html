@@ -1014,6 +1014,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הקבוע רק הוסיף 23 פיקסלים של אוויר. */
 #home-empty h3,#kin-empty h3,#act-empty h3,#rel-list .es h3{
   min-height:calc(17px * 1.35 * 2);display:grid;align-content:center}
+/* השבירה אחרי הפסיק ולא באמצע הפסוקית: balance מאזן אורכי שורות ושבר
+   את הכותרת אחרי "שיהיה", שנשארה תלויה בסוף השורה. הפסיק הוא גבול
+   הפסוקית, ושם השבירה נקראת.
+
+   ויתור עצמי מתחת ל-360: "שיהיה ליקרים שלך ממה להתחיל" הוא 234px, וב-320
+   נשארים 5 פיקסלים בלבד. זה נכנס, אבל גופן חלופי מפיל את זה לשלוש שורות,
+   והכותרת גולשת מהגובה השמור ומורידה את הכפתור. br ב-display:none אינו
+   יוצר שבירה כלל, ולכן שם balance חוזר לעשות את עבודתו. */
+#home-empty h3 br{display:none}
+@media (min-width:360px){#home-empty h3 br{display:inline}}
 /* ואותו דבר למשפט. הכותרת לבדה לא הספיקה: הכפתור יורד גם כשהמשפט
    נשבר לשתי שורות באחד המסכים ולא באחר, וזה מה שקרה כשהמשפט של
    "העתיד שלנו" נכתב מחדש והתקצר לשורה אחת. הכלל הוא שני שורות בכל
@@ -1224,7 +1234,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '79a7765';
+window.NETA_BUILD = 'e73e29c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1474,7 +1484,7 @@ window.NETA_CONFIG = {
       <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-kid4"/></svg></span><i>🎒</i></span>
       <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-kid2"/></svg></span><i>💍</i></span>
     </span></div>
-    <h3>כשיגיע הרגע, שיהיה ליקרים שלך ממה להתחיל</h3>
+    <h3>כשיגיע הרגע,<br>שיהיה ליקרים שלך ממה להתחיל</h3>
     <!-- הכותרת נושאת את המשמעות והמשפט את התיאור, ולא שניהם "כאן יופיע".
          קודם הכותרת אמרה "כאן יופיע מה שמחכה..." והמשפט מנה מה יצויר
          (פרצוף, מה שנצבר, מי נוטע) — כלומר פעמיים אותו דבר, ושניהם על
