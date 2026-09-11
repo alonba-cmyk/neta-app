@@ -1248,7 +1248,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'cefbfa7';
+window.NETA_BUILD = '7c5152b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2251,14 +2251,11 @@ window.NETA_CONFIG = {
        הריק ישבה ממש מעל "מי עוד נוטע איתך?" ואמרה את אותו הדבר. הרשימה
        הראשונה היא נושא המסך וממילא אינה צריכה תווית; "רגעים שהזמינו
        אותך אליהם" נשארה, כי היא הכיוון האחר וכן צריכה שם. -->
-  <!-- הרגע שאליו מזמינים, כשיש יותר מאחד. הוא נקבע עד כה בכניסה
-       (relInviteKey) ולא ניתן היה לשנותו, ולכן מי שנכנס מרגע אחד
-       והתכוון לאחר היה צריך לצאת ולחזור. הבורר יושב מעל הרשימה כי
-       הוא מה שמגדיר אותה: מי שכבר הוזמן לרגע הנבחר מסומן ככזה. -->
-  <div id="rel-moment" style="display:none">
-    <p class="eyebrow" style="margin-bottom:6px">ההזמנה לאיזה רגע</p>
-    <div class="chips" id="rel-mchips"></div>
-  </div>
+  <!-- אין כאן בורר רגע. למסך הזה מגיעים משני מקומות, ובשניהם השאלה
+       כבר נענתה: מי שנכנס מתוך רגע הביא אותו איתו, והכותרת אומרת את
+       שמו; ומי שנכנס מהטאב אינו במצב הזמנה כלל, והרגע נבחר בגיליון
+       של inviteRelative לאדם שהוא בוחר. בורר כאן היה שואל שאלה
+       שהתשובה עליה כבר על המסך. -->
   <div class="card" id="rel-list"></div>
   <button class="btn gap-s" id="rel-send" style="display:none"
           onclick="invPreview()">המשך</button>
@@ -6635,40 +6632,15 @@ function openRelatives(from,inviteKey){
 }
 /* כל מה שתלוי ברגע הנבחר: הכותרת, האזהרה, ובורר הרגע עצמו. נקרא גם
    בכניסה וגם בכל החלפת רגע, כדי ששניהם לא ייפרדו. */
-function tb15On(){
-  return screens[15]&&screens[15].classList.contains('on');
-}
+/* נקרא מ-openRelatives בלבד, שמסיים ב-go(15). go הוא שמצייר את
+   השורה העליונה מ-topbars[15], ולכן כאן רק קובעים אותה. */
 function paintInviteMode(){
   const pl=relInviteKey?plantAt(relInviteKey):null;
   topbars[15] = pl ? ['למי לשלוח?','ההזמנה ל'+pl.name] : REL_TOPBAR.slice();
-  /* הכותרת מצוירת ב-go, ו-pickInviteMoment אינה עוברת דרכו. שתי
-     השורות כאן הן בדיוק מה ש-go עושה איתה, ולא יותר. */
-  if(tb15On()){txt('tb-t',topbars[15][0]);txt('tb-s',topbars[15][1])}
   const inv=document.getElementById('rel-invite');
   if(inv)inv.style.display=relInviteKey?'':'none';
   const warn=document.getElementById('rel-warn');
   if(warn)warn.style.display=(pl&&!pl.shared)?'':'none';
-  /* הבורר מופיע רק כשיש באמת ממה לבחור. עם רגע אחד הוא שורה שאין
-     בה החלטה, והכותרת ממילא אומרת את שמו. */
-  const box=document.getElementById('rel-moment');
-  const opts=relInviteKey?invitablePlantings():[];
-  if(box){
-    box.style.display=(relInviteKey&&opts.length>1)?'':'none';
-    if(relInviteKey&&opts.length>1)
-      document.getElementById('rel-mchips').innerHTML=opts.map(function(o){
-        return '<button type="button" class="'+(o.key===relInviteKey?'on':'')+'" '+
-          'onclick="pickInviteMoment(\''+o.key+'\')">'+o.icon+' '+o.name+'</button>';
-      }).join('');
-  }
-}
-/* החלפת הרגע מאפסת את הבחירה: מי שסימנת עבור רגע אחד אינו בהכרח מי
-   שתרצה עבור האחר, ושמירה על הסימון הייתה שולחת בשקט למי שלא התכוונת. */
-function pickInviteMoment(key){
-  if(key===relInviteKey)return;
-  relInviteKey=key;
-  invSel={};
-  paintInviteMode();
-  buildRelatives();
 }
 /* חזרה לנטיעה מציירת אותה מחדש ולא רק מציגה את המסך: מ"רגע ההשקעה"
    מגיעים לכאן בלי שמסך הנטיעה צויר אי פעם, ו-go(5) לבדו היה מציג את
