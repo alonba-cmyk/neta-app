@@ -1265,7 +1265,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd73785a';
+window.NETA_BUILD = 'a6f3637';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6702,11 +6702,18 @@ function invPreview(){
   const names=idx.map(function(i){return relatives[i].name});
   const title=names.length===1?('הזמנה ל'+names[0])
     :('הזמנה ל'+names.slice(0,-1).join(', ')+' ול'+names[names.length-1]);
+  const one=names.length===1;
   sheetForm(title,
-    '<p>כל אחד יקבל קישור אישי משלו, תקף רק לכתובת שאליה נשלח.</p>'+
+    /* יחיד ורבים בנפרד. "הערה, ל"+"ה" נתן "הערה, לה", ו"כל אחד יקבל"
+       דיבר ברבים אל נמען אחד. */
+    '<p>'+(one?('הוא יקבל קישור אישי, תקף רק לכתובת שאליה נשלח.')
+              :('כל אחד יקבל קישור אישי משלו, תקף רק לכתובת שאליה נשלח.'))+'</p>'+
     invPreviewCard(relInviteKey,'')+
-    '<label>הערה, ל'+(names.length===1?'ה':'כולם')+'</label>'+
-    '<textarea id="inv-note" placeholder="כמה מילים אליהם…"></textarea>'+
+    /* השם המלא ולא firstName: "סבא יוסף" נחתך שם ל"סבא", והכיתוב
+       יצא "הערה לסבא". שם של קרוב הוא לרוב תואר ועוד שם. */
+    '<label>'+(one?('הערה ל'+names[0]):'הערה, לכולם')+'</label>'+
+    '<textarea id="inv-note" placeholder="'+(one?('כמה מילים אל '+names[0]+'…')
+                                                :'כמה מילים אליהם…')+'"></textarea>'+
     '<p class="fine" style="margin-top:8px">ההערה תופיע בהזמנה, מתחת לשם הרגע.</p>',
     names.length===1?'שלח הזמנה':('שלח '+names.length+' הזמנות'),
     function(){
@@ -9228,7 +9235,13 @@ function buildHomeSummary(){
       txt('s-futk',(function(){
         const nm=sel?firstName(sel.name):'';
         if(proj.length!==1)return nm?('יחכו ל'+nm+' במועדים'):'יחכו להם במועדים';
-        const one=proj[0], when=one.date?(' ב'+one.date):'';
+        /* ‏date קיים רק במודל של מסך הרגע. הרשימה מחזיקה targetYear
+           ו-targetMonth, ולכן התנאי הזה היה תמיד שקרי והתאריך נשמט
+           בשקט משני המקורות, החי וההדגמה כאחד. */
+        const one=proj[0];
+        const when=one.date?(' ב'+one.date)
+          :(one.targetYear!=null&&one.targetMonth!=null
+              ? (' ב'+months[one.targetMonth]+' '+one.targetYear) : '');
         /* השם ולא הכינוי: המקור החי אינו מחזיר את מין הנהנה, ולכן
            "יחכו לו" היה ניחוש. עם השם אין מה לנחש. */
         if(nm)return 'יחכו ל'+nm+when;
