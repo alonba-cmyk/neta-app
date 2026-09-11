@@ -1282,7 +1282,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6afddf4';
+window.NETA_BUILD = 'b3b6084';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7102,7 +7102,11 @@ function openAddPerson(){
      היחיד לשניהם, ואין פרמטר שאפשר לשכוח להעביר. */
   apFrom=relInviteKey||'';
   apKindMode='with';apStep=0;apRel='סבתא';apAv='av-granny2';
-  apKidAv='av-kid1';apKidSexV='m';apPhoto=null;apPlants=[];
+  apKidAv='av-kid1';apKidSexV='m';apPhoto=null;
+  /* מרגע: הרגע ידוע כבר עכשיו, ולא רק בשמירה. בלי זה השלב האחרון
+     הכריז "לא סימנת רגע" ונשא כפתור "הוסף לרשימה" על מסלול שכל כולו
+     הזמנה לרגע מסוים. */
+  apPlants=apFrom?[apFrom]:[];
   document.querySelectorAll('#ap-kind button').forEach(function(x,i){
     x.classList.toggle('on',i===0)});
   ['ap-name','ap-relfree','ap-contact','ap-kidname'].forEach(function(id){
