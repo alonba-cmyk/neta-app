@@ -1282,7 +1282,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '45ae548';
+window.NETA_BUILD = 'b542186';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2973,11 +2973,12 @@ window.NETA_CONFIG = {
   <div class="field"><label>טלפון או אימייל</label>
     <input type="text" id="ap-contact" placeholder="050-0000000 או name@mail.com"
            oninput="apGoLbl()"></div>
-  <p class="fine" id="ap-skip">בלי זה אין למי לשלוח, ולכן זה שדה חובה.</p>
+  <!-- השורה מופיעה רק כשלא נבחר רגע, כלומר רק כשהיא אומרת משהו שאי
+       אפשר לראות מהמסך עצמו. "זה שדה חובה" מתגלה ממילא בלחיצה. -->
+  <p class="fine" id="ap-skip" style="display:none"></p>
   <div class="field" style="margin-top:16px"><label>משפט אישי · לא חובה</label>
     <textarea id="ap-note" maxlength="240" style="min-height:58px"
-      placeholder="פתחתי משהו קטן לעתיד, ישמח אותי אם תהיה חלק."></textarea>
-    <p class="fine" style="margin-top:6px">מה שתכתוב כאן יופיע בהזמנה עצמה.</p></div>
+      placeholder="פתחתי משהו קטן לעתיד, ישמח אותי אם תהיה חלק."></textarea></div>
   <button class="btn gap" id="ap-go" onclick="apNext()">שלח את ההזמנה</button>
   <button class="link backlink" onclick="apBack()">חזרה</button>
   </div><!-- /ap-2 -->
@@ -7242,9 +7243,12 @@ function apEnter(id){
   }
   if(id==='ap-2'){
     txt('ap-2h','לאן לשלוח ל'+nm+' את ההזמנה?');
-    txt('ap-skip',apPlants.length
-      ? 'בלי זה אין למי לשלוח, ולכן זה שדה חובה.'
-      : 'לא סימנת רגע, ולכן לא תישלח הזמנה עכשיו. הכתובת תחכה ברשימה.');
+    const skip=document.getElementById('ap-skip');
+    if(skip){
+      skip.style.display=apPlants.length?'none':'';
+      skip.textContent=apPlants.length?''
+        :'לא סימנת רגע, ולכן לא תישלח הזמנה עכשיו. הכתובת תחכה ברשימה.';
+    }
     apGoLbl();
   }
 }
