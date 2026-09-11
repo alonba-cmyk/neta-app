@@ -174,6 +174,14 @@ input:focus,select:focus,textarea:focus{outline:1px solid var(--leaf);outline-of
 .opt .rate{font-size:11.5px;color:var(--tx-3)}
 .opt.ben,.opt.eb-approve{min-height:92px;display:flex;flex-direction:column;justify-content:center}
 .opt[data-m]{min-height:84px;display:flex;flex-direction:column;justify-content:center}
+/* השדות של אמצעי התשלום יושבים בתוך הכרטיס שנבחר, ולא מתחת לשניהם:
+   הם שייכים לאמצעי אחד, ולמטה הם נקראו כשדות של המסך כולו. הקו מפריד
+   בין ההסבר לבין מה שצריך למלא. */
+.opt.pay .payin{margin-top:11px;padding-top:11px;border-top:1px solid var(--leaf-line);
+  cursor:default;text-align:right}
+.opt.pay .payin .field{margin-top:9px}
+.opt.pay .payin .field:first-child{margin-top:0}
+.opt.pay .payin .fine{margin-top:9px}
 .stack{display:flex;flex-direction:column;gap:7px}
 .tag{font-size:9.5px;background:var(--leaf-bg);color:var(--leaf);padding:2px 6px;border-radius:5px;border:1px solid #2A4530}
 .pill{font-family:inherit;font-size:12.5px;padding:9px 12px;border-radius:9px;border:1px solid var(--line);
@@ -1287,7 +1295,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '625acc0';
+window.NETA_BUILD = '6b4fede';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1758,8 +1766,12 @@ window.NETA_CONFIG = {
   </div>
   <p class="fine" id="c-datehint" style="margin:8px 0 16px"></p>
 
+  <!-- מפקיד לרגע קיים אינו בוחר מסלול: זו קופה אחת, והמסלול נקבע
+       כשהיא נפתחה. עד כה הבורר נשאר על המסך ו-investIn דרסה את הבחירה
+       בשקט — כלומר מסך שהראה תחזית של 9% על כסף שגדל ב-3.5%. -->
+  <p class="fine" id="amt-track" style="display:none;margin:14px 0 0"></p>
   <p class="eyebrow" id="eb-mode">3 · מה יקרה לכסף עד אז</p>
-  <div class="stack gap">
+  <div class="stack gap" id="mode-block">
     <div class="opt" data-m="keep"><b>שיישמר כמו שהוא</b><p id="keep-desc">הסכום שתפקיד כל חודש יחכה במלואו בהגעה למועד המיוחל.</p></div>
     <div class="opt" data-m="safe"><div class="row" style="gap:6px"><b>שיצבור ריבית מובטחת</b><span class="tag">מתאים לרוב</span></div><p>הסכום רק גדל. הריבית ידועה מראש ואינה יורדת.</p></div>
     <div class="opt" data-m="market"><b>שיושקע בשוק ההון</b><p>פוטנציאל צמיחה גבוה יותר, אך הערך עולה ויורד ואינו מובטח.</p></div>
@@ -3261,6 +3273,11 @@ function occHead(){
                               :'לאיזה רגע?');
 }
 function occasionPhrase(){
+  /* בהפקדה לרגע קיים אין טופס הקמה: goal נטען מהנטיעה עצמה, ו-goal.type
+     הוא שם הרגע המלא ("הלימודים של נועה"). cName ו-cType הם שדות הטופס,
+     ולכן הם הציגו כאן את הרגע שההקמה האחרונה השאירה מאחור — או את
+     ברירת המחדל שבקובץ, "בר/בת מצווה", על נטיעת לימודים. */
+  if(!isNewPlant&&goal&&goal.type)return 'לקראת '+goal.type;
   const nm=(cName.value||'הילד').trim();
   const t=cType==='custom'?(cCustom.value.trim()||'המטרה'):cType;
   const p=OCCASION_PHRASE[t];
@@ -4014,6 +4031,8 @@ function commitGoal(){
     return;
   }
   showTermStep(true);
+  /* נטיעה חדשה: הבורר חוזר. בלי זה הוא היה נשאר מוסתר מהפקדה קודמת. */
+  showModeStep(true);
   if(!cDate.value){ // arrive with a working projection rather than an empty one
     const def=document.querySelectorAll('#c-terms button')[1];
     if(def)setTerm(def,10);
@@ -4098,15 +4117,25 @@ const PAY_FIELDS={
 };
 let payPick='hora',paySaved=null;
 function renderPayFields(){
+  /* בתוך הכרטיס הנבחר. הכותרת ("פרטי החשבון לחיוב") יורדת, כי הכרטיס
+     כבר נושא את שם האמצעי ושתי כותרות זו מעל זו אומרות אותו דבר. */
+  document.querySelectorAll('.opt.pay .payin').forEach(function(x){x.remove()});
   const box=document.getElementById('pay-fields');
-  if(paySaved!==null){box.innerHTML='';return}
+  if(box)box.innerHTML='';
+  if(paySaved!==null)return;
   const d=PAY_FIELDS[payPick];
-  if(!d){box.innerHTML='';return}
-  box.innerHTML='<p class="eyebrow big">'+d.t+'</p>'+
-    d.f.map(function(f){
+  const card=document.querySelector('.opt.pay.on[data-p="'+payPick+'"]');
+  if(!d||!card)return;
+  const el=document.createElement('div');
+  el.className='payin';
+  /* לחיצה בשדה אינה בחירה מחדש של הכרטיס: היא הייתה מגלגלת ל-onclick
+     שלו, מציירת מחדש, ומוחקת את מה שכבר הוקלד באמצע ההקלדה. */
+  el.onclick=function(e){e.stopPropagation()};
+  el.innerHTML=d.f.map(function(f){
       return '<div class="field"><label>'+f[1]+'</label><input type="text" id="'+f[0]+'" placeholder="'+f[2]+'"></div>';
     }).join('')+
-    '<p class="fine'+(d.f.length?'':' gap')+'">'+d.note+'</p>';
+    '<p class="fine">'+d.note+'</p>';
+  card.appendChild(el);
 }
 function renderSavedPays(){
   const box=document.getElementById('pay-saved');
@@ -10442,6 +10471,25 @@ function openForRelatives(key){
     .then(function(){return refreshDetail(key)})
     .catch(function(){});
 }
+/* המסלול של רגע קיים הוא עובדה ולא שאלה. שלושת הגושים יורדים, ובמקומם
+   שורה שאומרת מה נקבע — ומי שנטיעה זו שלו יכול לשנות אותה במסך העריכה. */
+function showModeStep(on){
+  ['eb-mode','mode-block','safe-block','market-block'].forEach(function(id){
+    const el=document.getElementById(id);
+    if(el)el.style.display=on?(id==='eb-mode'||id==='mode-block'?'':'none'):'none';
+  });
+  const line=document.getElementById('amt-track');
+  if(line){
+    line.style.display=on?'none':'';
+    line.textContent=on?'':('המסלול נקבע כשהרגע נפתח: '+trackLabel()+'.');
+  }
+  if(!on){
+    modeTouched=true;
+    /* נטיעה שהמסלול שלה לא נשמר (רשומה ישנה) הייתה משאירה את הכותרת
+       "בחרו למטה מה יקרה לכסף" בלי שיש למטה מה לבחור. */
+    if(mode==null)mode=rate?(rate>=0.06?'market':'safe'):'keep';
+  }
+}
 function showTermStep(on){
   document.getElementById('c-terms').style.display=on?'':'none';
   document.getElementById('eb-term').style.display=on?'':'none';
@@ -10464,6 +10512,7 @@ function investIn(key){
     mode=p.mode||(p.rate?null:'keep');
     rate=p.rate==null?rate:p.rate;
   }
+  showModeStep(false);
   txt('ct-title','השקע עבור '+p.kid);
   txt('ct-meta',p.name+' · המועד המיוחל '+p.date);
   goal={name:p.kid,type:p.name,icon:p.icon,dateLabel:p.date,years:p.yl};
