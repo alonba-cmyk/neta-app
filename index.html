@@ -719,6 +719,20 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* דמויות דוגמה מוחשכות, כשאין עדיין אף קרוב שמור — אותו עיקרון בדיוק כמו
    .gsample במסכים ריקים, אבל בלי דהיית הגרדיאנט: כאן זו שורה בתוך רשימה
    אמיתית, לא מסך שלם. */
+/* תיבת הסימון של בחירה מרובה, במצב הזמנה בלבד. אותו גודל וצורה
+   כמו הצ'יפים, כדי שהיא תיקרא כפעולה ולא כאינדיקטור. */
+/* התצוגה המקדימה בגיליון: מראה ולא טופס, ולכן בלי מסגרת שדה. */
+.invprev{background:var(--s2);border:1px solid var(--line);border-radius:10px;
+  padding:12px 13px;margin:4px 0 2px;font-size:12px;line-height:1.6;color:var(--tx-2)}
+.invprev b{display:block;color:var(--tx);font-weight:600;font-size:12.5px;margin-bottom:5px}
+.invprev span{display:block}
+.invprev i{display:block;font-style:normal;color:var(--tx);margin-top:8px;
+  border-top:1px solid var(--line);padding-top:8px}
+.relbox{width:19px;height:19px;border-radius:6px;border:1.5px solid var(--line-2);
+  flex-shrink:0;display:grid;place-items:center}
+.relbox.on{background:var(--leaf);border-color:var(--leaf)}
+.relbox svg{display:block}
+.rx.done{background:transparent;border-color:var(--line);color:var(--tx-3)}
 .cbr.ghost{opacity:.4;filter:saturate(.5);pointer-events:none}
 .cbr.pend{opacity:.6}
 .cbp{font-size:10.5px;color:var(--tx-3);flex-shrink:0}
@@ -1234,7 +1248,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '18b914a';
+window.NETA_BUILD = 'cefbfa7';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2237,8 +2251,18 @@ window.NETA_CONFIG = {
        הריק ישבה ממש מעל "מי עוד נוטע איתך?" ואמרה את אותו הדבר. הרשימה
        הראשונה היא נושא המסך וממילא אינה צריכה תווית; "רגעים שהזמינו
        אותך אליהם" נשארה, כי היא הכיוון האחר וכן צריכה שם. -->
+  <!-- הרגע שאליו מזמינים, כשיש יותר מאחד. הוא נקבע עד כה בכניסה
+       (relInviteKey) ולא ניתן היה לשנותו, ולכן מי שנכנס מרגע אחד
+       והתכוון לאחר היה צריך לצאת ולחזור. הבורר יושב מעל הרשימה כי
+       הוא מה שמגדיר אותה: מי שכבר הוזמן לרגע הנבחר מסומן ככזה. -->
+  <div id="rel-moment" style="display:none">
+    <p class="eyebrow" style="margin-bottom:6px">ההזמנה לאיזה רגע</p>
+    <div class="chips" id="rel-mchips"></div>
+  </div>
   <div class="card" id="rel-list"></div>
-  <button class="btn gap-s" onclick="openAddPerson()">+ הוסף קרוב</button>
+  <button class="btn gap-s" id="rel-send" style="display:none"
+          onclick="invPreview()">המשך</button>
+  <button class="btn gap-s" id="rel-add" onclick="openAddPerson()">+ הוסף קרוב</button>
   <!-- כך זה ייראה כשקרובים יצטרפו. אותו דגם דוהה שיש בשלושת המצבים
        הריקים האחרים, ומאותו מקור: שורות אמיתיות של הרשימה עם שמות
        ההדגמה, ולא ציור שלהן. -->
@@ -6375,10 +6399,26 @@ function buildRelatives(){
       '<h3>מי עוד נוטע איתך?<br>הזמן את סבתא, אח או דוד קרוב</h3>'+
       '<p>מזמינים את הקרובים להשקיע<br>בעתיד של היקרים לך מכל</p></div>';
     relGhost(true);
+    paintInvSend();
     relMeta();return;
   }
   box.style.border='';box.style.background='';box.style.padding='';box.style.marginBottom='';
   relGhost(false);
+  /* מצב הזמנה: הרשימה היא בחירה מרובה ולא כפתור לכל שורה. מי שכבר
+     הוזמן לרגע הנבחר מסומן ככזה ואינו ניתן לסימון, כי הזמנה שנייה
+     לאותו רגע אינה עושה דבר. */
+  if(relInviteKey){
+    box.innerHTML=relatives.map(function(r,i){
+      const already=(r.invitedTo||[]).indexOf(relInviteKey)>=0;
+      const cant=!r.contact;
+      const right=already?'<span class="rx done">הוזמן</span>'
+        :cant?'<span class="rx done">אין פרטי קשר</span>'
+        :'<span class="relbox'+(invSel[i]?' on':'')+'">'+(invSel[i]?TICK:'')+'</span>';
+      return relRowHTML(r,right,(already||cant)?'':' onclick="toggleInvSel('+i+')"');
+    }).join('');
+    paintInvSend();
+    relMeta();return;
+  }
   box.innerHTML=relatives.map(function(r,i){
     let right;
     /* "באפליקציה" ירד. הוא היה תג ולא פעולה, ישב במקום שבו שאר השורות
@@ -6551,6 +6591,35 @@ let relBack=10;
 /* הנטיעה שאליה מזמינים, כשמסך הקרובים נפתח בשביל זה. ריק = המסך נפתח
    בשביל עצמו, מהפרופיל או מהסרגל, ואז אין בו קישור ואין הצצה. */
 let relInviteKey='';
+/* מי סומן לשליחה, לפי המקום ברשימה. מתאפס בכניסה ובכל החלפת רגע. */
+let invSel={};
+const TICK='<svg width="11" height="9" viewBox="0 0 11 9" aria-hidden="true">'+
+  '<path d="M1 4.6 L4 7.6 L10 1.4" fill="none" stroke="#0E1A10" stroke-width="1.9" '+
+  'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function invSelIdx(){
+  return Object.keys(invSel).filter(function(k){return invSel[k]})
+    .map(Number).sort(function(a,b){return a-b});
+}
+function toggleInvSel(i){
+  if(invSel[i])delete invSel[i]; else invSel[i]=true;
+  buildRelatives();
+}
+/* הכפתור אומר את מי, ולא רק כמה: עם אחד השם עצמו, ומשניים ספירה.
+   כשאיש לא סומן הוא עדיין מוצג, מכובה, כי כפתור שנעלם ומופיע מזיז
+   את כל מה שמתחתיו בכל סימון. */
+function paintInvSend(){
+  const b=document.getElementById('rel-send'),add=document.getElementById('rel-add');
+  if(add)add.className=relInviteKey?'btn ghost gap-s':'btn gap-s';
+  if(!b)return;
+  if(!relInviteKey){b.style.display='none';return}
+  const idx=invSelIdx();
+  b.style.display='';
+  b.disabled=!idx.length;
+  b.style.opacity=idx.length?'':'.5';
+  b.textContent=!idx.length ? 'בחר את מי להזמין'
+    : idx.length===1 ? ('המשך עם '+firstName(relatives[idx[0]].name))
+    : ('המשך עם '+idx.length+' קרובים');
+}
 function openRelatives(from,inviteKey){
   relBack=(from==null?10:from);
   relInviteKey=inviteKey||'';
@@ -6560,18 +6629,153 @@ function openRelatives(from,inviteKey){
                   : relBack===5 ? 'חזרה לנטיעה'
                   : relBack===0 ? 'חזרה לעתיד שלנו'
                   : 'חזרה לפרופיל';}
-  /* במצב הזמנה המסך עונה על שאלה אחת, ולכן גם הכותרת שלו שואלת אותה. */
+  invSel={};
+  paintInviteMode();
+  buildRequests();buildRelatives();go(15);
+}
+/* כל מה שתלוי ברגע הנבחר: הכותרת, האזהרה, ובורר הרגע עצמו. נקרא גם
+   בכניסה וגם בכל החלפת רגע, כדי ששניהם לא ייפרדו. */
+function tb15On(){
+  return screens[15]&&screens[15].classList.contains('on');
+}
+function paintInviteMode(){
   const pl=relInviteKey?plantAt(relInviteKey):null;
   topbars[15] = pl ? ['למי לשלוח?','ההזמנה ל'+pl.name] : REL_TOPBAR.slice();
+  /* הכותרת מצוירת ב-go, ו-pickInviteMoment אינה עוברת דרכו. שתי
+     השורות כאן הן בדיוק מה ש-go עושה איתה, ולא יותר. */
+  if(tb15On()){txt('tb-t',topbars[15][0]);txt('tb-s',topbars[15][1])}
   const inv=document.getElementById('rel-invite');
   if(inv)inv.style.display=relInviteKey?'':'none';
   const warn=document.getElementById('rel-warn');
   if(warn)warn.style.display=(pl&&!pl.shared)?'':'none';
-  buildRequests();buildRelatives();go(15);
+  /* הבורר מופיע רק כשיש באמת ממה לבחור. עם רגע אחד הוא שורה שאין
+     בה החלטה, והכותרת ממילא אומרת את שמו. */
+  const box=document.getElementById('rel-moment');
+  const opts=relInviteKey?invitablePlantings():[];
+  if(box){
+    box.style.display=(relInviteKey&&opts.length>1)?'':'none';
+    if(relInviteKey&&opts.length>1)
+      document.getElementById('rel-mchips').innerHTML=opts.map(function(o){
+        return '<button type="button" class="'+(o.key===relInviteKey?'on':'')+'" '+
+          'onclick="pickInviteMoment(\''+o.key+'\')">'+o.icon+' '+o.name+'</button>';
+      }).join('');
+  }
+}
+/* החלפת הרגע מאפסת את הבחירה: מי שסימנת עבור רגע אחד אינו בהכרח מי
+   שתרצה עבור האחר, ושמירה על הסימון הייתה שולחת בשקט למי שלא התכוונת. */
+function pickInviteMoment(key){
+  if(key===relInviteKey)return;
+  relInviteKey=key;
+  invSel={};
+  paintInviteMode();
+  buildRelatives();
 }
 /* חזרה לנטיעה מציירת אותה מחדש ולא רק מציגה את המסך: מ"רגע ההשקעה"
    מגיעים לכאן בלי שמסך הנטיעה צויר אי פעם, ו-go(5) לבדו היה מציג את
    מה שהיה שם קודם. */
+/* התצוגה המקדימה נבנית מ-inviteFor, אותו מקור שממנו נבנה מסך ההזמנה
+   המלא. עותק שני של אותו טקסט היה נפרד ממנו בשינוי הראשון. */
+function invPreviewCard(key,note){
+  const d=inviteFor(key);
+  const c=(d&&d.card)||{};
+  const kid=c.beneficiary_name?(' של '+c.beneficiary_name):'';
+  const yr=c.target_year?(', לשנת '+c.target_year):'';
+  return '<div class="invprev">'+
+    '<b>'+attrText(c.inviter_name||'')+' מזמין אותך ל'+attrText(d.title||'')+'</b>'+
+    '<span>הרגע'+attrText(kid)+attrText(yr)+'. '+
+    (c.participants>1?('כבר נוטעים בו '+c.participants+' אנשים.'):'אתה הראשון שמצטרף אליו.')+'</span>'+
+    (note?'<i>'+attrText(note)+'</i>':'')+
+    '</div>';
+}
+/* גיליון אחד לכל מי שסומן. ההערה משותפת, כי היא ממילא כזאת: "שמחתי
+   לפתוח את הרגע הזה, אשמח שתהיו חלק" נכון לכל הנמענים. מי שרוצה
+   לכתוב לאדם מסוים מזמין אותו לבד. */
+function invPreview(){
+  const idx=invSelIdx();
+  if(!idx.length||!relInviteKey)return;
+  const names=idx.map(function(i){return relatives[i].name});
+  const title=names.length===1?('הזמנה ל'+names[0])
+    :('הזמנה ל'+names.slice(0,-1).join(', ')+' ול'+names[names.length-1]);
+  sheetForm(title,
+    '<p>כל אחד יקבל קישור אישי משלו, תקף רק לכתובת שאליה נשלח.</p>'+
+    invPreviewCard(relInviteKey,'')+
+    '<label>הערה, ל'+(names.length===1?'ה':'כולם')+'</label>'+
+    '<textarea id="inv-note" placeholder="כמה מילים אליהם…"></textarea>'+
+    '<p class="fine" style="margin-top:8px">ההערה תופיע בהזמנה, מתחת לשם הרגע.</p>',
+    names.length===1?'שלח הזמנה':('שלח '+names.length+' הזמנות'),
+    function(){
+      const note=((document.getElementById('inv-note')||{}).value||'').trim();
+      /* נדחה בכוונה: sheetConfirm קורא ל-fn ורק אחריו ל-sheetClose,
+         ולכן גיליון האישור שנפתח כאן היה נסגר באותה נשימה. */
+      const key=relInviteKey;
+      setTimeout(function(){sendInvites(idx,note,key)},0);
+    });
+}
+/* השליחה עצמה, לכולם. לא sendInvite בלולאה: הוא פותח גיליון אישור
+   לכל אדם, וחמישה גיליונות זה אחרי זה אינם אישור אלא מכשול. */
+let lastInvLinks=[];
+function sendInvites(idx,note,key){
+  const rs=idx.map(function(i){return relatives[i]});
+  /* ההזמנה הראשונה היא גם מה שפותח את הנטיעה לקרובים. */
+  openForRelatives(key);
+  rs.forEach(function(r){
+    r.note=note; r.chan=chanOf(r.contact)||'wa';
+    r.status='invited'; r.plant=key;
+    r.invitedTo=(r.invitedTo||[]).concat([key]);
+  });
+  invSel={};
+  buildRelatives();
+  if(!liveAccount()){
+    lastInvLinks=rs.map(function(r){return {name:r.name,chan:r.chan,url:''}});
+    invSentSheet(key,rs.length);
+    return;
+  }
+  lastInvLinks=[];
+  toast(rs.length===1?'שולח…':('שולח '+rs.length+' הזמנות…'));
+  Promise.all(rs.map(function(r){
+    return netaServer.sendInvitation(key,r.name,r.contact,
+             r.chan==='mail'?'email':'whatsapp',note)
+      .then(function(inv){
+        const id=inv&&inv.id;
+        const mail=r.chan==='mail'&&id
+          ? netaServer.sendInvitationEmail(id).catch(function(){return null})
+          : Promise.resolve(null);
+        return mail.then(function(res){
+          return netaServer.inviteToken(key,id).then(function(t){
+            return {name:r.name,chan:r.chan,url:shareUrl(t),sent:!!(res&&res.sent)};
+          },function(){return {name:r.name,chan:r.chan,url:'',sent:!!(res&&res.sent)}});
+        });
+      })
+      .catch(function(){return {name:r.name,chan:r.chan,url:'',err:true}});
+  })).then(function(out){
+    lastInvLinks=out;
+    invSentSheet(key,rs.length);
+  });
+}
+function copyInvLink(i){
+  const l=lastInvLinks[i];
+  if(!l||!l.url)return;
+  copyText(l.url).then(function(){toast('הקישור של '+l.name+' הועתק')},function(){});
+}
+/* אישור אחד לכולם, ובתוכו שורה לכל מי שצריך שתעביר לו את הקישור
+   בעצמך. מי שקיבל מייל אינו צריך דבר, ולכן אין לו כפתור. */
+function invSentSheet(key,n){
+  const bad=lastInvLinks.filter(function(l){return l.err}).length;
+  const rows=lastInvLinks.map(function(l,i){
+    const ok=l.chan==='mail'&&l.sent;
+    return '<div class="cbr"><span class="cbn"><b>'+attrText(l.name)+'</b><i>'+
+      (l.err?'לא נשלחה, אפשר לנסות שוב'
+           :ok?'נשלח למייל':'צריך שתעביר לו את הקישור')+'</i></span>'+
+      (l.url&&!ok?'<button class="rx" onclick="copyInvLink('+i+')">העתק קישור</button>':'')+
+      '</div>';
+  }).join('');
+  sheetForm(n===1?'ההזמנה נרשמה':(n+' ההזמנות נרשמו'),
+    'כשכל אחד ייכנס לנטע עם הכתובת שאליה נשלחה ההזמנה, הוא יצורף ל'+
+    nameOfPlanting(key)+' מיד, בלי שתצטרך לאשר.'+
+    '<div class="card" style="margin-top:12px">'+rows+'</div>'+
+    (bad?'<p class="fine" style="margin-top:8px">מי שלא נשלחה לו הזמנה נשאר ברשימה, ואפשר לנסות שוב.</p>':''),
+    'סיימתי', function(){backFromRelatives()});
+}
 function backFromRelatives(){
   if(relBack===5&&cur&&plantAt(cur)){openDetail(cur);return}
   go(relBack);
