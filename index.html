@@ -849,6 +849,23 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="כניסה"] .backlink,[data-name="פתיחת חשבון"] .backlink{margin-top:2px}
 #c-terms{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 /* ── הוספת אדם ─────────────────────────────────────────────────── */
+/* בחירת הרגעים: שורה ברוחב מלא ולא צ'יפ. צ'יפ נושא שם בלבד, ושני
+   רגעים של אותו ילד נראים בו כמעט זהים; השורה נושאת גם את המועד וגם
+   מי כבר נוטע שם. התיבה היא אותה .relbox של רשימת הקרובים. */
+[data-name="הוספת אדם"] #ap-plant{display:flex;flex-direction:column;gap:8px}
+[data-name="הוספת אדם"] .mrow{display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:12px;background:var(--s1);
+  border:1px solid var(--line);cursor:pointer;transition:.15s}
+[data-name="הוספת אדם"] .mrow.on{background:var(--leaf-bg);border-color:var(--leaf-line)}
+[data-name="הוספת אדם"] .mrow .mi{width:34px;height:34px;border-radius:50%;
+  display:grid;place-items:center;font-size:16px;flex-shrink:0;
+  background:var(--s2);border:1px solid var(--line)}
+[data-name="הוספת אדם"] .mrow.on .mi{border-color:var(--leaf-line)}
+[data-name="הוספת אדם"] .mrow .mt{flex:1;min-width:0}
+[data-name="הוספת אדם"] .mrow .mt b{display:block;font-size:12.5px;font-weight:500;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+[data-name="הוספת אדם"] .mrow .mt i{display:block;font-style:normal;font-size:10.5px;
+  color:var(--tx-2);margin-top:2px}
 [data-name="הוספת אדם"] .pick{display:flex;flex-direction:column;gap:7px}
 [data-name="הוספת אדם"] .pick button{display:flex;align-items:center;gap:11px;
   text-align:right;font-family:inherit;border:1px solid var(--line);border-radius:12px;
@@ -1265,7 +1282,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6941586';
+window.NETA_BUILD = '52bed31';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2967,7 +2984,7 @@ window.NETA_CONFIG = {
 
   <div id="ap-3" style="display:none">
   <h2 class="gap-x" id="ap-3h">לאיזה רגע להזמין?</h2>
-  <p class="sub gap">הוא יראה כמה נצבר בו ומי עוד נוטע, ויוכל להשקיע בעצמו.</p>
+  <p class="sub gap" id="ap-3sub">הוא יראה כמה נצבר בו ומי עוד נוטע, ויוכל להשקיע בעצמו.</p>
   <div class="field"><div class="chips" id="ap-plant"></div></div>
   <button class="btn gap" id="ap-send" onclick="apNext()">המשך</button>
   <button class="link backlink" onclick="apBack()">חזרה</button>
@@ -3117,14 +3134,17 @@ const monthsShort=['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני'
 function bShortWhen(o){
   if(!o)return '';
   if(o.targetMonth!=null&&o.targetYear!=null)
-    return 'ב'+monthsShort[o.targetMonth]+' '+o.targetYear;
+    return monthsShort[o.targetMonth]+' '+o.targetYear;
   if(o.date){
     const parts=String(o.date).split(' ');
     const i=months.indexOf(parts[0]);
-    return 'ב'+(i>=0?monthsShort[i]:parts[0])+(parts[1]?' '+parts[1]:'');
+    return (i>=0?monthsShort[i]:parts[0])+(parts[1]?' '+parts[1]:'');
   }
   return '';
 }
+/* "שני רגעים", לא "2 רגעים". */
+const COUNT_WORD=['','','שני','שלושה','ארבעה','חמישה','שישה'];
+function countWord(n){return COUNT_WORD[n]||String(n)}
 let cType='בר/בת מצווה',cIcon='🎂',dateTouched=false;
 /* a fund without a named beneficiary is a different instrument, and says so */
 let designated=true;
@@ -4673,16 +4693,24 @@ function cancelEdit(){
 }
 /* הנטיעות שאפשר להזמין אליהן: אלה שאתה היוזם שלהן ושכבר יועדו. קופה
    שלא יועדה חסומה לקרובים במסד עצמו, ולכן אין טעם להציע אותה. */
+/* sub הוא מה שהופך צ'יפ לשורה: המועד, ומי כבר נוטע שם. צ'יפ נושא שם
+   בלבד, ושני רגעים של אותו ילד נראים בו כמעט זהים. */
+function plantSub(when,n){
+  return (when||'')+(when&&n>1?' · ':'')+(n>1?(n+' נוטעים'):'');
+}
 function invitablePlantings(){
   if(liveAccount()){
     return ((lastModel&&lastModel.plantings)||[])
       .filter(function(p){return p.designated!==false})
-      .map(function(p){return {key:p.key,icon:p.icon,name:p.name,
+      .map(function(p){const w=bShortWhen(p);
+        return {key:p.key,icon:p.icon,name:p.name,
+        sub:plantSub(w,(p.participants||[]).length),
         meta:'המועד המיוחל: '+monthsShort[p.targetMonth]+' '+p.targetYear};});
   }
   return Object.keys(plants).filter(function(k){return plants[k].mine&&plants[k].designated!==false})
     .map(function(k){const p=plants[k];
       return {key:k,icon:p.icon,name:p.name,
+        sub:plantSub(bShortWhen(p),(p.who||[]).length),
         meta:'המועד המיוחל: '+p.date+(p.shared?'':' · <span style="color:var(--tx-3)">פרטית</span>')};});
 }
 /* המסך הזה החזיק שני כרטיסים כתובים ביד. בחשבון אמיתי הוא הציע להזמין
@@ -6411,6 +6439,73 @@ function personalInviteSheet(key,r,url,emailed){
     'העתק וסגור',
     function(){copyText(url).then(function(){toast('הקישור הועתק')},function(){})});
 }
+/* הזמנה אחת לכמה רגעים. במסד נרשמת הזמנה לכל רגע, כי הקישור האישי
+   הוא מה שמצרף לנטיעה מסוימת ואין קישור שפותח שתיים — אבל יוצא מייל
+   אחד, ובו קישור לכל אחת. ה-Edge Function מקבלת את כל המזהים יחד. */
+function sendInviteMulti(r,keys){
+  if(!r.contact){toast('חסרים פרטי קשר ל'+r.name);return}
+  keys.forEach(openForRelatives);
+  r.chan=chanOf(r.contact)||'wa';
+  r.status='invited';r.plant=keys[0];
+  r.invitedTo=(r.invitedTo||[]).concat(keys);
+  buildRelatives();
+  if(!liveAccount()){
+    lastInvLinks=keys.map(function(k){return {name:nameOfPlanting(k),chan:r.chan,url:''}});
+    apSentSheet(r,keys,false);return;
+  }
+  toast('שולח…');
+  /* ברצף ולא במקביל: הסדר שבו נרשמות ההזמנות הוא הסדר שבו הן יופיעו
+     במייל, וגם הסדר שבו סימנת אותן. */
+  const out=[];
+  keys.reduce(function(chain,k){
+    return chain.then(function(){
+      return netaServer.sendInvitation(k,r.name,r.contact,
+               r.chan==='mail'?'email':'whatsapp',r.note)
+        .then(function(inv){
+          const id=inv&&inv.id;
+          return netaServer.inviteToken(k,id).then(function(t){
+            out.push({name:nameOfPlanting(k),chan:r.chan,url:shareUrl(t),id:id});
+          },function(){out.push({name:nameOfPlanting(k),chan:r.chan,url:'',id:id})});
+        })
+        .catch(function(){out.push({name:nameOfPlanting(k),chan:r.chan,url:'',err:true})});
+    });
+  },Promise.resolve()).then(function(){
+    lastInvLinks=out;
+    const ids=out.map(function(o){return o.id}).filter(Boolean);
+    if(r.chan!=='mail'||!ids.length){apSentSheet(r,keys,false);return}
+    netaServer.sendInvitationEmail(ids).then(function(res){
+      const sent=!!(res&&res.sent);
+      out.forEach(function(o){o.sent=sent&&(res.ids||[]).indexOf(o.id)>=0});
+      apSentSheet(r,keys,sent);
+    });
+  });
+}
+/* גיליון אחד, שורה לכל רגע. "העתק הכול" נותן הודעה אחת עם כל
+   הקישורים, כי זו ההודעה שבאמת תישלח בוואטסאפ. */
+function apSentSheet(r,keys,emailed){
+  const rows=lastInvLinks.map(function(l,i){
+    return '<div class="cbr"><span class="cbn"><b>'+attrText(l.name)+'</b><i>'+
+      (l.err?'לא נרשמה, אפשר לנסות שוב'
+           :l.sent?'נשלח למייל'
+           :l.url?'קישור אישי':'בלי קישור')+'</i></span>'+
+      (l.url&&!l.sent?'<button class="rx" onclick="copyInvLink('+i+')">העתק</button>':'')+
+      '</div>';
+  }).join('');
+  const head=emailed
+    ? 'מייל אחד יצא ל'+r.name+', ובו קישור אישי לכל רגע'+
+      (r.note?', ומה שכתבת':'')+'.'
+    : 'לכל רגע קישור אישי משלו. אפשר להעביר את כולם ב'+CHAN[r.chan]+', בהודעה אחת.';
+  const all=lastInvLinks.filter(function(l){return l.url})
+    .map(function(l){return l.name+': '+l.url}).join('\n');
+  sheetForm('ההזמנה ל'+r.name+' נרשמה',
+    head+' מי שייכנס לנטע עם '+attrText(r.contact)+' יצורף ל'+
+    countWord(keys.length)+' הרגעים מיד, בלי שתצטרך לאשר.'+
+    '<div class="card" style="margin-top:12px">'+rows+'</div>'+
+    '<p class="fine" style="margin-top:8px">מי שיפתח את אותם קישורים עם כתובת אחרת יגיע אליך לאישור, בשמו.</p>',
+    (emailed||!all)?'סיימתי':'העתק הכול',
+    function(){if(!emailed&&all)copyText(all).then(function(){toast('הקישורים הועתקו')},function(){});
+               openPeople()});
+}
 function buildRelatives(){
   const box=document.getElementById('rel-list');
   /* בראש ולא בכל ענף: לפונקציה שלושה מסלולי יציאה, ומי שנשכח בהם
@@ -6483,8 +6578,10 @@ function relGhost(on){
   if(g)g.style.display=on?'':'none';
 }
 function relRowHTML(r,right,open){
+  const nTo=(r.invitedTo||[]).length;
   const sub=r.status==='invited'
-    ? (r.plant?'הוזמנה ל'+nameOfPlanting(r.plant)+' · ממתינה לקוד'
+    ? (nTo>1?('הוזמנה ל'+countWord(nTo)+' רגעים · ממתינה לקוד')
+       :r.plant?'הוזמנה ל'+nameOfPlanting(r.plant)+' · ממתינה לקוד'
              :r.rel+' · הוזמנה, טרם הצטרפה')
     : (r.contact?r.rel+' · '+r.contact:r.rel+' · חסרים פרטי קשר');
   return '<div class="rel"'+(open||'')+'>'+
@@ -6940,7 +7037,7 @@ const AP_LBL_WITH=['את מי','מי זה','לאיזה רגע','לאן'];
 const AP_LBL_FOR=['את מי','עבור מי','נוסף'];
 const AP_RELS=['סבתא','סבא','דודה','דוד','אח','אחות','חבר','אחר'];
 let apKindMode='with',apStep=0,apRel='סבתא',apAv='av-granny2',
-    apKidAv='av-kid1',apKidSexV='m',apPhoto=null,apPlant='';
+    apKidAv='av-kid1',apKidSexV='m',apPhoto=null,apPlants=[];
 /* הרגע שממנו נפתחה ההוספה, כשהיא נפתחה ממצב הזמנה. כשהוא קיים שתי
    שאלות באשף כבר נענו: "את מי" (בהכרח מישהו שנוטע איתי, כי לילד לא
    שולחים הזמנה) ו"לאיזה רגע" (הרגע שממנו נכנסתי). אשף ששואל שאלה
@@ -6979,7 +7076,7 @@ function openAddPerson(){
      היחיד לשניהם, ואין פרמטר שאפשר לשכוח להעביר. */
   apFrom=relInviteKey||'';
   apKindMode='with';apStep=0;apRel='סבתא';apAv='av-granny2';
-  apKidAv='av-kid1';apKidSexV='m';apPhoto=null;apPlant='';
+  apKidAv='av-kid1';apKidSexV='m';apPhoto=null;apPlants=[];
   document.querySelectorAll('#ap-kind button').forEach(function(x,i){
     x.classList.toggle('on',i===0)});
   ['ap-name','ap-relfree','ap-contact','ap-kidname'].forEach(function(id){
@@ -7100,7 +7197,7 @@ function apNext(){
     const v=fieldVal('ap-contact');
     if(v&&!chanOf(v)){toast('צריך טלפון או כתובת אימייל תקינה');return}
     /* הרגע ידוע מהמסך שממנו נכנסתי, ולכן הפאנל שלו לא הוצג. */
-    if(apFrom)apPlant=apFrom;
+    if(apFrom)apPlants=[apFrom];
     apSave();return;
   }
   if(apStep>=list.length-1)return;
@@ -7112,22 +7209,56 @@ function apEnter(id){
   const nm=fieldVal('ap-name');
   if(id==='ap-3'){
     const opts=invitablePlantings();
-    txt('ap-3h','לאיזה רגע להזמין את '+nm+'?');
-    apPlant=opts.length?opts[0].key:'';
-    document.getElementById('ap-plant').innerHTML=opts.map(function(o,i){
-      return '<button type="button" class="'+(i?'':'on')+'" '+
-        'onclick="apPlant=\''+o.key+'\';markChip(this)">'+o.icon+' '+o.name+'</button>'}).join('');
+    txt('ap-3h',opts.length>1?('לאילו רגעים להזמין את '+nm+'?')
+                             :('לאיזה רגע להזמין את '+nm+'?'));
+    /* בלי פועל מוטה: האשף אינו יודע אם מדובר בסבתא או בסבא, ו"יקבל"
+       על השם היה ניחוש בחצי מהמקרים. */
+    txt('ap-3sub',opts.length>1
+      ? 'אפשר לסמן כמה. תצא הודעה אחת, ובה קישור אישי לכל רגע.'
+      : 'הוא יראה כמה נצבר בו ומי עוד נוטע, ויוכל להשקיע בעצמו.');
+    apPlants=opts.length?[opts[0].key]:[];
+    document.getElementById('ap-plant').innerHTML=opts.map(apPlantRowHTML).join('');
+    apPlantsLbl();
   }
   if(id==='ap-2'){
     txt('ap-2h','לאן לשלוח ל'+nm+' את ההזמנה?');
+    txt('ap-skip',apPlants.length
+      ? 'אפשר גם בלי. הוא יישמר אצלך ברשימה, ותוכל לשלוח מתי שתרצה.'
+      : 'לא סימנת רגע, ולכן לא תישלח הזמנה. הוא יישמר אצלך ברשימה.');
     apGoLbl();
   }
+}
+/* שורה אחת לכל רגע, ותיבת סימון ולא בחירה יחידה: סבתא אחת לשני נכדים
+   אינה שתי הזמנות, ועד כה היא חייבה מעבר שני באשף ושתי הודעות. */
+function apPlantRowHTML(o){
+  const on=apPlants.indexOf(o.key)>=0;
+  return '<div class="mrow'+(on?' on':'')+'" onclick="apTogglePlant(this,\''+o.key+'\')">'+
+    '<span class="mi">'+o.icon+'</span>'+
+    '<span class="mt"><b>'+attrText(o.name)+'</b>'+(o.sub?'<i>'+o.sub+'</i>':'')+'</span>'+
+    '<span class="relbox'+(on?' on':'')+'">'+(on?TICK:'')+'</span></div>';
+}
+function apTogglePlant(el,k){
+  const i=apPlants.indexOf(k);
+  if(i>=0)apPlants.splice(i,1); else apPlants.push(k);
+  const on=apPlants.indexOf(k)>=0;
+  el.classList.toggle('on',on);
+  const box=el.querySelector('.relbox');
+  if(box){box.classList.toggle('on',on);box.innerHTML=on?TICK:''}
+  apPlantsLbl();
+}
+/* הכפתור סופר, כי אחרי המסך הזה יש עוד שלב ומי שסימן שניים צריך לדעת
+   שהם נספרו. בלי סימון בכלל הוא אומר שאין הזמנה, ולא סתם "המשך". */
+function apPlantsLbl(){
+  const n=apPlants.length;
+  txt('ap-send',n>1?('המשך · '+countWord(n)+' רגעים')
+                   :n?'המשך':'המשך בלי להזמין לרגע');
 }
 /* הכפתור האחרון אומר מה יקרה: יש כתובת - נשלחת הזמנה, אין - הוא
    נשמר ברשימה בלבד. */
 function apGoLbl(){
   const b=document.getElementById('ap-go');
-  if(b)b.textContent=fieldVal('ap-contact')?'שלח את ההזמנה':'הוסף לרשימה';
+  if(!b)return;
+  b.textContent=(fieldVal('ap-contact')&&apPlants.length)?'שלח את ההזמנה':'הוסף לרשימה';
 }
 /* השמירה, לשני המסלולים. "איתו" נשען על addRelative שכבר קיימת
    ועל sendInvite; "עבורו" יוצר ישות ב-beneficiaries, ומעלה תמונה
@@ -7142,7 +7273,10 @@ function apSave(){
   const done=function(saved){
     if(saved&&saved.id)r.id=saved.id;
     relatives.push(r);
-    pickedPlant=apPlant;
+    /* רגע אחד עובר בנתיב הקיים בדיוק; כמה רגעים הם הזמנה אחת עם כמה
+       קישורים, ולכן פונקציה משלהם. */
+    if(c&&apPlants.length>1){sendInviteMulti(r,apPlants.slice());return}
+    pickedPlant=apPlants[0]||'';
     if(c)sendInvite(r);
     else{buildRelatives();openPeople();toast(r.name+' נוסף לקרובים שלך')}
   };
@@ -8230,9 +8364,13 @@ function netaBackend(cfg){
         .catch(function(){return null});
     },
 
+    /* מזהה אחד או רשימה. רשימה היא מייל אחד ובו קישור לכל רגע, ולא
+       כמה מיילים לאותו אדם באותה שנייה. */
     sendInvitationEmail:function(invitationId){
+      const many=Array.isArray(invitationId);
       return call('/functions/v1/send-invitation',{method:'POST',
-        body:JSON.stringify({invitation_id:invitationId})})
+        body:JSON.stringify(many?{invitation_ids:invitationId}
+                                :{invitation_id:invitationId})})
         .then(function(r){return r||{sent:false}}).catch(function(){return {sent:false}});
     },
 
@@ -9277,7 +9415,7 @@ function buildHomeSummary(){
         const one=proj[0];
         /* החודש בקיצור: "יחכו לשימי בספטמבר 2036" מגיע ל-130 פיקסלים
            בחצי שרוחבו 134, ועם שם ארוך יותר הוא נשבר לשתי שורות. */
-        const w=bShortWhen(one),when=w?(' '+w):'';
+        const w=bShortWhen(one),when=w?(' ב'+w):'';
         /* השם ולא הכינוי: המקור החי אינו מחזיר את מין הנהנה, ולכן
            "יחכו לו" היה ניחוש. עם השם אין מה לנחש. */
         if(nm)return 'יחכו ל'+nm+when;
