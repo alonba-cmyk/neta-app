@@ -1234,7 +1234,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1f81dd6';
+window.NETA_BUILD = '1d2b28a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6324,9 +6324,8 @@ function buildRelatives(){
       ['av-granny','av-uncle','av-friend'].map(function(a){
         return '<span><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+a+'"/></svg></span>';
       }).join('')+'</span></div>'+
-      /* המשפט הוא שורה שנייה בכותרת ולא פסקה מתחתיה: השאלה וההוראה
-         הן משפט אחד, והרווח שהפריד ביניהן הפך אותן לשתי אמירות. */
-      '<h3>מי עוד נוטע איתך?<br>הזמן את סבתא, אח או דוד קרוב</h3></div>';
+      '<h3>מי עוד נוטע איתך?</h3>'+
+      '<p>הזמן את סבתא, אח או דוד קרוב</p></div>';
     relGhost(true);
     relMeta();return;
   }
