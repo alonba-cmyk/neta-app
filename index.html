@@ -1282,7 +1282,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '52bed31';
+window.NETA_BUILD = 'af4a673';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2973,7 +2973,7 @@ window.NETA_CONFIG = {
   <div class="field"><label>טלפון או אימייל</label>
     <input type="text" id="ap-contact" placeholder="050-0000000 או name@mail.com"
            oninput="apGoLbl()"></div>
-  <p class="fine" id="ap-skip">אפשר גם בלי. הוא יישמר אצלך ברשימה, ותוכל לשלוח מתי שתרצה.</p>
+  <p class="fine" id="ap-skip">בלי זה אין למי לשלוח, ולכן זה שדה חובה.</p>
   <div class="field" style="margin-top:16px"><label>משפט אישי · לא חובה</label>
     <textarea id="ap-note" maxlength="240" style="min-height:58px"
       placeholder="פתחתי משהו קטן לעתיד, ישמח אותי אם תהיה חלק."></textarea>
@@ -6252,6 +6252,17 @@ function chanOf(v){
   if(!v)return '';
   return v.indexOf('@')>-1?'mail':'wa';
 }
+/* ‏chanOf מסווג בלבד: כל מחרוזת בלי @ היא "וואטסאפ", ולכן הבדיקה
+   "צריך כתובת תקינה" שנשענה עליה מעולם לא נכשלה — "לא כתובת" נשמר
+   כמספר טלפון. מרגע שהשדה הוא חובה, זו כבר לא בדיקה תיאורטית. */
+function contactOk(v){
+  const t=String(v||'').trim();
+  if(!t)return false;
+  if(t.indexOf('@')>-1)return /^[^\s@]+@[^\s@.]+\.[^\s@]{2,}$/.test(t);
+  if(!/^[\d\s()+-]+$/.test(t))return false;
+  const d=t.replace(/\D/g,'');
+  return d.length>=9&&d.length<=15;
+}
 function contactHTML(val){
   return '<input type="text" id="r-contact" value="'+(val||'')+'" placeholder="050-0000000 או name@mail.com" oninput="chanHint()">'+
     '<div class="hint" id="ch-hint">ההזמנה תישלח בוואטסאפ אם תזין מספר, ובאימייל אם תזין כתובת.</div>';
@@ -6365,6 +6376,7 @@ function sendSuggested(i){
       if(!n||!n.trim()){toast('צריך שם');return false}
       const c=((document.getElementById('r-contact')||{}).value||'').trim();
       if(!c){toast('צריך טלפון או אימייל כדי לשלוח');return false}
+      if(!contactOk(c)){toast('צריך טלפון או כתובת אימייל תקינה');return false}
       const r={av:'av-friend',name:n.trim(),rel:'קרוב משפחה',g:'m',status:'none',
                chan:chanOf(c)||'wa',contact:c,
                note:((document.getElementById('r-note')||{}).value||'').trim()};
@@ -6982,6 +6994,7 @@ function suggestSomeone(plantingId){
       if(!n||!n.trim()){toast('צריך שם');return false}
       const c=((document.getElementById('r-contact')||{}).value||'').trim();
       if(!c){toast('צריך טלפון או אימייל כדי לשלוח');return false}
+      if(!contactOk(c)){toast('צריך טלפון או כתובת אימייל תקינה');return false}
       if(!liveAccount()){toast('ההצעה נשלחה');return}
       const chan=chanOf(c)==='mail'?'email':'whatsapp';
       netaServer.suggestRelative(plantingId,n.trim(),c,chan)
@@ -7006,6 +7019,7 @@ function inviteRelative(i){
     function(){
       const c=(document.getElementById('r-contact')||{}).value;
       if(!c||!c.trim()){toast('צריך טלפון או אימייל כדי לשלוח');return false}
+      if(!contactOk(c)){toast('צריך טלפון או כתובת אימייל תקינה');return false}
       r.contact=c.trim();
       r.note=((document.getElementById('r-note')||{}).value||'').trim();
       return sendInvite(r);
@@ -7195,7 +7209,13 @@ function apNext(){
   if(id==='ap-3'){apStep++;apEnter(list[apStep]);apShow();return}
   if(id==='ap-2'){
     const v=fieldVal('ap-contact');
-    if(v&&!chanOf(v)){toast('צריך טלפון או כתובת אימייל תקינה');return}
+    /* בלי כתובת אין למי לשלוח, והשורה שנוצרת היא שם ברשימה שאי אפשר
+       לעשות איתו דבר. עד כה היא נשמרה, ואז הציגה "אין פרטי קשר"
+       במקום שבו שאר השורות מציעות להזמין. */
+    if(!v){toast('צריך טלפון או כתובת אימייל');
+           document.getElementById('ap-contact').focus();return}
+    if(!contactOk(v)){toast('צריך טלפון או כתובת אימייל תקינה');
+                      document.getElementById('ap-contact').focus();return}
     /* הרגע ידוע מהמסך שממנו נכנסתי, ולכן הפאנל שלו לא הוצג. */
     if(apFrom)apPlants=[apFrom];
     apSave();return;
@@ -7223,8 +7243,8 @@ function apEnter(id){
   if(id==='ap-2'){
     txt('ap-2h','לאן לשלוח ל'+nm+' את ההזמנה?');
     txt('ap-skip',apPlants.length
-      ? 'אפשר גם בלי. הוא יישמר אצלך ברשימה, ותוכל לשלוח מתי שתרצה.'
-      : 'לא סימנת רגע, ולכן לא תישלח הזמנה. הוא יישמר אצלך ברשימה.');
+      ? 'בלי זה אין למי לשלוח, ולכן זה שדה חובה.'
+      : 'לא סימנת רגע, ולכן לא תישלח הזמנה עכשיו. הכתובת תחכה ברשימה.');
     apGoLbl();
   }
 }
@@ -7258,7 +7278,7 @@ function apPlantsLbl(){
 function apGoLbl(){
   const b=document.getElementById('ap-go');
   if(!b)return;
-  b.textContent=(fieldVal('ap-contact')&&apPlants.length)?'שלח את ההזמנה':'הוסף לרשימה';
+  b.textContent=apPlants.length?'שלח את ההזמנה':'הוסף לרשימה';
 }
 /* השמירה, לשני המסלולים. "איתו" נשען על addRelative שכבר קיימת
    ועל sendInvite; "עבורו" יוצר ישות ב-beneficiaries, ומעלה תמונה
@@ -7268,17 +7288,26 @@ function apSave(){
   const nm=fieldVal('ap-name');
   if(!nm){toast('צריך שם');return}
   const c=fieldVal('ap-contact');
+  /* אותה בדיקה כמו ב-apNext, כי apSave נקראת גם ממסלול ההזמנה מרגע
+     שבו הפאנל הזה אינו האחרון. שדה חובה שנבדק במקום אחד בלבד הוא
+     שדה חובה עד למסלול הבא. */
+  if(!contactOk(c)){toast('צריך טלפון או כתובת אימייל תקינה');return}
   const r={av:pickedAv||apAv,name:nm,rel:apRelText(),g:'m',status:'none',
-           chan:chanOf(c)||'wa',contact:c,note:fieldVal('ap-note')};
+           chan:chanOf(c),contact:c,note:fieldVal('ap-note')};
   const done=function(saved){
     if(saved&&saved.id)r.id=saved.id;
     relatives.push(r);
     /* רגע אחד עובר בנתיב הקיים בדיוק; כמה רגעים הם הזמנה אחת עם כמה
        קישורים, ולכן פונקציה משלהם. */
-    if(c&&apPlants.length>1){sendInviteMulti(r,apPlants.slice());return}
-    pickedPlant=apPlants[0]||'';
-    if(c)sendInvite(r);
-    else{buildRelatives();openPeople();toast(r.name+' נוסף לקרובים שלך')}
+    if(apPlants.length>1){sendInviteMulti(r,apPlants.slice());return}
+    /* בלי רגע אין מה לשלוח, ו-sendInvite הייתה משאירה את האשף פתוח
+       אחרי הטוסט. היציאה שייכת למי שקרא, לא לשליחה. */
+    if(!apPlants.length){
+      buildRelatives();openPeople();
+      toast(r.name+' נוסף לקרובים שלך. ההזמנה נשלחת מתוך רגע.');return;
+    }
+    pickedPlant=apPlants[0];
+    sendInvite(r);
   };
   if(liveAccount()){
     netaServer.addRelative({name:r.name,relation:r.rel,avatar:r.av,
@@ -7381,14 +7410,17 @@ function addRelative(){
       const n=(document.getElementById('r-name')||{}).value,rl=(document.getElementById('r-rel')||{}).value;
       if(!n||!n.trim()){toast('צריך שם כדי להוסיף קרוב');return false}
       const c=((document.getElementById('r-contact')||{}).value||'').trim();
+      /* אותו כלל כמו באשף: שם בלי כתובת הוא שורה שאי אפשר לעשות איתה
+         דבר. */
+      if(!c){toast('צריך טלפון או כתובת אימייל');return false}
+      if(!contactOk(c)){toast('צריך טלפון או כתובת אימייל תקינה');return false}
       const r={av:pickedAv,name:n.trim(),rel:(rl||'').trim()||'קרוב משפחה',g:'m',status:'none',
-               chan:chanOf(c)||'wa',contact:c,
+               chan:chanOf(c),contact:c,
                note:((document.getElementById('r-note')||{}).value||'').trim()};
       const done=function(saved){
         if(saved&&saved.id)r.id=saved.id;
         relatives.push(r);
-        if(c)sendInvite(r);
-        else{buildRelatives();toast(r.name+' נוסף לקרובים שלך')}
+        sendInvite(r);
       };
       if(liveAccount()){
         netaServer.addRelative({name:r.name,relation:r.rel,avatar:r.av,
