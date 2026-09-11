@@ -1295,7 +1295,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ef13fb9';
+window.NETA_BUILD = '3f51600';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6733,7 +6733,14 @@ function sendInvite(r){
     let invId=null;
     netaServer.sendInvitation(key,r.name,r.contact,
         r.chan==='mail'?'email':'whatsapp',r.note)
-      .then(function(inv){invId=inv&&inv.id;return netaServer.inviteToken(key,invId)})
+      .then(function(inv){
+        invId=inv&&inv.id;
+        /* בלי זה "שלח שוב" מופיע רק אחרי רענון: invs נכתב ב-markInvited,
+           שרץ בטעינת החשבון בלבד. */
+        r.invitedTo=(r.invitedTo||[]).concat([key]);
+        if(invId)r.invs=(r.invs||[]).concat([{id:invId,pl:key,at:new Date().toISOString()}]);
+        return netaServer.inviteToken(key,invId);
+      })
       .then(function(token){
         const url=shareUrl(token);
         if(r.chan!=='mail'||!invId){personalInviteSheet(key,r,url,false);return}
@@ -6796,13 +6803,17 @@ function sendInviteMulti(r,keys){
         .then(function(inv){
           const id=inv&&inv.id;
           return netaServer.inviteToken(k,id).then(function(t){
-            out.push({name:nameOfPlanting(k),chan:r.chan,url:shareUrl(t),id:id});
-          },function(){out.push({name:nameOfPlanting(k),chan:r.chan,url:'',id:id})});
+            out.push({name:nameOfPlanting(k),chan:r.chan,url:shareUrl(t),id:id,key:k});
+          },function(){out.push({name:nameOfPlanting(k),chan:r.chan,url:'',id:id,key:k})});
         })
-        .catch(function(){out.push({name:nameOfPlanting(k),chan:r.chan,url:'',err:true})});
+        .catch(function(){out.push({name:nameOfPlanting(k),chan:r.chan,url:'',err:true,key:k})});
     });
   },Promise.resolve()).then(function(){
     lastInvLinks=out;
+    const now=new Date().toISOString();
+    r.invs=(r.invs||[]).concat(out.filter(function(o){return o.id})
+      .map(function(o){return {id:o.id,pl:o.key,at:now}}));
+    buildRelatives();
     const ids=out.map(function(o){return o.id}).filter(Boolean);
     if(r.chan!=='mail'||!ids.length){apSentSheet(r,keys,false);return}
     netaServer.sendInvitationEmail(ids).then(function(res){
@@ -6874,7 +6885,13 @@ function buildRelatives(){
     box.innerHTML=relatives.map(function(r,i){
       const already=(r.invitedTo||[]).indexOf(relInviteKey)>=0;
       const cant=!r.contact;
-      const right=already?'<span class="rx done">הוזמן</span>'
+      /* "הוזמן" הוא תג ולא פעולה, והוא ישב בדיוק במקום שבו שאר
+         השורות מציעות כפתור. מי שכבר הוזמן — מה שחסר לו הוא דחיפה
+         נוספת, וזו הפעולה שיושבת שם עכשיו. */
+      const right=already
+        ?(canResend(r,relInviteKey)
+           ?'<button class="rx" onclick="event.stopPropagation();resendInvite('+i+',\''+relInviteKey+'\')">שלח שוב</button>'
+           :'<span class="rx done">הוזמן</span>')
         :cant?'<span class="rx done">אין פרטי קשר</span>'
         :'<span class="relbox'+(invSel[i]?' on':'')+'">'+(invSel[i]?TICK:'')+'</span>';
       return relRowHTML(r,right,(already||cant)?'':' onclick="toggleInvSel('+i+')"');
@@ -6894,7 +6911,12 @@ function buildRelatives(){
     /* מי שכבר הוזמן — מה שחסר לו הוא הקישור עצמו, לא הזמנה נוספת.
        הזמנות שנוצרו לפני שהקישור האישי נוסף אין להן טוקן, ולכן לא הייתה
        שום דרך באפליקציה לקבל אותו בדיעבד. */
-    if(r.status==='invited')right=liveAccount()
+    /* כתובת מייל — "שלח שוב", כי יש מה לשלוח. טלפון — "העתק קישור",
+       כי ההודעה עוברת ביד ממילא. הקישור של מי שהוזמן במייל לא אבד:
+       הוא בגיליון שנפתח בלחיצה על השורה. */
+    if(r.status==='invited')right=canResend(r,'')
+      ? '<button class="rx" onclick="event.stopPropagation();resendInvite('+i+',\'\')">שלח שוב</button>'
+      : liveAccount()
       ? '<button class="rx" onclick="event.stopPropagation();copyRelativeLink('+i+')">העתק קישור</button>'
       : '<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">שלח שוב</button>';
     else right='<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">הזמן</button>';
@@ -7277,6 +7299,52 @@ function noteHTML(){
     '<p class="fine" style="margin-top:6px;color:#C9A2AC">מה שתכתוב כאן יראה כל מי שיפתח את הקישור, גם אם הוא הועבר הלאה.</p>';
 }
 /* הקישור האישי של קרוב שכבר הוזמן. */
+/* ההזמנה שנרשמה לאותו אדם ולאותו רגע. בלי רגע — הראשונה שיש. */
+function invFor(r,key){
+  const l=(r&&r.invs)||[];
+  if(key)for(let j=0;j<l.length;j++)if(l[j].pl===key)return l[j];
+  return l[0]||null;
+}
+/* שליחה חוזרת אפשרית רק כשיש מה לשלוח שוב: חשבון אמיתי, כתובת מייל
+   (לוואטסאפ אין מה "לשלוח" מהשרת — הקישור עובר ביד), והזמנה שנרשמה. */
+function canResend(r,key){
+  return !!(liveAccount()&&r&&chanOf(r.contact)==='mail'&&invFor(r,key));
+}
+/* השורה של מי שכבר הוזמן הייתה נעולה, מתוך הנחה שהזמנה שנייה לאותו
+   רגע אינה עושה דבר. היא כן: מייל נופל לספאם, נבלע בשרשור של Gmail,
+   או פשוט נשכח, ולמזמין לא נשארה שום דרך לדחוף אותו מחדש.
+   מה שלא קורה כאן: הזמנה שנייה. אותה שורה ב-invitations ואותו קישור,
+   ורק המייל יוצא שוב. שתי הזמנות לאותו אדם ולאותו רגע היו מחזיקות שני
+   קישורים חיים, ואחריהן אי אפשר לדעת איזה מהם נפתח. */
+function resendInvite(i,key){
+  const r=relatives[i];
+  if(!r)return;
+  if(!liveAccount()){toast('במצב הדגמה לא נשלח מייל');return}
+  const inv=invFor(r,key);
+  if(!inv||!inv.id){
+    ask('לא נמצאה הזמנה פתוחה',
+      'ייתכן ש'+r.name+' כבר הצטרפה, או שההזמנה בוטלה. אפשר להזמין מחדש.','הבנתי');
+    return;
+  }
+  /* חלון קצר ולא נעילה: מה שהיה כאן עד עכשיו הוא חסימה לתמיד, וזו
+     בדיוק הבעיה. שתי דקות מונעות לחיצה כפולה ותו לא. */
+  const since=inv.at?(Date.now()-new Date(inv.at).getTime()):Infinity;
+  if(since<120000){toast('ההזמנה נשלחה זה עתה. תן לה דקה.');return}
+  toast('שולח…');
+  netaServer.sendInvitationEmail(inv.id).then(function(res){
+    if(res&&res.sent){
+      inv.at=new Date().toISOString();
+      buildRelatives();
+      toast('ההזמנה נשלחה שוב ל'+r.name);
+      return;
+    }
+    /* ‏sent:false אינו שגיאה אלא מצב: אין מפתח Resend, או שהספק דחה.
+       בשני המקרים הקישור האישי עדיין תקף ואפשר להעביר אותו ביד. */
+    ask('המייל לא יצא',
+      'הקישור האישי של '+r.name+' עדיין תקף. אפשר להעתיק אותו ולשלוח בעצמך.',
+      'העתק קישור',function(){setTimeout(function(){copyRelativeLink(i)},0)});
+  });
+}
 function copyRelativeLink(i){
   const r=relatives[i];
   if(!r||!r.contact){toast('חסרים פרטי קשר ל'+r.name);return}
@@ -7777,6 +7845,11 @@ function editRelative(i){
     '<label>שם</label><input type="text" id="r-name" value="'+r.name+'">'+
     '<label>הקשר לילדים</label><input type="text" id="r-rel" value="'+r.rel+'">'+
     '<label>תמונה</label>'+avpickHTML(r.av)+
+    /* הקישור האישי ירד מהשורה כשהכפתור שם הפך ל"שלח שוב", והוא חוזר
+       לכאן: לא כל שליחה חוזרת היא מייל, ולפעמים רוצים להעביר ביד. */
+    (r.status==='invited'&&liveAccount()
+      ? '<button type="button" class="link" onclick="copyRelativeLink('+i+')">העתק את קישור ההזמנה</button>'
+      : '')+
     '<button type="button" class="link danger" onclick="confirmRemoveRelative('+i+')">הסר קרוב</button>',
     'שמור',
     function(){
@@ -7879,6 +7952,11 @@ function markInvited(rows){
     if(!hit||!hit.length)return;
     r.status='invited';
     r.invitedTo=hit.map(function(v){return v.planting_id});
+    /* ‏ההזמנה עצמה ולא רק הרגע שלה: "שלח שוב" צריך את המזהה כדי
+       לשלוח את אותה הזמנה, ואת email_sent_at כדי לדעת מתי יצאה. */
+    r.invs=hit.map(function(v){
+      return {id:v.id,pl:v.planting_id,at:v.email_sent_at};
+    });
     r.plant=r.invitedTo[0]||'';
   });
   buildRelatives();
@@ -8712,7 +8790,7 @@ function netaBackend(cfg){
        קשיח, sendInvite מסמן 'invited' בזיכרון בלבד, והשורה חזרה
        להציג "הזמן" על מי שכבר הוזמן. */
     loadInvitations:function(){
-      return call('/rest/v1/invitations?select=id,planting_id,invitee_name,contact,state'+
+      return call('/rest/v1/invitations?select=id,planting_id,invitee_name,contact,state,email_sent_at'+
                   '&state=in.(sent,needs_approval)&order=created_at.desc',{method:'GET'})
         .then(function(r){return r||[]},function(){return []});
     },
@@ -10449,7 +10527,12 @@ function inviteExtraRows(p){
     const sub=waiting
       ? ('הוזמן · ממתין ל'+(r.g==='f'?'תשובתה':'תשובתו'))
       : ('מהקרובים שלך · עדיין '+(r.g==='f'?'לא הצטרפה':'לא הצטרף'));
-    const act=waiting?'' : '<span class="rx" onclick="quickInvite('+i+')">הזמן</span>';
+    /* גם כאן השורה של מי שכבר הוזמן הייתה מתה, ודווקא כאן עומדים
+       כשרוצים לדחוף אותה: זה המסך של הרגע עצמו. */
+    const act=waiting
+      ? (canResend(r,p.key)
+          ? '<span class="rx" onclick="resendInvite('+i+',\''+p.key+'\')">שלח שוב</span>' : '')
+      : '<span class="rx" onclick="quickInvite('+i+')">הזמן</span>';
     return '<div class="cbr pend"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+(r.av||'av-granny2')+'"/></svg></div>'+
       '<span class="cbn">'+r.name+'<i>'+sub+'</i></span>'+act+'</div>';
   };
