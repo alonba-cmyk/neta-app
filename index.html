@@ -1389,7 +1389,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b514696';
+window.NETA_BUILD = '867b716';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1987,7 +1987,7 @@ window.NETA_CONFIG = {
        את השאלה "לאן". -->
   <div class="d-money">
     <div class="dm-top">
-      <div><span class="dm-k">נצבר לרגע הזה</span><span class="dm-v" id="d-total">·</span></div>
+      <div><span class="dm-k" id="d-totk" data-rest="נצבר לרגע הזה">נצבר לרגע הזה</span><span class="dm-v" id="d-total">·</span></div>
     </div>
     <div id="d-mine" style="display:none">
       <div class="split-bar"><i id="d-barmine"></i><u id="d-barother"></u></div>
@@ -2943,7 +2943,7 @@ window.NETA_CONFIG = {
   </div>
 
   <div class="d-money">
-    <div class="dm-top"><div><span class="dm-k" id="pv-lb">נצבר</span>
+    <div class="dm-top"><div><span class="dm-k" id="pv-lb" data-rest="נצבר">נצבר</span>
       <span class="dm-v" id="pv-num">·</span></div></div>
     <p class="dm-split" id="d-split"></p>
     <div id="pv-move">
@@ -11119,6 +11119,16 @@ function splitLine(n,amount){
     (past?'הצמיחה הוסיפה ':'הצמיחה תוסיף ')+
     '<b>'+shekelAt(grow,past)+'</b>';
 }
+/* שני בלוקי מספר, ורק אחד מוצג בכל רגע: זה של מסך האדם וזה של מסך
+   הרגע. כל אחד נושא ב-data-rest את הכיתוב שלו במנוחה, כי הם אינם
+   זהים ("נצבר" מול "נצבר לרגע הזה"). */
+function numOnScreen(){
+  const pv=document.getElementById('pv-num');
+  if(pv&&pv.offsetParent)return {v:pv,k:document.getElementById('pv-lb')};
+  const dt=document.getElementById('d-total');
+  if(dt&&dt.offsetParent)return {v:dt,k:document.getElementById('d-totk')};
+  return null;
+}
 function detail(y){
   if(!CH)return;
   const t=YL>0?Math.max(0,Math.min(1,y/YL)):0;
@@ -11129,8 +11139,15 @@ function detail(y){
     md.style.right='calc('+(((CH_W-chartX(n/CH.total))/CH_W)*100)+'% - 13px)';
     md.style.top='calc('+((chartY(amt,CH.max)/CH_H)*100)+'% - 13px)';
   }
-  txt('pv-num',(y===0?'':'כ-')+shekelAt(amt,y===0));
-  txt('pv-lb',y===0?'נצבר':'צפי לנקודה זו');
+  /* המספר שמתעדכן הוא זה שרואים. בנוטע יחיד הגרף מועבר למסך הרגע
+     (‏moneyToDetail), אבל בלוק המספר יושב מעל pv-move ולכן נשאר
+     מאחור — והגרירה עדכנה אלמנט שאינו על המסך. התוצאה: המחוון זז,
+     "עוד N שנים" השתנה, והמספר הגדול נשאר קפוא. */
+  const num=numOnScreen();
+  if(num){
+    num.v.textContent=(y===0?'':'כ-')+shekelAt(amt,y===0);
+    if(num.k)num.k.textContent=y===0?(num.k.dataset.rest||''):'צפי לנקודה זו';
+  }
   const sp=document.getElementById('d-split');
   if(sp){sp.innerHTML=splitLine(n,amt);sp.style.display=sp.innerHTML?'':'none'}
   const left=YL-y;
