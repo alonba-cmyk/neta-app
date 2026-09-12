@@ -509,12 +509,22 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ולא יגלוש: נמדד ב-320 עד 430, כולל "נטעת 4,800 ₪ · צפי 694,528 ₪",
    ואף אחד מהם אינו נשבר בפועל. baseline ולא center, כי שני גדלי
    גופן ממורכזים זה מול זה נראים כמו שורה שנשמטה. */
-.pc-amt.withside{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.pc-amt.withside{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}
 .pc-sep{color:var(--tx-3);font-weight:400;font-size:11.5px}
 /* זהב הוא כסף שצפוי. כשאין צפי יושב כאן "100 ₪ בחודש" או "ללא
    קבע" או שורת היעד, שאינם סכומים שמציגים אלא מצב, ולכן אפור. */
 .pc-side{font-size:11.5px;font-weight:600;color:var(--sun-soft)}
 .pc-side.dim{color:var(--tx-3);font-weight:400}
+/* בכרטיס שאין בו עמודת פרצופים השתחררו 74 פיקסלים, ולכן האייקון,
+   השם והצפי גדלים. ‏pc-solo ולא #mi-list: אותו כרטיס מצויר גם
+   ב-kin-ghost, והדגם חייב להיראות כמו הדבר עצמו. וגם לא על
+   הקלאסים הגלובליים, שמשרתים את גרסת הפרצופים — שם הרוחב לא
+   השתחרר, ושם אותה הגדלה הייתה שוברת את השם.
+   נמדד ב-320 עד 430: אף שם ואף שורת סכום אינם נשברים, והכרטיס
+   נשאר 86. */
+.pc-solo .pc-ic{width:38px;height:38px;border-radius:12px;font-size:18px}
+.pc-solo .pc-nm{font-size:14.5px}
+.pc-solo .pc-side,.pc-solo .pc-sep{font-size:13px}
 /* שורת מצב במקום סכום. ירוק אומר כסף שקיים, וכאן עוד אין. */
 .pc-amt.q{color:var(--tx-2);font-weight:500}
 .pc-dt{font-size:10.5px;color:var(--tx-3);margin-top:4px}
@@ -1336,7 +1346,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '36d6c45';
+window.NETA_BUILD = 'ee0886f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -9478,7 +9488,7 @@ function plantCard(o){
         : (o.cap?'<span class="pc-sep">·</span><span class="pc-side dim">'+o.cap+'</span>':''))
     : '';
   if(o.nofaces&&!hasNum&&o.cap)dt=dt?(dt+' · '+o.cap):o.cap;
-  return '<div class="ncard pc" onclick="openDetail(\''+o.key+'\')">'+
+  return '<div class="ncard pc'+(o.nofaces?' pc-solo':'')+'" onclick="openDetail(\''+o.key+'\')">'+
     '<div class="pc-ic">'+(o.icon||'🌱')+'</div>'+
     '<div class="pc-x"><div class="pc-nm">'+o.name+'</div>'+
       '<div class="pc-amt'+(o.amountText?' q':'')+(side?' withside':'')+'">'+
