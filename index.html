@@ -173,11 +173,17 @@ input:focus,select:focus,textarea:focus{outline:1px solid var(--leaf);outline-of
 .opt b{font-size:13px;font-weight:500}.opt p{font-size:11px;color:var(--tx-2);margin-top:4px;line-height:1.5}
 .opt .rate{font-size:11.5px;color:var(--tx-3)}
 .opt.ben,.opt.eb-approve{min-height:92px;display:flex;flex-direction:column;justify-content:center}
-/* אין כאן min-height. הוא היה 84px, והתוכן הוא כותרת ושורה: מדוד,
-   הכרטיס יורד ל-67 והמסך כולו מ-1,065 ל-1,021. הכרטיסים מוערמים
-   אנכית ולכן גובה שווה ביניהם אינו דרישה, בניגוד לשורת הכרטיסים
-   ב-#mi-list שבה הם זה לצד זה. */
+/* אין כאן min-height: הוא היה 84px, והתוכן הוא כותרת ושורה.
+   במקומו grid-auto-rows:1fr, אותו פתרון כמו ב-#mi-list. רצפה
+   קבועה אינה עושה גבהים שווים אלא רק מסתירה את ההפרש כל עוד
+   שלושתם מתחתיה: נמדד, הכרטיסים לא היו שווים באף רוחב ובאף
+   גודל גופן. שתי סיבות נפרדות, ו-1fr מטפל בשתיהן. הראשונה,
+   4 פיקסלים בכל מצב: הכותרת של "ריבית מובטחת" היא div בגלל
+   התג שלצידה, ושל השתיים האחרות היא <b> שהוא inline, ותיבת
+   השורה שלו גבוהה יותר. השנייה, 20 פיקסלים ומעלה מ-375 ומטה
+   או בהגדלת גופן, כשתיאור נשבר לשתי שורות. */
 .stack{display:flex;flex-direction:column;gap:7px}
+#mode-block{display:grid;grid-auto-rows:1fr}
 #trk-row{display:flex;align-items:center;gap:9px;width:100%;font-family:inherit;color:var(--tx);
   text-align:right;border:1px solid var(--line);border-radius:11px;padding:12px 13px;
   background:var(--s1);cursor:pointer;transition:.15s}
@@ -1331,7 +1337,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '67bc98b';
+window.NETA_BUILD = '4736657';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1815,8 +1821,8 @@ window.NETA_CONFIG = {
        ולכן הסדר כאן הוא החלטת עיצוב בלבד. -->
   <div class="stack gap" id="mode-block">
     <div class="opt" data-m="safe"><div class="row" style="gap:6px"><b>שיצבור ריבית מובטחת</b><span class="tag">מתאים לרוב</span></div><p>הסכום רק גדל. הריבית ידועה מראש ואינה יורדת.</p></div>
-    <div class="opt" data-m="market"><b>שיושקע בשוק ההון</b><p>פוטנציאל צמיחה גבוה יותר, אך הערך עולה ויורד ואינו מובטח.</p></div>
-    <div class="opt" data-m="keep"><b>שיישמר כמו שהוא</b><p id="keep-desc">הסכום שתפקיד כל חודש יחכה במלואו בהגעה למועד המיוחל.</p></div>
+    <div class="opt" data-m="market"><b>שיושקע בשוק ההון</b><p>צמיחה גבוהה יותר, אך הערך אינו מובטח.</p></div>
+    <div class="opt" data-m="keep"><b>שיישמר כמו שהוא</b><p id="keep-desc">כל מה שתפקיד יחכה במלואו למועד המיוחל.</p></div>
   </div>
   <!-- בענף הבטוח ההבדל בין המסלולים הוא אילוץ ולא העדפה: שניהם
        מובטחים, ומי שבוחר בגמיש עושה זאת כי אין לו את סכום הפתיחה.
@@ -4115,7 +4121,7 @@ let freq='m',mode=null,rate=.035,modeTouched=false;
 const amtM=document.getElementById('amt-m'),amtL=document.getElementById('amt-l');
 /* a one-time deposit that "stays as it is" doesn't grow at all — the sensible default only for
    a monthly deposit, which keeps accumulating on its own regardless of the track chosen */
-function setFreq(f){freq=f;document.querySelectorAll('.pill[data-f]').forEach(b=>b.classList.toggle('on',b.dataset.f===f));document.getElementById('panel-m').style.display=f==='m'?'block':'none';document.getElementById('panel-l').style.display=f==='l'?'block':'none';document.getElementById('freq-stop-hint').style.display=f==='m'?'block':'none';document.getElementById('keep-desc').textContent=f==='m'?'הסכום שתפקיד כל חודש יחכה במלואו בהגעה למועד המיוחל.':'הסכום שתפקיד יחכה במלואו בהגעה למועד המיוחל.';render()}
+function setFreq(f){freq=f;document.querySelectorAll('.pill[data-f]').forEach(b=>b.classList.toggle('on',b.dataset.f===f));document.getElementById('panel-m').style.display=f==='m'?'block':'none';document.getElementById('panel-l').style.display=f==='l'?'block':'none';document.getElementById('freq-stop-hint').style.display=f==='m'?'block':'none';document.getElementById('keep-desc').textContent=f==='m'?'כל מה שתפקיד יחכה במלואו למועד המיוחל.':'הסכום שתפקיד יחכה במלואו למועד המיוחל.';render()}
 /* ‏setFreq בחרה כאן מסלול בעצמה (keep לחודשי, safe לחד-פעמי) כשהמשתמש
    עוד לא נגע בשאלה 3. כלומר לחיצה על "כל חודש" — שאלה על תדירות —
    הכריעה גם את שאלת הריבית, ומי שהמשיך משם קיבל מסלול פיננסי שלא בחר.
