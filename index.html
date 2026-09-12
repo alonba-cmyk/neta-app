@@ -174,14 +174,6 @@ input:focus,select:focus,textarea:focus{outline:1px solid var(--leaf);outline-of
 .opt .rate{font-size:11.5px;color:var(--tx-3)}
 .opt.ben,.opt.eb-approve{min-height:92px;display:flex;flex-direction:column;justify-content:center}
 .opt[data-m]{min-height:84px;display:flex;flex-direction:column;justify-content:center}
-/* השדות של אמצעי התשלום יושבים בתוך הכרטיס שנבחר, ולא מתחת לשניהם:
-   הם שייכים לאמצעי אחד, ולמטה הם נקראו כשדות של המסך כולו. הקו מפריד
-   בין ההסבר לבין מה שצריך למלא. */
-.opt.pay .payin{margin-top:11px;padding-top:11px;border-top:1px solid var(--leaf-line);
-  cursor:default;text-align:right}
-.opt.pay .payin .field{margin-top:9px}
-.opt.pay .payin .field:first-child{margin-top:0}
-.opt.pay .payin .fine{margin-top:9px}
 .stack{display:flex;flex-direction:column;gap:7px}
 .tag{font-size:9.5px;background:var(--leaf-bg);color:var(--leaf);padding:2px 6px;border-radius:5px;border:1px solid #2A4530}
 .pill{font-family:inherit;font-size:12.5px;padding:9px 12px;border-radius:9px;border:1px solid var(--line);
@@ -1295,7 +1287,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6fd9edb';
+window.NETA_BUILD = '17d67de';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1798,23 +1790,31 @@ window.NETA_CONFIG = {
 <section class="screen center-v" data-name="תשלום">
   <div class="row gap"><div class="dot g" id="pay-icon">🎂</div><div><div class="title">איך תעביר את ההפקדה?</div><div class="meta" id="pay-meta">הפקדה חודשית · עבור דניאל</div></div></div>
 
+  <!-- נטע אינה מבקשת מספר כרטיס ואינה מבקשת מספר חשבון. כל אמצעי נגבה
+       אצל מי שגובה אותו: ההרשאה לחיוב חשבון נחתמת מול הבנק, כרטיס נקלט
+       בעמוד של הסולק, ו-Bit מאשרים באפליקציה של Bit. עד כה ישב כאן טופס
+       שביקש PAN, בדק עליו "לא ריק" בלבד, לא שלח אותו לאיש ואיבד אותו
+       ברענון — וגם דחף את הכפתור הראשי מתחת לקצה המסך, כי הוא נפתח בתוך
+       הכרטיס הנבחר. הרשימה כאן אינה גדלה, ולכן אין מה לדחוף. -->
   <div id="pay-saved" class="stack gap" style="display:none"></div>
   <div id="pay-recurring" class="stack gap">
     <p class="eyebrow">כדי שלא תצטרך לזכור כל חודש</p>
-    <div class="opt pay on" data-p="hora"><div class="row" style="gap:6px"><b>הוראת קבע מהבנק</b><span class="tag">הכי נוח לחודשי</span></div><p>יורד אוטומטית כל חודש בסכום שבחרת. אפשר לבטל בכל עת מול הבנק.</p></div>
-    <div class="opt pay" data-p="card-rec"><b>חיוב כרטיס אשראי</b><p>חיוב חוזר כל חודש באותו תאריך, ישירות מהכרטיס שלך.</p></div>
+    <div class="opt pay on" data-p="hora"><div class="row" style="gap:6px"><b>הוראת קבע מהבנק</b><span class="tag">הכי נוח לחודשי</span></div><p>יורד אוטומטית כל חודש בסכום שבחרת. ההרשאה נחתמת מול הבנק, ואפשר לבטל אותה שם בכל עת.</p></div>
+    <div class="opt pay" data-p="card-rec"><b>חיוב כרטיס אשראי</b><p>חיוב חוזר כל חודש באותו תאריך. פרטי הכרטיס נמסרים בעמוד של חברת הסליקה, ולא כאן.</p></div>
   </div>
 
   <div id="pay-onetime" class="stack gap" style="display:none">
     <p class="eyebrow">בחר את הדרך הכי נוחה לך</p>
-    <div class="opt pay on" data-p="card"><b>כרטיס אשראי</b><p>חיוב מיידי, מאושר תוך רגע.</p></div>
-    <div class="opt pay" data-p="bit"><div class="row" style="gap:6px"><b>Bit</b><span class="tag">מושלם למתנה</span></div><p>שולחים כמו לכל מתנה למשפחה, מהיר ופשוט.</p></div>
-    <div class="opt pay" data-p="transfer"><b>העברה בנקאית</b><p>פרטי חשבון להעברה, מאובטחים דרך הגוף הפיננסי המנהל.</p></div>
+    <div class="opt pay on" data-p="card"><b>כרטיס אשראי</b><p>חיוב מיידי. פרטי הכרטיס נמסרים בעמוד של חברת הסליקה, ולא כאן.</p></div>
+    <div class="opt pay" data-p="bit"><div class="row" style="gap:6px"><b>Bit</b><span class="tag">מושלם למתנה</span></div><p>בקשת תשלום תגיע אליך ב-Bit, ואתה מאשר אותה שם.</p></div>
+    <div class="opt pay" data-p="transfer"><b>העברה בנקאית</b><p>פרטי החשבון להעברה יימסרו לך אחרי האישור.</p></div>
   </div>
 
-  <div id="pay-fields"></div>
+  <!-- הסליקה עוד לא חוברה, ומי שמאשר כאן צריך לדעת שהכסף לא יורד עכשיו.
+       טקסט במסך הבחירה ולא מסך נפרד: כאן הוא נקרא לפני הלחיצה. -->
+  <p class="fine" style="margin-top:16px">חיבור הסליקה עדיין בהקמה. הנטיעה תירשם עכשיו, והחיוב הראשון יתבצע כשהחיבור יושלם. עד אז לא יורד כסף.</p>
 
-  <div class="two" style="margin-top:20px"><button class="btn" onclick="toReview()">המשך לסיכום</button><button class="btn ghost" id="pay-back" onclick="backFromPay()">חזרה</button></div>
+  <div class="two" style="margin-top:14px"><button class="btn" onclick="toReview()">המשך לסיכום</button><button class="btn ghost" id="pay-back" onclick="backFromPay()">חזרה</button></div>
 </section>
 
 <!-- 4 AHA -->
@@ -2992,7 +2992,9 @@ window.NETA_CONFIG = {
   <h2 class="gap-x" id="ap-2h">לאן לשלוח את ההזמנה?</h2>
   <p class="sub gap">בוואטסאפ אם תזין מספר, ובאימייל אם תזין כתובת.</p>
   <div class="field"><label>טלפון או אימייל</label>
-    <input type="text" id="ap-contact" placeholder="050-0000000 או name@mail.com"
+    <input type="text" id="ap-contact" inputmode="email" autocomplete="email"
+           autocapitalize="off" autocorrect="off" spellcheck="false"
+           placeholder="050-0000000 או name@mail.com"
            oninput="apGoLbl()"></div>
   <!-- השורה מופיעה רק כשלא נבחר רגע, כלומר רק כשהיא אומרת משהו שאי
        אפשר לראות מהמסך עצמו. "זה שדה חובה" מתגלה ממילא בלחיצה. -->
@@ -4113,7 +4115,7 @@ function openPayment(){
   paySaved=savedHora>=0?savedHora:null;
   payPick=freq==='m'?'hora':'card';
   document.querySelectorAll('.opt.pay').forEach(function(x){x.classList.toggle('on',paySaved===null&&x.dataset.p===payPick)});
-  renderSavedPays();renderPayFields();
+  renderSavedPays();
   txt('pay-icon',goal.icon||cIcon);
   /* הסכום, התדירות והמועד מורכבים עכשיו למשפט אחד בתוך כרטיס הסיכום,
      ולכן paySummary מרכיבה אותם ולא שלוש שורות נפרדות כאן. */
@@ -4123,41 +4125,16 @@ function openPayment(){
   paySummary();
   go(3);
 }
-/* picking a method has to lead somewhere — the details are entered right below it */
-const PAY_FIELDS={
-  hora:{t:'פרטי החשבון לחיוב',f:[['pf-bank','שם הבנק','למשל: לאומי'],['pf-branch','מספר סניף','000'],['pf-acct','מספר חשבון','000000']],
-    note:'ההרשאה לחיוב חשבון נחתמת דיגיטלית מול הבנק. אפשר לבטל אותה בכל עת, ישירות מולו.'},
-  'card-rec':{t:'פרטי הכרטיס',f:[['pf-num','מספר כרטיס','0000 0000 0000 0000'],['pf-exp','תוקף','09/30'],['pf-cvv','CVV','000']],
-    note:'הפרטים נמסרים לגוף הפיננסי המנהל ואינם נשמרים אצל נטע.'},
-  card:{t:'פרטי הכרטיס',f:[['pf-num','מספר כרטיס','0000 0000 0000 0000'],['pf-exp','תוקף','09/30'],['pf-cvv','CVV','000']],
-    note:'הפרטים נמסרים לגוף הפיננסי המנהל ואינם נשמרים אצל נטע.'},
-  bit:{t:'המספר שלך ב-Bit',f:[['pf-phone','מספר טלפון','050-0000000']],
-    note:'תקבל בקשת תשלום לאישור באפליקציית Bit.'},
-  transfer:{t:'פרטי החשבון להעברה',f:[],
-    note:'בנק לאומי · סניף 800 · חשבון 41102237, על שם הגוף הפיננסי המנהל. ציין את שם הנטיעה בהעברה.'}
-};
+/* ‏PAY_FIELDS ירדה. היא החזיקה שדות למספר כרטיס, ל-CVV ולמספר חשבון
+   בנק — שלושה דברים שנטע לא צריכה לדעת ולא יכולה לאבטח. הכיתוב של כל
+   אמצעי יושב עכשיו ב-HTML ואומר מי גובה אותו; אין מה לצייר בזמן ריצה,
+   ולכן renderPayFields ירדה איתה.
+
+   מה שהיה כאן גם סתר את עצמו: ההערה אמרה "ההרשאה לחיוב חשבון נחתמת
+   דיגיטלית מול הבנק", ומעליה שלושה שדות ששאלו בנק, סניף וחשבון. ובענף
+   ההעברה הבנקאית ישב מספר חשבון מומצא, כלומר מסך שאומר לאדם להעביר
+   כסף לחשבון שאינו קיים. */
 let payPick='hora',paySaved=null;
-function renderPayFields(){
-  /* בתוך הכרטיס הנבחר. הכותרת ("פרטי החשבון לחיוב") יורדת, כי הכרטיס
-     כבר נושא את שם האמצעי ושתי כותרות זו מעל זו אומרות אותו דבר. */
-  document.querySelectorAll('.opt.pay .payin').forEach(function(x){x.remove()});
-  const box=document.getElementById('pay-fields');
-  if(box)box.innerHTML='';
-  if(paySaved!==null)return;
-  const d=PAY_FIELDS[payPick];
-  const card=document.querySelector('.opt.pay.on[data-p="'+payPick+'"]');
-  if(!d||!card)return;
-  const el=document.createElement('div');
-  el.className='payin';
-  /* לחיצה בשדה אינה בחירה מחדש של הכרטיס: היא הייתה מגלגלת ל-onclick
-     שלו, מציירת מחדש, ומוחקת את מה שכבר הוקלד באמצע ההקלדה. */
-  el.onclick=function(e){e.stopPropagation()};
-  el.innerHTML=d.f.map(function(f){
-      return '<div class="field"><label>'+f[1]+'</label><input type="text" id="'+f[0]+'" placeholder="'+f[2]+'"></div>';
-    }).join('')+
-    '<p class="fine">'+d.note+'</p>';
-  card.appendChild(el);
-}
 function renderSavedPays(){
   const box=document.getElementById('pay-saved');
   if(!pays.length){box.style.display='none';box.innerHTML='';return}
@@ -4169,13 +4146,13 @@ function renderSavedPays(){
 function pickSaved(i){
   paySaved=i;
   document.querySelectorAll('.opt.pay').forEach(x=>x.classList.remove('on'));
-  renderSavedPays();renderPayFields();
+  renderSavedPays();
 }
 document.querySelectorAll('.opt.pay').forEach(el=>el.onclick=()=>{
   el.closest('.stack').querySelectorAll('.opt.pay').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');
   payPick=el.dataset.p;paySaved=null;
-  renderSavedPays();renderPayFields();
+  renderSavedPays();
 });
 /* מי יקבל את הכסף במועד. ‏whoMode הוא מה שהמסך שואל, ו-beneMode
    ו-famMode נגזרים ממנו: הם עדיין מה שהרשומה נבנית לפיו, ולכן הם
@@ -5644,21 +5621,11 @@ function methodLabel(){
   const names={hora:'הוראת קבע מהבנק','card-rec':'חיוב כרטיס אשראי',card:'כרטיס אשראי',bit:'Bit',transfer:'העברה בנקאית'};
   return names[payPick]||'·';
 }
+/* ‏pendingPay נשאר null: אמצעי תשלום נשמר כשיש ממנו מה לשמור — ארבע
+   ספרות אחרונות שמחזירה הסליקה — ולא משדות שהמסך הזה כבר אינו מבקש.
+   רשומה בשם "כרטיס ····" שנבנתה ממה שהוקלד לא תיארה אמצעי קיים. */
 function toReview(){
   pendingPay=null;
-  if(paySaved===null){
-    const d=PAY_FIELDS[payPick]||{f:[]};
-    const missing=d.f.filter(function(f){const el=document.getElementById(f[0]);return !el||!el.value.trim()});
-    if(missing.length){toast('חסר '+missing[0][1]);return}
-    if(d.f.length){
-      const label=payPick==='hora'?'הוראת קבע · '+document.getElementById('pf-bank').value.trim():
-        payPick==='bit'?'Bit':'כרטיס ····'+document.getElementById('pf-num').value.trim().slice(-4);
-      const nn=payPick==='hora'?'חשבון ····'+document.getElementById('pf-acct').value.trim().slice(-4):
-        payPick==='bit'?document.getElementById('pf-phone').value.trim():'תוקף '+document.getElementById('pf-exp').value.trim();
-      pendingPay={t:label,n:nn,state:freq==='m'?'live':'off',
-        note:freq==='m'?'מממנת את ההפקדה החודשית שהגדרת.':'שימש להפקדה חד פעמית.'};
-    }
-  }
   paySummary();
   txt('py-method',methodLabel());
   go(REVIEW);
@@ -5716,6 +5683,8 @@ function fieldVal(id){const el=document.getElementById(id);return el?el.value.tr
 
 function finishDeposit(){
   /* the method is only saved once the deposit is actually confirmed */
+  /* ‏pendingPay ריק מאז שמסך התשלום הפסיק לאסוף מספרים. הענף נשאר בתור
+     המקום שבו ייכנסו ארבע הספרות שהסליקה תחזיר, כשתחובר. */
   if(pendingPay){pays.push(pendingPay);pendingPay=null;buildPays();}
   creating=false;document.getElementById('flowbar').style.display='none';
 
@@ -6584,7 +6553,12 @@ function contactOk(v){
   return d.length>=9&&d.length<=15;
 }
 function contactHTML(val){
-  return '<input type="text" id="r-contact" value="'+(val||'')+'" placeholder="050-0000000 או name@mail.com" oninput="chanHint()">'+
+  /* ‏inputmode="email" ולא "tel": המקלדת הזאת נושאת גם ספרות, גם @ וגם
+     נקודה, ולכן היא הנכונה לשדה שמקבל את שניהם. מקלדת טלפון הייתה
+     חוסמת כתובת. */
+  return '<input type="text" id="r-contact" inputmode="email" autocomplete="email" '+
+    'autocapitalize="off" autocorrect="off" spellcheck="false" '+
+    'value="'+(val||'')+'" placeholder="050-0000000 או name@mail.com" oninput="chanHint()">'+
     '<div class="hint" id="ch-hint">ההזמנה תישלח בוואטסאפ אם תזין מספר, ובאימייל אם תזין כתובת.</div>';
 }
 function chanHint(){
@@ -7028,16 +7002,19 @@ function buildPays(){
       (monthly?' · '+shekel(monthly)+' בכל חודש':' · אין הפקדה קבועה'));
 }
 function openPay(){buildPays();go(16)}
+/* ארבע הספרות האחרונות ולא המספר המלא: זה כל מה ש-payment_methods
+   שומרת ממילא (last4), וזה כל מה שצריך כדי לזהות אמצעי ברשימה. */
 function swapPay(i){
   const p=pays[i];
   sheetForm('עדכון '+p.t.split(' · ')[0],
-    '<label>מספר כרטיס או חשבון</label><input type="text" id="pay-n" placeholder="'+p.n+'">'+
-    '<label>תוקף</label><input type="text" id="pay-e" placeholder="09/30">',
+    '<label>ארבע הספרות האחרונות</label><input type="text" id="pay-n" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="0000">'+
+    '<label>תוקף</label><input type="text" id="pay-e" inputmode="numeric" maxlength="5" autocomplete="cc-exp" placeholder="09/30">'+
+    '<p class="fine" style="margin-top:8px">המספר המלא נמסר לחברת הסליקה בלבד. נטע שומרת רק את הארבע האחרונות.</p>',
     'שמור',
     function(){
       const n=(document.getElementById('pay-n')||{}).value,e=(document.getElementById('pay-e')||{}).value;
-      if(!n||!n.trim()){toast('צריך מספר כדי לעדכן');return false}
-      p.n=n.trim()+(e&&e.trim()?' · תוקף '+e.trim():'');
+      if(!n||!/^\d{4}$/.test(n.trim())){toast('צריך ארבע ספרות');return false}
+      p.n='····'+n.trim()+(e&&e.trim()?' · תוקף '+e.trim():'');
       if(p.state==='warn'){p.state='off';p.note='כרטיס גיבוי, משמש רק אם הוראת הקבע נכשלת.'}
       buildPays();toast('אמצעי התשלום עודכן');
     });
@@ -7045,12 +7022,14 @@ function swapPay(i){
 function addPay(){
   sheetForm('הוסף אמצעי תשלום',
     '<label>סוג</label><input type="text" id="pay-t" placeholder="כרטיס אשראי / הוראת קבע / Bit">'+
-    '<label>מספר כרטיס או חשבון</label><input type="text" id="pay-n" placeholder="····0000">',
+    '<label>ארבע הספרות האחרונות</label><input type="text" id="pay-n" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="0000">'+
+    '<p class="fine" style="margin-top:8px">המספר המלא נמסר לחברת הסליקה בלבד. נטע שומרת רק את הארבע האחרונות.</p>',
     'הוסף',
     function(){
       const t=(document.getElementById('pay-t')||{}).value,n=(document.getElementById('pay-n')||{}).value;
-      if(!t||!t.trim()||!n||!n.trim()){toast('צריך סוג ומספר');return false}
-      const row={t:t.trim(),n:n.trim(),state:'off',
+      if(!t||!t.trim()){toast('צריך סוג');return false}
+      if(!n||!/^\d{4}$/.test(n.trim())){toast('צריך ארבע ספרות');return false}
+      const row={t:t.trim(),n:'····'+n.trim(),state:'off',
                  note:'אמצעי גיבוי, עדיין לא מממן הפקדה קבועה.'};
       if(liveAccount()){
         netaServer.addPayment({label:row.t,last4:lastFour(row.n),
