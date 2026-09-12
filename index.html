@@ -1303,7 +1303,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '50120a9';
+window.NETA_BUILD = 'bad6d47';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1697,12 +1697,12 @@ window.NETA_CONFIG = {
        זו שבפרופיל. -->
   <div class="field" id="c-whofield">
     <div class="pick" id="c-who">
-      <button type="button" class="on" data-w="self" onclick="pickWho(this,'self')">
-        <span class="fc" id="cw-self-av"><svg viewBox="0 0 40 40"><use href="#av-kid1"/></svg></span>
-        <span class="nm"><b id="cw-self-b">דניאל</b><span id="cw-self-s">הקוד יישלח אליו, ישירות ולא דרכך</span></span></button>
       <button type="button" data-w="me" onclick="pickWho(this,'me')">
         <span class="fc" id="cw-me-av"><svg viewBox="0 0 40 40"><use href="#av-parent"/></svg></span>
         <span class="nm"><b id="cw-me-b">אני, עבורו</b><span>לא צריך למלא כלום</span></span></button>
+      <button type="button" class="on" data-w="self" onclick="pickWho(this,'self')">
+        <span class="fc" id="cw-self-av"><svg viewBox="0 0 40 40"><use href="#av-kid1"/></svg></span>
+        <span class="nm"><b id="cw-self-b">דניאל</b><span id="cw-self-s">הקוד יישלח אליו, ישירות ולא דרכך</span></span></button>
       <button type="button" data-w="parent" onclick="pickWho(this,'parent')">
         <span class="fc"><svg viewBox="0 0 40 40"><use href="#av-granny2"/></svg></span>
         <span class="nm"><b id="cw-parent-b">ההורה של דניאל</b><span id="cw-parent-s">כשדניאל אינו הילד שלך</span></span></button>
@@ -4305,8 +4305,12 @@ function startCreate(){
   const u=document.getElementById('c-undecided');
   if(u){u.checked=false;toggleDesig(u);}
   whoMode='self';beneMode='self';famMode='mine';
-  document.querySelectorAll('#c-who button').forEach(function(x,i){
-    x.classList.toggle('on',i===0)});
+  /* לפי data-w ולא לפי מיקום. הסימון נקבע כאן לפי i===0, כלומר הוא
+     נשען על כך שברירת המחדל היא האפשרות הראשונה — ומרגע ש"אני, עבורו"
+     עלתה לראש, הכפתור המסומן היה "אני" בעוד whoMode נשאר 'self'.
+     המסך היה מראה בחירה אחת והרשומה נבנית לפי אחרת, בלי שגיאה. */
+  document.querySelectorAll('#c-who button').forEach(function(x){
+    x.classList.toggle('on',x.dataset.w===whoMode)});
   beneFields();
   cStepGo(0);go(1);
 }
