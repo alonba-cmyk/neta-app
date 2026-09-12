@@ -551,6 +551,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .fr+.fr{border-top:1px solid var(--rule)}
 .fic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;flex-shrink:0;background:var(--leaf-bg)}
 .fic.s{background:var(--sun-bg);color:var(--sun)}
+.fic svg{display:block;width:18px;height:18px}
 /* פרצוף הקרוב, ועליו תג קטן שאומר לאיזו נטיעה — בלעדיו רואים מי ולא לאן. */
 .fav{position:relative;width:34px;height:34px;flex-shrink:0}
 .fav .avsvg{border-radius:10px;overflow:hidden}
@@ -579,6 +580,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .fr.one{padding:7px 0}
 .fr.one .fic,.fr.one .fav{width:30px;height:30px}
 .fr.one .fic{border-radius:9px;font-size:14px}
+.fr.one .fic svg{width:16px;height:16px}
 
 /* ===== edit screen ===== */
 .sw{position:relative;width:38px;height:22px;border-radius:11px;background:var(--s2);border:1px solid var(--line-2);
@@ -1301,7 +1303,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '2d31adf';
+window.NETA_BUILD = '50120a9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1701,12 +1703,15 @@ window.NETA_CONFIG = {
       <button type="button" data-w="me" onclick="pickWho(this,'me')">
         <span class="fc" id="cw-me-av"><svg viewBox="0 0 40 40"><use href="#av-parent"/></svg></span>
         <span class="nm"><b id="cw-me-b">אני, עבורו</b><span>לא צריך למלא כלום</span></span></button>
-      <button type="button" data-w="other" onclick="pickWho(this,'other')">
-        <span class="fc plus">+</span>
-        <span class="nm"><b>מישהו אחר</b><span>נבקש את השם והמייל שלו</span></span></button>
       <button type="button" data-w="parent" onclick="pickWho(this,'parent')">
         <span class="fc"><svg viewBox="0 0 40 40"><use href="#av-granny2"/></svg></span>
         <span class="nm"><b id="cw-parent-b">ההורה של דניאל</b><span id="cw-parent-s">כשדניאל אינו הילד שלך</span></span></button>
+      <!-- "מישהו אחר" אחרון: שלוש הראשונות נוקבות באדם מסוים, והיא
+           היחידה שפותחת שדות ואין לה פנים. אפשרות פתוחה בסוף רשימה
+           סגורה, ולא באמצעה. -->
+      <button type="button" data-w="other" onclick="pickWho(this,'other')">
+        <span class="fc plus">+</span>
+        <span class="nm"><b>מישהו אחר</b><span>נבקש את השם והמייל שלו</span></span></button>
     </div>
   </div>
   <div class="field" id="c-codefield">
@@ -8060,6 +8065,10 @@ function loadAccountLists(){
                       contact:r.contact||''});
     });
     buildRelatives();
+    /* הפיד נשען על הרשימה הזאת בשביל הדמות של מי שהוזמן, והוא נצבע
+       לפניה. בלי הציור הנוסף שורת ההזמנה הייתה נופלת לאמוג'י של הרגע
+       עד הרענון הבא. */
+    if(document.getElementById('feed'))buildFeed();
     /* אחרי הרשימה ולא במקביל לה: הסימון נכתב על השורות שהרגע נבנו. */
     if(netaServer.loadInvitations)
       netaServer.loadInvitations().then(markInvited,function(){});
@@ -9579,6 +9588,20 @@ const VERB={invested:'השקיע/ה',deposited:'הפקיד/ה',
 /* השורה נושאת שלושה דברים ולא משפט אחד: מי, מה, וכמה. הכותרת היא תמיד
    שם הנטיעה — זה מה שמאפשר לסרוק את הרשימה ולמצוא נטיעה — והשורה
    שמתחתיה אומרת מי עשה את זה. */
+/* הדמות של מי שהוזמן. השרת מחזיר ב-invitation_sent את avatar_key של
+   מי ששלח, כי למוזמן אין עדיין פרופיל — זו בדיוק המשמעות של הזמנה.
+   הדמות שלו כן קיימת אצלנו, ברשימת הקרובים, ולכן החיבור נעשה בלקוח
+   לפי השם. אין התאמה (מי שהוזמן בלי להישמר כקרוב) — נופלים לאמוג'י
+   של הרגע, כמו כל שורה בלי אדם. */
+function relAvatar(name){
+  const n=String(name||'').trim();
+  if(!n)return null;
+  for(let i=0;i<relatives.length;i++){
+    const r=relatives[i];
+    if(r&&String(r.name||'').trim()===n&&r.av&&r.av.indexOf('av-')===0)return r.av;
+  }
+  return null;
+}
 function feedRowHTML(e){
   const mine=!!e.isMe;
   let sub='',amount='',cls='',glyph=e.icon||'🌱',title=e.name;
@@ -9597,13 +9620,18 @@ function feedRowHTML(e){
       ? '<div class="fa'+(mine?'':' oth')+'">'+shekel(e.amount)+'</div>'
       : '<div class="fa let">השתתפות</div>';
   }else if(e.kind==='letter_signed'){
-    cls=' s';glyph='✉';title='מכתב '+withPrep('ל',e.name);
+    /* האייקון היחיד שנשאר בעמודה, והוא מהספרייט: המכתב הוא האירוע
+       היחיד שהנושא שלו הוא חפץ ולא אדם. ‏✉ שהיה כאן אינו אמוג'י אלא
+       תו טקסט, ולכן הוא יצא חד-צבעי בזמן ששכניו צבעוניים. */
+    cls=' s';glyph='<svg viewBox="0 0 24 24"><use href="#ic-letter"/></svg>';
+    title='מכתב '+withPrep('ל',e.name);
     amount='<div class="fa let">מכתב</div>';
   }else if(e.kind==='relative_joined'){
-    glyph='👥';
+    /* ‏👥 ו-📩 ירדו. הם היו אמוג'י שמערכת ההפעלה מציירת, כחול ואדום
+       בתוך פלטה של ירוק וזהב, והם נראו אחרת בכל מכשיר. העמודה עונה
+       מעכשיו על "מי", ורק כשאין אדם היא נופלת ל"איזה רגע". */
     amount='<div class="fa let">הצטרפות</div>';
   }else if(e.kind==='invitation_sent'){
-    glyph='📩';
     amount='<div class="fa let">הזמנה</div>';
     /* היחידה שדורסת את הכלל "בשורה שלך אין שורת משנה": שם המוזמן הוא
        כל המידע בשורה הזאת, ובלעדיו היא אומרת רק שהזמנת מישהו. */
@@ -9614,9 +9642,16 @@ function feedRowHTML(e){
     sub='אבן דרך';
   }
   /* רגע של קרוב נושא את פניו, ועליו תג הנטיעה. רגע שלך נושא את אייקון
-     הנטיעה עצמה — אין טעם להראות לך את הפרצוף שלך שוב ושוב. */
-  const badge=(!mine&&e.avatar&&e.kind!=='anniversary')
-    ? '<div class="fav"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+e.avatar+'"/></svg>'+
+     הנטיעה עצמה — אין טעם להראות לך את הפרצוף שלך שוב ושוב.
+
+     בשורת ההזמנה האדם אינו המזמין אלא המוזמן, וזה גם מה שכתוב בשורה
+     שמתחתיה ("הזמנת את חיים"). לכן היא היחידה שנושאת פרצוף גם כשהיא
+     שלך. */
+  const face=e.kind==='invitation_sent'
+    ? relAvatar(e.subject)
+    : ((!mine&&e.avatar&&e.kind!=='anniversary')?e.avatar:null);
+  const badge=face
+    ? '<div class="fav"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+face+'"/></svg>'+
       '<span class="fbadge">'+(e.icon||'🌱')+'</span></div>'
     : '<div class="fic'+cls+'">'+glyph+'</div>';
   const open=e.key?' onclick="openDetail(\''+e.key+'\')"':'';
