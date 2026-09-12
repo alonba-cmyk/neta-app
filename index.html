@@ -1408,7 +1408,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '68ce9f8';
+window.NETA_BUILD = '9c03518';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7694,6 +7694,11 @@ const AP_FOR=['ap-0','ap-4','ap-5'];
 const AP_LBL_WITH=['את מי','מי זה','לאיזה רגע','לאן'];
 const AP_LBL_FOR=['את מי','עבור מי','נוסף'];
 const AP_RELS=['סבתא','סבא','דודה','דוד','אח','אחות','חבר','אחר'];
+/* שמונת הצ'יפים מערבבים שני סוגי קשר, והסיומת "של <הילדים>" הודבקה
+   לכולם: אור נשמר כ"חבר של לני ושל שאולי" בלי שאיש אמר זאת. ארבעת
+   אלה הם היחידים שמתארים קשר אל הילד, ולכן רק הם מקבלים אותה. אח,
+   אחות וחבר מתארים קשר אלי ונשארים חשופים. */
+const AP_TOKID=['סבתא','סבא','דודה','דוד'];
 let apKindMode='with',apStep=0,apRel='סבתא',apAv='av-granny2',
     apKidAv='av-kid1',apKidSexV='m',apPhoto=null,apPlants=[];
 /* הרגע שממנו נפתחה ההוספה, כשהיא נפתחה ממצב הזמנה. כשהוא קיים שתי
@@ -7769,9 +7774,11 @@ function apPickRel(el,r){
   apRelHint();
 }
 /* "סבתא של נועה ושל דניאל" נבנה מהצ'יפ ומהילדים שיש, ולא מהמשתמש.
-   בלי ילדים הוא נשאר הצ'יפ לבדו, כי "סבתא של" בלי שם אינו משפט. */
+   בלי ילדים הוא נשאר הצ'יפ לבדו, כי "סבתא של" בלי שם אינו משפט,
+   וכך גם צ'יפ שהקשר שלו הוא אלי ולא אל הילד (ראו AP_TOKID). */
 function apRelText(){
   if(apRel==='אחר')return (fieldVal('ap-relfree')||'קרוב משפחה');
+  if(AP_TOKID.indexOf(apRel)<0)return apRel;
   const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
   const kids=kidGroups(own).groups.map(function(g){return g.kid}).filter(Boolean);
   if(!kids.length)return apRel;
@@ -8059,7 +8066,7 @@ function addRelative(){
   pickedAv='av-granny2';
   sheetForm('הוסף קרוב',
     '<label>שם</label><input type="text" id="r-name" placeholder="למשל: סבתא מרים">'+
-    '<label>הקשר לילדים</label><input type="text" id="r-rel" placeholder="למשל: סבתא של נועה">'+
+    '<label>הקשר</label><input type="text" id="r-rel" placeholder="למשל: סבתא של נועה">'+
     '<label>תמונה</label>'+avpickHTML('av-granny2')+
     '<label>לאן לשלוח את ההזמנה</label>'+contactHTML('')+noteHTML()+
     '<label>לצרף לנטיעה</label>'+plantHTML(),
@@ -8096,7 +8103,7 @@ function editRelative(i){
   pickedAv=r.av;
   sheetForm(r.name,
     '<label>שם</label><input type="text" id="r-name" value="'+r.name+'">'+
-    '<label>הקשר לילדים</label><input type="text" id="r-rel" value="'+r.rel+'">'+
+    '<label>הקשר</label><input type="text" id="r-rel" value="'+r.rel+'">'+
     '<label>תמונה</label>'+avpickHTML(r.av)+
     /* הקישור האישי ירד מהשורה כשהכפתור שם הפך ל"שלח שוב", והוא חוזר
        לכאן: לא כל שליחה חוזרת היא מייל, ולפעמים רוצים להעביר ביד. */
