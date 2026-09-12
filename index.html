@@ -400,6 +400,19 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   line-height:1;white-space:nowrap;font-variant-numeric:tabular-nums}
 .duo .n.fut{color:var(--sun-soft)}
 .duo .l{font-size:11.5px;color:var(--tx-2);margin-top:7px;line-height:1.5}
+/* המסך הזה מציג נהנה אחד, והפרצוף שמעליו מתמרכז. שני חצאים שנמתחים
+   על כל הרוחב דוחפים את המספרים שלו לשתי הפינות, כלומר פותחים מחדש
+   את המרחק שהמרכוז בא לסגור. לכן כאן הזוג ממורכז ונגזר מהתוכן.
+   ‏#s-duo ולא .duo: הקלאס גלובלי, והכלל הזה נכון למסך הזה בלבד. */
+/* ‏stretch ולא flex-start: שני החצאים באותו גובה גם אם שורה אחת
+   ריקה, ולכן הקו המפריד ביניהם מגיע עד הסוף בשניהם. */
+#s-duo{justify-content:center;text-align:center;align-items:stretch}
+#s-duo>div{flex:0 1 auto}
+#s-duo>div+div{margin-inline-start:15px;padding-inline-start:15px}
+#s-duo>div+div>*{padding-inline-start:0}
+/* השורה השנייה מימין קיימת כדי ששני הצדדים יהיו באותו גובה: הכיתוב
+   הזהוב נושא מועד ונשבר לשתי שורות, והירוק היה שורה אחת. */
+#s-duo .l2{margin-top:2px}
 /* ‏solo כבר אינו משנה גודל — הוא זהה ל-s-num ממילא — והוא נשאר ככיתה
    שהמספר הבודד יכול להיתלות בה אם ירצה רוחב מלא בעתיד. */
 .summary+.card{margin-top:15px}
@@ -1355,7 +1368,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd789ff0';
+window.NETA_BUILD = '0597cb5';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1545,10 +1558,12 @@ window.NETA_CONFIG = {
           <div>
             <div class="n" id="s-you">13,300 ₪</div>
             <div class="l" id="s-label">נצבר עד כה</div>
+            <div class="l l2" id="s-since"></div>
           </div>
           <div id="s-futbox">
             <div class="n fut" id="s-fut">·</div>
-            <div class="l" id="s-futk">יחכו להם במועדים</div>
+            <div class="l" id="s-futk">יחכו להם</div>
+            <div class="l l2" id="s-futwhen">במועדים</div>
           </div>
         </div>
       </div>
@@ -8196,7 +8211,7 @@ function blankBeforeFirstLoad(){
   if(!netaServer)return;
   const bar=document.getElementById('topbar');
   if(bar)bar.style.visibility='hidden';
-  ['s-you','s-label','s-fut','s-futk'].forEach(function(id){txt(id,'')});
+  ['s-you','s-label','s-since','s-fut','s-futk','s-futwhen'].forEach(function(id){txt(id,'')});
   const g=document.getElementById('garden');
   if(g)g.innerHTML='';
   /* גם הפנקסים האישיים. הם מאותחלים בקובץ עם משפחת ההדגמה, וניקוי שלהם
@@ -9904,6 +9919,7 @@ function buildHomeSummary(){
     document.getElementById('fu-pick').innerHTML=
       anyPick?fuPickHTML(fuAll,fuPick):'';
     document.getElementById('fu-pick').style.display=anyPick?'':'none';
+    if(anyPick)fuCenterPick();
     /* המסך הזה מתאר רגעים, לא את חלקי בהם. זה מה שמבדיל אותו
        מ"הנטיעות שלי", ולכן גם בסקשן השני המספר הוא מה שנצבר לרגע.
 
@@ -9992,6 +10008,8 @@ function buildHomeSummary(){
        מין, ו"יחכו לדניאל" נכון תמיד. */
     txt('s-label',accrued>0?'נצבר עד כה'
                            :(coming?'ההפקדה הראשונה בדרך':'עוד לא נצבר'));
+    /* רק כשיש מה למדוד: "מאז" ליד "עוד לא נצבר" הוא סתירה. */
+    txt('s-since',accrued>0?fuSinceLine(sel&&sel.rows):'');
     /* "הושקעו" סבילה וחסרת נושא, ולכן היא נקראת כמו "זה מה שאני
        הפקדתי" — בדיוק ההפך מהמספר, שהוא מה שנצבר לרגעים האלה כולם,
        כולל כסף של קרובים. "נצבר" אומרת את זה בלי נושא כי אין לה נושא
@@ -10120,23 +10138,28 @@ function buildHomeSummary(){
          עובדה. "בקצב הזה" אומר גם למה המספר הזה וגם שהוא תלוי בכך
          שההפקדה נמשכת. המועד יורד מהניסוח הזה בלבד, כי שתי מיליות
          ב' רצופות אינן נקראות. */
-      txt('s-futk',(function(){
+      /* שתי שורות בכל צד, תמיד: מי מחכה ומתי מימין, מה נצבר ומאז
+         מתי משמאל. קודם הצד הזהוב היה משפט אחד שנשבר לפי הרוחב,
+         כלומר לפעמים שורה ולפעמים שתיים, והצד הירוק היה שורה אחת —
+         שני חצאים בגבהים שונים שמשתנים לפי המכשיר. */
+      const futL=(function(){
         const nm=sel?firstName(sel.name):'';
-        if(proj.length!==1)return nm?('יחכו ל'+nm+' במועדים'):'יחכו להם במועדים';
+        if(proj.length!==1)return [nm?('יחכו ל'+nm):'יחכו להם','במועדים'];
         /* ‏date קיים רק במודל של מסך הרגע. הרשימה מחזיקה targetYear
            ו-targetMonth, ולכן התנאי הזה היה תמיד שקרי והתאריך נשמט
            בשקט משני המקורות, החי וההדגמה כאחד. */
         const one=proj[0];
         /* החודש בקיצור: "יחכו לשימי בספטמבר 2036" מגיע ל-130 פיקסלים
            בחצי שרוחבו 134, ועם שם ארוך יותר הוא נשבר לשתי שורות. */
-        const w=bShortWhen(one),when=w?(' ב'+w):'';
+        const w=bShortWhen(one),when=w?('ב'+w):'';
         /* השם ולא הכינוי: המקור החי אינו מחזיר את מין הנהנה, ולכן
            "יחכו לו" היה ניחוש. עם השם אין מה לנחש. */
-        if(nm)return 'יחכו ל'+nm+when;
-        if(one.sex==='f')return 'יחכו לה'+when;
-        if(one.sex==='m')return 'יחכו לו'+when;
-        return 'יחכו שם בקצב הזה';
-      })());
+        if(nm)return ['יחכו ל'+nm,when];
+        if(one.sex==='f')return ['יחכו לה',when];
+        if(one.sex==='m')return ['יחכו לו',when];
+        return ['יחכו שם','בקצב הזה'];
+      })();
+      txt('s-futk',futL[0]);txt('s-futwhen',futL[1]);
     }
     if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();paintLaterCard();}
     paintInvestments();
@@ -10386,6 +10409,25 @@ function fuItems(own){
    עבורו הוא מי שאתה חושב עליו כשאתה נכנס. בחירה ידנית אינה נדרסת,
    כי fuDefault רצה רק כש-fuPick אינו קיים ברשימה. */
 function fuDefault(items){return (items[0]&&items[0].id)||''}
+/* "מאז" מול "עד": הצד הירוק מודד כמה נצבר, ולכן המועד שלו הוא
+   ההתחלה. המקור הוא since שברשימה, והוא חוזר בשתי צורות — תאריך
+   מלא מהשרת ושנה בלבד בנתוני ההדגמה — ולכן שתיהן מטופלות. */
+function fuSinceLine(rows){
+  const vals=(rows||[]).map(function(r){return r&&r.since}).filter(Boolean);
+  if(!vals.length)return '';
+  let best=null,bestKey=null;
+  vals.forEach(function(v){
+    const str=String(v);
+    const key=/^\d{4}-\d{2}/.test(str)?str:(str+'-01-01');
+    if(bestKey===null||key<bestKey){bestKey=key;best=str}
+  });
+  if(/^\d{4}-\d{2}/.test(best)){
+    const d=new Date(best.slice(0,10)+'T00:00:00');
+    if(!isNaN(d.getTime()))return 'מאז '+monthsShort[d.getMonth()]+' '+d.getFullYear();
+  }
+  const y=parseInt(best,10);
+  return y>1900?('מאז '+y):'';
+}
 let fuPick='';
 function pickFuture(id){fuPick=id;buildHomeSummary();}
 /* נתיבי התמונות שברשימה. הם נחתמים לפני הציור ולא בתוכו, ולכן
@@ -10416,12 +10458,23 @@ function fuWithBenes(items){
   return items.concat(extra);
 }
 function fuPickHTML(items,sel){
-  /* משישה ואילך השורה גוללת וצ'יפ ההוספה ממילא מחוץ למסך, כלומר
-     הוא לא מעודד איש. מי שיש לו חמישה כבר לא צריך תזכורת. */
-  const add=items.length<5
-    ? '<button class="fu-item fu-add" onclick="startCreate()">'+
-      '<span class="fu-ring">+</span><span>הוסף</span></button>' : '';
-  return items.map(function(it){
+  /* תמיד, בכל מספר נהנים. קודם הוא ירד מחמישה ואילך, כי השורה גללה
+     והוא נשאר מחוץ למסך — עכשיו השורה ממורכזת וגוללת בכל מקרה, והוא
+     במרחק החלקה אחת. הוא גם מה שממלא את הצד שמתרוקן כשהנבחר בקצה. */
+  const add='<button class="fu-item fu-add" onclick="startCreate()">'+
+      '<span class="fu-ring">+</span><span>הוסף</span></button>';
+  /* הנבחר באמצע והאחרים מתחלקים סביבו, כדי שתמיד יהיה מישהו משני
+     צדדיו: בשלושה אחד מימין ואחד משמאל, בשניים אחד מימין והצ'יפ
+     משמאל. בלי החלוקה הזאת הנבחר הפותח הוא הראשון ברשימה, ומימינו
+     אין דבר — חצי מסך ריק בדיוק ברגע שנכנסים.
+     המחיר: פרצוף יכול לעבור מצד לצד כשמחליפים בחירה. זה מה שקונה
+     את הסימטריה, ואין דרך לקבל את שניהם עם סדר קבוע. */
+  const k=items.map(function(x){return x.id}).indexOf(sel);
+  const rest=items.filter(function(x){return x.id!==sel});
+  const right=rest.slice(0,Math.ceil(rest.length/2));
+  const left=rest.slice(Math.ceil(rest.length/2));
+  const ordered=k<0?items:right.concat(items[k]).concat(left);
+  return ordered.map(function(it){
     const face=it.av
       ? '<span class="fu-ring">'+kidFaceHTML(it.av,40)+'</span>'
       : '<span class="fu-ring emoji">'+it.icon+'</span>';
@@ -10433,6 +10486,29 @@ function fuPickHTML(items,sel){
       'onclick="pickFuture(\''+it.id.replace(/'/g,"\\'")+'\')">'+
       face+pen+'<span>'+(it.label||firstName(it.name))+'</span></button>';
   }).join('')+add;
+}
+/* מרכוז הנבחר. הריפוד הוא מה שמאפשר לו להגיע למרכז גם כשהוא בקצה,
+   ולכן השורה נגללת גם כששלושה נכנסים בלי גלילה — בדיוק כמו באינסטגרם.
+   בנהנה אחד אין מה למרכז, והוא נשאר בימין כמו שהיה. */
+let fuPickDrawn=false;
+function fuCenterPick(){
+  const row=document.getElementById('fu-pick');
+  if(!row||!row.clientWidth)return;
+  const items=row.querySelectorAll('.fu-item');
+  const one=row.querySelector('.fu-item');
+  if(items.length<3||!one){
+    row.style.paddingInlineStart='18px';row.style.paddingInlineEnd='18px';
+    row.scrollLeft=0;fuPickDrawn=true;return;
+  }
+  const pad=Math.max(18,Math.round(row.clientWidth/2-one.offsetWidth/2));
+  row.style.paddingInlineStart=pad+'px';
+  row.style.paddingInlineEnd=pad+'px';
+  const t=row.querySelector('.fu-item.on');
+  if(!t){fuPickDrawn=true;return}
+  const to=t.offsetLeft+t.offsetWidth/2-row.clientWidth/2;
+  if(row.scrollTo)row.scrollTo({left:to,behavior:fuPickDrawn?'smooth':'auto'});
+  else row.scrollLeft=to;
+  fuPickDrawn=true;
 }
 /* שורת רגע. הסכום מוצג רק כשיש כמה רגעים: ברגע אחד הראש כבר נושא
    אותו, ומספר שחוזר על עצמו הוא מה שהופך מסך לעמוס. */
@@ -10502,7 +10578,10 @@ function openInvestments(){ paintInvestments(); go(14); }
 /* שני יעדי הסרגל הראשונים. openHome הוא מסך 14 ו-openFuture הוא 0,
    כי המסכים החליפו תפקיד ולא מיקום: כל go(N) בקובץ נשען על המספר. */
 function openHome(){ openInvestments(); }
-function openFuture(){ go(0); }
+/* המרכוז נמדד מרוחב השורה, ואלמנט במסך שאינו .on מחזיר 0 מכל מדידה
+   — כלומר buildHomeSummary שרצה לפני שהמסך נפתח מרכזת על כלום. לכן
+   המרכוז נקרא שוב אחרי הפתיחה. */
+function openFuture(){ go(0); fuCenterPick(); }
 /* הכניסה מהסרגל התחתון היא הכניסה הנקייה, והיא זו שמתחילה תמיד על
    הראשון. ‏openFuture עצמה נשארת כפי שהיא, כי apExit קוראת לה אחרי
    שקבעה את fuPick על הילד שזה עתה נוסף, וניקוי שם היה מוחק אותו.
