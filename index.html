@@ -1303,7 +1303,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'bad6d47';
+window.NETA_BUILD = '4546eaf';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1697,10 +1697,10 @@ window.NETA_CONFIG = {
        זו שבפרופיל. -->
   <div class="field" id="c-whofield">
     <div class="pick" id="c-who">
-      <button type="button" data-w="me" onclick="pickWho(this,'me')">
+      <button type="button" class="on" data-w="me" onclick="pickWho(this,'me')">
         <span class="fc" id="cw-me-av"><svg viewBox="0 0 40 40"><use href="#av-parent"/></svg></span>
         <span class="nm"><b id="cw-me-b">אני, עבורו</b><span>לא צריך למלא כלום</span></span></button>
-      <button type="button" class="on" data-w="self" onclick="pickWho(this,'self')">
+      <button type="button" data-w="self" onclick="pickWho(this,'self')">
         <span class="fc" id="cw-self-av"><svg viewBox="0 0 40 40"><use href="#av-kid1"/></svg></span>
         <span class="nm"><b id="cw-self-b">דניאל</b><span id="cw-self-s">הקוד יישלח אליו, ישירות ולא דרכך</span></span></button>
       <button type="button" data-w="parent" onclick="pickWho(this,'parent')">
@@ -2632,7 +2632,7 @@ window.NETA_CONFIG = {
 <!-- 24 REVIEW — the last screen before an irreversible commitment -->
 <section class="screen center-v" data-name="סיכום ואישור">
   <h2 class="gap-x" id="py-h">זה מה שייפתח</h2>
-  <p class="sub gap" id="py-sub">כך הנטיעה תיראה ברשימה שלך, ומכאן היא נעולה עד המועד.</p>
+  <p class="sub gap" id="py-sub">כך תיראה הנטיעה במסך ההשקעות שלי, ומכאן היא צפויה לגדול עד הרגע המיוחל.</p>
 
   <!-- הכרטיס שייווצר, ולא טבלה של מה שהוזן. שבע שורות באותו משקל לא
        אמרו מה נסגר כאן, והדבר היחיד שבאמת נסגר — הסכום והמועד — ישב
@@ -4182,8 +4182,12 @@ document.querySelectorAll('.opt.pay').forEach(el=>el.onclick=()=>{
      self   → הנהנה פודה בעצמו            · mine + self
      me     → אני פודה עבורו              · mine + guardian, עם הפרטים שלי
      other  → מישהו אחר שאני קובע         · mine + guardian
-     parent → ההורה של הילד, שאינו אני    · kin  + guardian */
-let beneMode='self',whoMode='self';
+     parent → ההורה של הילד, שאינו אני    · kin  + guardian
+
+   ברירת המחדל היא 'me': היא הבחירה הנפוצה ביותר, והיחידה שאינה
+   דורשת למלא דבר. היא נשענת על הכתובת שבחשבון, ו-beneContinue
+   חוסמת כשאין כזאת במקום לשמור רגע בלי מורשה. */
+let beneMode='guardian',whoMode='me';
 const WHO_MAP={self:['mine','self'],me:['mine','guardian'],
                other:['mine','guardian'],parent:['kin','guardian']};
 function pickWho(el,w){
@@ -4304,7 +4308,7 @@ function startCreate(){
   /* every new planting starts from a clean sheet, including the designation choice */
   const u=document.getElementById('c-undecided');
   if(u){u.checked=false;toggleDesig(u);}
-  whoMode='self';beneMode='self';famMode='mine';
+  whoMode='me';beneMode='guardian';famMode='mine';
   /* לפי data-w ולא לפי מיקום. הסימון נקבע כאן לפי i===0, כלומר הוא
      נשען על כך שברירת המחדל היא האפשרות הראשונה — ומרגע ש"אני, עבורו"
      עלתה לראש, הכפתור המסומן היה "אני" בעוד whoMode נשאר 'self'.
@@ -4477,7 +4481,7 @@ function paySummaryBody(){
     return;
   }
   txt('py-h','זה מה שייפתח');
-  txt('py-sub','כך הנטיעה תיראה ברשימה שלך, ומכאן היא נעולה עד המועד.');
+  txt('py-sub','כך תיראה הנטיעה במסך ההשקעות שלי, ומכאן היא צפויה לגדול עד הרגע המיוחל.');
   txt('py-icon',preview.icon);
   txt('py-title',preview.title);
   document.getElementById('py-ownrow').style.display='flex';
