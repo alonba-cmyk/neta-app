@@ -1389,7 +1389,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0a36691';
+window.NETA_BUILD = '7bd6f76';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -10510,17 +10510,17 @@ function fuPickHTML(items,sel){
 }
 /* מרכוז הנבחר. הריפוד הוא מה שמאפשר לו להגיע למרכז גם כשהוא בקצה,
    ולכן השורה נגללת גם כששלושה נכנסים בלי גלילה — בדיוק כמו באינסטגרם.
-   בנהנה אחד אין מה למרכז, והוא נשאר בימין כמו שהיה. */
+
+   גם בנהנה אחד. קודם הוא נשאר בימין, וזה נראה שבור: הפרצוף בימין
+   והמספרים שמתחתיו ממורכזים — שני צירים על מסך אחד. וזה גם היה
+   המצב היחיד שבו המסך מתנהג אחרת לפי כמה ילדים יש, כלומר דבר שאי
+   אפשר ללמוד. עכשיו יש ציר אחד בכל מצב. */
 let fuPickDrawn=false;
 function fuCenterPick(){
   const row=document.getElementById('fu-pick');
   if(!row||!row.clientWidth)return;
-  const items=row.querySelectorAll('.fu-item');
   const one=row.querySelector('.fu-item');
-  if(items.length<3||!one){
-    row.style.paddingInlineStart='18px';row.style.paddingInlineEnd='18px';
-    row.scrollLeft=0;fuPickDrawn=true;return;
-  }
+  if(!one){fuPickDrawn=true;return}
   const pad=Math.max(18,Math.round(row.clientWidth/2-one.offsetWidth/2));
   row.style.paddingInlineStart=pad+'px';
   row.style.paddingInlineEnd=pad+'px';
