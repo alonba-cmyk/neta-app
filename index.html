@@ -400,15 +400,36 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   line-height:1;white-space:nowrap;font-variant-numeric:tabular-nums}
 .duo .n.fut{color:var(--sun-soft)}
 .duo .l{font-size:11.5px;color:var(--tx-2);margin-top:7px;line-height:1.5}
-/* המסך הזה מציג נהנה אחד, והפרצוף שמעליו מתמרכז. שני חצאים שנמתחים
-   על כל הרוחב דוחפים את המספרים שלו לשתי הפינות, כלומר פותחים מחדש
-   את המרחק שהמרכוז בא לסגור. לכן כאן הזוג ממורכז ונגזר מהתוכן.
-   ‏#s-duo ולא .duo: הקלאס גלובלי, והכלל הזה נכון למסך הזה בלבד. */
-/* ‏stretch ולא flex-start: שני החצאים באותו גובה גם אם שורה אחת
-   ריקה, ולכן הקו המפריד ביניהם מגיע עד הסוף בשניהם. */
-#s-duo{justify-content:center;text-align:center;align-items:stretch}
-#s-duo>div{flex:0 1 auto}
-#s-duo>div+div{margin-inline-start:15px;padding-inline-start:15px}
+/* המסך הזה מציג נהנה אחד, והפרצוף שמעליו מתמרכז. שני החצאים מקבלים
+   רוחב זהה והזוג ממורכז, ולכן הגבול ביניהם — הקו המפריד — נוחת על
+   מרכז המסך בדיוק.
+
+   קודם כל חצי נגזר מהתוכן שלו, ו"כ-69,528 ₪" רחב מ-"480 ₪": נמדד,
+   ‏93 מול 146, והקו יצא 19 פיקסלים מימין למרכז.
+
+   ‏fit-content עם שני מסלולי 1fr הוא מה שנותן "שניהם ברוחב הרחב":
+   הרוחב הפנימי של הגריד נגזר מהמסלול הגדול, ושני מסלולים שווים
+   מקבלים אותו. ולא grid-template-columns:1fr 1fr על כל הרוחב — זה
+   מקבע כל חצי לחצי מסך, ואז "כ-128,970 ₪" אינו נכנס בו. fitm בודק
+   בדיוק את זה.
+
+   הריפוד 13 ולא 15: בסכום גדול שני החצאים יחד מגיעים לרוחב הזמין,
+   ושני פיקסלים לכל צד הם ההפרש בין להיכנס לבין לגלוש.
+
+   ו-minmax(min-content,1fr) ולא 1fr לבדו: בסכום של שש ספרות שני
+   חצאים שווים כבר אינם נכנסים במסך, ואז 1fr מכווץ את המסלול מתחת
+   לטקסט והמספר גולש החוצה. עם רצפת min-content המסלול הזהוב שומר
+   על מה שהוא צריך, והירוק הוא שמתכווץ — כלומר בקצה הזה הקו זז מעט
+   מהמרכז, אבל שום מספר אינו נחתך. בכל שאר המצבים שניהם שווים והקו
+   במרכז.
+
+   ‏#s-duo ולא .duo: הקלאס גלובלי, והכלל הזה נכון למסך הזה בלבד.
+   ‏stretch כדי ששני החצאים יהיו באותו גובה והקו יגיע עד הסוף. */
+#s-duo{display:grid;grid-template-columns:minmax(min-content,1fr) minmax(min-content,1fr);
+  align-items:stretch;width:fit-content;max-width:100%;margin-inline:auto;text-align:center}
+#s-duo>div{min-width:0}
+#s-duo>div:first-child{padding-inline-end:13px}
+#s-duo>div+div{margin-inline-start:0;padding-inline-start:13px}
 #s-duo>div+div>*{padding-inline-start:0}
 /* השורה השנייה מימין קיימת כדי ששני הצדדים יהיו באותו גובה: הכיתוב
    הזהוב נושא מועד ונשבר לשתי שורות, והירוק היה שורה אחת. */
@@ -1368,7 +1389,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0597cb5';
+window.NETA_BUILD = '0a36691';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
