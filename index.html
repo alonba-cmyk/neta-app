@@ -1389,7 +1389,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7bd6f76';
+window.NETA_BUILD = 'b514696';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6359,11 +6359,9 @@ function openPerson(i){
   /* אותו גרף בדיוק שהיה במסך הרגע — עם המחוון והנבט שנע על העקומה —
      רק שהוא מוזן במספרים של האדם הזה. זה מה שהופך אותו לנכון: עד כה
      הוא תיאר את הרגע כולו והוצג ליד השם של אדם אחד. */
-  const wr=w[11]!=null?Number(w[11]):null;
-  buildChart(Object.assign({},p,{now:accrued/100,end:Math.max(accrued,proj)/100,
-                                 monthly:(w[6]!=null?Number(w[6])/100:0),
-                                 rate:wr!=null?wr:p.rate,
-                                 mode:wr!=null?(wr>0?'safe':'keep'):p.mode}));
+  const pw=personPlanting(p,w);
+  buildChart(personPlanting(p,w,{now:accrued/100,end:Math.max(accrued,proj)/100,
+                                 monthly:(w[6]!=null?Number(w[6])/100:0)}));
   const sl=document.getElementById('d-time');
   if(sl)sl.value=0;
   const md0=document.getElementById('d-medal');
@@ -6383,7 +6381,7 @@ function openPerson(i){
     /* מסלול לא ידוע אינו "ללא ריבית". בהדגמה אין rate, ולומר שם "יישמר
        כמו שהוא" ליד צפי שגדל היה סתירה על אותו מסך — בדיוק הסוג של
        כיתוב שנשמע נכון ואינו. */
-    const tl=plantTrackLabel(p);
+    const tl=plantTrackLabel(pw);
     const trow=document.getElementById('pv-track').parentNode;
     trow.style.display=tl?'':'none';
     if(tl)txt('pv-track',tl);
@@ -6421,6 +6419,20 @@ function paintPersonActs(){
       '<button class="btn ghost" onclick="go(5)">חזרה</button></div>';
 }
 /* המסלול של הנטיעה, לא של טופס ההקמה: כל הכסף ברגע גדל באותו קצב. */
+/* הנטיעה כפי שהיא נראית לאדם אחד: הקצב שלו ולא זה של הנטיעה.
+   ‏w[11] מגיע מ-planting_tracks (0066), והנטיעה נושאת רק את ברירת
+   המחדל שנקבעה כשהיא נפתחה.
+
+   זה נבנה פעם אחת ומשמש גם את הגרף וגם את שורת המסלול. קודם כל אחד
+   מהם בנה לעצמו: הגרף קיבל את הקצב של האדם ושורת המסלול את של
+   הנטיעה, ולכן גל ראתה "התחזית מבוססת על כ-9%" מעל "מסלול · פיקדון
+   נעול · כ-3.5% בשנה" — שני מספרים סותרים על אותו כרטיס. */
+function personPlanting(p,w,extra){
+  const wr=(w&&w[11]!=null)?Number(w[11]):null;
+  return Object.assign({},p,
+    {rate:wr!=null?wr:p.rate, mode:wr!=null?(wr>0?'safe':'keep'):p.mode},
+    extra||{});
+}
 function plantTrackLabel(p){
   if(p.mode==='keep')return 'יישמר כמו שהוא (ללא ריבית)';
   if(p.rate==null)return '';           // לא ידוע — לא מוצג
@@ -6593,7 +6605,11 @@ function paintDetail(key,p){
     ? ('רק אתה הפקדת כאן עד עכשיו. מי שתפתחו לו את הרגע יופיע ברשימה הזאת, בלי לראות את הסכומים שלכם.')
     : 'רק אתה נוטע כאן. מי שתפתח לו את הרגע יופיע ברשימה הזאת, בלי לראות את הסכומים שלך.');
   buildActions(p);
-  buildChart(p);
+  /* בנוטע יחיד הגרף כבר נבנה ב-paintSoloMoney, מהמספרים ומהקצב של
+     אותו אדם. קריאה שנייה כאן ציירה אותו מחדש מהנטיעה, כלומר דרסה
+     את הקצב האישי — ושורת ההסתייגות שמתחת לגרף חזרה לומר את הקצב
+     של הנטיעה בזמן ששורת המסלול שלידה אמרה את של האדם. */
+  if(!alone)buildChart(p);
   dTime.max=Math.max(1,p.yl);dTime.value=0;
   /* בכניסה הנטע נוחת ישר במקומו — המעברים שמורים לגרירה בציר הזמן. */
   const md=document.getElementById('d-medal');
@@ -6611,11 +6627,9 @@ function paintSoloMoney(p){
   const ratio=(p.now>0&&p.end>p.now)?(p.end/p.now):1;
   const proj=w[5]!=null?Number(w[5]):Math.round(accrued*ratio);
   const mon=w[6]!=null?Number(w[6]):(p.monthly!=null?Math.round(p.monthly*100):null);
-  const wr=w[11]!=null?Number(w[11]):null;
-  buildChart(Object.assign({},p,{now:accrued/100,end:Math.max(accrued,proj)/100,
-                                 monthly:mon?mon/100:0,
-                                 rate:wr!=null?wr:p.rate,
-                                 mode:wr!=null?(wr>0?'safe':'keep'):p.mode}));
+  const pw=personPlanting(p,w);
+  buildChart(personPlanting(p,w,{now:accrued/100,end:Math.max(accrued,proj)/100,
+                                 monthly:mon?mon/100:0}));
   const sl=document.getElementById('d-time');
   if(sl)sl.value=0;
   const md=document.getElementById('d-medal');
@@ -6641,7 +6655,7 @@ function paintSoloMoney(p){
   if(mon)txt('pv-mon',shekel(mon)+' בכל חודש');
   /* מסלול לא ידוע אינו "ללא ריבית", ולכן השורה יורדת ולא מציגה מקף.
      בהדגמה אין rate לחלק מהרגעים. */
-  const tl=plantTrackLabel(p);
+  const tl=plantTrackLabel(pw);
   const trow=document.getElementById('pv-track')&&
              document.getElementById('pv-track').closest('.stat');
   if(trow)trow.style.display=tl?'flex':'none';
