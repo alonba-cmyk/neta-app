@@ -1301,7 +1301,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '981582e';
+window.NETA_BUILD = '2d31adf';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1714,19 +1714,21 @@ window.NETA_CONFIG = {
     <input type="text" id="c-bene" placeholder="אימייל או טלפון של הנהנה">
   </div>
   <div id="c-guard" style="display:none">
-    <div class="field"><label id="c-gnamelbl">שם המורשה</label><input type="text" id="c-gname" placeholder="למשל: מיכל כהן, אמא של דניאל"></div>
+    <div class="field"><label id="c-gnamelbl">שם המורשה</label><input type="text" id="c-gname" oninput="guardFine()" placeholder="למשל: מיכל כהן, אמא של דניאל"></div>
     <!-- תעודת הזהות ירדה מכאן. היא נחוצה רק בפדיון, בעוד עשר שנים, אי
          אפשר לאמת אותה בלקוח, ומעולם לא הייתה לה עמודה — כלומר היא
          נגבתה ונזרקה. הכתובת, לעומתה, דרושה כבר במועד: לשם יישלח קוד
          הפדיון, בדיוק כמו במסלול שבו הנהנה פודה בעצמו. -->
     <div class="field"><label id="c-gcontlbl">לאן יישלח הקוד למימוש ההשקעה במועד המיוחל</label>
-      <input type="email" inputmode="email" autocomplete="email" id="c-gcontact" placeholder="אימייל של המורשה">
-      <p class="fine" style="margin-top:6px" id="c-gcontfine">אימייל, לא טלפון. לפיו נמצא את החשבון שלו כדי לשלוח את האישור.</p></div>
-    <!-- המשפט הזה נוסף רק עכשיו, כשהאישור באמת קיים. הוא לא נכתב יחד
-         עם השדה כדי לא לחזור על התקלה שבגללה השדות האלה נגבו ונזרקו:
-         מסך שמבטיח דבר שאינו קורה. -->
-    <p class="fine" id="c-guardfine" style="color:var(--leaf-soft)">נשלח אליו אישור. עד שיאשר, הנטיעה שלך בלבד ואינה מופיעה אצלו.</p>
-    <p class="fine" id="c-acctfine">חשבון היעד יצטרך להיות על שמו. העברה לחשבון של אדם אחר לא תאושר.</p>
+      <input type="email" inputmode="email" autocomplete="email" id="c-gcontact"
+             oninput="guardFine()" placeholder="אימייל של המורשה"></div>
+    <!-- עובדה אחת: מה יקרה כשתלחץ "המשך". שתי הפסקאות האחרות ירדו.
+         "אימייל, לא טלפון" אמרה בשמונה מילים את מה שהתווית מעל השדה
+         אומרת, ו"חשבון היעד יצטרך להיות על שמו" כתובה מילה במילה
+         בקיפול "מה מגן על זה" שתי שורות מתחת — שם מקומה, כי היא כלל
+         פדיון ולא כלל של המסך הזה. המילה "אישור" הופיעה כאן ארבע
+         פעמים בשלוש שורות. -->
+    <p class="fine" id="c-guardfine" style="color:var(--leaf-soft)">יישלח אישור במייל. עד שיאשר, הנטיעה לא תופיע אצלו.</p>
   </div>
 
   </div><!-- /c-benefields -->
@@ -3266,7 +3268,7 @@ function setSex(el,x){
 /* מה שנשאר מוטה למין הנהנה אחרי שהכרטיסים ירדו. ‏c-selfp ו-c-guardp
    היו התיאורים שבתוכם, והם נאמרים היום בבורר עצמו. */
 function beneCopy(){
-  txt('c-acctfine','חשבון היעד יצטרך להיות על '+bs('שמו','שמה')+'. העברה לחשבון של אדם אחר לא תאושר.');
+  /* ‏c-acctfine ירדה מהמסך, ואיתה ההטיה למין הנהנה שהייתה בה. */
   if(document.getElementById('c-who'))whoCopy();
 }
 /* ties the projected total to what the occasion actually is, not just the date it lands on —
@@ -4207,9 +4209,16 @@ function beneFields(){
   const gn=document.getElementById('c-gname');
   if(gn)gn.placeholder=kin?'למשל: רון כהן, אבא של פיסטוק'
                           :'למשל: מיכל כהן, אמא של דניאל';
-  txt('c-guardfine',kin
-    ? 'נשלח אליו אישור. עד שיאשר, הרגע שלך בלבד ואינו מופיע אצלו.'
-    : 'נשלח אליו אישור. עד שיאשר, הנטיעה שלך בלבד ואינה מופיעה אצלו.');
+  guardFine();
+}
+/* השם שהוקלד בשדה שמעל נכנס למשפט, ולכן הוא נכתב מחדש בכל הקלדה
+   ולא רק בכניסה לפאנל. בלי שם המשפט נופל ל"יישלח אישור במייל",
+   שנכון גם הוא — ולא ל"יישלח אליו", שמנחש מגדר בלי צורך. */
+function guardFine(){
+  const kin=famMode==='kin';
+  const nm=firstName(fieldVal('c-gname'));
+  txt('c-guardfine','יישלח '+(nm?('ל'+nm+' '):'')+'אישור במייל. עד שיאשר, '+
+    (kin?'הרגע לא יופיע אצלו.':'הנטיעה לא תופיע אצלו.'));
 }
 /* creating a planting is three decisions, one per screen */
 let cStep=0;
