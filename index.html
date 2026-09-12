@@ -472,20 +472,9 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   font-variant-numeric:tabular-nums;line-height:1.3}
 .ncard{background:var(--s1);border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:9px;
   transition:border-color .16s;cursor:pointer}
-/* כל הכרטיסים ברשימה בגובה הגבוה שבהם. שם ארוך נשבר לשתי שורות —
-   "הטיול אחרי הצבא של דני" נשבר מ-360 ומטה, ובהגדלת טקסט כבר ב-375 —
-   והכרטיס שלו היה גבוה ב-18 פיקסל מכל השאר.
-
-   שתי הערות סותרות ישבו כאן: ליד .pc-nm כתוב שכותרת שנחתכת גרועה
-   מכותרת שנשברת, וליד .pc-dt כתוב "שורה אחת בדיוק, תמיד... אחרת שני
-   גבהים באותה רשימה". הגריד מיישב אותן: השם ממשיך להישבר, והרשימה
-   נשארת אחידה.
-
-   ‏grid-auto-rows:1fr ולא min-height על השם: כשאף שם אינו נשבר
-   הכרטיסים נשארים בדיוק בגובה שהיו, ואילו גובה קבוע היה מוסיף 18
-   פיקסלים לכל כרטיס תמיד. */
-#mi-list{display:grid;grid-auto-rows:1fr;gap:9px}
-#mi-list>.ncard{margin-bottom:0}
+/* גובה אחיד לכל הכרטיסים נוסה ב-f66aa1a ובוטל: שם שנשבר לשתי
+   שורות מותח את כל הרשימה, גם את הכרטיסים שאין להם מה לעשות עם
+   הגובה הזה. כרטיס גבוה מהאחרים עדיף על רשימה שכולה גבוהה. */
 .ncard:hover{border-color:var(--line-2)}
 .nc-top{display:flex;align-items:center;gap:8px}
 .peek{flex:0 0 auto;white-space:nowrap;text-align:right}
@@ -1337,7 +1326,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4736657';
+window.NETA_BUILD = '3e4eadb';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
