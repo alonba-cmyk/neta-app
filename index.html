@@ -421,17 +421,31 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* שורות הרגעים של מי שנבחר */
 .fu-mrow{display:flex;align-items:center;gap:9px;padding:8px 0;cursor:pointer}
 .fu-mrow+.fu-mrow{border-top:1px solid var(--rule)}
-.fu-mic{width:26px;height:26px;border-radius:9px;background:var(--leaf-bg);display:grid;
-  place-items:center;font-size:13px;flex-shrink:0}
-.fu-nm{font-size:12.5px;line-height:1.3}
-.fu-dt{font-size:9.5px;color:var(--tx-3);margin-top:2px}
+/* הרגע גדול מהנוטע שמתחתיו, ולא הפוך. הפרצוף היה 32 ועוד מסגרת 2,
+   כלומר 36, מול אייקון רגע של 26 — הפריט הכפוף גדול ב-38 אחוז מזה
+   שהוא כפוף לו, ולכן העין קראה שתי שורות שוות. עכשיו 30 מול 22. */
+.fu-mic{width:30px;height:30px;border-radius:10px;background:var(--leaf-bg);display:grid;
+  place-items:center;font-size:15px;flex-shrink:0}
+.fu-nm{font-size:14px;font-weight:500;line-height:1.3}
+.fu-dt{font-size:10px;color:var(--tx-3);margin-top:2px}
 .fu-amt{font-size:12.5px;font-weight:600;color:var(--leaf);
   font-variant-numeric:tabular-nums;flex-shrink:0}
 .fu-who{display:flex;align-items:center;gap:9px;margin-top:4px;padding:11px 0 4px;
   border-top:1px solid var(--rule)}
-.fu-who .fu-t{font-size:11px;color:var(--tx-2);line-height:1.5;flex:1;min-width:0}
-.fu-who .fu-t b{color:var(--tx);font-weight:500}
-.fu-go{font-size:11px;color:var(--leaf);white-space:nowrap;flex-shrink:0;cursor:pointer}
+.fu-who .fu-t{font-size:10.5px;color:var(--tx-3);line-height:1.5;flex:1;min-width:0}
+.fu-who .fu-t b{color:var(--tx-2);font-weight:500}
+.fu-go{font-size:10.5px;color:var(--leaf);white-space:nowrap;flex-shrink:0;cursor:pointer}
+/* ההקטנה ממוקדת ל-.fu-who ואינה נכתבת על .fx2: אותה מחסנית פרצופים
+   משרתת גם את כרטיס הנטיעה בבית (.pc-fc), ושם היא הפריט הראשי ואין
+   היררכיה לתקן. אותו כלל כמו ש-.es מוקדה לארבעה מזהים.
+
+   הרוחב והחפיפה נגזרים מהקוטר: שני עיגולים של 22 בחפיפה של 7 הם 37,
+   כמו ששניים של 32 בחפיפה של 11 היו 53. בלי זה העמודה שומרת 53 ונפער
+   אוויר בין הפרצוף לטקסט. */
+.fu-who .fx2{width:37px}
+.fu-who .fx2>span{width:22px;height:22px;border-width:1.5px}
+.fu-who .fx2>span+span{margin-right:-7px}
+.fu-who .fx2 .ov{font-size:9px}
 /* עמודת הצפי בכרטיס שבבית. הערך זהוב כי הוא כסף שצפוי, והכיתוב
    מתחתיו אפור כמו בכל שאר העמודות. */
 .pc-fc .g{font-size:11.5px;font-weight:600;color:var(--sun-soft);
@@ -1287,7 +1301,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6c0149b';
+window.NETA_BUILD = '981582e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
