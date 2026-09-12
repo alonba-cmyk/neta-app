@@ -1287,7 +1287,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd215cff';
+window.NETA_BUILD = '6c0149b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3067,7 +3067,7 @@ window.NETA_CONFIG = {
        height הגן היה יוצא נמוך בשליש. החיתוך הוא לתיבת הדיו כולל עובי
        הקו, והגובה מכוון לגובה הדיו של הנבט. נמדד בסריקת פיקסלים. -->
   <button class="tab on" onclick="openHome()"><span class="ic"><svg width="27.32" height="18.45" viewBox="2.3 8.6 19.4 13.1" aria-hidden="true"><use href="#ic-garden"/></svg></span><span class="lb"><span>ההשקעות</span><span>שלי</span></span></button>
-  <button class="tab" onclick="openFuture()"><span class="ic"><svg width="13" height="18.5" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>העתיד</span><span>שלנו</span></span></button>
+  <button class="tab" onclick="openFutureTab()"><span class="ic"><svg width="13" height="18.5" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>העתיד</span><span>שלנו</span></span></button>
   <button class="tab center" onclick="startCreate()"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg></span><span class="lb"><span>נטיעה</span></span></button>
   <button class="tab" onclick="openPeople()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-kin"/></svg></span><span class="lb"><span>הקרובים</span><span>שלי</span></span></button>
   <button class="tab" id="tab-act" onclick="go(9)"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></span><span class="lb"><span>פעילות</span></span></button>
@@ -10025,7 +10025,12 @@ function paintInvestments(){
   const cg=document.getElementById('mi-cntgrp');
   if(cg){
     cg.style.display=rows.length>1?'':'none';
-    txt('mi-cnt','ב'+hebCount(rows.length)+' רגעים');
+    /* ספרה ולא מילה, כאן בלבד: השורה הזאת היא רצף עובדות שכולן
+       מספרים ("1,260 ₪", "כ-182,512 ₪"), והמילה היא הפריט הארוך
+       היחיד בה. "בחמישה" נשברת לשורה שנייה מ-12.5px ומעלה, כלומר
+       בכל מכשיר עם הגדלת טקסט; "ב-5" מחזיקה עד 13.5. ‏hebCount
+       נשארת במילים בכותרת של "העתיד שלנו", ששם זו פרוזה. */
+    txt('mi-cnt','ב-'+rows.length+' רגעים');
   }
   /* הנקודה המפרידה שייכת למי שאינו ראשון בשורה. כשהראשון יורד, זו
      שאחריו הייתה פותחת את השורה בנקודה תלויה. ‏.nodot כבר קיים
@@ -10182,17 +10187,14 @@ function fuItems(own){
   });
   return out;
 }
-/* מי נבחר כשהמסך נפתח: מי שהרגע שלו הקרוב ביותר. הברירה המתבקשת
-   הייתה "הראשון ברשימה", אבל הרשימה ממוינת לפי מה שנפתח לאחרונה,
-   ולכן פתיחת נטיעה לנהנה חדש הייתה מזיזה את המסך ממנו בכל פעם. */
-function fuDefault(items){
-  let best=null;
-  items.forEach(function(it){
-    const n=nearestOf(it.rows);
-    if(n&&(!best||n.d<best.d))best={d:n.d,id:it.id};
-  });
-  return best?best.id:(items[0]&&items[0].id)||'';
-}
+/* מי נבחר כשהמסך נפתח: הראשון ברשימה, שהוא הנהנה של הנטיעה שנפתחה
+   לאחרונה.
+
+   קודם זה היה מי שהרגע שלו הקרוב ביותר, מתוך חשש שנטיעה לנהנה חדש
+   תזיז את המסך מכל בחירה. זה בדיוק מה שצריך לקרות: מי שהרגע נטעת
+   עבורו הוא מי שאתה חושב עליו כשאתה נכנס. בחירה ידנית אינה נדרסת,
+   כי fuDefault רצה רק כש-fuPick אינו קיים ברשימה. */
+function fuDefault(items){return (items[0]&&items[0].id)||''}
 let fuPick='';
 function pickFuture(id){fuPick=id;buildHomeSummary();}
 /* נתיבי התמונות שברשימה. הם נחתמים לפני הציור ולא בתוכו, ולכן
@@ -10310,6 +10312,11 @@ function openInvestments(){ paintInvestments(); go(14); }
    כי המסכים החליפו תפקיד ולא מיקום: כל go(N) בקובץ נשען על המספר. */
 function openHome(){ openInvestments(); }
 function openFuture(){ go(0); }
+/* הכניסה מהסרגל התחתון היא הכניסה הנקייה, והיא זו שמתחילה תמיד על
+   הראשון. ‏openFuture עצמה נשארת כפי שהיא, כי apExit קוראת לה אחרי
+   שקבעה את fuPick על הילד שזה עתה נוסף, וניקוי שם היה מוחק אותו.
+   ‏go אינו מצייר, ולכן הציור מפורש. */
+function openFutureTab(){fuPick='';buildHomeSummary();openFuture()}
 /* "חזרה למסך הבית" בכל הקובץ. מסך 0 היה הבית וכל go(0) התכוון אליו;
    מרגע שהבית הוא 14, קריאה ישירה ל-go(0) מחזירה את המשתמש לטאב
    הלא נכון. openFuture נשארה הקריאה היחידה שבאמת מתכוונת ל-0. */
