@@ -505,6 +505,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   overflow-wrap:anywhere}
 .pc-amt{font-size:13px;font-weight:600;color:var(--leaf);
   font-variant-numeric:tabular-nums;margin-top:4px}
+/* הסכום והצפי על שורה אחת. flex-wrap כדי שהמקרה הקיצוני יישבר
+   ולא יגלוש: נמדד ב-320 עד 430, כולל "נטעת 4,800 ₪ · צפי 694,528 ₪",
+   ואף אחד מהם אינו נשבר בפועל. baseline ולא center, כי שני גדלי
+   גופן ממורכזים זה מול זה נראים כמו שורה שנשמטה. */
+.pc-amt.withside{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.pc-sep{color:var(--tx-3);font-weight:400;font-size:11.5px}
+/* זהב הוא כסף שצפוי. כשאין צפי יושב כאן "100 ₪ בחודש" או "ללא
+   קבע" או שורת היעד, שאינם סכומים שמציגים אלא מצב, ולכן אפור. */
+.pc-side{font-size:11.5px;font-weight:600;color:var(--sun-soft)}
+.pc-side.dim{color:var(--tx-3);font-weight:400}
 /* שורת מצב במקום סכום. ירוק אומר כסף שקיים, וכאן עוד אין. */
 .pc-amt.q{color:var(--tx-2);font-weight:500}
 .pc-dt{font-size:10.5px;color:var(--tx-3);margin-top:4px}
@@ -1326,7 +1336,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '3e4eadb';
+window.NETA_BUILD = '36d6c45';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -9443,17 +9453,38 @@ function plantCard(o){
      כרטיס שקרוב פתח היה גבוה מכרטיס שפתחתי בעצמי — שני גבהים באותה
      רשימה. מי שאין לו "נפתח על ידי" מקבל את המועד, שהוא ממילא הפרט
      החשוב ביותר ברגע אחרי הסכום, ולא הופיע במסך הבית מעולם. */
-  const dt=o.designated===false ? 'עדיין לא יועדה'
+  let dt=o.designated===false ? 'עדיין לא יועדה'
     : (o.note || (o.by?('נפתח על ידי '+o.by):'') || o.when || '');
+  /* בגרסת nofaces הצפי ישב בעמודה משלו בצד השמאלי, והעמודה לקחה
+     74 פיקסלים מהשם. שם הוא לא שרד: "הרכב הראשון של ארי טסט" דורש
+     145, ועמודת השם היא 143 ב-360 ו-128 ב-344, ולכן הוא נשבר לשתי
+     שורות והכרטיס שלו חרג מכל השאר. בלי העמודה השם מקבל 246 ב-390
+     ו-180 ב-320, וזה נפתר מהשורש.
+
+     והוא נוחת ליד הסכום ולא ליד שורת "עבור מי": אותה שורה אומרת של
+     מי הרגע, והצפי מדבר על כסף. ליד "נטעת 300 ₪" הוא באותו נושא —
+     ירוק מה שקיים, זהב מה שצפוי.
+
+     בגרסת הפרצופים העמודה נשארת: אי אפשר להזיז דמויות לשורת טקסט. */
+  /* בכרטיס שעוד לא הופקד בו אין סכום אלא משפט מצב, ולכן אין מה
+     לזווג לו: "הוזמנת, עוד לא נטעת · עד ספטמבר 2036" הוא שני חצאי
+     משפט, והוא גם היחיד שגלש. נמדד ב-344: הוא דורש 214 פיקסלים
+     והמכל הוא 202. המועד יורד לשורת המשנה, ששם הוא באותו נושא כמו
+     "עבור המשפחה שלי" — שניהם הקשר של הרגע ולא כסף. */
+  const hasNum=!o.amountText;
+  const side=o.nofaces&&hasNum
+    ? (o.capTop
+        ? '<span class="pc-sep">·</span><span class="pc-side">צפי '+o.capTop+'</span>'
+        : (o.cap?'<span class="pc-sep">·</span><span class="pc-side dim">'+o.cap+'</span>':''))
+    : '';
+  if(o.nofaces&&!hasNum&&o.cap)dt=dt?(dt+' · '+o.cap):o.cap;
   return '<div class="ncard pc" onclick="openDetail(\''+o.key+'\')">'+
     '<div class="pc-ic">'+(o.icon||'🌱')+'</div>'+
     '<div class="pc-x"><div class="pc-nm">'+o.name+'</div>'+
-      '<div class="pc-amt'+(o.amountText?' q':'')+'">'+
-        (o.amountText||(o.verb+' '+shekel(o.amount)))+'</div>'+
+      '<div class="pc-amt'+(o.amountText?' q':'')+(side?' withside':'')+'">'+
+        '<span>'+(o.amountText||(o.verb+' '+shekel(o.amount)))+'</span>'+side+'</div>'+
       (dt?'<div class="pc-dt">'+dt+'</div>':'')+'</div>'+
-    (o.nofaces
-      ? '<div class="pc-fc">'+(o.capTop?'<span class="g">'+o.capTop+'</span>':'')+
-        '<i>'+(o.cap||'&nbsp;')+'</i></div>'
+    (o.nofaces?''
       : '<div class="pc-fc">'+faceStack(o.people)+faceCap(o.cap)+'</div>')+
   '</div>';
 }
