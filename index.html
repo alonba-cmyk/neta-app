@@ -789,7 +789,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   box-shadow:0 0 0 3px var(--bg),0 0 0 6px rgba(127,192,136,.14);
   transition:right .3s cubic-bezier(.22,.85,.3,1),top .3s cubic-bezier(.22,.85,.3,1)}
 .dm-medal.snap{transition:none}
-.dm-medal.idle{animation:sproutPulse 2.6s ease-in-out infinite;will-change:transform}
+.dm-medal.idle{animation:sproutPulse 2.9s ease-in-out infinite}
 /* המחוון פרוש על כל שטח התרשים ושקוף: מה שנגרר בעין הוא הנטע שעל הקו. */
 .dm-chart input[type=range]{position:absolute;inset:0;width:100%;height:100%;margin:0;
   -webkit-appearance:none;appearance:none;background:none;cursor:ew-resize;opacity:0}
@@ -818,17 +818,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #d-who .who-act{padding-top:12px}
 .d-line{font-size:12px;color:var(--tx-2);line-height:1.6;margin-top:26px;text-align:center;
   padding:0 6px;text-wrap:balance}
-/* הנבט נושם עד הגרירה הראשונה, כדי שיהיה ברור שאפשר לתפוס אותו.
-   קודם הייתה כאן הילה בלבד, שנעה בין 14% ל-4.5% אטימות על רקע כהה —
-   כלומר אפקט שקיים בקוד ואינו נראה בעין. הנשימה היא בעיקר בגודל
-   הנבט עצמו: 26 פיקסל שגדלים ל-28.6, שינוי שמורגש בלי לצעוק.
-
-   ‏transform פנוי כאן: המחוון ממוקם ב-right/top ולא בתזוזה. */
+/* פעימה בגודל (scale עד 1.1) נוסתה ובוטלה: היא נקראה כקפיצה ולא
+   כנשימה. כאן חוזרת ההילה המקורית, עד שנבחר הניסוח הנכון. */
 @keyframes sproutPulse{
-  0%,100%{transform:scale(1);
-    box-shadow:0 0 0 3px var(--bg),0 0 0 6px rgba(127,192,136,.16)}
-  50%{transform:scale(1.1);
-    box-shadow:0 0 0 3px var(--bg),0 0 0 11px rgba(127,192,136,.07)}
+  0%,100%{box-shadow:0 0 0 3px var(--bg),0 0 0 6px rgba(127,192,136,.14)}
+  50%{box-shadow:0 0 0 3px var(--bg),0 0 0 12px rgba(127,192,136,.045)}
 }
 /* מי שביקש פחות תנועה מקבל את הנבט במנוחה, בלי לאבד את הטבעת. */
 @media (prefers-reduced-motion:reduce){
@@ -1401,7 +1395,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0f08d98';
+window.NETA_BUILD = 'b220f08';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
