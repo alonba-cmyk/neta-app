@@ -877,7 +877,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .relbox.on{background:var(--leaf);border-color:var(--leaf)}
 .relbox svg{display:block}
 .rx.done{background:transparent;border-color:var(--line);color:var(--tx-3)}
-.cbr.ghost{opacity:.4;filter:saturate(.5);pointer-events:none}
 .cbr.pend{opacity:.6}
 .cbp{font-size:10.5px;color:var(--tx-3);flex-shrink:0}
 
@@ -1409,7 +1408,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '272329e';
+window.NETA_BUILD = '68ce9f8';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2096,10 +2095,9 @@ window.NETA_CONFIG = {
   <button class="btn ghost" style="margin-top:8px" id="inv-copy" onclick="copyInviteLink()">העתק קישור פתוח</button>
   <p class="fine" style="margin-top:9px">הזמנה בשם נשלחת לאדם אחד ומצרפת אותו מיד. הקישור הפתוח פעיל 24 שעות, מצרף מיד, וכל מי שנכנס דרכו מופיע לכם בשמו בפעילות.</p>
 
-  <!-- "הזמנה מהירה מהקרובים שלך" ירדה מכאן. inviteExtraRows נקראה
-       פעמיים בקובץ, כאן ובכרטיס הנטיעה, ולכן אלה היו בדיוק אותן שתי
+  <!-- "הזמנה מהירה מהקרובים שלך" ירדה מכאן: היא הייתה בדיוק אותן שתי
        שורות שהמשתמש הרגע לחץ מעליהן. מי שרוצה שם ברשימה מגיע עכשיו
-       ישר לרשימה המלאה. -->
+       ישר לרשימה המלאה. (ההצעות ירדו מאז גם מכרטיס הנטיעה.) -->
 
   <button class="btn ghost gap-s" id="inv-back" onclick="backFromInvite()">חזרה לנטיעה</button>
 </section>
@@ -6593,7 +6591,7 @@ function paintDetail(key,p){
     (w[8]==null?'':'<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12">'+
       '<use href="#chev"/></svg></span>')+'</div>';
   }).join('')+
-    (p.mine&&p.shared ? inviteExtraRows(p) : '');
+    (p.mine&&p.shared ? invitedHereRows(p) : '');
   /* מי שאינו בעל הנטיעה רואה עכשיו גם את הסכום של מי שפתח אותה (0034),
      ולכן המשפט "הקרובים רואים זה את זה בלי סכומים" נעשה אצלו לא מדויק. */
   /* בנתוני ההדגמה אין is_owner, ושם mine הוא המקור היחיד. */
@@ -10880,62 +10878,31 @@ function buildActions(p){
     }
   }
 }
-/* מי כבר שותף, ומה מוצע מתחת לזה — לא נגזר מהמצב של הנטיעה בלבד, אלא גם
-   מפנקס הקרובים שלך: אין קרוב שמור בכלל הוא בדיוק הרגע שהעידוד הכי נחוץ
-   (דמויות דוגמה מוחשכות, לא פונקציונליות — אותו עיקרון כמו מסכים ריקים
-   אחרים). יש קרוב שעוד לא בנטיעה הזו — שורה אמיתית עם כפתור שמזמין אותו
-   בפועל. וכשכולם שכבר שמורים אצלך כבר שותפים — אין מה להוסיף בכוח. */
-function inviteExtraRows(p){
-  if(!relatives.length){
-    return [['av-granny','סבתא רחל'],['av-uncle','דוד יוסי']].map(function(g){
-      return '<div class="cbr ghost"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+g[0]+'"/></svg></div>'+
-        '<span class="cbn">'+g[1]+'</span><span class="rx">הזמן</span></div>';
-    }).join('');
-  }
+/* "מי נוטע כאן" הוא מי שקשור לרגע הזה, ותו לא: מי שכבר שותף (השורות
+   מעל), ומי שהוזמן דווקא אליו וממתין לתשובה. הצעות מפנקס הקרובים ירדו
+   מכאן. קרוב שלא הזמנתי לרגע הזה אינו נוטע בו, ושורה שלו בתוך הרשימה
+   נקראה כאילו הוא כבר חלק ממנה: אור הופיע תחת "מי נוטע כאן" בלי שאיש
+   פנה אליו. גם שתי דמויות ההדגמה שהופיעו כאן כשאין קרובים שמורים ירדו,
+   מאותה סיבה בדיוק ובגרסה גרועה יותר: הן אנשים שאינם קיימים.
+   מי שרוצה להזמין עושה זאת בכפתור שמתחת לרשימה, שנמצא שם בכל מצב. */
+function invitedHereRows(p){
   const inNames=p.who.map(function(w){return w[1]});
-  /* מי שהוזמן דווקא לרגע הזה מול מי שרק אפשר להזמין. עד כה שניהם
-     נראו זהים והוצעו ב"הזמן", ולכן רגע שהוזמנו אליו שלושה אנשים
-     נראה כמו רגע שלא הוזמן אליו איש: אין במסך שום עדות לכך שמשהו
-     בדרך. */
-  const asked=[],could=[];
-  relatives.forEach(function(r,i){
-    if(!r.contact||inNames.indexOf(r.name)>=0)return;
-    const here=r.status==='invited'&&
-      (r.invitedTo||[]).indexOf(p.key)>=0;
-    (here?asked:could).push(i);
-  });
-  const row=function(i,waiting){
-    const r=relatives[i];
+  return relatives.map(function(r,i){
+    if(!r.contact||inNames.indexOf(r.name)>=0)return '';
+    if(r.status!=='invited'||(r.invitedTo||[]).indexOf(p.key)<0)return '';
     /* בלי סכום, גם לא אפס ולא `·`: מספר בשורה הזאת נקרא כאילו הפקיד,
        וזה בדיוק ההפך ממה שהיא אומרת. */
-    const sub=waiting
-      ? ('הוזמן · ממתין ל'+(r.g==='f'?'תשובתה':'תשובתו'))
-      : ('מהקרובים שלך · עדיין '+(r.g==='f'?'לא הצטרפה':'לא הצטרף'));
-    /* גם כאן השורה של מי שכבר הוזמן הייתה מתה, ודווקא כאן עומדים
-       כשרוצים לדחוף אותה: זה המסך של הרגע עצמו. */
-    const act=waiting
-      ? (canResend(r,p.key)
-          ? '<span class="rx" onclick="resendInvite('+i+',\''+p.key+'\')">שלח שוב</span>' : '')
-      : '<span class="rx" onclick="quickInvite('+i+')">הזמן</span>';
+    const f=r.g==='f';
+    const act=canResend(r,p.key)
+      ? '<span class="rx" onclick="resendInvite('+i+',\''+p.key+'\')">שלח שוב</span>' : '';
     return '<div class="cbr pend"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+(r.av||'av-granny2')+'"/></svg></div>'+
-      '<span class="cbn">'+r.name+'<i>'+sub+'</i></span>'+act+'</div>';
-  };
-  /* מי שכבר הוזמן קודם, והצעות ממלאות את מה שנשאר עד שתיים. */
-  return asked.map(function(i){return row(i,true)}).join('')+
-    could.slice(0,Math.max(0,2-asked.length)).map(function(i){return row(i,false)}).join('');
+      '<span class="cbn">'+r.name+'<i>'+(f?'הוזמנה':'הוזמן')+' · ממתין ל'+(f?'תשובתה':'תשובתו')+'</i></span>'+
+      act+'</div>';
+  }).join('');
 }
-/* השורה הקבועה בתחתית "מי השקיע" — מי שלא ברשימת הקרובים השמורים,
-   או שרוצים פשוט לפתוח את מסך ההזמנה המלא. נשארת בכל מצב, כולל כשאין
-   אף קרוב שמור (השורות מעליה מוחשכות ולא לחיצות). */
-/* הזמנה ישירה משורת "מי כבר שותף" — אותו נתיב שליחה בדיוק כמו מהקרובים
-   שלי, בלי לעבור דרך הבחירה מהרשימה. */
-function quickInvite(i){
-  const r=relatives[i];
-  if(!r||!r.contact){toast('חסרים פרטי קשר');return}
-  pickedPlant=cur;
-  inviteFromPlanting=true;
-  sendInvite(r);
-}
+/* הכפתור הקבוע בתחתית "מי נוטע כאן" — הדרך להזמין, לכל אדם, בין אם
+   הוא בפנקס הקרובים ובין אם לא. נשאר בכל מצב, וגם כשהרשימה מעליו
+   מחזיקה שורה אחת בלבד: זה מה שאומר שאפשר להוסיף. */
 /* an invite card built from the planting itself — never from a fixed one */
 /* רשימת מי שכבר השקיע ירדה מכאן: היא מוצגת במסך הנטיעה שממנו מגיעים,
    ולכן הייתה כפילות. נשאר רק החצי השני שלה, שהוא קיצור דרך לפעולה. */
