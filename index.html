@@ -173,8 +173,22 @@ input:focus,select:focus,textarea:focus{outline:1px solid var(--leaf);outline-of
 .opt b{font-size:13px;font-weight:500}.opt p{font-size:11px;color:var(--tx-2);margin-top:4px;line-height:1.5}
 .opt .rate{font-size:11.5px;color:var(--tx-3)}
 .opt.ben,.opt.eb-approve{min-height:92px;display:flex;flex-direction:column;justify-content:center}
-.opt[data-m]{min-height:84px;display:flex;flex-direction:column;justify-content:center}
+/* אין כאן min-height. הוא היה 84px, והתוכן הוא כותרת ושורה: מדוד,
+   הכרטיס יורד ל-67 והמסך כולו מ-1,065 ל-1,021. הכרטיסים מוערמים
+   אנכית ולכן גובה שווה ביניהם אינו דרישה, בניגוד לשורת הכרטיסים
+   ב-#mi-list שבה הם זה לצד זה. */
 .stack{display:flex;flex-direction:column;gap:7px}
+#trk-row{display:flex;align-items:center;gap:9px;width:100%;font-family:inherit;color:var(--tx);
+  text-align:right;border:1px solid var(--line);border-radius:11px;padding:12px 13px;
+  background:var(--s1);cursor:pointer;transition:.15s}
+#trk-row:hover{border-color:var(--line-2)}
+#trk-row .tt{flex:1;min-width:0}
+#trk-row .tt b{font-size:13px;font-weight:500}
+#trk-row .tt i{font-style:normal;font-size:11.5px;color:var(--tx-3);margin-right:7px}
+#trk-row .tch{flex:0 0 auto;font-size:11.5px;color:var(--leaf)}
+#sh-acts .trkpick{display:block;width:100%;font-family:inherit;color:var(--tx);
+  text-align:right;margin-bottom:7px}
+#sh-acts .trkpick+.btn{margin-top:7px}
 .tag{font-size:9.5px;background:var(--leaf-bg);color:var(--leaf);padding:2px 6px;border-radius:5px;border:1px solid #2A4530}
 .pill{font-family:inherit;font-size:12.5px;padding:9px 12px;border-radius:9px;border:1px solid var(--line);
   background:var(--s1);color:var(--tx-2);cursor:pointer;transition:.15s}
@@ -1317,7 +1331,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f66aa1a';
+window.NETA_BUILD = '67bc98b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1773,14 +1787,14 @@ window.NETA_CONFIG = {
 <section class="screen" data-name="השקעה">
   <div class="row gap"><div class="dot g" id="ct-icon">🎂</div><div><div class="title" id="ct-title">השקע עבור דניאל</div><div class="meta" id="ct-meta">בר מצווה · המועד המיוחל אוגוסט 2032</div></div></div>
   <p class="sticky-sum" id="amt-sticky"><span id="amt-sticky-txt"></span></p>
-  <p class="eyebrow" id="eb-freq">1 · כל חודש או פעם אחת</p>
+  <p class="eyebrow" id="eb-freq">כל חודש או פעם אחת</p>
   <div class="two gap"><button class="pill" data-f="m" onclick="setFreq('m')">כל חודש</button><button class="pill" data-f="l" onclick="setFreq('l')">סכום חד פעמי</button></div>
   <p class="hint" id="freq-stop-hint" style="margin:-2px 0 10px">אפשר לעצור את ההפקדה בכל רגע.</p>
   <div id="panel-m" class="field"><div class="row"><input type="range" id="amt-m" min="20" max="1000" step="10" value="100"><b id="out-m" style="min-width:62px;text-align:left;font-size:13.5px">100 ₪</b></div></div>
   <div id="panel-l" class="field" style="display:none"><div class="row"><input type="range" id="amt-l" min="100" max="30000" step="100" value="1000"><b id="out-l" style="min-width:74px;text-align:left;font-size:13.5px">1,000 ₪</b></div></div>
   <div class="hero" id="hero"><p class="hero-label" id="hero-label">בחר למטה מה יקרה לכסף עד אז</p><p class="hero-label" id="hero-mid" style="display:none"></p><p class="hero-num" id="hero-num">·</p><p class="hero-sub" id="hero-sub"></p></div>
 
-  <p class="eyebrow" id="eb-term" style="margin-top:20px">2 · מתי תרצה לקצור את הפירות?</p>
+  <p class="eyebrow" id="eb-term" style="margin-top:20px">מתי תרצה לקצור את הפירות?</p>
   <div class="chips" id="c-terms">
     <button onclick="setTerm(this,5)">5 שנים</button>
     <button onclick="setTerm(this,10)">10 שנים</button>
@@ -1793,7 +1807,7 @@ window.NETA_CONFIG = {
   </div>
   <p class="fine" id="c-datehint" style="margin:8px 0 16px"></p>
 
-  <p class="eyebrow" id="eb-mode">3 · מה יקרה לכסף עד אז</p>
+  <p class="eyebrow" id="eb-mode">מה יקרה לכסף עד אז</p>
   <!-- בהפקדה לרגע קיים: המסלול שנבחר כשהרגע נפתח הוא ברירת המחדל, ולא
        הכלל. הכסף של כל נוטע גדל לפי מה שהוא בחר (0066). -->
   <p class="fine" id="amt-track" style="display:none;margin:-4px 0 11px"></p>
@@ -1801,18 +1815,29 @@ window.NETA_CONFIG = {
        ולכן הסדר כאן הוא החלטת עיצוב בלבד. -->
   <div class="stack gap" id="mode-block">
     <div class="opt" data-m="safe"><div class="row" style="gap:6px"><b>שיצבור ריבית מובטחת</b><span class="tag">מתאים לרוב</span></div><p>הסכום רק גדל. הריבית ידועה מראש ואינה יורדת.</p></div>
-    <div class="opt" data-m="keep"><b>שיישמר כמו שהוא</b><p id="keep-desc">הסכום שתפקיד כל חודש יחכה במלואו בהגעה למועד המיוחל.</p></div>
     <div class="opt" data-m="market"><b>שיושקע בשוק ההון</b><p>פוטנציאל צמיחה גבוה יותר, אך הערך עולה ויורד ואינו מובטח.</p></div>
+    <div class="opt" data-m="keep"><b>שיישמר כמו שהוא</b><p id="keep-desc">הסכום שתפקיד כל חודש יחכה במלואו בהגעה למועד המיוחל.</p></div>
   </div>
+  <!-- בענף הבטוח ההבדל בין המסלולים הוא אילוץ ולא העדפה: שניהם
+       מובטחים, ומי שבוחר בגמיש עושה זאת כי אין לו את סכום הפתיחה.
+       לכן שורה עם "שנה מסלול" ולא שני כרטיסים. בשוק ההון, למטה, ההבדל הוא
+       הבחירה עצמה ולכן הכרטיסים נשארים כפי שהם. -->
   <div id="safe-block" style="display:none">
-    <p class="eyebrow" id="eb-trk1">4 · באיזה מסלול</p>
-    <div class="stack gap">
+    <p class="eyebrow" id="eb-trk1">באיזה מסלול</p>
+    <button class="gap" id="trk-row" onclick="openTrackSheet()">
+      <span class="tt"><b id="trk-row-n">·</b><i id="trk-row-r"></i></span>
+      <span class="tch">שנה מסלול</span>
+    </button>
+    <!-- שתי האפשרויות נשארות ב-DOM ומוסתרות. setTrack ו-preselectTrack
+         מסמנות .trk לפי data-r, והגיליון נבנה מהן: מקור אחד, ולא עותק
+         שני של אותו מבנה שיישאר מאחור בכל שינוי. -->
+    <div id="safe-opts" style="display:none">
       <div class="opt trk" data-r="0.035"><div class="row" style="justify-content:space-between"><b>פיקדון נעול</b><span class="rate">כ-3.5% בשנה</span></div><p>ריבית קבועה עד המועד. נדרש סכום פתיחה מינימלי.</p></div>
       <div class="opt trk" data-r="0.02"><div class="row" style="justify-content:space-between"><b>פיקדון גמיש</b><span class="rate">כ-2% בשנה</span></div><p>ללא סכום מינימלי. הריבית עשויה להשתנות בין תקופות.</p></div>
     </div>
   </div>
   <div id="market-block" style="display:none">
-    <p class="eyebrow" id="eb-trk2">4 · באיזה קצב</p>
+    <p class="eyebrow" id="eb-trk2">באיזה קצב</p>
     <div class="stack gap">
       <div class="opt trk" data-r="0.06"><div class="row" style="justify-content:space-between"><b>מאוזן</b><span class="rate">כ-6% בשנה</span></div><p>איזון בין צמיחה ליציבות.</p></div>
       <div class="opt trk" data-r="0.08"><div class="row" style="justify-content:space-between"><b>עוקב מדד</b><span class="rate">כ-8% בשנה</span></div><p>צמוד למדד מנייתי רחב, בדומה לחיסכון לכל ילד.</p></div>
@@ -4053,7 +4078,7 @@ function updateGoal(){
   if(cDate.value){const d=new Date(cDate.value);dateLabel=months[d.getMonth()]+' '+d.getFullYear();years=yearsUntil(cDate.value);}
   goal={name:designated?n:t,type:t,icon:cIcon,dateLabel:dateLabel,years:years,desig:designated};
   /* amount comes first on this screen — it's what the screen is actually for; term is a refinement under it */
-  txt('eb-term','2 · '+(designated?('מתי תרצה ש'+n+' '+bs('יוכל','תוכל')+' לקצור את הפירות?'):'מתי תרצה לקצור את הפירות?'));
+  txt('eb-term',(designated?('מתי תרצה ש'+n+' '+bs('יוכל','תוכל')+' לקצור את הפירות?'):'מתי תרצה לקצור את הפירות?'));
   txt('ct-icon',cIcon);
   document.getElementById('ct-title').textContent=designated?('השקע עבור '+n):('השקע ל'+t);
   /* the header no longer states the date — it is an input on this screen now */
@@ -4096,7 +4121,29 @@ function setFreq(f){freq=f;document.querySelectorAll('.pill[data-f]').forEach(b=
    הכריעה גם את שאלת הריבית, ומי שהמשיך משם קיבל מסלול פיננסי שלא בחר.
    השאלה נשאלת בשלב 3 ונענית שם בלבד. */
 function setMode(m){mode=m;document.querySelectorAll('.opt[data-m]').forEach(el=>el.classList.toggle('on',el.dataset.m===m));document.getElementById('safe-block').style.display=m==='safe'?'block':'none';document.getElementById('market-block').style.display=m==='market'?'block':'none';if(m==='safe'){setTrack(document.querySelector('.trk[data-r="0.035"]'));return}if(m==='market'){setTrack(document.querySelector('.trk[data-r="0.06"]'));return}render()}
-function setTrack(el){rate=parseFloat(el.dataset.r);document.querySelectorAll('.trk').forEach(t=>t.classList.toggle('on',t===el));render()}
+function setTrack(el){rate=parseFloat(el.dataset.r);document.querySelectorAll('.trk').forEach(t=>t.classList.toggle('on',t===el));paintTrackRow();render()}
+/* השורה נקראת מהאפשרות המסומנת ולא ממשתנה משלה. כשהקצב אינו אחד
+   משניהם (הפקדה לרגע שנפתח במסלול אחר) אין מה לסמן, והשורה אומרת את
+   הקצב עצמו במקום שם שאינו נכון. */
+function paintTrackRow(){
+  const n=document.getElementById('trk-row-n'),r=document.getElementById('trk-row-r');
+  if(!n||!r)return;
+  const el=document.querySelector('#safe-opts .trk.on');
+  if(el){n.textContent=el.querySelector('b').textContent;r.textContent=el.querySelector('.rate').textContent}
+  else{n.textContent='מסלול הרגע';r.textContent='כ-'+(Math.round(rate*1000)/10).toLocaleString('he-IL')+'% בשנה'}
+}
+function openTrackSheet(){
+  const html=[...document.querySelectorAll('#safe-opts .trk')].map(function(el){
+    return '<button class="opt trkpick'+(el.classList.contains('on')?' on':'')+'" '+
+      'data-r="'+el.dataset.r+'" onclick="pickTrack(this.dataset.r)">'+el.innerHTML+'</button>';
+  }).join('');
+  sheetPick('באיזה מסלול','שני המסלולים מובטחים. ההבדל הוא סכום הפתיחה.',html);
+}
+function pickTrack(r){
+  const el=document.querySelector('#safe-opts .trk[data-r="'+r+'"]');
+  if(el)setTrack(el);
+  sheetClose();
+}
 /* המסד מכיר keep/guaranteed/market, והטופס מדבר keep/safe/market. בלי
    התרגום הזה "guaranteed" נפל לענף האחרון בכל מקום שבודק mode, כלומר
    נטיעה בריבית מובטחת הציגה את הסיכון של שוק ההון. */
@@ -4112,6 +4159,7 @@ function preselectTrack(m,r){
   if(mb)mb.style.display=m==='market'?'block':'none';
   document.querySelectorAll('.trk').forEach(function(el){
     el.classList.toggle('on',Math.abs(parseFloat(el.dataset.r)-r)<1e-9)});
+  paintTrackRow();
 }
 /* השורה שמעל הבורר, כשהמסלול של הרגע הוא ברירת המחדל ולא הכלל. */
 function trackNote(t){
@@ -5442,6 +5490,16 @@ function sheetForm(title,html,okLabel,fn){
   sheetFn=fn||null;
   document.getElementById('sh-acts').innerHTML=
     '<div class="two"><button class="btn" onclick="sheetConfirm()">'+okLabel+'</button><button class="btn ghost" onclick="sheetClose()">ביטול</button></div>';
+  sheetShow();
+}
+/* גיליון שבו האפשרויות עצמן הן הפעולה. אין "אישור", כי אין מה לאשר
+   מעבר ללחיצה, ו"סגור" הוא קישור שקט ולא בחירה שקולה. האפשרויות
+   נכנסות ל-#sh-acts שהוא div, ולא ל-#sh-b שהוא p. */
+function sheetPick(title,body,html){
+  txt('sh-t',title);txt('sh-b',body);
+  sheetFn=null;sheetAlt=null;
+  document.getElementById('sh-acts').innerHTML=
+    html+'<button class="btn ghost" onclick="sheetClose()">סגור</button>';
   sheetShow();
 }
 function sheetClose(){document.getElementById('scrim').classList.remove('on');sheetFn=null;sheetAlt=null}
@@ -10748,11 +10806,6 @@ function showTermStep(on){
   document.getElementById('c-terms').style.display=on?'':'none';
   document.getElementById('eb-term').style.display=on?'':'none';
   if(!on){document.getElementById('c-datefield').style.display='none';txt('c-datehint','');}
-  const o=on?1:0;
-  txt('eb-freq','1 · כל חודש או פעם אחת');
-  txt('eb-mode',(2+o)+' · מה יקרה לכסף עד אז');
-  txt('eb-trk1',(3+o)+' · באיזה מסלול');
-  txt('eb-trk2',(3+o)+' · באיזה קצב');
 }
 function investIn(key){
   const p=plantAt(key);cur=key;
