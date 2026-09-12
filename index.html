@@ -1287,7 +1287,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '17d67de';
+window.NETA_BUILD = '1fb6aa3';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1848,7 +1848,7 @@ window.NETA_CONFIG = {
   <div id="a-acts">
     <button class="btn" id="a-share" onclick="shareFromAha()">הזמן את הקרובים</button>
     <button class="btn" id="a-next" onclick="ahaNext()">חזרה לנטיעות שלי</button>
-    <button class="alink" id="a-skip" onclick="ahaNext()"><span>לא כרגע</span></button>
+    <button class="alink" id="a-skip" onclick="ahaSkip()"><span>לא כרגע</span></button>
   </div>
 </section>
 
@@ -5789,10 +5789,16 @@ function celebrate(){
   go(4);
 }
 let ahaToDetail=false;
+/* הכפתור שנושא את הכיתוב "לרגע שנטעת" מוביל לרגע, ו"חזרה לנטיעות שלי"
+   מוביל הביתה. כל אחד למה שכתוב עליו. */
 function ahaNext(){
   if(ahaToDetail&&cur){ahaToDetail=false;openDetail(cur);return}
   goHome();
 }
+/* ‏"לא כרגע" הוא היציאה מהמסך, ולא קיצור דרך לרגע. עד כה הוא עבר דרך
+   ahaNext ונחת במסך הנטיעה, שבו יושב "הזמן קרוב" — כלומר מי שאמר "לא
+   כרגע" קיבל מיד את אותה הצעה שוב. הביתה. */
+function ahaSkip(){ahaToDetail=false;goHome()}
 /* אותה פעולה בדיוק כמו במסך הרגע, ובאותן מילים: פותחת לקרובים ונוחתת
    על ההזמנה כפי שהיא תיראה. הגיליון שבדרך אינו חיכוך מיותר — הוא
    המקום היחיד שאומר מה פתיחה עושה, ומה כבר אי אפשר לבטל.
