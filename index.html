@@ -792,7 +792,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .dm-medal.idle::after{content:'';position:absolute;box-sizing:border-box;
   top:-1.5px;right:-1.5px;width:26px;height:26px;border-radius:50%;
   border:1.5px solid var(--leaf);opacity:0;pointer-events:none;
-  animation:sproutRipple 3.4s cubic-bezier(.2,.6,.35,1) infinite}
+  animation:sproutRipple 4.2s cubic-bezier(.2,.6,.35,1) infinite}
 /* המחוון פרוש על כל שטח התרשים ושקוף: מה שנגרר בעין הוא הנטע שעל הקו. */
 .dm-chart input[type=range]{position:absolute;inset:0;width:100%;height:100%;margin:0;
   -webkit-appearance:none;appearance:none;background:none;cursor:ew-resize;opacity:0}
@@ -828,19 +828,19 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ‏box-sizing נכתב במפורש: הכוכבית שבראש הקובץ אינה חלה על
    פסאודו-אלמנטים, ובלעדיו הטבעת יוצאת רחבה מהנבט בשני פיקסלים. */
 @keyframes sproutRipple{
-  0%{transform:scale(1);opacity:.5}
-  70%,100%{transform:scale(2.1);opacity:0}
+  0%{transform:scale(1);opacity:.3}
+  70%,100%{transform:scale(1.95);opacity:0}
 }
 /* "פחות תנועה" אינו "בלי רמז". הרמז הזה הוא מה שאומר שאפשר לגרור,
    ובלעדיו הסליידר בלתי נראה. לכן במצב הזה הטבעת נשארת נעוצה במקום
    אחד (scale קבוע) ורק נדלקת ונכבית: אין תזוזה, ויש סימן.
    ‏transform נכתב בשני הקצוות, אחרת הוא חוזר ל-scale(1) בדרך. */
 @keyframes sproutHalo{
-  0%,100%{transform:scale(1.9);opacity:0}
-  50%{transform:scale(1.9);opacity:.4}
+  0%,100%{transform:scale(1.72);opacity:0}
+  50%{transform:scale(1.72);opacity:.2}
 }
 @media (prefers-reduced-motion:reduce){
-  .dm-medal.idle::after{animation:sproutHalo 4s ease-in-out infinite}
+  .dm-medal.idle::after{animation:sproutHalo 5s ease-in-out infinite}
 }
 .cbr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
 .cbr:last-child{border-bottom:none}
@@ -1409,7 +1409,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'c4e3785';
+window.NETA_BUILD = '272329e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
