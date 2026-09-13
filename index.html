@@ -847,7 +847,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .kz{border:1px dashed var(--line-2);border-radius:14px;padding:15px 16px;
   background:var(--s1);text-align:center;margin-top:2px}
 .kz p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin:0;text-wrap:balance}
-#kid-zero .link{margin-top:11px}
+/* ‏.gap הוא margin-bottom ולא top, ולכן הכפתור נגע בכרטיס שמעליו
+   והקישור ריחף הרחק מתחתיו. כאן המרווחים נכתבים מפורשות. */
+#kid-zero .btn{margin-top:15px}
+#kid-zero .link{margin-top:2px}
 .cbr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
 .cbr:last-child{border-bottom:none}
 .cba{width:28px;height:28px;border-radius:9px;overflow:hidden;flex-shrink:0;background:var(--s2)}
@@ -1414,7 +1417,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4fcfa89';
+window.NETA_BUILD = 'de1659f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1669,7 +1672,7 @@ window.NETA_CONFIG = {
        מתחלף אלא מתרוקן, והכרטיס המקווקו הוא מה שאומר למה. -->
   <div id="kid-zero" style="display:none">
     <div class="kz"><p id="kz-txt">·</p></div>
-    <button class="btn gap" id="kz-cta" onclick="gardenEmptyCta()">·</button>
+    <button class="btn" id="kz-cta" onclick="gardenEmptyCta()">·</button>
     <button class="link" id="kz-rm" onclick="removeSelKid()">·</button>
   </div>
 
@@ -10215,6 +10218,7 @@ function buildHomeSummary(){
       /* ההסרה מוצעת רק למי שיש לו ישות במסד. ילד שנגזר משם בלבד,
          מלפני 0061, אין מה למחוק אצלו. */
       if(rm){rm.style.display=sel.kidId?'':'none';txt('kz-rm','הסר את '+fn)}
+
     }
     /* אין כאן ענף לילד בלי רגע: garden-empty מוסתר בדיוק במקרה
        הזה, והכיתוב שלו עבר ל-kid-zero. מה שנשאר הוא מי שאין לו אף
@@ -10443,7 +10447,13 @@ function buildHomeSummary(){
          projectedTotal הוא 0, ו"כ-0 ₪" הוא בדיוק המספר שקיומו
          מודיע על היעדרו. */
       if(!proj.length&&kidZero){
-        txt('s-fut','·');
+        /* אפס ולא "·", במסך הזה בלבד. בשאר המסכים "·" נשאר המציין
+           של "אין ערך עדיין", אבל כאן כל המסך הוא שלד שעתיד להתמלא,
+           ואפס הוא נקודת הפתיחה של מונה ולא הודעה על היעדר.
+           שני הצדדים יחד: אחד באפס והשני בנקודה היו קוראים כשתי
+           שפות על אותו ראש. */
+        txt('s-you',shekel(0));
+        txt('s-fut',shekel(0));
         txt('s-futk','יחכו ל'+firstName(sel.name));
         txt('s-futwhen','');
       }
