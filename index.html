@@ -1408,7 +1408,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '9c03518';
+window.NETA_BUILD = '7607462';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3322,6 +3322,11 @@ function bs(m,f){return beneSex==='f'?f:m}
    הדמויות הן שתי בנות ושני בנים לסירוגין, ולכן הבחירה בהן היא
    ברירת מחדל טובה יותר מ-'m' שהיה כאן קשיח. */
 let cAvatar='av-kid1';
+/* האם הבורר נגע ביד של המשתמש באשף הנוכחי. ילד קיים נפתח עם הדמות
+   שכבר שמורה לו, וערך שבא מהילד אינו רשאי לכתוב חזרה אליו: כך
+   תמונה אמיתית של לביא נמחקה על ידי av-kid1, ברירת המחדל של אשף
+   שהמשתמש לא נגע בבורר שלו כלל. */
+let cAvTouched=false;
 const AV_SEX={'av-kid1':'m','av-kid2':'f','av-kid3':'m','av-kid4':'f'};
 function markSexChip(x){
   document.querySelectorAll('#c-sex button').forEach(function(b,i){
@@ -3361,7 +3366,7 @@ function paintCAv(){
 function cPickPhoto(){
   pickPhotoInto(function(ph){
     if(cPhoto&&cPhoto.url)URL.revokeObjectURL(cPhoto.url);
-    cPhoto=ph;
+    cPhoto=ph;cAvTouched=true;
     const n=document.getElementById('c-upnote');
     if(n){n.style.display='block';
           n.textContent='התמונה תישמר יחד עם הנטיעה. אפשר להחליף אותה בכל שלב.'}
@@ -3369,7 +3374,7 @@ function cPickPhoto(){
   });
 }
 function pickKidAv(el,a){
-  cAvatar=a;cPhoto=null;
+  cAvatar=a;cPhoto=null;cAvTouched=true;
   const n=document.getElementById('c-upnote'); if(n)n.style.display='none';
   paintCAv();
   const x=AV_SEX[a];
@@ -4427,7 +4432,7 @@ function startCreate(){
   /* הדמות הראשונה ואיתה הצ'יפ שהיא מסמנת. עד כה beneSex היה 'm'
      בלי ששום צ'יפ נדלק, כלומר ברירת מחדל שאיש לא ראה ולכן איש לא
      תיקן. */
-  cAvatar='av-kid1';
+  cAvatar='av-kid1';cAvTouched=false;
   if(cPhoto&&cPhoto.url)URL.revokeObjectURL(cPhoto.url);
   cPhoto=null;
   const un=document.getElementById('c-upnote'); if(un)un.style.display='none';
@@ -5828,6 +5833,9 @@ function plantingFromFlow(){
     beneficiary:goal.name,
     sex:desig?beneSex:null,
     avatar:desig?cAvatar:null,
+    /* לא מה שהבורר מראה אלא אם מישהו בחר בו. ילד קיים נפתח עם הדמות
+       שלו, ובלי הדגל הזה האשף היה כותב אותה בחזרה גם כשלא נגעו בו. */
+    avatarPicked:desig?cAvTouched:false,
     /* הקובץ עצמו, לא נתיב. ההעלאה קורית ב-beneficiaryId, כי רק שם
        ידוע אם בכלל יש ילד לשמור עליו. */
     photo:desig?(cPhoto&&cPhoto.blob)||null:null,
@@ -8029,8 +8037,18 @@ function prefillKid(name,av,sex){
   if(av&&KID_AV.indexOf(av)>=0){
     const b=document.querySelector('#c-avpick button[data-av="'+av+'"]');
     if(b)pickKidAv(b,av);
+  }else if(av){
+    /* תמונה אמיתית אין לה כפתור בספרייה, ולכן היא מוצגת במשבצת
+       ההעלאה. בלי blob: הקובץ כבר בשרת ואין מה להעלות שוב, ולכן
+       גם אין העלאה כפולה ל-bucket. */
+    const u=(apPhoto&&apPhoto.url)||photoUrl(av);
+    if(u)cPhoto={url:u};
   }
+  /* בכל שלושת המקרים הערך בא מהילד ולא מהמשתמש, ולכן הוא אינו
+     נחשב בחירה ואינו נכתב בחזרה אל הילד. */
+  cAvTouched=false;
   if(sex==='m'||sex==='f'){markSexChip(sex);beneSex=sex}
+  paintCAv();
 }
 function apOpenMoment(){
   if(apKidSaved)prefillKid(apKidSaved.name,apKidSaved.av,apKidSexV);
@@ -9203,12 +9221,18 @@ function netaBackend(cfg){
              לכל הנטיעות שלו. זו כל הנקודה בישות. */
           const patch={};
           if(p.sex&&p.sex!==r.sex)patch.sex=p.sex;
-          if(want&&want!==r.avatar)patch.avatar=want;
+          /* רק תמונה שהועלתה עכשיו או דמות שנבחרה עכשיו. בלי התנאי
+             הזה אשף שהמשתמש לא נגע בבורר שלו היה מוחק תמונה שמורה. */
+          if(want&&want!==r.avatar&&(path||p.avatarPicked))patch.avatar=want;
+          /* הישות היא הכותב, והעמודה על הנטיעה היא מטמון שלה: היא
+             מקבלת את מה שלילד באמת יש. */
+          p.avatar=patch.avatar||r.avatar||p.avatar;
           if(!Object.keys(patch).length)return r.id;
           return call('/rest/v1/beneficiaries?id=eq.'+r.id,
             {method:'PATCH',body:JSON.stringify(patch)})
             .then(function(){return r.id},function(){return r.id});
         }
+        p.avatar=want||p.avatar;
         return call('/rest/v1/beneficiaries',{method:'POST',
           headers:{Prefer:'return=representation'},
           body:JSON.stringify({created_by:uid,name:nm,
