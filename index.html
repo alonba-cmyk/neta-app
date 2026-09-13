@@ -842,6 +842,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 @media (prefers-reduced-motion:reduce){
   .dm-medal.idle::after{animation:sproutHalo 5s ease-in-out infinite}
 }
+/* הכרטיס של ילד בלי רגע. מקווקו ולא מלא: הוא מתאר מקום שמחכה
+   להתמלא ולא פריט שיש בו משהו. */
+.kz{border:1px dashed var(--line-2);border-radius:14px;padding:15px 16px;
+  background:var(--s1);text-align:center;margin-top:2px}
+.kz p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin:0;text-wrap:balance}
+#kid-zero .link{margin-top:11px}
 .cbr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
 .cbr:last-child{border-bottom:none}
 .cba{width:28px;height:28px;border-radius:9px;overflow:hidden;flex-shrink:0;background:var(--s2)}
@@ -1408,7 +1414,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '2537b3c';
+window.NETA_BUILD = '4fcfa89';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1655,6 +1661,16 @@ window.NETA_CONFIG = {
     <h3 id="ge-h">עוד לא נטעת בעצמך</h3>
     <p id="ge-sub">אפשר לפתוח רגע משלך. הראשון לוקח דקה.</p>
     <button class="btn" id="ge-cta" onclick="gardenEmptyCta()">פתח נטיעה ראשונה</button>
+  </div>
+
+  <!-- ילד שנוסף ועוד אין לו רגע. לא מצב ריק אלא אותו שלד בדיוק:
+       הראש נשאר עם המספרים, ובמקומם "·" שהוא כבר המוסכמת שלנו
+       ל"אין ערך עדיין". מי שעובר בין הילדים אינו רואה את המסך
+       מתחלף אלא מתרוקן, והכרטיס המקווקו הוא מה שאומר למה. -->
+  <div id="kid-zero" style="display:none">
+    <div class="kz"><p id="kz-txt">·</p></div>
+    <button class="btn gap" id="kz-cta" onclick="gardenEmptyCta()">·</button>
+    <button class="link" id="kz-rm" onclick="removeSelKid()">·</button>
   </div>
 
 
@@ -8191,6 +8207,14 @@ function apOpenMoment(){
   if(apKidSaved)prefillKid(apKidSaved.name,apKidSaved.av,apKidSexV);
   else startCreate();
 }
+/* הסרה מתוך "העתיד שלנו": הילד הנבחר הוא מה שעל המסך, ואין צורך
+   להעביר מזהה. מוצעת רק כשאין לו רגע, ולכן confirmRemoveKid אינה
+   צריכה לבדוק שוב. */
+function removeSelKid(){
+  const sel=lastFuSel;
+  if(!sel||!sel.pending||!sel.kidId)return;
+  confirmRemoveKid(sel.kidId,firstName(sel.name));
+}
 function gardenEmptyCta(){
   const sel=lastFuSel;
   if(sel&&sel.pending)prefillKid(sel.name,sel.av,sel.sex);
@@ -10162,10 +10186,16 @@ function buildHomeSummary(){
        ‏`·` ירוק לצד צפי זהוב של 14,485 ₪ — כלומר שני מספרים על שני
        נושאים שונים באותו ראש: החלק שלה מול הצפי של הרגע. המספר
        שהיא צריכה הוא של הרגע, כמו הצפי שלידו. */
+    /* ילד שנבחר ועוד אין לו רגע מקבל את השלד ולא מצב ריק: הראש
+       נשאר, ומתחתיו הכרטיס המקווקו. מי שאין לו אף רגע בכלל, כלומר
+       אין לו גם ילד נבחר, נשאר עם המצב הריק כפי שהיה. */
+    const kidZero=!!(selEmpty&&sel&&sel.pending);
     const sumBox=document.getElementById('home-sum');
-    if(sumBox)sumBox.style.display=selEmpty?'none':'';
+    if(sumBox)sumBox.style.display=(selEmpty&&!kidZero)?'none':'';
     const gEmpty=document.getElementById('garden-empty');
-    if(gEmpty)gEmpty.style.display=selEmpty?'':'none';
+    if(gEmpty)gEmpty.style.display=(selEmpty&&!kidZero)?'':'none';
+    const kz=document.getElementById('kid-zero');
+    if(kz)kz.style.display=kidZero?'':'none';
     /* הכפתור המקווקו הוא הפעולה כשיש רשימה. במצב הריק הפעולה כבר
        יושבת בתוכו, מלאה, ושני כפתורים לאותו דבר הם בחירה מדומה. */
     const gNew=document.getElementById('garden-new');
@@ -10173,20 +10203,23 @@ function buildHomeSummary(){
     /* ילד שנבחר ועוד אין לו רגע: המצב הריק מדבר אליו בשמו, והכפתור
        פותח נטיעה שכבר ממולאת בו. "עוד לא נטעת בעצמך" היה אומר לו
        משהו שאינו נכון, כי הוא אולי נטע לילד אחר. */
-    if(selEmpty&&sel&&sel.pending){
+    if(kidZero){
       const fn=firstName(sel.name);
-      /* המסך מדבר על מה שקרה ולא על מה שאין: הילד כבר כאן, וזו
-         הסיבה שהמסך נפתח. "עוד לא נפתח לו רגע" אמר את אותו דבר
-         מהצד השלילי, ומי שהרגע סיים להוסיף אותו לא צריך שיודיעו לו
-         שעדיין לא עשה את הצעד הבא.
-         ‏bs אינה משמשת כאן: היא נשענת על beneSex שמתאר את מי שנבחר
-         באשף ההקמה, ואילו כאן הנהנה הוא מי שנבחר בבורר. */
-      const f=(sel.sex==='f');
-      const geh=document.getElementById('ge-h');
-      if(geh)geh.innerHTML=attrText(fn)+' '+(f?'נוספה':'נוסף')+' למעגל שלך';
-      txt('ge-sub','עכשיו אפשר להתחיל להשקיע ב'+(f?'עתידה':'עתידו')+'.');
-      txt('ge-cta','צור השקעה עבור '+fn);
-    }else if(selEmpty){
+      /* אותו כיתוב שישב במצב הריק לפני שהמבנה השתנה. הוא מדבר על
+         מה שקרה ולא על מה שאין, ולכן הוא גם לא צריך להסביר את שתי
+         הנקודות שמעליו: הן אומרות את זה בעצמן. */
+      txt('kz-txt',fn+' '+(sel.sex==='f'?'נוספה':'נוסף')+' למעגל שלך. '+
+        'עכשיו אפשר להתחיל להשקיע ב'+(sel.sex==='f'?'עתידה':'עתידו')+'.');
+      txt('kz-cta','צור השקעה עבור '+fn);
+      const rm=document.getElementById('kz-rm');
+      /* ההסרה מוצעת רק למי שיש לו ישות במסד. ילד שנגזר משם בלבד,
+         מלפני 0061, אין מה למחוק אצלו. */
+      if(rm){rm.style.display=sel.kidId?'':'none';txt('kz-rm','הסר את '+fn)}
+    }
+    /* אין כאן ענף לילד בלי רגע: garden-empty מוסתר בדיוק במקרה
+       הזה, והכיתוב שלו עבר ל-kid-zero. מה שנשאר הוא מי שאין לו אף
+       רגע ואף ילד. */
+    if(selEmpty){
       txt('ge-cta','פתח נטיעה ראשונה');
       /* "נטעת אצל X" נכון רק למי שבאמת הפקיד שם. מי שהוזמנה ועוד לא
          נטעה מקבלת "הוזמנת" — אחרת המשפט מספר לה על משהו שלא עשתה. */
@@ -10361,7 +10394,11 @@ function buildHomeSummary(){
     const duo=document.getElementById('s-duo');
     if(duo)duo.classList.toggle('solo',!proj.length);
     if(futGrp){
-      futGrp.style.display=proj.length?'':'none';
+      /* ילד בלי רגע: שני החצאים נשארים, שניהם "·". זו כל הנקודה
+         במבנה הזה — מי שעובר בין הילדים רואה את אותו מסך מתרוקן
+         ולא מסך אחר, והכרטיס שמתחת אומר מה ימלא אותו. */
+      futGrp.style.display=(proj.length||kidZero)?'':'none';
+      if(duo)duo.classList.toggle('solo',!proj.length&&!kidZero);
       /* בלי אופק. "צפוי כ-14,485 ₪ עד ספטמבר 2036" נמדד ב-317 פיקסל
          מול 309 זמינים ב-390, ולכן שבר את השורה לשתיים בכל מכשיר
          שאינו רחב במיוחד. בלעדיו: 231 מול 280 ב-360, כלומר מרווח
@@ -10402,6 +10439,14 @@ function buildHomeSummary(){
         return ['יחכו שם','בקצב הזה'];
       })();
       txt('s-futk',futL[0]);txt('s-futwhen',futL[1]);
+      /* אחרון, כי הבלוק שמעל כותב את הצפי בכל מקרה: בלי רגע
+         projectedTotal הוא 0, ו"כ-0 ₪" הוא בדיוק המספר שקיומו
+         מודיע על היעדרו. */
+      if(!proj.length&&kidZero){
+        txt('s-fut','·');
+        txt('s-futk','יחכו ל'+firstName(sel.name));
+        txt('s-futwhen','');
+      }
     }
     if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();paintLaterCard();}
     paintInvestments();
