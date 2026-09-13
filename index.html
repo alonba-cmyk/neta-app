@@ -1430,7 +1430,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'c4792ca';
+window.NETA_BUILD = '2eeb342';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7834,9 +7834,14 @@ const KIN={
   nephew       :{chip:'אחיין',  me:'האחיין שלי',  kid:'',    g:'m'},
   niece        :{chip:'אחיינית',me:'האחיינית שלי',kid:'',    g:'f'}
 };
-/* מי שנוטע איתי, ומי שנוטעים עבורו. אותה שאלה, שתי רשימות. */
+/* מי שנוטע איתי, ומי שנוטעים עבורו. אותה שאלה, שתי רשימות.
+   ‏aunt ו-uncle נשארים ב-KIN ואינם מוצעים: הדוד של הילד הוא האח
+   שלי, שכבר ברשימה, והדוד שלי הוא קרוב רחוק יותר שנוטע לעיתים
+   נדירות. מי שכן צריך אותו מקבל אותו ב"אחר", ורשומה ישנה שנשמרה
+   כך ממשיכה להיקרא נכון. נמדד: אחת עשרה אפשרויות תפסו שלוש שורות
+   ב-390, ותשע תופסות שתיים. */
 const KIN_WITH=['mother','father','mother_law','father_law','sister','brother',
-                'aunt','uncle','friend_f','friend_m'];
+                'friend_f','friend_m'];
 const KIN_FOR=['son','daughter','grandson','granddaughter','nephew','niece'];
 /* ערך שאינו מפתח מוכר הוא טקסט חופשי מ"אחר", או מחרוזת שנשמרה
    לפני 0068. בשני המקרים הוא מוצג כפי שהוא, ולכן אין מיגרציה על
@@ -9435,13 +9440,22 @@ function netaBackend(cfg){
     removeBeneficiary:function(id){
       return call('/rest/v1/beneficiaries?id=eq.'+id,{method:'DELETE'});
     },
-    saveBeneficiary:function(id,sex,avatar,relation){
-      const f={sex:sex||null,avatar:avatar||null};
-      /* undefined ולא null: מי שקורא בלי הפרמטר אינו מתכוון למחוק
-         את הקרבה, ושדה שלא נשלח נשאר כפי שהוא. */
-      if(relation!==undefined)f.relation=relation||null;
-      return call('/rest/v1/beneficiaries?id=eq.'+id,
-        {method:'PATCH',body:JSON.stringify(f)});
+    saveBeneficiary:function(id,sex,avatar,relation,blob){
+      const uid=sess&&sess.user?sess.user.id:null;
+      /* אותו סדר כמו ב-addBeneficiary: מעלים, ורק הנתיב שחוזר נשמר.
+         העלאה שנכשלת משאירה את הערך הקיים ולא כותבת נתיב לקובץ
+         שאינו שם. */
+      const put=(blob&&uid)?netaServer.uploadPhoto(uid,blob).catch(function(){return null})
+                           :Promise.resolve(null);
+      return put.then(function(path){
+        const av=path||avatar||null;
+        const f={sex:sex||null,avatar:av};
+        /* undefined ולא null: מי שקורא בלי הפרמטר אינו מתכוון למחוק
+           את הקרבה, ושדה שלא נשלח נשאר כפי שהוא. */
+        if(relation!==undefined)f.relation=relation||null;
+        return call('/rest/v1/beneficiaries?id=eq.'+id,
+          {method:'PATCH',body:JSON.stringify(f)}).then(function(){return av});
+      });
     },
 
     /* כל הנהנים שלי, כולל מי שעוד אין לו רגע. עד כה הטבלה נקראה רק
@@ -10707,10 +10721,17 @@ function kidAvatar(name){
    הראשון שנושא ערך הוא זה שקובע. ערך שאינו אחד מהארבעה נדחה ולא
    מוצג: הוא היה יוצא <use href="#..."> שאינו קיים, כלומר עיגול ריק
    בלי שגיאה. */
+/* ‏avatar מחזיקה שתי צורות: דמות מהספרייט, או נתיב לקובץ ב-bucket.
+   התנאי כאן קיבל רק את הראשונה, ולכן נתיב לתמונה נדחה ונפל לגזירה
+   מהשם: ילד עם תמונה אמיתית הופיע בבורר של "העתיד שלנו" כדמות.
+   מי שעוד אין לו רגע לא נפגע, כי fuWithBenes לוקחת את הערך ישירות
+   מהישות, וזה גם מה שהסתיר את זה. */
 function kidFace(rows,name){
   let pick=null;
   (rows||[]).forEach(function(p){
-    if(!pick&&p&&p.av&&KID_AV.indexOf(p.av)>=0)pick=p.av});
+    if(pick||!p||!p.av)return;
+    if(KID_AV.indexOf(p.av)>=0||p.av.indexOf('av-')!==0)pick=p.av;
+  });
   return pick||kidAvatar(name);
 }
 /* פריט אחד בבורר: קבוצה של נהנה, או נטיעה שלא יועדה. המזהה נושא
@@ -10888,13 +10909,21 @@ function editKid(id){
   const known=!!KIN[rel];
   window.__kidAv=av;window.__kidSex=sx;window.__kidRel=known?rel:'other';
   window.__kidRelFree=known?'':rel;
+  /* תמונה שכבר שמורה מוצגת במשבצת ההעלאה, בלי blob: הקובץ בשרת
+     ואין מה להעלות שוב. blob קיים רק אחרי בחירה חדשה, והוא מה
+     שמבדיל בשמירה בין "החלף תמונה" ל"השאר כפי שהיא". */
+  const hasPhoto=!!(av&&av.indexOf('av-')!==0);
+  kidPhoto=(hasPhoto&&photoUrl(av))?{url:photoUrl(av)}:null;
+  /* הקישור החתום אולי עוד לא הגיע. בלי הציור השני הגיליון היה
+     מראה דמות מסומנת לילד שיש לו תמונה, כלומר אומר שהיא נמחקה. */
+  if(hasPhoto&&!kidPhoto)signPhotos([av]).then(function(){
+    if(!photoUrl(av))return;
+    kidPhoto={url:photoUrl(av)};kidPaintAv();
+  });
   sheetForm(nm,
-    '<label>דמות</label><div class="avbig" id="k-av">'+
-      KID_AV.map(function(a){
-        return '<button type="button" class="'+(a===av?'on':'')+'" '+
-          'onclick="kidPickAv(this,\''+a+'\')"><svg viewBox="0 0 40 40">'+
-          '<use href="#'+a+'"/></svg></button>'}).join('')+
-    '</div>'+
+    '<label>בחר דמות, או העלה תמונה</label>'+
+    '<div class="avbig" id="k-av">'+kidAvGridHTML(av,kidPhoto,'kidPickAv','kidPickPhoto()')+'</div>'+
+    '<p class="fine" id="k-upnote" style="margin-top:8px;display:none"></p>'+
     '<label style="margin-top:13px">מי הוא עבורך?</label>'+
     '<div class="chips" id="k-rel">'+kinChipsHTML(KIN_FOR,window.__kidRel,'kidPickRel')+'</div>'+
     '<input type="text" id="k-relfree" placeholder="למשל: הבן של אחותי" '+
@@ -10916,9 +10945,28 @@ function editKid(id){
       : ''),
     'שמור',function(){saveKid((bn&&bn.id)||id)});
 }
+/* תמונה שנבחרה בגיליון הזה. אותו רכיב של שני האשפים, ולכן גם אותה
+   התנהגות: בחירת דמות מבטלת תמונה, ובחירת תמונה מבטלת דמות. */
+let kidPhoto=null;
+function kidPaintAv(){
+  const box=document.getElementById('k-av');
+  if(box)box.innerHTML=kidAvGridHTML(window.__kidAv,kidPhoto,'kidPickAv','kidPickPhoto()');
+}
 function kidPickAv(el,a){
   window.__kidAv=a;
-  [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+  if(kidPhoto&&kidPhoto.blob&&kidPhoto.url)URL.revokeObjectURL(kidPhoto.url);
+  kidPhoto=null;
+  const n=document.getElementById('k-upnote'); if(n)n.style.display='none';
+  kidPaintAv();
+}
+function kidPickPhoto(){
+  pickPhotoInto(function(ph){
+    if(kidPhoto&&kidPhoto.blob&&kidPhoto.url)URL.revokeObjectURL(kidPhoto.url);
+    kidPhoto=ph;
+    const n=document.getElementById('k-upnote');
+    if(n){n.style.display='block';n.textContent='התמונה תישמר כשתלחץ "שמור".'}
+    kidPaintAv();
+  });
 }
 function kidPickSex(el,x){
   window.__kidSex=x;
@@ -10968,10 +11016,17 @@ function saveKid(id){
      והציור הבא קורא מ-benes. */
   (benes||[]).forEach(function(x){if(x.id===id){x.relation=rel;x.sex=window.__kidSex}});
   buildRelatives();
-  src.saveBeneficiary(id,window.__kidSex,window.__kidAv,rel)
-    .then(function(){return buildHomeSummary()})
+  /* התמונה מועלית קודם, כי הנתיב שלה הוא הערך שנשמר ב-avatar.
+     בלי blob אין העלאה, והערך הקיים נשאר כפי שהוא: כך בחירת קרבה
+     בלבד אינה נוגעת בתמונה. */
+  src.saveBeneficiary(id,window.__kidSex,window.__kidAv,rel,
+                      kidPhoto&&kidPhoto.blob)
+    .then(function(av){
+      if(av)(benes||[]).forEach(function(x){if(x.id===id)x.avatar=av});
+      return buildHomeSummary();
+    })
     .then(function(){toast('נשמר')},
-          function(){toast('לא הצלחנו לשמור')});
+          function(e){ask('לא נשמר',(e&&e.message)||'לא הצלחנו להגיע לשרת.','הבנתי')});
 }
 function fuMomentHTML(p,many){
   const yrs=p.targetYear?Math.max(0,p.targetYear-new Date().getFullYear()):0;
