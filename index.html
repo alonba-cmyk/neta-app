@@ -425,14 +425,21 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 
    ‏#s-duo ולא .duo: הקלאס גלובלי, והכלל הזה נכון למסך הזה בלבד.
    ‏stretch כדי ששני החצאים יהיו באותו גובה והקו יגיע עד הסוף. */
-#s-duo{display:grid;grid-template-columns:minmax(min-content,1fr) minmax(min-content,1fr);
-  align-items:stretch;width:fit-content;max-width:100%;margin-inline:auto;text-align:center}
-/* ריפוד סימטרי ולא בצד אחד. הצד האחד נתן את האוויר סביב הקו, אבל
-   הוא גם הזיז את תיבת התוכן: טקסט שממורכז בתוכה יושב 6.5 פיקסלים
-   מחוץ למרכז התא, ושני הצדדים נדחפים לכיוונים הפוכים. על מספר בן
-   27 פיקסלים זה נראה כמו יישור ולא כמו מרכוז. נמדד: 236.6 מול תא
-   ב-230.1 מימין, ו-152.9 מול 159.9 משמאל. */
-#s-duo>div{min-width:0;padding-inline:13px}
+/* שני חצאים שווים בדיוק, ולכן הקו נופל על מרכז המסך תמיד.
+   קודם היה כאן minmax(min-content,1fr) עם width:fit-content, שנועד
+   למנוע גלישה של המספר הזהוב: הרצפה של min-content נתנה לו לגדול
+   מעבר לחצי, והחצאים יצאו לא שווים. נמדד ב-390: 137 מול 172, כלומר
+   הקו 18 פיקסלים מימין למרכז, ובמקום להיות מתחת לפרצוף הנבחר הוא
+   ישב לצידו.
+   ‏1fr 1fr מחזיר את השוויון, והגנת הגלישה עוברת לריפוד שמצטמצם עם
+   המסך: שמונה פיקסלים ב-400 ומעלה ופיקסל אחד ב-320. נמדד בחמישה
+   רוחבי מכשיר, גם בטקסט של 130 אחוז, עם "כ-128,970 ₪" שהוא המספר
+   הרחב ביותר שהבדיקות מכירות: סטייה 0 ובלי גלישה.
+   הריפוד גם סימטרי ולא בצד אחד, אחרת תיבת התוכן זזה וטקסט שממורכז
+   בתוכה יושב מחוץ למרכז התא. */
+#s-duo{display:grid;grid-template-columns:1fr 1fr;
+  align-items:stretch;width:100%;text-align:center}
+#s-duo>div{min-width:0;padding-inline:clamp(1px,calc((100vw - 320px)*.06),8px)}
 #s-duo>div+div{margin-inline-start:0}
 #s-duo>div+div>*{padding-inline-start:0}
 /* השורה השנייה מימין קיימת כדי ששני הצדדים יהיו באותו גובה: הכיתוב
@@ -1421,7 +1428,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f871376';
+window.NETA_BUILD = 'fa2e232';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -10431,7 +10438,12 @@ function buildHomeSummary(){
          שני חצאים בגבהים שונים שמשתנים לפי המכשיר. */
       const futL=(function(){
         const nm=sel?firstName(sel.name):'';
-        if(proj.length!==1)return [nm?('יחכו ל'+nm):'יחכו להם','במועדים'];
+        /* "זה מה שיחכה" בשורה הראשונה, והשם בשנייה: "במועדים" לא אמר
+           דבר שאי אפשר להסיק, ו"בקצב הזה" אומר גם למה המספר הזה וגם
+           שהוא תלוי בכך שההפקדה נמשכת. אותה מילה שכבר משמשת כאן
+           בענף בלי השם. */
+        if(proj.length!==1)return ['זה מה שיחכה',
+          (nm?('ל'+nm):'להם')+' בקצב הזה'];
         /* ‏date קיים רק במודל של מסך הרגע. הרשימה מחזיקה targetYear
            ו-targetMonth, ולכן התנאי הזה היה תמיד שקרי והתאריך נשמט
            בשקט משני המקורות, החי וההדגמה כאחד. */
