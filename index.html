@@ -1408,7 +1408,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7607462';
+window.NETA_BUILD = '4d0dd09';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3114,10 +3114,10 @@ window.NETA_CONFIG = {
   <p class="sub gap">השם והתמונה הם מה שהילדים יראו לצידו.</p>
   <div class="field"><label>השם</label>
     <input type="text" id="ap-name" placeholder="למשל: מרים" oninput="apRelHint()"></div>
-  <!-- הקשר היה שדה טקסט חופשי שביקש מהמשתמש לנסח משפט. תשע מתוך עשר
-       התשובות הן אחת מהמילים כאן, והמשפט המלא נבנה מעצמו. "אחר" פותח
+  <!-- השאלה היא על הקשר אלי ולא על הקשר לילדים: זו העובדה היחידה
+       שהמשתמש באמת יודע, וכל כיתוב אחר נגזר ממנה (0068). "אחר" פותח
        את השדה החופשי למי שבאמת צריך. -->
-  <div class="field"><label id="ap-rellbl">מה הוא לילדים שלך?</label>
+  <div class="field"><label id="ap-rellbl">מי הוא עבורך?</label>
     <div class="chips" id="ap-rel"></div>
     <input type="text" id="ap-relfree" placeholder="למשל: המורה של נועה"
            style="margin-top:8px;display:none" oninput="apRelHint()">
@@ -3157,12 +3157,17 @@ window.NETA_CONFIG = {
   <h2 class="gap-x">עבור מי תרצה להשקיע?</h2>
   <p class="sub gap">אפשר להוסיף אותו עכשיו ולפתוח לו רגע מתי שתרצה.</p>
   <div class="field"><label>איך קוראים לו?</label>
-    <div class="row" style="gap:8px;align-items:stretch">
-      <input type="text" id="ap-kidname" placeholder="למשל: עופרי" style="flex:1">
-      <div class="chips" id="ap-kidsex" style="margin:0;flex:0 0 auto">
-        <button class="on" onclick="apKidSex(this,'m')">בן</button>
-        <button onclick="apKidSex(this,'f')">בת</button>
-      </div>
+    <input type="text" id="ap-kidname" placeholder="למשל: עופרי"></div>
+  <!-- הקרבה במקום "בן/בת": כמעט כל מילת קרבה בעברית כבר נושאת מגדר,
+       ולכן שאלה אחת במקום שתיים. הצ'יפים חוזרים רק אחרי "אחר", שם
+       אין ממה לגזור. -->
+  <div class="field"><label>מי הוא עבורך?</label>
+    <div class="chips" id="ap-kidrel"></div>
+    <input type="text" id="ap-kidrelfree" placeholder="למשל: הבן של אחותי"
+           style="margin-top:8px;display:none">
+    <div class="chips" id="ap-kidsex" style="margin-top:8px;display:none">
+      <button class="on" onclick="apKidSex(this,'m')">בן</button>
+      <button onclick="apKidSex(this,'f')">בת</button>
     </div></div>
   <div class="field"><label>בחר דמות, או העלה תמונה</label>
     <div class="avbig" id="ap-kidav"></div>
@@ -6733,10 +6738,10 @@ function stripHe(t){return t.charAt(0)==='ה'?t.slice(1):t}
 /* one address book, shared by every planting's invite */
 const AVATARS=['av-parent','av-granny','av-uncle','av-granny2','av-friend'];
 const relatives=[
-  {av:'av-granny',name:'סבתא רחל',rel:'סבתא של דניאל ונועה',g:'f',status:'in',chan:'wa',contact:'050-2214408'},
-  {av:'av-uncle',name:'דוד יוסי',rel:'דוד של דניאל',g:'m',status:'in',chan:'wa',contact:'052-7719063'},
-  {av:'av-friend',name:'מיכל, אמא של נועה',rel:'אמא של נועה',g:'f',status:'invited',chan:'mail',contact:'michal@mail.com'},
-  {av:'av-granny2',name:'סבא משה',rel:'סבא של דניאל ונועה',g:'m',status:'none',chan:'wa',contact:''}
+  {av:'av-granny',name:'סבתא רחל',rel:'mother',g:'f',status:'in',chan:'wa',contact:'050-2214408'},
+  {av:'av-uncle',name:'דוד יוסי',rel:'brother',g:'m',status:'in',chan:'wa',contact:'052-7719063'},
+  {av:'av-friend',name:'מיכל, אמא של נועה',rel:'friend_f',g:'f',status:'invited',chan:'mail',contact:'michal@mail.com'},
+  {av:'av-granny2',name:'סבא משה',rel:'father_law',g:'m',status:'none',chan:'wa',contact:''}
 ];
 /* הדגם הדוהה שמתחת למצב הריק נגזר מהמערכת עצמה ואינו מועתק לצידה:
    שינוי בשמות ההדגמה מגיע גם אליו, ואין כאן עותק שני שיישאר מאחור. */
@@ -7003,7 +7008,7 @@ function personalInviteSheet(key,r,url,emailed){
   const body=
     '<div class="cbr" style="border-bottom:none;padding-top:0">'+face+
       '<span class="cbn"><b>'+attrText(r.name)+'</b>'+
-      (r.rel?'<i>'+attrText(r.rel)+'</i>':'')+'</span></div>'+
+      (r.rel?'<i>'+attrText(kinMe(r.rel))+'</i>':'')+'</span></div>'+
     '<div class="card" style="margin:4px 0 0;padding:4px 12px">'+
       '<div class="stat"><span class="k">'+(emailed?'נשלח אל':'לשליחה אל')+'</span>'+
         '<span class="v" style="direction:ltr;unicode-bidi:isolate">'+attrText(r.contact)+'</span></div>'+
@@ -7190,8 +7195,9 @@ function relRowHTML(r,right,open){
   const sub=r.status==='invited'
     ? (nTo>1?('הוזמנה ל'+countWord(nTo)+' רגעים · ממתינה לקוד')
        :r.plant?'הוזמנה ל'+nameOfPlanting(r.plant)+' · ממתינה לקוד'
-             :r.rel+' · הוזמנה, טרם הצטרפה')
-    : (r.contact?r.rel+' · '+r.contact:r.rel+' · חסרים פרטי קשר');
+             :kinMe(r.rel)+' · הוזמנה, טרם הצטרפה')
+    : (r.contact?kinMe(r.rel)+' · '+r.contact
+                :kinMe(r.rel)+' · חסרים פרטי קשר');
   return '<div class="rel"'+(open||'')+'>'+
     '<div class="ra"><svg viewBox="0 0 40 40"><use href="#'+r.av+'"/></svg></div>'+
     '<span class="rn"><b>'+r.name+'</b><i>'+sub+'</i></span>'+right+'</div>';
@@ -7701,14 +7707,53 @@ const AP_WITH=['ap-0','ap-1','ap-3','ap-2'];
 const AP_FOR=['ap-0','ap-4','ap-5'];
 const AP_LBL_WITH=['את מי','מי זה','לאיזה רגע','לאן'];
 const AP_LBL_FOR=['את מי','עבור מי','נוסף'];
-const AP_RELS=['סבתא','סבא','דודה','דוד','אח','אחות','חבר','אחר'];
-/* שמונת הצ'יפים מערבבים שני סוגי קשר, והסיומת "של <הילדים>" הודבקה
-   לכולם: אור נשמר כ"חבר של לני ושל שאולי" בלי שאיש אמר זאת. ארבעת
-   אלה הם היחידים שמתארים קשר אל הילד, ולכן רק הם מקבלים אותה. אח,
-   אחות וחבר מתארים קשר אלי ונשארים חשופים. */
-const AP_TOKID=['סבתא','סבא','דודה','דוד'];
-let apKindMode='with',apStep=0,apRel='סבתא',apAv='av-granny2',
-    apKidAv='av-kid1',apKidSexV='m',apPhoto=null,apPlants=[];
+/* ── קרבה: עובדה אחת, כמה תצוגות (0068) ──────────────────────
+   מה שנשמר הוא הקשר אלי, ותו לא. הכיתוב בכל מסך והמגדר נגזרים
+   ממנו בזמן הצגה. עד כה נשמרה מחרוזת מוכנה, כלומר תצוגה אחת
+   שהוקפאה ברגע הכתיבה, ומשם הגיעו הבאגים: "חבר של לני ושל שאולי"
+   נבנה כי הסיומת הודבקה גם לצ'יפ שהקשר שלו הוא אלי, והמחרוזת גם
+   לא התעדכנה כשנוסף ילד. עכשיו אין מה לעדכן, כי אין מה ששמור.
+
+   ‏chip הוא מה שכתוב על הכפתור, me הוא מה שמוצג ברשימה שלי,
+   kid הוא מה שהאדם לילדים שלי (ריק כשאין תואר כזה בעברית), ו-g
+   הוא המגדר שהמילה כבר נושאת. */
+const KIN={
+  mother       :{chip:'אמא',    me:'אמא שלי',     kid:'סבתא',g:'f'},
+  father       :{chip:'אבא',    me:'אבא שלי',     kid:'סבא', g:'m'},
+  mother_law   :{chip:'חמות',   me:'חמותי',       kid:'סבתא',g:'f'},
+  father_law   :{chip:'חם',     me:'חמי',         kid:'סבא', g:'m'},
+  sister       :{chip:'אחות',   me:'אחות שלי',    kid:'דודה',g:'f'},
+  brother      :{chip:'אח',     me:'אח שלי',      kid:'דוד', g:'m'},
+  aunt         :{chip:'דודה',   me:'דודה שלי',    kid:'',    g:'f'},
+  uncle        :{chip:'דוד',    me:'דוד שלי',     kid:'',    g:'m'},
+  friend_f     :{chip:'חברה',   me:'חברה שלי',    kid:'',    g:'f'},
+  friend_m     :{chip:'חבר',    me:'חבר שלי',     kid:'',    g:'m'},
+  son          :{chip:'בן',     me:'הבן שלי',     kid:'',    g:'m'},
+  daughter     :{chip:'בת',     me:'הבת שלי',     kid:'',    g:'f'},
+  grandson     :{chip:'נכד',    me:'הנכד שלי',    kid:'',    g:'m'},
+  granddaughter:{chip:'נכדה',   me:'הנכדה שלי',   kid:'',    g:'f'},
+  nephew       :{chip:'אחיין',  me:'האחיין שלי',  kid:'',    g:'m'},
+  niece        :{chip:'אחיינית',me:'האחיינית שלי',kid:'',    g:'f'}
+};
+/* מי שנוטע איתי, ומי שנוטעים עבורו. אותה שאלה, שתי רשימות. */
+const KIN_WITH=['mother','father','mother_law','father_law','sister','brother',
+                'aunt','uncle','friend_f','friend_m'];
+const KIN_FOR=['son','daughter','grandson','granddaughter','nephew','niece'];
+/* ערך שאינו מפתח מוכר הוא טקסט חופשי מ"אחר", או מחרוזת שנשמרה
+   לפני 0068. בשני המקרים הוא מוצג כפי שהוא, ולכן אין מיגרציה על
+   נתונים קיימים ואין רגע שבו רשימה נראית שבורה. */
+function kinMe(v){const k=KIN[v];return k?k.me:String(v||'')}
+function kinSex(v){const k=KIN[v];return k?k.g:null}
+function kinKid(v){const k=KIN[v];return k?k.kid:''}
+function kinChipsHTML(keys,sel,fn){
+  return keys.map(function(k){
+    return '<button type="button" class="'+(k===sel?'on':'')+'" '+
+      'onclick="'+fn+'(this,\''+k+'\')">'+KIN[k].chip+'</button>'}).join('')+
+    '<button type="button" class="'+(sel==='other'?'on':'')+'" '+
+      'onclick="'+fn+'(this,\'other\')">אחר</button>';
+}
+let apKindMode='with',apStep=0,apRel='mother',apAv='av-granny2',
+    apKidAv='av-kid1',apKidSexV='m',apKidRel='son',apPhoto=null,apPlants=[];
 /* הרגע שממנו נפתחה ההוספה, כשהיא נפתחה ממצב הזמנה. כשהוא קיים שתי
    שאלות באשף כבר נענו: "את מי" (בהכרח מישהו שנוטע איתי, כי לילד לא
    שולחים הזמנה) ו"לאיזה רגע" (הרגע שממנו נכנסתי). אשף ששואל שאלה
@@ -7746,23 +7791,24 @@ function openAddPerson(){
   /* מצב הזמנה: הרגע ידוע, ולכן גם הסוג. relInviteKey הוא המקור
      היחיד לשניהם, ואין פרמטר שאפשר לשכוח להעביר. */
   apFrom=relInviteKey||'';
-  apKindMode='with';apStep=0;apRel='סבתא';apAv='av-granny2';
-  apKidAv='av-kid1';apKidSexV='m';apPhoto=null;
+  apKindMode='with';apStep=0;apRel='mother';apAv='av-granny2';
+  apKidAv='av-kid1';apKidSexV='m';apKidRel='son';apPhoto=null;
   /* מרגע: הרגע ידוע כבר עכשיו, ולא רק בשמירה. בלי זה השלב האחרון
      הכריז "לא סימנת רגע" ונשא כפתור "הוסף לרשימה" על מסלול שכל כולו
      הזמנה לרגע מסוים. */
   apPlants=apFrom?[apFrom]:[];
   document.querySelectorAll('#ap-kind button').forEach(function(x,i){
     x.classList.toggle('on',i===0)});
-  ['ap-name','ap-relfree','ap-contact','ap-kidname'].forEach(function(id){
+  ['ap-name','ap-relfree','ap-contact','ap-kidname','ap-kidrelfree'].forEach(function(id){
     const el=document.getElementById(id); if(el)el.value='';
   });
   const nt=document.getElementById('ap-note'); if(nt)nt.value='';
   document.getElementById('ap-relfree').style.display='none';
+  document.getElementById('ap-kidrelfree').style.display='none';
+  document.getElementById('ap-kidsex').style.display='none';
+  document.getElementById('ap-kidrel').innerHTML=kinChipsHTML(KIN_FOR,apKidRel,'apPickKidRel');
   document.getElementById('ap-upnote').style.display='none';
-  document.getElementById('ap-rel').innerHTML=AP_RELS.map(function(r){
-    return '<button type="button" class="'+(r===apRel?'on':'')+'" '+
-      'onclick="apPickRel(this,\''+r+'\')">'+r+'</button>'}).join('');
+  document.getElementById('ap-rel').innerHTML=kinChipsHTML(KIN_WITH,apRel,'apPickRel');
   document.getElementById('ap-avpick').innerHTML=avpickHTML('av-granny2');
   pickedAv='av-granny2';
   apPaintKidAv();
@@ -7778,28 +7824,50 @@ function apKind(el,k){
 function apPickRel(el,r){
   apRel=r;
   [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
-  document.getElementById('ap-relfree').style.display=(r==='אחר')?'block':'none';
+  document.getElementById('ap-relfree').style.display=(r==='other')?'block':'none';
   apRelHint();
 }
-/* "סבתא של נועה ושל דניאל" נבנה מהצ'יפ ומהילדים שיש, ולא מהמשתמש.
-   בלי ילדים הוא נשאר הצ'יפ לבדו, כי "סבתא של" בלי שם אינו משפט,
-   וכך גם צ'יפ שהקשר שלו הוא אלי ולא אל הילד (ראו AP_TOKID). */
-function apRelText(){
-  if(apRel==='אחר')return (fieldVal('ap-relfree')||'קרוב משפחה');
-  if(AP_TOKID.indexOf(apRel)<0)return apRel;
-  const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
-  const kids=kidGroups(own).groups.map(function(g){return g.kid}).filter(Boolean);
-  if(!kids.length)return apRel;
-  const last=kids.slice(0,3);
-  return apRel+' של '+last.map(function(k,i){return (i?'של ':'')+k}).join(' ו');
+/* נשמר המפתח עצמו, ולא מה שהוא נראה. "אחר" הוא היוצא מן הכלל:
+   טקסט חופשי אינו מפתח, ולכן הוא נשמר ומוצג כפי שהוא. */
+function apRelValue(){
+  if(apRel==='other')return (fieldVal('ap-relfree')||'קרוב משפחה');
+  return apRel;
 }
 function apRelHint(){
   const nm=(fieldVal('ap-name')||'').trim();
-  txt('ap-relhint',nm?(nm+' יופיע כ"'+apRelText()+'".'):'');
+  if(!nm){txt('ap-relhint','');return}
+  const k=kinKid(apRelValue());
+  const kids=myKidNames();
+  /* השורה השנייה נאמרת רק כשיש גם תואר וגם ילד לתלות אותו בו,
+     כי "יראו אותו כסבא" בלי שם אינו משפט. */
+  txt('ap-relhint',nm+' יופיע ברשימה שלך כ"'+kinMe(apRelValue())+'"'+
+    (k&&kids.length?(', ולצד הרגעים של '+kidsPhrase(kids)+' כ"'+k+'"'):'')+'.');
+}
+/* שמות הילדים של המשפחה שלי, עד שלושה. משמש לכיתוב בלבד. */
+function myKidNames(){
+  const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
+  return kidGroups(own).groups.map(function(g){return g.kid}).filter(Boolean).slice(0,3);
+}
+function kidsPhrase(kids){
+  return kids.map(function(k,i){return (i?'של ':'')+k}).join(' ו');
 }
 function apKidSex(el,x){
   apKidSexV=x;
   [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+}
+/* הקרבה גוזרת את המין, ולכן הצ'יפים נשארים מוסתרים. "אחר" הוא
+   טקסט חופשי שאין ממנו מה לגזור, ורק שם הם חוזרים. */
+function apPickKidRel(el,k){
+  apKidRel=k;
+  [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+  const other=(k==='other');
+  document.getElementById('ap-kidrelfree').style.display=other?'block':'none';
+  document.getElementById('ap-kidsex').style.display=other?'flex':'none';
+  if(!other)apKidSexV=kinSex(k)||apKidSexV;
+}
+function apKidRelValue(){
+  if(apKidRel==='other')return (fieldVal('ap-kidrelfree')||'');
+  return apKidRel;
 }
 /* ארבע הדמויות, ולפניהן משבצת ההעלאה. היא ראשונה ולא אחרונה כי היא
    הדבר היחיד כאן שאינו ברירת מחדל, ומי שיש לו תמונה מחפש אותה. */
@@ -7964,7 +8032,8 @@ function apSave(){
      שדה חובה עד למסלול הבא. */
   if(!contactOk(c)){toast('צריך טלפון או כתובת אימייל תקינה');return}
   if(isMyAddress(c)){toast('זו הכתובת שלך. הזמנה נשלחת למישהו אחר.');return}
-  const r={av:pickedAv||apAv,name:nm,rel:apRelText(),g:'m',status:'none',
+  const rv=apRelValue();
+  const r={av:pickedAv||apAv,name:nm,rel:rv,g:kinSex(rv)||'m',status:'none',
            chan:chanOf(c),contact:c,note:fieldVal('ap-note')};
   const done=function(saved){
     if(saved&&saved.id)r.id=saved.id;
@@ -7995,6 +8064,7 @@ function apSaveKid(){
   const nm=fieldVal('ap-kidname');
   if(!nm){toast('צריך שם');document.getElementById('ap-kidname').focus();return}
   const src=netaSource();
+  const rel=apKidRelValue();
   const finish=function(av,id){
     apKidSaved={name:nm,av:av||apKidAv,id:id||null};
     /* נדחף לרשימה המקומית ולא רק נשמר בשרת: הציור הבא קורא את benes,
@@ -8003,7 +8073,7 @@ function apSaveKid(){
        מנקה כפילות לפי מזהה ולפי שם. */
     if(!benes.some(function(b){return (id&&b.id===id)||
         String(b.name||'').trim()===nm}))
-      benes.push({id:id||null,name:nm,sex:apKidSexV,avatar:av||apKidAv});
+      benes.push({id:id||null,name:nm,sex:apKidSexV,avatar:av||apKidAv,relation:rel});
     document.getElementById('ap-doneav').innerHTML=kidFaceHTML(apKidSaved.av,64);
     txt('ap-doneh',nm+' נוסף');
     txt('ap-doneb','פתח ל'+nm+' רגע');
@@ -8012,7 +8082,7 @@ function apSaveKid(){
   if(!src.addBeneficiary){finish(apKidAv);return}
   const btn=document.querySelector('#ap-4 .btn');
   if(btn){btn.disabled=true;btn.style.opacity='.55';btn.textContent='שומר…'}
-  src.addBeneficiary(nm,apKidSexV,apKidAv,apPhoto&&apPhoto.blob)
+  src.addBeneficiary(nm,apKidSexV,apKidAv,apPhoto&&apPhoto.blob,rel)
     .then(function(b){
       if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='המשך'}
       apKidId=b&&b.id||null;
@@ -8121,7 +8191,10 @@ function editRelative(i){
   pickedAv=r.av;
   sheetForm(r.name,
     '<label>שם</label><input type="text" id="r-name" value="'+r.name+'">'+
-    '<label>הקשר</label><input type="text" id="r-rel" value="'+r.rel+'">'+
+    /* השדה מראה את הכיתוב הנגזר ולא את המפתח: "mother" בתוך תיבת
+       טקסט אינו משהו שמישהו אמור לראות. שמירה בלי לגעת משאירה את
+       המפתח, וכתיבה אחרת הופכת אותו לטקסט חופשי. */
+    '<label>הקשר</label><input type="text" id="r-rel" value="'+attrText(kinMe(r.rel))+'">'+
     '<label>תמונה</label>'+avpickHTML(r.av)+
     /* הקישור האישי ירד מהשורה כשהכפתור שם הפך ל"שלח שוב", והוא חוזר
        לכאן: לא כל שליחה חוזרת היא מייל, ולפעמים רוצים להעביר ביד. */
@@ -8134,7 +8207,7 @@ function editRelative(i){
       const n=(document.getElementById('r-name')||{}).value;
       if(n&&n.trim())r.name=n.trim();
       const rl=(document.getElementById('r-rel')||{}).value;
-      if(rl&&rl.trim())r.rel=rl.trim();
+      if(rl&&rl.trim()&&rl.trim()!==kinMe(r.rel)){r.rel=rl.trim();r.g=kinSex(r.rel)||r.g}
       r.av=pickedAv;buildRelatives();toast('הפרטים נשמרו');
     });
 }
@@ -8258,7 +8331,9 @@ function loadAccountLists(){
     relatives.length=0;
     rows.forEach(function(r){
       relatives.push({id:r.id,av:r.avatar_key||'av-granny2',name:r.name,
-                      rel:r.relation||'קרוב משפחה',g:'m',
+                      /* מה שנשמר הוא מפתח, והמגדר נגזר ממנו. שורה
+                         ישנה שאין בה מפתח נשארת 'm' כשהייתה. */
+                      rel:r.relation||'קרוב משפחה',g:kinSex(r.relation)||'m',
                       status:'none',chan:r.channel==='email'?'mail':'wa',
                       contact:r.contact||''});
     });
@@ -9147,7 +9222,7 @@ function netaBackend(cfg){
     /* ילד שנוסף בלי נטיעה. התמונה מועלית קודם, כי הנתיב שלה הוא
        הערך שנשמר ב-avatar — ואם ההעלאה נכשלת נשמרת הדמות שנבחרה
        ולא נתיב לקובץ שאינו שם. */
-    addBeneficiary:function(name,sex,avatar,blob){
+    addBeneficiary:function(name,sex,avatar,blob,relation){
       const uid=sess&&sess.user?sess.user.id:null;
       const nm=String(name||'').trim();
       if(!uid||!nm)return Promise.reject(new Error('חסר שם או חשבון'));
@@ -9157,7 +9232,7 @@ function netaBackend(cfg){
         return call('/rest/v1/beneficiaries',{method:'POST',
           headers:{Prefer:'return=representation'},
           body:JSON.stringify({created_by:uid,name:nm,sex:sex||null,
-                               avatar:path||avatar||null})})
+                               avatar:path||avatar||null,relation:relation||null})})
           .then(function(rows){return rows&&rows[0]?rows[0]:null});
       });
     },
@@ -9248,9 +9323,13 @@ function netaBackend(cfg){
 
     /* ‏sex ו-avatar בלבד: אלה שתי העמודות היחידות שההרשאה מתירה
        לעדכן (0061), ולכן ניסיון לשנות שם נעצר במסד ולא רק כאן. */
-    saveBeneficiary:function(id,sex,avatar){
+    saveBeneficiary:function(id,sex,avatar,relation){
+      const f={sex:sex||null,avatar:avatar||null};
+      /* undefined ולא null: מי שקורא בלי הפרמטר אינו מתכוון למחוק
+         את הקרבה, ושדה שלא נשלח נשאר כפי שהוא. */
+      if(relation!==undefined)f.relation=relation||null;
       return call('/rest/v1/beneficiaries?id=eq.'+id,
-        {method:'PATCH',body:JSON.stringify({sex:sex||null,avatar:avatar||null})});
+        {method:'PATCH',body:JSON.stringify(f)});
     },
 
     /* כל הנהנים שלי, כולל מי שעוד אין לו רגע. עד כה הטבלה נקראה רק
@@ -9264,7 +9343,7 @@ function netaBackend(cfg){
     listBeneficiaries:function(){
       const uid=sess&&sess.user?sess.user.id:null;
       if(!uid)return Promise.resolve([]);
-      return call('/rest/v1/beneficiaries?select=id,name,sex,avatar&created_by=eq.'+uid+
+      return call('/rest/v1/beneficiaries?select=id,name,sex,avatar,relation&created_by=eq.'+uid+
                   '&order=created_at.asc',{})
         .then(function(rows){return rows||[]});
     },
@@ -10605,7 +10684,15 @@ function editKid(id){
   if(!it)return;
   const nm=firstName(it.name);
   let av=it.av,sx=(it.rows[0]||{}).sex||'m';
-  window.__kidAv=av;window.__kidSex=sx;
+  /* הקרבה חיה על הישות ולא על הנטיעה, ולכן היא נקראת מ-benes.
+     ילד שנוסף לפני 0068 אין לו קרבה, והגיליון נופל אז לשאלת
+     המגדר כפי שהייתה. */
+  const bn=(benes||[]).filter(function(x){
+    return (it.kidId&&x.id===it.kidId)||String(x.name||'').trim()===String(it.name||'').trim()})[0];
+  const rel=(bn&&bn.relation)||'';
+  const known=!!KIN[rel];
+  window.__kidAv=av;window.__kidSex=sx;window.__kidRel=known?rel:'other';
+  window.__kidRelFree=known?'':rel;
   sheetForm(nm,
     '<label>דמות</label><div class="avbig" id="k-av">'+
       KID_AV.map(function(a){
@@ -10613,8 +10700,13 @@ function editKid(id){
           'onclick="kidPickAv(this,\''+a+'\')"><svg viewBox="0 0 40 40">'+
           '<use href="#'+a+'"/></svg></button>'}).join('')+
     '</div>'+
-    '<label style="margin-top:13px">בן או בת</label>'+
-    '<div class="chips" id="k-sex">'+
+    '<label style="margin-top:13px">מי הוא עבורך?</label>'+
+    '<div class="chips" id="k-rel">'+kinChipsHTML(KIN_FOR,window.__kidRel,'kidPickRel')+'</div>'+
+    '<input type="text" id="k-relfree" placeholder="למשל: הבן של אחותי" '+
+      'value="'+attrText(window.__kidRelFree)+'" style="margin-top:8px;display:'+
+      (known?'none':'block')+'">'+
+    /* המגדר נגזר מהקרבה, ולכן השאלה חוזרת רק כשאין ממה לגזור. */
+    '<div class="chips" id="k-sex" style="margin-top:8px;display:'+(known?'none':'flex')+'">'+
       '<button type="button" class="'+(sx==='m'?'on':'')+'" onclick="kidPickSex(this,\'m\')">בן</button>'+
       '<button type="button" class="'+(sx==='f'?'on':'')+'" onclick="kidPickSex(this,\'f\')">בת</button>'+
     '</div>'+
@@ -10631,10 +10723,25 @@ function kidPickSex(el,x){
   window.__kidSex=x;
   [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
 }
+function kidPickRel(el,k){
+  window.__kidRel=k;
+  [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+  const other=(k==='other');
+  const fr=document.getElementById('k-relfree'),sx=document.getElementById('k-sex');
+  if(fr)fr.style.display=other?'block':'none';
+  if(sx)sx.style.display=other?'flex':'none';
+  if(!other)window.__kidSex=kinSex(k)||window.__kidSex;
+}
 function saveKid(id){
   const src=netaSource();
   if(!src.saveBeneficiary){toast('אפשר לערוך רק בחשבון מחובר');return}
-  src.saveBeneficiary(id,window.__kidSex,window.__kidAv)
+  const rel=window.__kidRel==='other'
+    ? ((document.getElementById('k-relfree')||{}).value||'').trim()
+    : window.__kidRel;
+  /* הרשימה המקומית מתעדכנת מיד, כי הגיליון נסגר לפני שהשרת עונה
+     והציור הבא קורא מ-benes. */
+  (benes||[]).forEach(function(x){if(x.id===id){x.relation=rel;x.sex=window.__kidSex}});
+  src.saveBeneficiary(id,window.__kidSex,window.__kidAv,rel)
     .then(function(){return buildHomeSummary()})
     .then(function(){toast('נשמר')},
           function(){toast('לא הצלחנו לשמור')});
