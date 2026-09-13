@@ -19,7 +19,13 @@
 :root{
   color-scheme:dark;
   --bg:#141613;--s1:#1C1F1B;--s2:#242822;--line:#33382F;--line-2:#454B40;
-  --tx:#EDEFE9;--tx-2:#9BA396;--tx-3:#6B7266;
+  /* ‏--tx-3 הוא label, meta, fine ו-eyebrow, כלומר הדרגה השלישית
+     של הטקסט. הוא היה #6B7266, שהוא 3.35:1 על כרטיס: קריא כשיודעים
+     מה כתוב שם, ולא כשקוראים. 104 מקומות באפליקציה נשענו עליו.
+     ‏#808878 הוא 4.53 על כרטיס ו-4.95 על הרקע. --tx-2 לא זז:
+     ההיררכיה נשענת גם על גודל ועל משקל, ופי 1.41 בין הדרגות
+     עדיין נקרא כשלוש. */
+  --tx:#EDEFE9;--tx-2:#9BA396;--tx-3:#808878;
   --leaf:#7FC088;--leaf-2:#5FA36A;--leaf-soft:#A8CBAC;--leaf-bg:#1B2A1D;--leaf-line:#2A4530;
   --sun:#D9B25F;--sun-2:#BE9748;--sun-soft:#E5CB96;--sun-bg:#2A2318;--sun-line:#3D3520;
   --rose:#D99BA6;--rose-bg:#2A1F22;
@@ -1569,7 +1575,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7c2b55d';
+window.NETA_BUILD = 'd705e80';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
