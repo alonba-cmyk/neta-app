@@ -659,7 +659,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .fic svg{display:block;width:18px;height:18px}
 /* פרצוף הקרוב, ועליו תג קטן שאומר לאיזו נטיעה — בלעדיו רואים מי ולא לאן. */
 .fav{position:relative;width:34px;height:34px;flex-shrink:0}
-.fav .avsvg{border-radius:10px;overflow:hidden}
+.fav .avsvg,.fav .avimg{border-radius:10px;overflow:hidden}
 /* אותה שורת פיד, בגודל איור. .fav הוא החתימה החזותית של מסך הפעילות
    ושל אף מסך אחר: פרצוף של מי שעשה משהו, ועליו תג הרגע שבו הוא עשה
    את זה. במצב הריק הוא אומר בדיוק את מה שהמסך מבטיח.
@@ -728,6 +728,41 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   background:var(--s2);border:2px solid transparent;transition:border-color .15s}
 .avpick button.on{border-color:var(--leaf)}
 .avpick svg{display:block;width:100%;height:100%}
+/* רשת הקרבה. הפרצוף והשם הם דבר אחד ולא שתי שאלות: הצ'יפ אמר
+   "חמות" ובורר נפרד מתחתיו ביקש לבחור לה דמות, כלומר שתי בחירות
+   על אותה עובדה. כאן הדמות נגזרת מהקרבה, והתא הנבחר הוא גם מי
+   שנושא את התמונה האמיתית אם הועלתה. */
+.kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
+.kgrid button{border:1px solid var(--line);border-radius:14px;background:var(--s1);
+  padding:10px 4px 8px;display:grid;gap:7px;justify-items:center;color:var(--tx-2);
+  font-size:11.5px;cursor:pointer;font-family:inherit;
+  transition:border-color .15s,background .15s,color .15s}
+.kgrid button.on{border-color:var(--leaf);background:var(--leaf-bg);color:var(--leaf)}
+.kgrid .f{width:46px;height:46px;border-radius:13px;overflow:hidden;position:relative;
+  background:var(--s2)}
+.kgrid .f svg,.kgrid .f img{display:block;width:100%;height:100%;object-fit:cover}
+/* התג יושב על התא ולא על השורה: הוא אומר "התמונה הזאת מוצגת כאן",
+   וזו העובדה היחידה שאי אפשר לראות מהשורה שמתחת. */
+.kgrid .cam{position:absolute;inset-inline-end:-3px;bottom:-3px;width:20px;height:20px;
+  border-radius:50%;background:var(--leaf);color:#0E1A10;display:grid;place-items:center;
+  font-size:10px;border:2px solid var(--s1);line-height:1}
+.kgrid button.on .cam{border-color:var(--leaf-bg)}
+/* שורת ההעלאה, בשני מצבים על אותו אלמנט: מקווקוות כשאין תמונה
+   ומלאה כשיש. שני אלמנטים היו מזיזים את הכפתור שמתחת ב-14 פיקסל
+   ברגע ההעלאה. */
+.uprow{display:flex;align-items:center;gap:10px;margin-top:11px;width:100%;
+  border:1px dashed var(--line-2);border-radius:12px;padding:10px 12px;
+  background:none;color:var(--tx-2);font-size:12.5px;text-align:right;
+  cursor:pointer;font-family:inherit}
+.uprow.has{border-style:solid;border-color:var(--leaf-line);background:var(--leaf-bg)}
+.uprow .ic{width:30px;height:30px;border-radius:10px;background:var(--s2);
+  display:grid;place-items:center;font-size:15px;flex:0 0 auto;overflow:hidden}
+.uprow .ic img{width:100%;height:100%;object-fit:cover;display:block}
+.uprow .t{flex:1;min-width:0}
+.uprow b{display:block;color:var(--tx);font-weight:500;font-size:12.5px}
+.uprow i{display:block;font-style:normal;font-size:10.5px;color:var(--tx-3);margin-top:1px}
+.uprow .rm{flex:0 0 auto;color:var(--tx-3);font-size:11px;
+  text-decoration:underline;text-underline-offset:3px}
 .sheet label{display:block;font-size:11px;color:var(--tx-3);margin:11px 0 5px}
 .sheet input[type=text],.sheet textarea{width:100%;font-family:inherit;font-size:13px;color:var(--tx);background:var(--s2);
   border:1px solid var(--line);border-radius:10px;padding:10px 12px}
@@ -1436,7 +1471,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1eac8f2';
+window.NETA_BUILD = 'b3aa9d9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1462,6 +1497,15 @@ window.NETA_CONFIG = {
   <symbol id="av-kid3" viewBox="0 0 40 40"><rect width="40" height="40" fill="#2A2E38"/><path d="M7.5 40 C7.5 32.6 13 29.2 20 29.2 C27 29.2 32.5 32.6 32.5 40Z" fill="#4A6488"/><rect x="17" y="23.4" width="6" height="5.6" fill="#C7935F"/><circle cx="20" cy="17.2" r="8.8" fill="#D8A472"/><path d="M11 17.6 C9.6 12.6 12.8 8.4 17 8.4 C18.6 7 21.4 7 23 8.4 C27.2 8.4 30.4 12.6 29 17.6 C28.6 13.6 26 12 20 12 C14 12 11.4 13.6 11 17.6Z" fill="#241B14"/><circle cx="12.6" cy="13.4" r="2.4" fill="#241B14"/><circle cx="27.4" cy="13.4" r="2.4" fill="#241B14"/></symbol>
   <symbol id="av-kid4" viewBox="0 0 40 40"><rect width="40" height="40" fill="#312A22"/><path d="M7.5 40 C7.5 32.6 13 29.2 20 29.2 C27 29.2 32.5 32.6 32.5 40Z" fill="#8A7355"/><rect x="17" y="23.4" width="6" height="5.6" fill="#DBB489"/><circle cx="20" cy="17.2" r="8.8" fill="#EACAA8"/><path d="M11 17.2 C11 9 29 9 29 17.2 C28.4 13.6 26.6 12.4 23.4 12 C22 14.2 16.6 14.6 14.4 13 C12.6 13.8 11.4 15 11 17.2Z" fill="#C8A05C"/><circle cx="27.6" cy="12" r="2.2" fill="#C8A05C"/></symbol>
   <symbol id="av-friend" viewBox="0 0 40 40"><rect width="40" height="40" fill="#2B3A2E"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#4E7358"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#C99A78"/><circle cx="20" cy="16" r="8.2" fill="#DDAF8A"/><path d="M11.5 15 C12.5 8 27.5 8 28.5 15 C27 11.5 13 11.5 11.5 15Z" fill="#2E2018"/></symbol>
+  <!-- ארבע דמויות מבוגרים נוספות, שנוספו כשרשת הקרבה החליפה את שורת
+       הצ'יפים: תשע קרבות דורשות תשעה פרצופים שונים, ולחמש הקיימות
+       היו חוזרות שלוש מהן פעמיים. אותו שלד בדיוק (רקע, כתפיים,
+       צוואר, ראש, שיער), וההבדל הוא צבע השיער, הרקע והחולצה.
+       av-someone נושא את "אחר" והוא היחיד הנייטרלי מבחינת מגדר. -->
+  <symbol id="av-grandpa" viewBox="0 0 40 40"><rect width="40" height="40" fill="#243033"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#4C6B6E"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#C4966D"/><circle cx="20" cy="16" r="8.2" fill="#D7AA7E"/><path d="M11 15.8 C11 8.2 29 8.2 29 15.8 C28.6 12.2 27 10.9 20 10.9 C13 10.9 11.4 12.2 11 15.8Z" fill="#C3BEB4"/><path d="M16.1 19.5 C17.4 18.5 22.6 18.5 23.9 19.5 C22.6 20.7 17.4 20.7 16.1 19.5Z" fill="#C3BEB4"/></symbol>
+  <symbol id="av-sister" viewBox="0 0 40 40"><rect width="40" height="40" fill="#34262B"/><path d="M9.5 17 C9.5 7 30.5 7 30.5 17 L30.5 29 L26 29 L26 17 C26 12 14 12 14 17 L14 29 L9.5 29Z" fill="#8A4A32"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#8A5A6B"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#D7A57F"/><circle cx="20" cy="16" r="8.2" fill="#E9BC93"/><path d="M11.5 15 C12.5 8 27.5 8 28.5 15 C27 11.5 13 11.5 11.5 15Z" fill="#8A4A32"/></symbol>
+  <symbol id="av-mate" viewBox="0 0 40 40"><rect width="40" height="40" fill="#2E2A22"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#8A6A3A"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#CE9A6E"/><circle cx="20" cy="16" r="8.2" fill="#E0AE80"/><path d="M11 15.5 C11 8.5 29 8.5 29 15.5 C29 12.2 27 11 20 11 C13 11 11 12.2 11 15.5Z" fill="#A85B2E"/></symbol>
+  <symbol id="av-someone" viewBox="0 0 40 40"><rect width="40" height="40" fill="#272A26"/><path d="M5 40 C5 31 11 27 20 27 C29 27 35 31 35 40Z" fill="#4A4F49"/><rect x="16.7" y="21.5" width="6.6" height="6" fill="#9C8F81"/><circle cx="20" cy="16" r="8.2" fill="#AEA294"/><path d="M11.3 15.6 C11.8 8.6 28.2 8.6 28.7 15.6 C27 12 13 12 11.3 15.6Z" fill="#6E6A63"/></symbol>
   <!-- איור הסיכום, ולא סמל המותג: ארבעה עלים בשני גוונים על אדמה.
        הוא יושב בראש שני מסכי הסיכום — "כל הנטיעות" ו"הנטיעות שלי" —
        ולכן הוא כאן ולא פעמיים בגוף המסמך. -->
@@ -3163,11 +3207,11 @@ window.NETA_CONFIG = {
        שהמשתמש באמת יודע, וכל כיתוב אחר נגזר ממנה (0068). "אחר" פותח
        את השדה החופשי למי שבאמת צריך. -->
   <div class="field"><label id="ap-rellbl">מי הוא עבורך?</label>
-    <div class="chips" id="ap-rel"></div>
+    <div class="kgrid" id="ap-rel"></div>
+    <button type="button" class="uprow" id="ap-relup" onclick="apRelPhotoTap(event)"></button>
     <input type="text" id="ap-relfree" placeholder="למשל: המורה של נועה"
            style="margin-top:8px;display:none" oninput="apRelHint()">
     <p class="fine" id="ap-relhint" style="margin-top:7px"></p></div>
-  <div class="field"><label>תמונה</label><div id="ap-avpick"></div></div>
   <button class="btn gap" onclick="apNext()">המשך</button>
   <button class="link backlink" onclick="apBack()">חזרה</button>
   </div><!-- /ap-1 -->
@@ -6894,7 +6938,7 @@ function buildRequests(){
         '<button class="no" onclick="declineSuggested('+i+')">לא עכשיו</button></div></div>';
     }
     return '<div class="req"><div class="rq-h">'+
-      '<div class="ra"><svg viewBox="0 0 40 40"><use href="#'+(q.av||'av-friend')+'"/></svg></div>'+
+      '<div class="ra">'+faceHTML(q.av,'av-friend')+'</div>'+
       '<b>'+q.name+'</b><span>'+q.when+'</span></div>'+
       '<p>מבקש להצטרף ל<b>'+where+'</b>. '+q.why+'</p>'+
       '<div class="rq-a"><button class="ok" onclick="answerReq('+i+',1)">אשר</button>'+
@@ -7057,7 +7101,7 @@ function sheetDone(title,html,okLabel,okFn,altLabel,altFn){
    בוואטסאפ אין מה "לשלוח" מהשרת, ולכן שם היא הראשית. */
 function personalInviteSheet(key,r,url,emailed){
   const p=plantAt(key);
-  const face='<div class="cba"><svg viewBox="0 0 40 40"><use href="#'+(r.av||'av-granny2')+'"/></svg></div>';
+  const face='<div class="cba">'+faceHTML(r.av,'av-granny2')+'</div>';
   /* בלי תג "יצא": הכותרת אומרת "נשלחה" והמפתח אומר "נשלח אל". תג
      שלישי על אותה עובדה הוא רעש. */
   const copyFn=function(){copyText(url).then(function(){toast('הקישור הועתק')},function(){})};
@@ -7312,7 +7356,7 @@ function relRowHTML(r,right,open){
     : (r.contact?kinMe(r.rel)+' · '+r.contact
                 :kinMe(r.rel)+' · חסרים פרטי קשר');
   return '<div class="rel"'+(open||'')+'>'+
-    '<div class="ra"><svg viewBox="0 0 40 40"><use href="#'+r.av+'"/></svg></div>'+
+    '<div class="ra">'+faceHTML(r.av,'av-granny2')+'</div>'+
     '<span class="rn"><b>'+r.name+'</b><i>'+sub+'</i></span>'+right+'</div>';
 }
 /* payment methods — the standing order is what actually funds the monthly deposits */
@@ -7862,17 +7906,23 @@ const AP_LBL_FOR=['את מי','עבור מי','נוסף'];
    ‏chip הוא מה שכתוב על הכפתור, me הוא מה שמוצג ברשימה שלי,
    kid הוא מה שהאדם לילדים שלי (ריק כשאין תואר כזה בעברית), ו-g
    הוא המגדר שהמילה כבר נושאת. */
+/* ‏av הוא הדמות שהקרבה מדליקה. עד כה הדמות הייתה בחירה נפרדת
+   מתחת לצ'יפ, כלומר שתי שאלות על אותה עובדה, ומי שבחר "חמות"
+   נדרש לבחור לה גם פרצוף מתוך חמישה שלא אמרו דבר. תשע הקרבות
+   שמוצעות נושאות תשעה פרצופים שונים; הקרבות שאינן מוצעות (aunt,
+   uncle, ורשימת הילדים) נופלות ל-av-someone, כי הן אינן מגיעות
+   לרשת ואיש אינו רואה אותן כפרצוף. */
 const KIN={
-  mother       :{chip:'אמא',    me:'אמא שלי',     kid:'סבתא',g:'f'},
-  father       :{chip:'אבא',    me:'אבא שלי',     kid:'סבא', g:'m'},
-  mother_law   :{chip:'חמות',   me:'חמותי',       kid:'סבתא',g:'f'},
-  father_law   :{chip:'חם',     me:'חמי',         kid:'סבא', g:'m'},
-  sister       :{chip:'אחות',   me:'אחות שלי',    kid:'דודה',g:'f'},
-  brother      :{chip:'אח',     me:'אח שלי',      kid:'דוד', g:'m'},
+  mother       :{chip:'אמא',    me:'אמא שלי',     kid:'סבתא',g:'f',av:'av-granny'},
+  father       :{chip:'אבא',    me:'אבא שלי',     kid:'סבא', g:'m',av:'av-uncle'},
+  mother_law   :{chip:'חמות',   me:'חמותי',       kid:'סבתא',g:'f',av:'av-granny2'},
+  father_law   :{chip:'חם',     me:'חמי',         kid:'סבא', g:'m',av:'av-grandpa'},
+  sister       :{chip:'אחות',   me:'אחות שלי',    kid:'דודה',g:'f',av:'av-parent'},
+  brother      :{chip:'אח',     me:'אח שלי',      kid:'דוד', g:'m',av:'av-friend'},
   aunt         :{chip:'דודה',   me:'דודה שלי',    kid:'',    g:'f'},
   uncle        :{chip:'דוד',    me:'דוד שלי',     kid:'',    g:'m'},
-  friend_f     :{chip:'חברה',   me:'חברה שלי',    kid:'',    g:'f'},
-  friend_m     :{chip:'חבר',    me:'חבר שלי',     kid:'',    g:'m'},
+  friend_f     :{chip:'חברה',   me:'חברה שלי',    kid:'',    g:'f',av:'av-sister'},
+  friend_m     :{chip:'חבר',    me:'חבר שלי',     kid:'',    g:'m',av:'av-mate'},
   son          :{chip:'בן',     me:'הבן שלי',     kid:'',    g:'m'},
   daughter     :{chip:'בת',     me:'הבת שלי',     kid:'',    g:'f'},
   grandson     :{chip:'נכד',    me:'הנכד שלי',    kid:'',    g:'m'},
@@ -7895,6 +7945,27 @@ const KIN_FOR=['son','daughter','grandson','granddaughter','nephew','niece'];
 function kinMe(v){const k=KIN[v];return k?k.me:String(v||'')}
 function kinSex(v){const k=KIN[v];return k?k.g:null}
 function kinKid(v){const k=KIN[v];return k?k.kid:''}
+function kinAv(v){const k=KIN[v];return (k&&k.av)||'av-someone'}
+/* רשת הקרבה: תא לכל קרבה, ובכל תא הפרצוף והשם יחד. "אחר" הוא
+   תא ככל השאר ולא כפתור בסוף שורה, כי הוא תשובה לאותה שאלה.
+
+   ‏photo הוא הנתיב או ה-blob המקומי של תמונה שהועלתה, והוא מצויר
+   בתא הנבחר בלבד: התמונה היא של האדם ולא של הקרבה, ולכן היא נודדת
+   לתא החדש כשמחליפים ואינה נשארת מאחור. */
+function kinGridHTML(keys,sel,fn,photo){
+  const cell=function(k,label,av){
+    const on=(k===sel);
+    const face=(on&&photo)
+      ? '<img src="'+attrText(photo)+'" alt="">'+
+        '<span class="cam">\u2713</span>'
+      : '<svg viewBox="0 0 40 40"><use href="#'+av+'"/></svg>';
+    return '<button type="button" class="'+(on?'on':'')+'" '+
+      'onclick="'+fn+'(this,\''+k+'\')"><span class="f">'+face+'</span>'+
+      '<span>'+label+'</span></button>';
+  };
+  return keys.map(function(k){return cell(k,KIN[k].chip,kinAv(k))}).join('')+
+    cell('other','אחר','av-someone');
+}
 function kinChipsHTML(keys,sel,fn){
   return keys.map(function(k){
     return '<button type="button" class="'+(k===sel?'on':'')+'" '+
@@ -7902,8 +7973,12 @@ function kinChipsHTML(keys,sel,fn){
     '<button type="button" class="'+(sel==='other'?'on':'')+'" '+
       'onclick="'+fn+'(this,\'other\')">אחר</button>';
 }
-let apKindMode='with',apStep=0,apRel='mother',apAv='av-granny2',
+let apKindMode='with',apStep=0,apRel='mother',apAv='av-granny',
     apKidAv='av-kid1',apKidSexV='m',apKidRel='son',apPhoto=null,apPlants=[];
+/* תמונה אמיתית של הקרוב, נפרדת מ-apPhoto שהיא של הילד: שני
+   המסלולים חיים באותו אשף, ומשתנה אחד היה גורר תמונה שהועלתה
+   במסלול אחד אל התצוגה של השני. */
+let apRelPhoto=null;
 /* הרגע שממנו נפתחה ההוספה, כשהיא נפתחה ממצב הזמנה. כשהוא קיים שתי
    שאלות באשף כבר נענו: "את מי" (בהכרח מישהו שנוטע איתי, כי לילד לא
    שולחים הזמנה) ו"לאיזה רגע" (הרגע שממנו נכנסתי). אשף ששואל שאלה
@@ -7941,8 +8016,10 @@ function openAddPerson(){
   /* מצב הזמנה: הרגע ידוע, ולכן גם הסוג. relInviteKey הוא המקור
      היחיד לשניהם, ואין פרמטר שאפשר לשכוח להעביר. */
   apFrom=relInviteKey||'';
-  apKindMode='with';apStep=0;apRel='mother';apAv='av-granny2';
+  apKindMode='with';apStep=0;apRel='mother';apAv='av-granny';
   apKidAv='av-kid1';apKidSexV='m';apKidRel='son';apPhoto=null;
+  if(apRelPhoto&&apRelPhoto.url)URL.revokeObjectURL(apRelPhoto.url);
+  apRelPhoto=null;
   /* מרגע: הרגע ידוע כבר עכשיו, ולא רק בשמירה. בלי זה השלב האחרון
      הכריז "לא סימנת רגע" ונשא כפתור "הוסף לרשימה" על מסלול שכל כולו
      הזמנה לרגע מסוים. */
@@ -7958,9 +8035,7 @@ function openAddPerson(){
   document.getElementById('ap-kidsex').style.display='none';
   document.getElementById('ap-kidrel').innerHTML=kinChipsHTML(KIN_FOR,apKidRel,'apPickKidRel');
   document.getElementById('ap-upnote').style.display='none';
-  document.getElementById('ap-rel').innerHTML=kinChipsHTML(KIN_WITH,apRel,'apPickRel');
-  document.getElementById('ap-avpick').innerHTML=avpickHTML('av-granny2');
-  pickedAv='av-granny2';
+  apPaintRel();
   apPaintKidAv();
   apRelHint();
   document.querySelectorAll('#ap-kidsex button').forEach(function(x,i){
@@ -7971,10 +8046,52 @@ function apKind(el,k){
   apKindMode=k;
   [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
 }
+/* ציור מחדש ולא החלפת קלאס: התמונה יושבת בתוך התא הנבחר, ולכן
+   מעבר לתא אחר מזיז אותה. סימון בלבד היה משאיר אותה בתא הישן. */
+function apPaintRel(){
+  const g=document.getElementById('ap-rel');
+  if(g)g.innerHTML=kinGridHTML(KIN_WITH,apRel,'apPickRel',
+                               apRelPhoto&&apRelPhoto.url);
+  apPaintRelUp();
+}
+/* אותה שורה בשני מצבים. השם נכנס לכיתוב כשהוקלד, ולכן הציור
+   נקרא גם מ-apRelHint שרצה על כל הקלדה. */
+function apPaintRelUp(){
+  const up=document.getElementById('ap-relup');
+  if(!up)return;
+  const nm=(fieldVal('ap-name')||'').trim();
+  const of=nm?(' של '+nm):'';
+  up.className='uprow'+(apRelPhoto?' has':'');
+  up.innerHTML=apRelPhoto
+    ? '<span class="ic"><img src="'+attrText(apRelPhoto.url)+'" alt=""></span>'+
+      '<span class="t"><b>התמונה'+of+'</b><i>מוצגת בתא שנבחר</i></span>'+
+      '<span class="rm" data-rm="1">הסר</span>'
+    : '<span class="ic">\uFF0B</span>'+
+      '<span class="t"><b>העלה תמונה'+of+'</b><i>במקום הדמות שנבחרה</i></span>';
+}
+/* "הסר" יושב בתוך הכפתור ולא לידו, כי השורה כולה היא שטח לחיצה
+   אחד. ההבחנה נעשית על היעד ולא בכפתור נפרד שהיה שובר את השורה. */
+function apRelPhotoTap(ev){
+  const t=ev&&ev.target;
+  if(t&&t.closest&&t.closest('[data-rm]')){apRelClearPhoto();return}
+  apRelPickPhoto();
+}
+function apRelPickPhoto(){
+  pickPhotoInto(function(ph){
+    if(apRelPhoto&&apRelPhoto.url)URL.revokeObjectURL(apRelPhoto.url);
+    apRelPhoto=ph;
+    apPaintRel();
+  });
+}
+function apRelClearPhoto(){
+  if(apRelPhoto&&apRelPhoto.url)URL.revokeObjectURL(apRelPhoto.url);
+  apRelPhoto=null;
+  apPaintRel();
+}
 function apPickRel(el,r){
   apRel=r;
-  [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
   document.getElementById('ap-relfree').style.display=(r==='other')?'block':'none';
+  apPaintRel();
   apRelHint();
 }
 /* נשמר המפתח עצמו, ולא מה שהוא נראה. "אחר" הוא היוצא מן הכלל:
@@ -7985,6 +8102,7 @@ function apRelValue(){
 }
 function apRelHint(){
   const nm=(fieldVal('ap-name')||'').trim();
+  apPaintRelUp();
   if(!nm){txt('ap-relhint','');return}
   const k=kinKid(apRelValue());
   const kids=myKidNames();
@@ -8087,7 +8205,10 @@ function apNext(){
   if(id==='ap-0'){apStep=1;apShow();return}
   if(id==='ap-1'){
     if(!fieldVal('ap-name')){toast('צריך שם');document.getElementById('ap-name').focus();return}
-    apAv=pickedAv;
+    /* הדמות נגזרת מהקרבה ולא מ-pickedAv, שהוא גלובלי ומשרת בוררים
+       אחרים: מרגע שהבורר הנפרד ירד מהפאנל הזה הוא היה נושא ערך
+       שנבחר במסך אחר לגמרי. */
+    apAv=kinAv(apRelValue());
     apStep++;apEnter(list[apStep]);apShow();return;
   }
   if(id==='ap-3'){apStep++;apEnter(list[apStep]);apShow();return}
@@ -8183,10 +8304,20 @@ function apSave(){
   if(!contactOk(c)){toast('צריך טלפון או כתובת אימייל תקינה');return}
   if(isMyAddress(c)){toast('זו הכתובת שלך. הזמנה נשלחת למישהו אחר.');return}
   const rv=apRelValue();
-  const r={av:pickedAv||apAv,name:nm,rel:rv,g:kinSex(rv)||'m',status:'none',
+  const r={av:kinAv(rv),name:nm,rel:rv,g:kinSex(rv)||'m',status:'none',
            chan:chanOf(c),contact:c,note:fieldVal('ap-note')};
   const done=function(saved){
     if(saved&&saved.id)r.id=saved.id;
+    /* מה שחזר מהשרת הוא הנתיב של התמונה שהועלתה, ולכן הוא גובר על
+       הדמות. בלי חשבון חי אין נתיב, והמקומי הוא הקישור בדפדפן. */
+    if(saved&&saved.avatar_key)r.av=saved.avatar_key;
+    else if(apRelPhoto&&apRelPhoto.url&&!liveAccount()){
+      photoCache[apRelPhoto.url]=apRelPhoto.url;r.av=apRelPhoto.url;
+      /* הקישור עבר לשורה, ולכן אינו של האשף יותר: פתיחה נוספת של
+         האשף משחררת את apRelPhoto, וזה היה מרוקן את התמונה של מי
+         שכבר נשמר. */
+      apRelPhoto=null;
+    }
     relatives.push(r);
     /* רגע אחד עובר בנתיב הקיים בדיוק; כמה רגעים הם הזמנה אחת עם כמה
        קישורים, ולכן פונקציה משלהם. */
@@ -8203,7 +8334,15 @@ function apSave(){
   };
   if(liveAccount()){
     netaServer.addRelative({name:r.name,relation:r.rel,avatar:r.av,
+                            photo:apRelPhoto&&apRelPhoto.blob,
                             contact:c,channel:r.chan==='wa'?'whatsapp':'email'})
+      .then(function(saved){
+        /* החתימה לפני הציור, כמו בכל תמונה אחרת: photoUrl סינכרונית,
+           ושורה שנצבעת לפני שהקישור הגיע הייתה מראה דמות עד הרענון. */
+        if(saved&&saved.avatar_key&&saved.avatar_key.indexOf('av-')!==0)
+          return signKin([saved.avatar_key]).then(function(){return saved});
+        return saved;
+      })
       .then(done)
       .catch(function(e){ask('הקרוב לא נשמר',(e&&e.message)||'לא הצלחנו להגיע לשרת.','הבנתי')});
     return;
@@ -8304,6 +8443,10 @@ function signPhotos(paths){return signIn(paths,'kid-photos')}
    הם uuid ולכן אין התנגשות, ו-photoUrl נשארת פונקציה אחת שכל מקום
    בתצוגה קורא לה. */
 function signFaces(paths){return signIn(paths,'profile-photos')}
+/* תמונות של קרובים, ב-bucket שלישי. הוא נפרד משני האחרים כי
+   ‏relatives הוא פנקס אישי: מה שיושב בו נראה לי בלבד, ולכן גם
+   מדיניות הקריאה שלו היא על התיקייה ולא על טבלה. */
+function signKin(paths){return signIn(paths,'relative-photos')}
 function signIn(paths,bucket){
   const need=(paths||[]).filter(function(p){
     return p&&p.indexOf('av-')!==0&&!photoCache[p]});
@@ -8514,6 +8657,15 @@ function loadAccountLists(){
        לפניה. בלי הציור הנוסף שורת ההזמנה הייתה נופלת לאמוג'י של הרגע
        עד הרענון הבא. */
     if(document.getElementById('feed'))buildFeed();
+    /* התמונות נחתמות אחרי הציור ומחייבות ציור שני, כי החתימה
+       אסינכרונית והציור אינו. הציור השני מותנה במה שהגיע ולא במה
+       שקיים, אחרת התנאי נכון גם בו וזו לולאה. */
+    const kinPix=relatives.map(function(r){return r.av})
+      .filter(function(a){return a&&a.indexOf('av-')!==0&&!photoUrl(a)});
+    if(kinPix.length)signKin(kinPix).then(function(){
+      buildRelatives();
+      if(document.getElementById('feed'))buildFeed();
+    });
     /* אחרי הרשימה ולא במקביל לה: הסימון נכתב על השורות שהרגע נבנו. */
     if(netaServer.loadInvitations)
       netaServer.loadInvitations().then(markInvited,function(){});
@@ -9094,13 +9246,23 @@ function netaBackend(cfg){
       return call('/rest/v1/relatives?select=*&order=created_at',{method:'GET'})
         .then(function(r){return r||[]}).catch(remember);
     },
+    /* התמונה עולה לפני השורה, ומה שנשמר ב-avatar_key הוא הנתיב.
+       העלאה שנכשלת אינה מפילה את ההוספה: הקרוב נשמר עם הדמות
+       שהקרבה הדליקה, וזה בדיוק מה שהיה קורה בלי תמונה. */
     addRelative:function(r){
-      return call('/rest/v1/relatives',{method:'POST',
-        headers:{Prefer:'return=representation'},
-        body:JSON.stringify({name:r.name,relation:r.relation,
-                             avatar_key:r.avatar,contact:r.contact||null,
-                             channel:r.contact?r.channel:null})})
-        .then(function(x){return x&&x[0]}).catch(remember);
+      const uid=sess&&sess.user?sess.user.id:null;
+      const put=(r.photo&&uid)
+        ? netaServer.uploadPhoto(uid,r.photo,'relative-photos')
+            .catch(function(){return null})
+        : Promise.resolve(null);
+      return put.then(function(path){
+        return call('/rest/v1/relatives',{method:'POST',
+          headers:{Prefer:'return=representation'},
+          body:JSON.stringify({name:r.name,relation:r.relation,
+                               avatar_key:path||r.avatar,contact:r.contact||null,
+                               channel:r.contact?r.channel:null})})
+          .then(function(x){return x&&x[0]});
+      }).catch(remember);
     },
     /* מחיקה מוגבלת ל-id של הבעלים דרך ה-RLS של הטבלה — אין כאן צורך
        לוודא בעלות בקוד, המסד כבר לא יאפשר למחוק שורה שאינה שלך. */
@@ -10129,7 +10291,7 @@ function relAvatar(name){
   if(!n)return null;
   for(let i=0;i<relatives.length;i++){
     const r=relatives[i];
-    if(r&&String(r.name||'').trim()===n&&r.av&&r.av.indexOf('av-')===0)return r.av;
+    if(r&&String(r.name||'').trim()===n&&r.av)return r.av;
   }
   return null;
 }
@@ -10182,7 +10344,7 @@ function feedRowHTML(e){
     ? relAvatar(e.subject)
     : ((!mine&&e.avatar&&e.kind!=='anniversary')?e.avatar:null);
   const badge=face
-    ? '<div class="fav"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+face+'"/></svg>'+
+    ? '<div class="fav">'+faceHTML(face,'av-parent')+
       '<span class="fbadge">'+(e.icon||'🌱')+'</span></div>'
     : '<div class="fic'+cls+'">'+glyph+'</div>';
   const open=e.key?' onclick="openDetail(\''+e.key+'\')"':'';
@@ -11409,7 +11571,7 @@ function invitedHereRows(p){
     const f=r.g==='f';
     const act=canResend(r,p.key)
       ? '<span class="rx" onclick="resendInvite('+i+',\''+p.key+'\')">שלח שוב</span>' : '';
-    return '<div class="cbr pend"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+(r.av||'av-granny2')+'"/></svg></div>'+
+    return '<div class="cbr pend"><div class="cba">'+faceHTML(r.av,'av-granny2')+'</div>'+
       '<span class="cbn">'+r.name+'<i>'+(f?'הוזמנה':'הוזמן')+' · ממתין ל'+(f?'תשובתה':'תשובתו')+'</i></span>'+
       act+'</div>';
   }).join('');
