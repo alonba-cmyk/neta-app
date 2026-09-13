@@ -1469,7 +1469,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'bba972b';
+window.NETA_BUILD = '946c81b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6705,7 +6705,7 @@ function paintDetail(key,p){
     const sub=[personSub(w,false),w[2]].filter(Boolean).join(' · ');
     return '<div class="cbr'+(w[8]==null?'':' tap')+'"'+
       (w[8]==null?'':' onclick="openPerson('+i+')"')+'>'+
-    '<div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+w[0]+'"/></svg></div>'+
+    '<div class="cba">'+faceHTML(w[0],'av-parent')+'</div>'+
     '<span class="cbn"><b>'+w[1]+'</b>'+(sub?'<i>'+sub+'</i>':'')+'</span>'+
     (w[8]==null?'':'<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12">'+
       '<use href="#chev"/></svg></span>')+'</div>';
@@ -10012,8 +10012,7 @@ function faceStack(list){
   const arr=(list&&list.length)?list:[{avatar:'av-parent'}];
   const show=arr.slice(0,2), rest=arr.length-2;
   return '<span class="fx2'+(show.length<2?' one':'')+'">'+show.map(function(w,i){
-    return '<span><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+
-      (w.avatar||'av-parent')+'"/></svg>'+
+    return '<span>'+faceHTML(w.avatar,'av-parent')+
       ((i===1&&rest>0)?'<i class="ov">+'+rest+'</i>':'')+'</span>';
   }).join('')+'</span>';
 }
@@ -10476,6 +10475,10 @@ function buildHomeSummary(){
     const missing=photoPaths(fuAll).filter(function(x){return !photoUrl(x)});
     if(missing.length)signPhotos(missing).then(function(){
       if(missing.some(function(x){return photoUrl(x)}))buildHomeSummary();
+    });
+    const faces=facePaths(model.plantings);
+    if(faces.length)signFaces(faces).then(function(){
+      if(faces.some(function(x){return photoUrl(x)}))buildHomeSummary();
     });
     if(!fuAll.some(function(x){return x.id===fuPick}))fuPick=fuDefault(fuAll);
     const sel=fuAll.filter(function(x){return x.id===fuPick})[0]||fuAll[0];
@@ -11074,6 +11077,22 @@ function pickFuture(id){fuPick=id;buildHomeSummary();}
 function photoPaths(items){
   return (items||[]).map(function(x){return x.av}).filter(function(a){
     return a&&a.indexOf('av-')!==0});
+}
+/* תמונות הפרופיל של כל מי שמופיע במודל, ולא רק שלי. הן יושבות
+   ב-bucket אחר מזה של הילדים (profile-photos מול kid-photos),
+   ולכן הן גם נחתמות בנפרד: עד כה signFaces שירתה את התמונה שלי
+   בלבד, ותמונה של מי שנוטע איתי נשארה נתיב לא חתום, כלומר
+   ריבוע ריק ב"מי נוטע כאן" ובצמד הפנים שעל הכרטיס. */
+function facePaths(plants){
+  const out={};
+  (plants||[]).forEach(function(p){
+    /* שני מקורות לאותם אנשים: who הוא מה שמסך הנטיעה מצייר,
+       ו-participants הוא מה שצמד הפנים שעל הכרטיס מצייר. */
+    (p.who||[]).forEach(function(w){if(w&&w[0])out[w[0]]=1});
+    (p.participants||[]).forEach(function(f){if(f&&f.avatar)out[f.avatar]=1});
+  });
+  return Object.keys(out).filter(function(a){
+    return a.indexOf('av-')!==0&&!photoUrl(a)});
 }
 /* הנהנים שלי כישות, ולא רק כשמות שנגזרים מהנטיעות. הרשימה נטענת
    ליד המודל, ומי שנוסף מקומית נדחף אליה מיד כדי שהמסך יראה אותו
