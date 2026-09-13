@@ -1408,7 +1408,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4d0dd09';
+window.NETA_BUILD = '92f6684';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2451,9 +2451,16 @@ window.NETA_CONFIG = {
        של inviteRelative לאדם שהוא בוחר. בורר כאן היה שואל שאלה
        שהתשובה עליה כבר על המסך. -->
   <div class="card" id="rel-list"></div>
+  <!-- הקבוצה השנייה של האשף. "+ הוסף אדם" מציע שתי דרכים, ועד כה רק
+       אחת מהן נגמרה במשהו שרואים במסך שממנו יצאו: ילד נשמר, קיבל
+       קרבה, ולא הופיע כאן. הפעולה על שורה שלו אינה "הזמן" אלא הרגעים
+       שלו, וזה מה שהצדיק רשימה נפרדת ולא ערבוב. במצב הזמנה הסקשן
+       יורד, כי שם הרשימה היא בחירה מרובה של נמענים. -->
+  <p class="eyebrow" id="kid-head" style="display:none">מי שאני נוטע עבורו</p>
+  <div class="card" id="kid-list" style="display:none"></div>
   <button class="btn gap-s" id="rel-send" style="display:none"
           onclick="invPreview()">המשך</button>
-  <button class="btn gap-s" id="rel-add" onclick="openAddPerson()">+ הוסף קרוב</button>
+  <button class="btn gap-s" id="rel-add" onclick="openAddPerson()">+ הוסף אדם</button>
   <!-- כך זה ייראה כשקרובים יצטרפו. אותו דגם דוהה שיש בשלושת המצבים
        הריקים האחרים, ומאותו מקור: שורות אמיתיות של הרשימה עם שמות
        ההדגמה, ולא ציור שלהן. -->
@@ -7113,6 +7120,8 @@ function buildRelatives(){
   /* בראש ולא בכל ענף: לפונקציה שלושה מסלולי יציאה, ומי שנשכח בהם
      השאיר את הכיתוב של מצב ההזמנה על מסך שאינו במצב הזמנה. */
   paintInvSend();
+  /* בראש ולא בכל ענף, מאותה סיבה שמעל: לפונקציה שלושה מסלולי יציאה. */
+  paintKidSection();
   if(!relatives.length){
     box.style.border='none';box.style.background='none';box.style.padding='0';
     /* הכפתור "הוסף קרוב" יושב אחרי הקופסה ולא בתוך המצב הריק, ולכן
@@ -7186,6 +7195,57 @@ function buildRelatives(){
 /* שורה אחת, שני שימושים: הרשימה האמיתית והדגם הדוהה שמתחת למצב הריק.
    בלי זה הדגם היה עותק שני של אותו מבנה, והוא היה נשאר מאחור בכל
    שינוי בשורה. */
+/* הילדים שלי, מהישות ולא מהנטיעות: מי שעוד אין לו רגע קיים רק שם.
+   ‏benes היא אותה רשימה שממנה נבנה הבורר ב"העתיד שלנו", ולכן שני
+   המסכים אינם יכולים לחלוק. */
+function paintKidSection(){
+  const head=document.getElementById('kid-head'),box=document.getElementById('kid-list');
+  if(!head||!box)return;
+  /* במצב הזמנה הרשימה שמעל היא בחירה מרובה של נמענים, וילד אינו
+     נמען. סקשן שלישי שם היה רעש על מסך שיש בו משימה אחת. */
+  const rows=relInviteKey?[]:(benes||[]).filter(function(b){return b&&b.name});
+  head.style.display=rows.length?'':'none';
+  box.style.display=rows.length?'':'none';
+  if(!rows.length)return;
+  box.innerHTML=rows.map(function(b){
+    const n=kidMoments(b).length;
+    const key=b.id||b.name;
+    /* הפעולה מובילה לדבר עצמו: מי שאין לו רגע נפתח לו אחד, ומי שיש
+       לו נכנסים אליהם. לחיצה על השורה עורכת, בדיוק כמו בשורה של
+       קרוב שמעליה. */
+    const act=n
+      ? '<button class="rx" onclick="event.stopPropagation();kidMomentsGo(\''+attrText(key)+'\')">הרגעים</button>'
+      : '<button class="rx" onclick="event.stopPropagation();kidOpenMoment(\''+attrText(key)+'\')">פתח רגע</button>';
+    const sub=[kinMe(b.relation),n?(n===1?'רגע אחד':countWord(n)+' רגעים'):'עוד לא נפתח רגע']
+      .filter(Boolean).join(' · ');
+    return '<div class="rel" onclick="editKid(\''+attrText(key)+'\')">'+
+      '<div class="ra">'+kidFaceHTML(b.avatar||kidAvatar(b.name),34)+'</div>'+
+      '<span class="rn"><b>'+attrText(b.name)+'</b><i>'+attrText(sub)+'</i></span>'+
+      act+'</div>';
+  }).join('');
+}
+function kidMoments(b){
+  const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
+  return own.filter(function(p){
+    /* kidId הוא השם בלקוח ל-beneficiary_id שעל הנטיעה, ו-kidOf הוא
+       הנפילה אחורה לשם עבור שורות שנוצרו לפני 0061. אותו זיווג בדיוק
+       כמו ב-kidKey ו-fuWithBenes. */
+    return (b.id&&p.kidId===b.id)||
+           String(kidOf(p)||'').trim()===String(b.name||'').trim();
+  });
+}
+function kidOf_(key){
+  return (benes||[]).filter(function(b){return String(b.id||b.name)===String(key)})[0];
+}
+function kidMomentsGo(key){
+  const b=kidOf_(key); if(!b)return;
+  fuPick='k:'+(b.id||b.name);
+  openFuture();
+}
+function kidOpenMoment(key){
+  const b=kidOf_(key); if(!b)return;
+  prefillKid(b.name,b.avatar||kidAvatar(b.name),b.sex);
+}
 function relGhost(on){
   const g=document.getElementById('rel-ghost');
   if(g)g.style.display=on?'':'none';
@@ -7369,7 +7429,10 @@ function paintInvSend(){
   if(add){
     add.style.display=relInviteKey?'none':'';
     add.className='btn gap-s';
-    add.textContent='+ הוסף קרוב';
+    /* "אדם" ולא "קרוב": הפאנל הראשון שואל "את מי תרצה להוסיף" ומציע
+       שתי דרכים, וילד אינו קרוב שנוטע איתי. שם שמבטיח אחת מהשתיים
+       הוא נקודת ההתחלה של הבלבול. */
+    add.textContent='+ הוסף אדם';
   }
   if(!b)return;
   if(!relInviteKey){b.style.display='none';return}
@@ -9323,6 +9386,11 @@ function netaBackend(cfg){
 
     /* ‏sex ו-avatar בלבד: אלה שתי העמודות היחידות שההרשאה מתירה
        לעדכן (0061), ולכן ניסיון לשנות שם נעצר במסד ולא רק כאן. */
+    /* רק מי שעוד אין לו נטיעה. 0069 נותנת את ההרשאה, וה-FK מ-
+       plantings.beneficiary_id הוא NO ACTION ולכן הוא החוסם האמיתי. */
+    removeBeneficiary:function(id){
+      return call('/rest/v1/beneficiaries?id=eq.'+id,{method:'DELETE'});
+    },
     saveBeneficiary:function(id,sex,avatar,relation){
       const f={sex:sex||null,avatar:avatar||null};
       /* undefined ולא null: מי שקורא בלי הפרמטר אינו מתכוון למחוק
@@ -10678,17 +10746,24 @@ function fuCenterPick(){
 /* הילד עצמו, ולא הרגעים שלו. השם אינו כאן: הוא נעול מרגע שנטיעה
    מיועדת מצביעה על הילד, וזו אותה הכרעה שנעולה גם על הנטיעה (0002).
    מה שכן נפתח הוא הדמות והמין, שהם תצוגה ודקדוק. */
+/* ‏id הוא מזהה הישות, ובהיעדרו השם: אותו מפתח שהסקשן ב"הקרובים שלי"
+   מייצר, וגם מי שעוד אין לו רגע מגיע לכאן. עד כה הגיליון נבנה מ-
+   fuItems בלבד, שנגזרת מהנטיעות, ולכן ילד בלי רגע לא היה ניתן
+   לעריכה כלל. */
 function editKid(id){
   const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
-  const it=(fuItems(own)||[]).filter(function(x){return x.kidId===id})[0];
-  if(!it)return;
-  const nm=firstName(it.name);
-  let av=it.av,sx=(it.rows[0]||{}).sex||'m';
+  const bn=(benes||[]).filter(function(x){return String(x.id||x.name)===String(id)})[0]
+        ||(benes||[]).filter(function(x){return x.id===id})[0];
+  const it=(fuItems(own)||[]).filter(function(x){
+    return x.kidId===id||(bn&&x.kidId&&x.kidId===bn.id)||
+           (bn&&String(x.name||'').trim()===String(bn.name||'').trim())})[0];
+  if(!it&&!bn)return;
+  const nm=firstName((it&&it.name)||bn.name);
+  let av=(it&&it.av)||(bn&&bn.avatar)||kidAvatar(nm),
+      sx=(it&&(it.rows[0]||{}).sex)||(bn&&bn.sex)||'m';
   /* הקרבה חיה על הישות ולא על הנטיעה, ולכן היא נקראת מ-benes.
      ילד שנוסף לפני 0068 אין לו קרבה, והגיליון נופל אז לשאלת
      המגדר כפי שהייתה. */
-  const bn=(benes||[]).filter(function(x){
-    return (it.kidId&&x.id===it.kidId)||String(x.name||'').trim()===String(it.name||'').trim()})[0];
   const rel=(bn&&bn.relation)||'';
   const known=!!KIN[rel];
   window.__kidAv=av;window.__kidSex=sx;window.__kidRel=known?rel:'other';
@@ -10712,8 +10787,14 @@ function editKid(id){
     '</div>'+
     '<p class="fine" style="margin-top:11px">מה שתבחר כאן יופיע בכל הרגעים של '+
       attrText(nm)+'. את השם אי אפשר לשנות כאן: זו זהות הנהנה בחשבון נעול, '+
-      'והיא משתנה מול הגוף הפיננסי המנהל בלבד.</p>',
-    'שמור',function(){saveKid(id)});
+      'והיא משתנה מול הגוף הפיננסי המנהל בלבד.</p>'+
+    /* ההסרה מוצעת רק למי שעוד אין לו רגע. מרגע שיש, זו זהות נהנה
+       בחשבון ולא פריט ברשימה, וגם ה-FK במסד חוסם. */
+    ((bn&&bn.id&&!(it&&it.rows&&it.rows.length))
+      ? '<button type="button" class="link danger" onclick="confirmRemoveKid(\''+
+          attrText(bn.id)+'\',\''+attrText(nm)+'\')">הסר את '+attrText(nm)+'</button>'
+      : ''),
+    'שמור',function(){saveKid((bn&&bn.id)||id)});
 }
 function kidPickAv(el,a){
   window.__kidAv=a;
@@ -10732,6 +10813,31 @@ function kidPickRel(el,k){
   if(sx)sx.style.display=other?'flex':'none';
   if(!other)window.__kidSex=kinSex(k)||window.__kidSex;
 }
+/* מי שעוד לא נפתח לו רגע אפשר להסיר. הכפתור אינו מוצע כשיש רגע,
+   וגם אילו הוצע ה-FK מ-plantings היה מפיל את המחיקה במסד. */
+function confirmRemoveKid(id,nm){
+  ask('להסיר את '+nm+'?',
+    'הוא יירד מהרשימה שלך ומהבורר ב"העתיד שלנו". עוד לא נפתח לו רגע, ולכן אין מה לאבד.',
+    'הסר',function(){removeKid(id)});
+}
+function removeKid(id){
+  const src=netaSource();
+  const gone=(benes||[]).filter(function(b){return b.id===id})[0];
+  benes=(benes||[]).filter(function(b){return b.id!==id});
+  /* הבורר ב"העתיד שלנו" זוכר מי נבחר, ובחירה שהוסרה משאירה אותו
+     על ילד שאינו קיים. */
+  if(fuPick==='k:'+id)fuPick='';
+  buildRelatives();
+  if(!src.removeBeneficiary){toast((gone?gone.name:'הילד')+' הוסר');return}
+  src.removeBeneficiary(id)
+    .then(function(){return buildHomeSummary().then(function(){},function(){})})
+    .then(function(){toast((gone?gone.name:'הילד')+' הוסר')},
+          function(){
+            if(gone)benes.push(gone);
+            buildRelatives();
+            toast('לא הצלחנו להסיר');
+          });
+}
 function saveKid(id){
   const src=netaSource();
   if(!src.saveBeneficiary){toast('אפשר לערוך רק בחשבון מחובר');return}
@@ -10741,6 +10847,7 @@ function saveKid(id){
   /* הרשימה המקומית מתעדכנת מיד, כי הגיליון נסגר לפני שהשרת עונה
      והציור הבא קורא מ-benes. */
   (benes||[]).forEach(function(x){if(x.id===id){x.relation=rel;x.sex=window.__kidSex}});
+  buildRelatives();
   src.saveBeneficiary(id,window.__kidSex,window.__kidAv,rel)
     .then(function(){return buildHomeSummary()})
     .then(function(){toast('נשמר')},
