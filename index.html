@@ -1408,7 +1408,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '92f6684';
+window.NETA_BUILD = 'b09a7d9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -10171,10 +10171,17 @@ function buildHomeSummary(){
        משהו שאינו נכון, כי הוא אולי נטע לילד אחר. */
     if(selEmpty&&sel&&sel.pending){
       const fn=firstName(sel.name);
+      /* המסך מדבר על מה שקרה ולא על מה שאין: הילד כבר כאן, וזו
+         הסיבה שהמסך נפתח. "עוד לא נפתח לו רגע" אמר את אותו דבר
+         מהצד השלילי, ומי שהרגע סיים להוסיף אותו לא צריך שיודיעו לו
+         שעדיין לא עשה את הצעד הבא.
+         ‏bs אינה משמשת כאן: היא נשענת על beneSex שמתאר את מי שנבחר
+         באשף ההקמה, ואילו כאן הנהנה הוא מי שנבחר בבורר. */
+      const f=(sel.sex==='f');
       const geh=document.getElementById('ge-h');
-      if(geh)geh.innerHTML='עוד לא נפתח ל'+fn+' רגע';
-      txt('ge-sub','אפשר לפתוח עכשיו, וזה לוקח דקה.');
-      txt('ge-cta','פתח ל'+fn+' רגע');
+      if(geh)geh.innerHTML=attrText(fn)+' '+(f?'נוספה':'נוסף')+' למעגל שלך';
+      txt('ge-sub','עכשיו אפשר להתחיל להשקיע ב'+(f?'עתידה':'עתידו')+'.');
+      txt('ge-cta','צור השקעה עבור '+fn);
     }else if(selEmpty){
       txt('ge-cta','פתח נטיעה ראשונה');
       /* "נטעת אצל X" נכון רק למי שבאמת הפקיד שם. מי שהוזמנה ועוד לא
