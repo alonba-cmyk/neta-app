@@ -1408,7 +1408,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b09a7d9';
+window.NETA_BUILD = '2537b3c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7213,8 +7213,12 @@ function paintKidSection(){
     /* הפעולה מובילה לדבר עצמו: מי שאין לו רגע נפתח לו אחד, ומי שיש
        לו נכנסים אליהם. לחיצה על השורה עורכת, בדיוק כמו בשורה של
        קרוב שמעליה. */
+    /* הכפתור נוקב ביעד ולא בתוכן: הוא פותח את "העתיד שלנו" על הילד
+       הזה, ולכן הוא נושא את שם הטאב. "הרגעים" תיאר את מה שיש שם
+       ולא לאן הוא מוביל, ואיש לא ניחש. */
     const act=n
-      ? '<button class="rx" onclick="event.stopPropagation();kidMomentsGo(\''+attrText(key)+'\')">הרגעים</button>'
+      ? '<button class="rx" onclick="event.stopPropagation();kidMomentsGo(\''+attrText(key)+'\')">'+
+          (b.sex==='f'?'העתיד שלה':'העתיד שלו')+'</button>'
       : '<button class="rx" onclick="event.stopPropagation();kidOpenMoment(\''+attrText(key)+'\')">פתח רגע</button>';
     const sub=[kinMe(b.relation),n?(n===1?'רגע אחד':countWord(n)+' רגעים'):'עוד לא נפתח רגע']
       .filter(Boolean).join(' · ');
