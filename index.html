@@ -274,6 +274,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .topbar .me{width:38px;height:38px;border-radius:12px;overflow:hidden;flex-shrink:0;background:var(--s2);
   border:1px solid var(--line);cursor:pointer;transition:border-color .15s}
 .topbar .me:hover{border-color:var(--line-2)}
+/* תמונה אמיתית במשבצת פרצוף. cover ולא contain: המשבצת ריבועית
+   והתמונה כבר נחתכה לריבוע בהעלאה, וזה מה שמונע פסים. */
+.avimg{width:100%;height:100%;object-fit:cover;display:block}
+/* משבצת ההעלאה, באותה שפה של הבורר בשני האשפים. */
+.avpick button.up{border-style:dashed;color:var(--leaf);font-size:20px;
+  display:grid;place-items:center}
 .hdr{display:flex;align-items:center;gap:11px;margin-bottom:12px}
 .hdr .htxt{flex:1;min-width:0}
 .hdr .me{width:42px;height:42px;border-radius:13px;overflow:hidden;flex-shrink:0;background:var(--s2);
@@ -1430,7 +1436,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '2eeb342';
+window.NETA_BUILD = '1eac8f2';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -5096,8 +5102,19 @@ function paintSharedCard(r,pre){
                :'משהו שהוא פתח';
   txt(q+'h', who+' נטע השקעה חדשה עבור '+fut+', והזמין אותך להצטרף.');
 
+  /* הפרצוף של מי שהזמין. הוא יכול להיות נתיב לתמונה, ואז הוא
+     מוחלף כולו ולא רק ה-href: מדיניות הקריאה של profile-photos
+     מתירה לנמען לחתום אותו, כי הוא רואה את הפרופיל של המזמין. */
   const av=document.getElementById(q+'av');
-  if(av)av.setAttribute('href','#'+(r.inviter_avatar||'av-parent'));
+  const iav=r.inviter_avatar||'av-parent';
+  if(av){
+    const box=av.closest('svg')?av.closest('svg').parentNode:av.parentNode;
+    box.innerHTML=faceHTML(iav,'av-parent');
+    if(iav.indexOf('av-')!==0&&!photoUrl(iav))
+      signFaces([iav]).then(function(){
+        if(photoUrl(iav))box.innerHTML=faceHTML(iav,'av-parent');
+      });
+  }
 
   const note=document.getElementById(q+'note');
   if(note){
@@ -7783,15 +7800,44 @@ function inviteRelative(i){
     });
 }
 let pickedAv='av-parent',pickAvTarget=null;
-function avpickHTML(sel){
-  return '<div class="avpick">'+AVATARS.map(function(a){
-    return '<button class="'+(a===sel?'on':'')+'" data-av="'+a+'" onclick="chooseAv(this,\''+a+'\')">'+
+/* משבצת ההעלאה נוספת רק כשמעבירים onUp, ולכן ששת מקומות הקריאה
+   האחרים נשארים כפי שהיו: תמונה של קרוב היא ישות אחרת, בלי bucket
+   ובלי מדיניות, והצגת "העלה" שם הייתה הבטחה שאין מאחוריה כלום. */
+function avpickHTML(sel,photo,onUp){
+  const up=onUp
+    ? (photo
+        ? '<button type="button" class="on" onclick="'+onUp+'">'+
+            '<img class="avimg" src="'+attrText(photo.url)+'" alt=""></button>'
+        : '<button type="button" class="up" onclick="'+onUp+'" aria-label="העלה תמונה">＋</button>')
+    : '';
+  return '<div class="avpick">'+up+AVATARS.map(function(a){
+    return '<button class="'+(!photo&&a===sel?'on':'')+'" data-av="'+a+'" onclick="chooseAv(this,\''+a+'\')">'+
       '<svg viewBox="0 0 40 40"><use href="#'+a+'"/></svg></button>';
   }).join('')+'</div>';
 }
 function chooseAv(el,a){
   pickedAv=a;
-  [...el.parentNode.children].forEach(function(b){b.classList.toggle('on',b===el)});
+  /* בחירת דמות מבטלת תמונה, כמו בשני האשפים. */
+  if(myPhoto&&myPhoto.blob&&myPhoto.url)URL.revokeObjectURL(myPhoto.url);
+  myPhoto=null;
+  const box=el.parentNode,up=box.querySelector('button:not([data-av])');
+  if(up){up.className='up';up.innerHTML='＋'}
+  [...box.children].forEach(function(b){b.classList.toggle('on',b===el)});
+}
+/* תמונה שנבחרה לפרופיל שלי. blob קיים רק אחרי בחירה חדשה, והוא מה
+   שמבדיל בשמירה בין "החלף תמונה" ל"השאר כפי שהיא". */
+let myPhoto=null;
+function myPaintAv(sel){
+  const box=document.getElementById('me-avpick');
+  if(box)box.innerHTML=avpickHTML(sel,myPhoto,'myPickPhoto()');
+}
+function myPickPhoto(){
+  pickPhotoInto(function(ph){
+    if(myPhoto&&myPhoto.blob&&myPhoto.url)URL.revokeObjectURL(myPhoto.url);
+    myPhoto=ph;myPaintAv(pickedAv);
+    const n=document.getElementById('me-upnote');
+    if(n){n.style.display='block';n.textContent='התמונה תישמר כשתלחץ "שמור".'}
+  });
 }
 /* ── הוספת אדם ────────────────────────────────────────────────────
    שני מסלולים מפאנל אחד. apKindMode הוא 'with' (מי שנוטע איתי) או
@@ -8253,14 +8299,28 @@ function kidFaceHTML(av,px){
    סינכרוני, ותמונה שמגיעה אחריו הייתה דורשת ציור שני. */
 const photoCache={};
 function photoUrl(path){return photoCache[path]||''}
-function signPhotos(paths){
+function signPhotos(paths){return signIn(paths,'kid-photos')}
+/* תמונות פרופיל יושבות ב-bucket אחר, אבל באותו מטמון: שמות הקבצים
+   הם uuid ולכן אין התנגשות, ו-photoUrl נשארת פונקציה אחת שכל מקום
+   בתצוגה קורא לה. */
+function signFaces(paths){return signIn(paths,'profile-photos')}
+function signIn(paths,bucket){
   const need=(paths||[]).filter(function(p){
     return p&&p.indexOf('av-')!==0&&!photoCache[p]});
   const src=netaSource();
   if(!need.length||!src.signPhotos)return Promise.resolve();
-  return src.signPhotos(need).then(function(map){
+  return src.signPhotos(need,bucket).then(function(map){
     Object.keys(map||{}).forEach(function(k){photoCache[k]=map[k]});
   },function(){});
+}
+/* פרצוף של אדם, משתי הצורות שהעמודה יכולה להחזיק. אותה הבחנה כמו
+   ב-kidFaceHTML, עם נפילה אחורה אחרת: כאן ברירת המחדל היא av-parent
+   ולא דמות של ילד. */
+function faceHTML(av,fallback){
+  const url=(av&&av.indexOf('av-')!==0)?photoUrl(av):'';
+  if(url)return '<img class="avimg" src="'+attrText(url)+'" alt="">';
+  const id=(av&&av.indexOf('av-')===0)?av:(fallback||'av-parent');
+  return '<svg class="avsvg" viewBox="0 0 40 40"><use href="#'+id+'"/></svg>';
 }
 function addRelative(){
   pickedAv='av-granny2';
@@ -8549,10 +8609,16 @@ function setMyName(name){
   const tb=cur?topbars[[...screens].indexOf(cur)]:null;
   if(tb){txt('tb-t',tb[0]);txt('tb-s',tb[1]);}
 }
+/* מחליף את תוכן המשבצת ולא רק את ה-href: נתיב לתמונה אינו מזהה
+   בספרייט, ואי אפשר להכניס אותו ל-use. אם הקישור החתום עוד לא
+   הגיע, נופלים לדמות וחותמים, והציור השני מגיע מיד אחריו. */
 function applyMyAvatar(av){
-  document.querySelectorAll('.topbar .me use, .hdr .me use').forEach(function(u){
-    u.setAttribute('href','#'+av);
+  const html=faceHTML(av,'av-parent');
+  document.querySelectorAll('.topbar .me, .hdr .me').forEach(function(box){
+    box.innerHTML=html;
   });
+  if(av&&av.indexOf('av-')!==0&&!photoUrl(av))
+    signFaces([av]).then(function(){if(photoUrl(av))applyMyAvatar(av)});
 }
 function applyIdentity(){
   if(!liveAccount())return;
@@ -8577,31 +8643,49 @@ function editMyIdentity(){
                              :(topbars[10][0]||'');
   const nowAv=(liveAccount()&&netaServer.profile&&netaServer.profile.avatar_key)||'av-parent';
   pickedAv=nowAv;
+  /* תמונה שכבר שמורה מוצגת במשבצת ההעלאה, בלי blob: הקובץ בשרת
+     ואין מה להעלות שוב. אם הקישור עוד לא נחתם, חותמים ומציירים
+     שוב, אחרת הגיליון היה נפתח על דמות מסומנת ואומר שהיא נמחקה. */
+  const meHasPic=!!(nowAv&&nowAv.indexOf('av-')!==0);
+  myPhoto=(meHasPic&&photoUrl(nowAv))?{url:photoUrl(nowAv)}:null;
+  if(meHasPic&&!myPhoto)signFaces([nowAv]).then(function(){
+    if(!photoUrl(nowAv))return;
+    myPhoto={url:photoUrl(nowAv)};myPaintAv(nowAv);
+  });
   sheetForm('השם והתמונה שלי',
     'כך אתה מופיע לקרובים שהזמנת, לצד ההשקעות שלך. כתובת הכניסה שלך לא משתנה.'+
     '<label>שם מלא</label><input type="text" id="nm-val" value="'+attrText(nowName)+'">'+
-    '<label>תמונה</label>'+avpickHTML(nowAv),
+    '<label>בחר דמות, או העלה תמונה</label>'+
+      '<div id="me-avpick">'+avpickHTML(nowAv,myPhoto,'myPickPhoto()')+'</div>'+
+      '<p class="fine" id="me-upnote" style="margin-top:8px;display:none"></p>',
     'שמור',
     function(){
       const name=((document.getElementById('nm-val')||{}).value||'').trim();
       if(!name){toast('השם לא יכול להישאר ריק');return false}
       if(name.length>80){toast('השם ארוך מדי');return false}
       const av=pickedAv;
-      const nameChanged=name!==nowName, avChanged=av!==nowAv;
+      /* תמונה חדשה היא תמיד שינוי, גם כשהדמות שמתחתיה לא זזה. */
+      const newPic=!!(myPhoto&&myPhoto.blob);
+      const nameChanged=name!==nowName, avChanged=newPic||av!==nowAv;
       if(!nameChanged&&!avChanged)return;
       const said=nameChanged&&avChanged?'השם והתמונה עודכנו'
                :nameChanged?'השם עודכן':'התמונה עודכנה';
       if(!liveAccount()){
         if(nameChanged)setMyName(name);
-        if(avChanged)applyMyAvatar(av);
+        /* בהדגמה אין לאן להעלות, ולכן התמונה מוצגת מה-blob המקומי
+           ואינה נשמרת. הכיתוב אינו מבטיח שמירה במצב הזה. */
+        if(avChanged)applyMyAvatar(newPic?myPhoto.url:av);
         toast(said);return;
       }
       Promise.all([
         nameChanged?netaServer.updateName(name):Promise.resolve(),
-        avChanged?netaServer.updateAvatar(av):Promise.resolve()
-      ]).then(function(){
+        avChanged?netaServer.updateAvatar(av,newPic?myPhoto.blob:null):Promise.resolve()
+      ]).then(function(res){
         if(nameChanged)setMyName(name);
-        if(avChanged)applyMyAvatar(av);
+        /* מה שחזר מהשרת ולא מה שנשלח: כשהועלתה תמונה הערך הוא
+           הנתיב שנוצר, ואין דרך אחרת לדעת אותו. */
+        if(avChanged)applyMyAvatar((res&&res[1])||av);
+        myPhoto=null;
         toast(said);
       }).catch(function(e){
         ask('לא נשמר',(e&&e.message)||'לא הצלחנו להגיע לשרת. אפשר לנסות שוב.','הבנתי');
@@ -8846,18 +8930,28 @@ function netaBackend(cfg){
       })
         .then(function(r){self.profile=(r&&r[0])||{id:uid(),name:name,avatar_key:avatar,sex:sex||null};return self.profile});
     },
+    /* אותו סדר כמו בילד: מעלים, ורק הנתיב שחוזר נשמר. bucket נפרד,
+       כי מדיניות הקריאה שלו נקשרת ל-profiles ולא ל-beneficiaries. */
     /* הרשאת עדכון על name ו-avatar_key בלבד (0012) — לכן זו פעולה נפרדת
        מ-updateName, לא פרמטר נוסף לה: שתי הקריאות משנות עמודה אחרת בכל
        פעם, ואין ביניהן תלות. */
-    updateAvatar:function(av){
+    updateAvatar:function(av,blob){
       const self=this;
-      return call('/rest/v1/profiles?id=eq.'+uid(),{method:'PATCH',
-        headers:{Prefer:'return=representation'},
-        body:JSON.stringify({avatar_key:av})})
-        .then(function(rows){
-          if(rows&&rows[0])self.profile=rows[0];
-          return self.profile;
-        }).catch(remember);
+      /* מעלים קודם, ורק הנתיב שחוזר נשמר. העלאה שנכשלת משאירה את
+         הערך הקיים ולא כותבת נתיב לקובץ שאינו שם. */
+      const put=blob?netaServer.uploadPhoto(uid(),blob,'profile-photos')
+                       .catch(function(){return null})
+                    :Promise.resolve(null);
+      return put.then(function(path){
+        const val=path||av;
+        return call('/rest/v1/profiles?id=eq.'+uid(),{method:'PATCH',
+          headers:{Prefer:'return=representation'},
+          body:JSON.stringify({avatar_key:val})})
+          .then(function(rows){
+            if(rows&&rows[0])self.profile=rows[0];
+            return val;
+          });
+      }).catch(remember);
     },
     signOutAndReload:function(){
       /* כניסה מחדש עולה מייל, והמכסה החינמית קטנה. לא פעולה שנעשית בהיסח. */
@@ -9350,11 +9444,11 @@ function netaBackend(cfg){
     },
     /* ‏POST לאובייקט חדש. שם הקובץ נגזר מ-crypto ולא מהשם של הילד:
        שם ילד בנתיב הוא מידע שדולף בכל קישור חתום. */
-    uploadPhoto:function(uid,blob){
+    uploadPhoto:function(uid,blob,bucket){
       const rnd=(self.crypto&&self.crypto.randomUUID)?self.crypto.randomUUID()
                :String(Date.now())+Math.random().toString(16).slice(2);
       const path=uid+'/'+rnd+'.jpg';
-      return fetch(base+'/storage/v1/object/kid-photos/'+path,{
+      return fetch(base+'/storage/v1/object/'+(bucket||'kid-photos')+'/'+path,{
         method:'POST',
         headers:{apikey:cfg.key,
                  Authorization:'Bearer '+((sess&&sess.access_token)||''),
@@ -9368,8 +9462,8 @@ function netaBackend(cfg){
     /* חתימה אחת לכל הנתיבים יחד. הקישור תקף לשעה, וזה מספיק
        לסשן אחד; מי שמשאיר את המסך פתוח יותר יקבל אותו מחדש
        בטעינה הבאה. */
-    signPhotos:function(paths){
-      return call('/storage/v1/object/sign/kid-photos',
+    signPhotos:function(paths,bucket){
+      return call('/storage/v1/object/sign/'+(bucket||'kid-photos'),
         {method:'POST',body:JSON.stringify({expiresIn:3600,paths:paths})})
         .then(function(rows){
           const out={};
