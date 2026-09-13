@@ -474,10 +474,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    בלי הריפוד העליון ב-fu-pick היא נאכלת על ידי overflow ונראית
    כאילו התמונה חתוכה בכותרת. */
 .fu-ring{width:50px;height:50px;border-radius:50%;overflow:hidden;background:var(--s2);
-  display:block;position:relative;opacity:.5;transition:opacity .15s}
+  display:block;position:relative;opacity:.5;transition:opacity .18s,box-shadow .2s}
 .fu-ring svg{display:block;width:100%;height:100%}
 .fu-item span{font-size:10.5px;color:var(--tx-3);white-space:nowrap;max-width:52px;
-  overflow:hidden;text-overflow:ellipsis;text-align:center}
+  overflow:hidden;text-overflow:ellipsis;text-align:center;transition:color .18s}
 .fu-item.on .fu-ring{opacity:1;box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--leaf)}
 .fu-item.on span{color:var(--leaf);font-weight:500}
 .fu-ring.emoji{display:grid;place-items:center;font-size:20px}
@@ -1430,7 +1430,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7ea98da';
+window.NETA_BUILD = 'c4792ca';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -10191,9 +10191,24 @@ function buildHomeSummary(){
        את השני ומתחתיו כרטיס של הראשון. */
     const selEmpty=!(sel&&sel.rows&&sel.rows.length);
     lastFuSel=sel||null;
-    document.getElementById('fu-pick').innerHTML=
-      anyPick?fuPickHTML(fuAll,fuPick):'';
-    document.getElementById('fu-pick').style.display=anyPick?'':'none';
+    /* הבורר נבנה מחדש רק כשהרשימה עצמה משתנה. בלחיצה על פרצוף
+       הוא נשאר כפי שהוא, רק הסימון זז והשורה גוללת, ולכן הפרצוף
+       שנלחץ נוסע אל המרכז במקום להיבנות שם. החלפת innerHTML הורגת
+       כל אנימציה, וסדר שמשתנה בכל בחירה מזיז את כל השורה. */
+    const fuRow=document.getElementById('fu-pick');
+    /* הנתיב החתום נכנס לחתימה: הוא מגיע אחרי הציור הראשון ומחליף
+       דמות בתמונה, ובלעדיו הרשימה לא הייתה נבנית מחדש והתמונה
+       לא הייתה מופיעה עד רענון. */
+    const fuSigNow=fuAll.map(function(x){
+      return x.id+'|'+(x.av||'')+'|'+(x.label||x.name||'')+'|'+(photoUrl(x.av)?1:0);
+    }).join('~');
+    if(anyPick&&fuSigNow!==fuSig){
+      fuRow.innerHTML=fuPickHTML(fuAll,fuPick);
+      fuSig=fuSigNow;fuPickDrawn=false;
+    }else if(anyPick){
+      fuMarkOn(fuAll,fuPick);
+    }else{fuRow.innerHTML='';fuSig='';}
+    fuRow.style.display=anyPick?'':'none';
     if(anyPick)fuCenterPick();
     /* המסך הזה מתאר רגעים, לא את חלקי בהם. זה מה שמבדיל אותו
        מ"הנטיעות שלי", ולכן גם בסקשן השני המספר הוא מה שנצבר לרגע.
@@ -10772,6 +10787,26 @@ function fuWithBenes(items){
   });
   return items.concat(extra);
 }
+let fuSig='';
+/* מזיז את הסימון ואת ✎ בין הפריטים הקיימים, בלי לגעת בסדר.
+   הקלאס on הוא מה שהעיצוב נשען עליו, ו-fuCenterPick שרצה אחריו
+   מגלגלת את השורה אל הנבחר החדש. */
+function fuMarkOn(items,sel){
+  const row=document.getElementById('fu-pick');if(!row)return;
+  const it=items.filter(function(x){return x.id===sel})[0];
+  row.querySelectorAll('.fu-item[data-fu]').forEach(function(el){
+    const on=el.dataset.fu===sel;
+    el.classList.toggle('on',on);
+    const pen=el.querySelector('.fu-pen');
+    if(pen)pen.remove();
+    if(on&&it&&it.kidId){
+      const b=document.createElement('i');
+      b.className='fu-pen';b.textContent='✎';
+      b.onclick=function(e){e.stopPropagation();editKid(it.kidId)};
+      el.insertBefore(b,el.querySelector('span:last-child'));
+    }
+  });
+}
 function fuPickHTML(items,sel){
   /* תמיד, בכל מספר נהנים. קודם הוא ירד מחמישה ואילך, כי השורה גללה
      והוא נשאר מחוץ למסך — עכשיו השורה ממורכזת וגוללת בכל מקרה, והוא
@@ -10798,6 +10833,7 @@ function fuPickHTML(items,sel){
     const pen=(it.id===sel&&it.kidId)
       ? '<i class="fu-pen" onclick="event.stopPropagation();editKid(\''+it.kidId+'\')">✎</i>' : '';
     return '<button class="fu-item'+(it.id===sel?' on':'')+'" '+
+      'data-fu="'+attrText(it.id)+'" '+
       'onclick="pickFuture(\''+it.id.replace(/'/g,"\\'")+'\')">'+
       face+pen+'<span>'+(it.label||firstName(it.name))+'</span></button>';
   }).join('')+add;
