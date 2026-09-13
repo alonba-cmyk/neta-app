@@ -427,9 +427,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ‏stretch כדי ששני החצאים יהיו באותו גובה והקו יגיע עד הסוף. */
 #s-duo{display:grid;grid-template-columns:minmax(min-content,1fr) minmax(min-content,1fr);
   align-items:stretch;width:fit-content;max-width:100%;margin-inline:auto;text-align:center}
-#s-duo>div{min-width:0}
-#s-duo>div:first-child{padding-inline-end:13px}
-#s-duo>div+div{margin-inline-start:0;padding-inline-start:13px}
+/* ריפוד סימטרי ולא בצד אחד. הצד האחד נתן את האוויר סביב הקו, אבל
+   הוא גם הזיז את תיבת התוכן: טקסט שממורכז בתוכה יושב 6.5 פיקסלים
+   מחוץ למרכז התא, ושני הצדדים נדחפים לכיוונים הפוכים. על מספר בן
+   27 פיקסלים זה נראה כמו יישור ולא כמו מרכוז. נמדד: 236.6 מול תא
+   ב-230.1 מימין, ו-152.9 מול 159.9 משמאל. */
+#s-duo>div{min-width:0;padding-inline:13px}
+#s-duo>div+div{margin-inline-start:0}
 #s-duo>div+div>*{padding-inline-start:0}
 /* השורה השנייה מימין קיימת כדי ששני הצדדים יהיו באותו גובה: הכיתוב
    הזהוב נושא מועד ונשבר לשתי שורות, והירוק היה שורה אחת. */
@@ -1417,7 +1421,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'de1659f';
+window.NETA_BUILD = 'f871376';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
