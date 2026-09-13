@@ -58,6 +58,11 @@
   --shadow-2:rgba(0,0,0,.7);
   --track:rgba(237,239,233,.18);
   --inset:rgba(255,255,255,.03);
+  /* דהיית הדגם במצבים הריקים. משתנה ולא ערך, כי אותה שקיפות
+     נקראת אחרת על רקע בהיר: טקסט כהה ב-34 אחוז על לבן נעלם,
+     בעוד שטקסט בהיר ב-34 אחוז על כהה עדיין רומז. */
+  --ghost:.34;--ghost-sat:.45;
+  --ghost-2:.44;--ghost-sat-2:.72;
 }
 
 .thpick{margin:0;flex:0 0 auto;gap:6px}
@@ -79,23 +84,23 @@
 :root[data-theme="light"]{
   color-scheme:light;
   --bg:#F4F6F1;--s1:#FFFFFF;--s2:#EBEEE6;--line:#DBE0D3;--line-2:#BFC7B5;
-  --tx:#1B1F18;--tx-2:#5A6252;--tx-3:#848C7B;
-  --leaf:#2E7D3E;--leaf-2:#1F5F2D;--leaf-soft:#579A64;--leaf-bg:#E9F3EA;--leaf-line:#C6E0CB;
-  --sun:#8A6A12;--sun-2:#6E5410;--sun-soft:#8A6A12;--sun-bg:#FAF2DF;--sun-line:#E6D6A8;
-  --rose:#B23A4E;--rose-bg:#FBEDEF;
+  --tx:#1B1F18;--tx-2:#5A6252;--tx-3:#656D5D;
+  --leaf:#266C33;--leaf-2:#1F5F2D;--leaf-soft:#2F6B3D;--leaf-bg:#D5E7DA;--leaf-line:#B0D2B8;
+  --sun:#8A6A12;--sun-2:#6E5410;--sun-soft:#8A6A12;--sun-bg:#F2E2BA;--sun-line:#D8C289;
+  --rose:#B23A4E;--rose-bg:#F8DDE2;
   --rule:#EDEFE8;
 
   --on-leaf:#FFFFFF;
   --on-rose:#FFFFFF;
-  --leaf-txt:#3E7A4A;
+  --leaf-txt:#33693D;
   --leaf-ink:#1C3A22;
   --leaf-ink-2:#2C5234;
-  --leaf-bg-2:#DDEDE0;
-  --leaf-veil:rgba(233,243,234,.95);
-  --leaf-rgb:46,125,62;
+  --leaf-bg-2:#C7DFCD;
+  --leaf-veil:rgba(213,231,218,.95);
+  --leaf-rgb:38,108,51;
   --sun-txt:#7A5E16;
   --sun-ink:#6B5212;
-  --rose-line:#F0CBD2;
+  --rose-line:#E8B9C2;
   --rose-txt:#8E3446;
   --shell:#D5DACE;
   --page-1:#EFF1EA;
@@ -109,6 +114,8 @@
   --shadow-2:rgba(30,40,26,.20);
   --track:rgba(27,31,24,.14);
   --inset:rgba(255,255,255,.6);
+  --ghost:.5;--ghost-sat:.68;
+  --ghost-2:.6;--ghost-sat-2:.9;
 }
 /* כלל הצבע של הסכומים, אחרי שהצטבר בלגן: ירוק הוא כסף שקיים — נצבר,
    הופקד, יש אותו — וזהב הוא כסף שצפוי. עד כה תחזית הופיעה אפורה בשני
@@ -1260,7 +1267,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שיש נטיעה אמיתית להראות. */
 .gsample{position:relative;width:100%;margin-top:20px;height:132px;overflow:hidden;
   text-align:right;pointer-events:none;user-select:none}
-.gsample > *{opacity:.34;filter:saturate(.45)}
+.gsample > *{opacity:var(--ghost);filter:saturate(var(--ghost-sat))}
 .gsample:after{content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(to bottom,transparent 22%,var(--bg) 99%)}
 .gsample .ncard{margin-bottom:9px;cursor:default}
@@ -1270,7 +1277,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #rel-ghost .rel{cursor:default}
 /* פרצוף מלא צבע ב-.34 ובסטורציה של 45 אחוז יוצא כתם אפור, ולא פנים.
    שאר הדגמים מחזיקים טקסט ואמוג'י ושורדים את זה; כאן צריך קצת יותר. */
-#rel-ghost>*{opacity:.44;filter:saturate(.72)}
+#rel-ghost>*{opacity:var(--ghost-2);filter:saturate(var(--ghost-sat-2))}
 .gsample.tall{height:212px}
 .gsample.tall:after{background:linear-gradient(to bottom,transparent 46%,var(--bg) 99%)}
 .gsample .feed:last-child{border-bottom:0}
@@ -1284,7 +1291,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #home-ghost{height:150px}
 /* פרצוף מלא צבע ב-.34 ובסטורציה של 45 אחוז יוצא כתם אפור ולא פנים,
    בדיוק כמו בדגם של הקרובים. */
-#home-ghost > *{opacity:.44;filter:saturate(.72)}
+#home-ghost > *{opacity:var(--ghost-2);filter:saturate(var(--ghost-sat-2))}
 /* המסך הריק של הבית בלבד, ולא .es הגלובלי שמשרת עוד שני מסכים.
 
    רוחב: 27ch נתנו לפסקה 190px, והיא נשברה לשלוש שורות. שתי שורות
@@ -1562,7 +1569,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '2f525ad';
+window.NETA_BUILD = '7c2b55d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2996,7 +3003,7 @@ window.NETA_CONFIG = {
   <div class="card center" style="background:var(--leaf-bg);border-color:var(--leaf-line)">
     <div style="font-size:22px" id="pi-icon">🎂</div>
     <b style="display:block;margin:6px 0 4px;font-size:14px" id="pi-title">בר המצווה של דניאל</b>
-    <p class="sub" style="color:#A8CBAC" id="pi-meta">המועד המיוחל: אוגוסט 2032 · נצבר עד כה 15,600 ₪</p>
+    <p class="sub" style="color:var(--leaf-soft)" id="pi-meta">המועד המיוחל: אוגוסט 2032 · נצבר עד כה 15,600 ₪</p>
   </div>
 
   <p class="eyebrow big">מה זה אומר בפועל</p>
@@ -3161,9 +3168,9 @@ window.NETA_CONFIG = {
       <svg id="d-svg" viewBox="0 0 318 126" aria-hidden="true">
         <defs>
           <linearGradient id="dgGrow" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#D9B25F" stop-opacity=".5"/><stop offset="1" stop-color="#D9B25F" stop-opacity=".1"/></linearGradient>
+            <stop offset="0" stop-color="var(--sun)" stop-opacity=".5"/><stop offset="1" stop-color="var(--sun)" stop-opacity=".1"/></linearGradient>
           <linearGradient id="dgDep" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#7FC088" stop-opacity=".36"/><stop offset="1" stop-color="#7FC088" stop-opacity=".08"/></linearGradient>
+            <stop offset="0" stop-color="var(--leaf)" stop-opacity=".36"/><stop offset="1" stop-color="var(--leaf)" stop-opacity=".08"/></linearGradient>
         </defs>
         <g stroke="var(--line)" stroke-width=".7" stroke-dasharray="3 5" id="d-grid"></g>
         <path id="d-growarea" fill="url(#dgGrow)"/>
@@ -7825,7 +7832,7 @@ function noteHTML(){
   return '<label>משפט אישי · לא חובה</label>'+
     '<textarea id="r-note" maxlength="240" style="min-height:58px" '+
     'placeholder="פתחתי משהו קטן לעתיד, ישמח אותי אם תהיה חלק."></textarea>'+
-    '<p class="fine" style="margin-top:6px;color:#C9A2AC">מה שתכתוב כאן יראה כל מי שיפתח את הקישור, גם אם הוא הועבר הלאה.</p>';
+    '<p class="fine" style="margin-top:6px;color:var(--rose-txt)">מה שתכתוב כאן יראה כל מי שיפתח את הקישור, גם אם הוא הועבר הלאה.</p>';
 }
 /* הקישור האישי של קרוב שכבר הוזמן. */
 /* ההזמנה שנרשמה לאותו אדם ולאותו רגע. בלי רגע — הראשונה שיש. */
