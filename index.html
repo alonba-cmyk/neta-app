@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>נטע · פרוטוטייפ</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>
+/* הערכה נקבעת לפני שהדפדפן מצייר משהו. סקריפט בסוף הקובץ היה
+   מאוחר מדי: המסך היה נצבע כהה ואז מתהפך, כלומר הבזק בכל טעינה
+   אצל מי שבחר בהיר. localStorage ולא החשבון, כי זו העדפה של
+   מכשיר: אותו אדם על מסך בהיר ביום ועל טלפון בלילה רוצה שתיים. */
+(function(){try{
+  if(localStorage.getItem('neta-theme')==='light')
+    document.documentElement.setAttribute('data-theme','light');
+}catch(e){}})();
+</script>
 <style>
 :root{
   color-scheme:dark;
@@ -16,6 +26,89 @@
   /* קו מפריד פנימי, שקט מ---line: הוא מפריד בתוך כרטיס ולא בין כרטיסים.
      היה בשימוש בשלושה מקומות בלי שהוגדר, ולכן פשוט לא צויר. */
   --rule:#262A23;
+
+  /* ── מה שהיה קשיח עד שהאפליקציה קיבלה מצב בהיר ──────────────────
+     כל אלה היו ערכים כתובים בגוף ה-CSS או בתוך style=, ולכן לא
+     היו משתנים עם החלפת ערכה. הם אינם קישוט: --on-leaf הוא הטקסט
+     שיושב על הכפתור הירוק, ובערכה בהירה הירוק כהה והטקסט חייב
+     להתהפך ללבן. ערך שלא חולץ לכאן הוא כפתור בלתי קריא. */
+  --on-leaf:#0E1A10;      /* טקסט על משטח ירוק מלא */
+  --on-rose:#2A1F22;      /* טקסט על משטח ורוד מלא */
+  --leaf-txt:#8FB794;     /* טקסט ירקרק שקט על ערוגה */
+  --leaf-ink:#EAF3EB;     /* טקסט בהיר על ערוגה */
+  --leaf-ink-2:#C6E3C9;   /* אותו דבר, שקט יותר */
+  --leaf-bg-2:#20321F;    /* ערוגה בריחוף */
+  --leaf-veil:rgba(26,50,31,.95);
+  --leaf-rgb:127,192,136; /* להילות וטבעות ירוקות */
+  --sun-txt:#C4AE84;      /* טקסט זהוב שקט */
+  --sun-ink:#D9C9A0;      /* טקסט זהוב בהיר */
+  --rose-line:#5A3742;
+  --rose-txt:#D9AEB6;
+  /* המסגרת של המכשיר ומה שמאחוריה. אינן חלק מהאפליקציה, אבל הן
+     מה שממסגר אותה בדפדפן. */
+  --shell:#060704;
+  --page-1:#1A1D18;
+  --page-2:#0C0D0B;
+  --toast:#282C26;
+  --scrim:rgba(5,7,4,.66);
+  --bar:rgba(18,20,17,.94);   /* רקע הסרגל התחתון, מטושטש */
+  --veil:rgba(20,22,19,.88);  /* תווית קטנה על גבי תוכן */
+  --pic-veil:rgba(6,8,5,.72);
+  --shadow:rgba(0,0,0,.4);
+  --shadow-2:rgba(0,0,0,.7);
+  --track:rgba(237,239,233,.18);
+  --inset:rgba(255,255,255,.03);
+}
+
+.thpick{margin:0;flex:0 0 auto;gap:6px}
+.thpick button{font-size:11.5px;padding:5px 11px;border-radius:8px}
+
+/* ── ערכה בהירה ────────────────────────────────────────────────────
+   רק המשתנים מוגדרים כאן מחדש, ואף כלל עיצוב אחד לא. זה מה
+   שמאפשר לכל 27 המסכים להתהפך יחד: כל מקום בקובץ קורא var(),
+   ולכן מי שמוסיף כלל חדש מקבל את שתי הערכות בחינם. כלל שנכתב עם
+   צבע ישיר יעבוד באחת מהן ויישבר בשנייה בלי שגיאה.
+
+   שלושה הפוכים ולא כהים-בהירים: --on-leaf הוא לבן, כי הירוק כאן
+   כהה; --leaf-ink היה טקסט בהיר על ערוגה כהה ועכשיו הוא כהה על
+   ערוגה בהירה; ושלושת הצעיפים (toast, veil, pic-veil) נושאים
+   טקסט מ---tx ו---tx-2, שהתהפכו, ולכן גם הם.
+
+   ‏--sun-soft נשאר קריא ולא רק "זהוב": הוא מה שמציג תחזית
+   (ראו "צבע הסכומים"), וזהב בהיר על לבן אינו מספר שאפשר לקרוא. */
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#F4F6F1;--s1:#FFFFFF;--s2:#EBEEE6;--line:#DBE0D3;--line-2:#BFC7B5;
+  --tx:#1B1F18;--tx-2:#5A6252;--tx-3:#848C7B;
+  --leaf:#2E7D3E;--leaf-2:#1F5F2D;--leaf-soft:#579A64;--leaf-bg:#E9F3EA;--leaf-line:#C6E0CB;
+  --sun:#8A6A12;--sun-2:#6E5410;--sun-soft:#8A6A12;--sun-bg:#FAF2DF;--sun-line:#E6D6A8;
+  --rose:#B23A4E;--rose-bg:#FBEDEF;
+  --rule:#EDEFE8;
+
+  --on-leaf:#FFFFFF;
+  --on-rose:#FFFFFF;
+  --leaf-txt:#3E7A4A;
+  --leaf-ink:#1C3A22;
+  --leaf-ink-2:#2C5234;
+  --leaf-bg-2:#DDEDE0;
+  --leaf-veil:rgba(233,243,234,.95);
+  --leaf-rgb:46,125,62;
+  --sun-txt:#7A5E16;
+  --sun-ink:#6B5212;
+  --rose-line:#F0CBD2;
+  --rose-txt:#8E3446;
+  --shell:#D5DACE;
+  --page-1:#EFF1EA;
+  --page-2:#DCE0D5;
+  --toast:#FFFFFF;
+  --scrim:rgba(30,36,28,.42);
+  --bar:rgba(255,255,255,.94);
+  --veil:rgba(255,255,255,.92);
+  --pic-veil:rgba(255,255,255,.82);
+  --shadow:rgba(30,40,26,.13);
+  --shadow-2:rgba(30,40,26,.20);
+  --track:rgba(27,31,24,.14);
+  --inset:rgba(255,255,255,.6);
 }
 /* כלל הצבע של הסכומים, אחרי שהצטבר בלגן: ירוק הוא כסף שקיים — נצבר,
    הופקד, יש אותו — וזהב הוא כסף שצפוי. עד כה תחזית הופיעה אפורה בשני
@@ -25,7 +118,7 @@
    בכרטיס בבית נשארת אפורה, כי היא משפט תומך ולא מספר שמציגים. אחרת
    יהיה זהב על כל כרטיס במסך והדגש יאבד את משמעותו. */
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse 70% 55% at 50% 20%,#1A1D18,#0C0D0B 65%);
+body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse 70% 55% at 50% 20%,var(--page-1),var(--page-2) 65%);
   color:var(--tx);display:flex;flex-direction:column;align-items:center;padding:10px 10px 24px;
   min-height:100vh;-webkit-font-smoothing:antialiased}
 .wrap{width:100%;max-width:390px;display:flex;flex-direction:column;align-items:center}
@@ -40,10 +133,10 @@ body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse
    ניסיון קודם הגביל את הרוחב לפי הגובה, וכל האפליקציה התכווצה. */
 .device{position:relative;width:min(390px,94vw);
   aspect-ratio:390/844;height:auto;max-height:calc(100dvh - 22px);background:var(--bg);
-  border-radius:46px;border:9px solid #060704;box-shadow:0 40px 70px -25px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.03) inset;
+  border-radius:46px;border:9px solid var(--shell);box-shadow:0 40px 70px -25px var(--shadow-2),0 0 0 1px var(--inset) inset;
   display:flex;flex-direction:column;overflow:hidden}
 .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:118px;height:24px;
-  background:#060704;border-radius:0 0 15px 15px;z-index:30}
+  background:var(--shell);border-radius:0 0 15px 15px;z-index:30}
 .statusbar{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;
   padding:13px 26px 2px;font-size:13.5px;font-weight:600;color:var(--tx);font-variant-numeric:tabular-nums}
 .statusbar .si{display:flex;align-items:center;gap:5px;opacity:.9}
@@ -130,7 +223,7 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 .title{font-weight:500;font-size:13.5px}.meta{font-size:11px;color:var(--tx-3);margin-top:1px}
 
 .btn{width:100%;font-family:inherit;font-size:13.5px;font-weight:500;padding:12px;border-radius:10px;
-  border:1px solid var(--leaf);background:var(--leaf);color:#0E1A10;cursor:pointer;transition:.15s}
+  border:1px solid var(--leaf);background:var(--leaf);color:var(--on-leaf);cursor:pointer;transition:.15s}
 .btn:hover{opacity:.88}
 .btn.ghost{background:transparent;border-color:var(--line-2);color:var(--tx)}
 .btn.ghost:hover{border-color:var(--tx-2)}
@@ -147,13 +240,13 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 .choice.primary{border-color:var(--leaf-line);background:var(--leaf-bg);cursor:pointer}
 .choice-icon{flex-shrink:0;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
   font-size:14px;background:var(--s2)}
-.choice.primary .choice-icon{background:rgba(127,192,136,.16)}
+.choice.primary .choice-icon{background:rgba(var(--leaf-rgb),.16)}
 .choice-body{flex:1;min-width:0}
 .choice-body b{display:block;font-size:12.5px;font-weight:500;margin-bottom:3px}
 .choice-body p{font-size:10.5px;color:var(--tx-3);line-height:1.5;margin-bottom:9px}
 .choice-cta{font-family:inherit;font-size:11px;font-weight:500;padding:6px 13px;border-radius:8px;
   cursor:pointer;border:1px solid var(--line-2);background:transparent;color:var(--tx)}
-.choice.primary .choice-cta{border:none;background:var(--leaf);color:#0E1A10}
+.choice.primary .choice-cta{border:none;background:var(--leaf);color:var(--on-leaf)}
 
 /* תצוגה מקדימה: פעולה עזר, לא הפעולה הראשית של המסך — לכן שקטה. */
 
@@ -195,7 +288,7 @@ input:focus,select:focus,textarea:focus{outline:1px solid var(--leaf);outline-of
 #sh-acts .trkpick{display:block;width:100%;font-family:inherit;color:var(--tx);
   text-align:right;margin-bottom:7px}
 #sh-acts .trkpick+.btn{margin-top:7px}
-.tag{font-size:9.5px;background:var(--leaf-bg);color:var(--leaf);padding:2px 6px;border-radius:5px;border:1px solid #2A4530}
+.tag{font-size:9.5px;background:var(--leaf-bg);color:var(--leaf);padding:2px 6px;border-radius:5px;border:1px solid var(--leaf-line)}
 .pill{font-family:inherit;font-size:12.5px;padding:9px 12px;border-radius:9px;border:1px solid var(--line);
   background:var(--s1);color:var(--tx-2);cursor:pointer;transition:.15s}
 .pill.on{background:var(--s2);border-color:var(--leaf);color:var(--tx)}
@@ -206,20 +299,20 @@ input:focus,select:focus,textarea:focus{outline:1px solid var(--leaf);outline-of
    ששום דבר בקוד החדש רומז על כך. */
 input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:transparent}
 
-.hero{background:var(--leaf-bg);border:1px solid #2A4530;border-radius:13px;padding:16px 15px;margin-bottom:20px;text-align:center}
-.hero-label{font-size:11px;color:#8FB794;letter-spacing:.04em}
+.hero{background:var(--leaf-bg);border:1px solid var(--leaf-line);border-radius:13px;padding:16px 15px;margin-bottom:20px;text-align:center}
+.hero-label{font-size:11px;color:var(--leaf-txt);letter-spacing:.04em}
 .hero-num{font-size:32px;font-weight:500;color:var(--leaf);letter-spacing:-.02em;line-height:1.25;margin:3px 0 2px}
 .hero-num.idle{color:var(--tx-3);font-size:26px}
-.hero-sub{font-size:11.5px;color:#8FB794;line-height:1.5}
-.gcard .gline{font-size:14.5px;line-height:1.55;color:#EAF3EB;margin:10px 0 0;font-weight:400;text-wrap:balance}
-.gcard .gask{font-size:14.5px;line-height:1.5;color:#EAF3EB;margin:15px 0 0;font-weight:400}
+.hero-sub{font-size:11.5px;color:var(--leaf-txt);line-height:1.5}
+.gcard .gline{font-size:14.5px;line-height:1.55;color:var(--leaf-ink);margin:10px 0 0;font-weight:400;text-wrap:balance}
+.gcard .gask{font-size:14.5px;line-height:1.5;color:var(--leaf-ink);margin:15px 0 0;font-weight:400}
 .gcard .gask .gname{display:block;margin-top:2px}
 .gcard .gask b{font-weight:600;color:var(--leaf)}
 .gcard .gyear{font-size:11px;color:var(--leaf-soft);opacity:.75;margin:14px 0 0}
-.note{background:var(--leaf-bg);border:1px solid #2A4530;border-radius:11px;padding:12px 13px;font-size:12.5px;line-height:1.55;color:#C6E3C9}
+.note{background:var(--leaf-bg);border:1px solid var(--leaf-line);border-radius:11px;padding:12px 13px;font-size:12.5px;line-height:1.55;color:var(--leaf-ink-2)}
 .note b{color:var(--leaf);font-weight:500}
-.lock{background:var(--sun-bg);border:1px solid #3D3520;border-radius:11px;padding:14px;text-align:center}
-.lock p{color:#C4AE84}
+.lock{background:var(--sun-bg);border:1px solid var(--sun-line);border-radius:11px;padding:14px;text-align:center}
+.lock p{color:var(--sun-txt)}
 /* הקו בין השורות הוא border-top על השורה השנייה ואילך, ולא
    border-bottom עם :last-child. ‏:last-child הוא מבני ומתעלם מ-display:none,
    ולכן כששתי השורות האחרונות הוסתרו (כרטיס הצפי במסך ההשקעה מסתיר
@@ -228,8 +321,8 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .stat{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0}
 .stat+.stat{border-top:1px solid var(--line)}
 .stat .k{font-size:12px;color:var(--tx-2)}.stat .v{font-size:13.5px;font-weight:500}
-.quote{background:linear-gradient(180deg,var(--sun-bg),var(--s1));border:1px solid #3D3520;border-radius:12px;
-  padding:20px 16px 14px 14px;font-size:12.5px;line-height:1.65;color:#D9C9A0;font-style:italic;position:relative}
+.quote{background:linear-gradient(180deg,var(--sun-bg),var(--s1));border:1px solid var(--sun-line);border-radius:12px;
+  padding:20px 16px 14px 14px;font-size:12.5px;line-height:1.65;color:var(--sun-ink);font-style:italic;position:relative}
 .q-mark{position:absolute;top:2px;right:10px;font-size:26px;color:var(--sun);opacity:.5;font-style:normal;line-height:1}
 
 /* כרטיס התצוגה המקדימה במסך הסיכום. אותה שפה של הכרטיס ברשימה —
@@ -253,16 +346,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="סיכום ואישור"] .stat .v i:empty{display:none}
 [data-name="סיכום ואישור"] .stat.first-v{border-top:0}
 .hero-card{padding:22px 16px 18px}
-.amt-pill{display:inline-flex;align-items:center;gap:7px;margin-top:11px;background:var(--leaf-bg);border:1px solid #2A4530;border-radius:999px;padding:7px 14px}
-.amt-pill span{font-size:11px;color:#8FB794}.amt-pill b{font-size:13.5px;color:var(--leaf);font-weight:600}
+.amt-pill{display:inline-flex;align-items:center;gap:7px;margin-top:11px;background:var(--leaf-bg);border:1px solid var(--leaf-line);border-radius:999px;padding:7px 14px}
+.amt-pill span{font-size:11px;color:var(--leaf-txt)}.amt-pill b{font-size:13.5px;color:var(--leaf);font-weight:600}
 .tl{position:relative;height:30px;margin:0 2px}
 .tl .base,.tl .past{position:absolute;top:13px;height:2px;pointer-events:none}
 .tl .base{right:0;left:0;background:var(--s2)}.tl .past{right:0;background:var(--leaf)}
 .tl .cap{position:absolute;top:6px;width:16px;height:16px;border-radius:5px;display:grid;place-items:center;font-size:8px;pointer-events:none}
 .tl input[type=range]{position:absolute;top:0;left:0;height:30px;margin:0;-webkit-appearance:none;appearance:none;background:transparent}
 .tl input[type=range]::-webkit-slider-runnable-track{background:transparent;height:30px}
-.tl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--leaf);border:3px solid var(--bg);margin-top:7px;cursor:pointer;box-shadow:0 0 0 4px rgba(127,192,136,.18),0 1px 3px rgba(0,0,0,.4)}
-.tl input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--leaf);border:3px solid var(--bg);cursor:pointer;box-shadow:0 0 0 4px rgba(127,192,136,.18),0 1px 3px rgba(0,0,0,.4)}
+.tl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--leaf);border:3px solid var(--bg);margin-top:7px;cursor:pointer;box-shadow:0 0 0 4px rgba(var(--leaf-rgb),.18),0 1px 3px var(--shadow)}
+.tl input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--leaf);border:3px solid var(--bg);cursor:pointer;box-shadow:0 0 0 4px rgba(var(--leaf-rgb),.18),0 1px 3px var(--shadow)}
 .ends{display:flex;justify-content:space-between;font-size:10px;color:var(--tx-3);margin-top:3px}
 
 /* ===== finalized home card ===== */
@@ -299,7 +392,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .s-body{flex:1;min-width:0}
 .s-art{flex-shrink:0;width:68px;display:grid;place-items:center;position:relative}
 .s-art::before{content:"";position:absolute;width:78px;height:78px;border-radius:50%;
-  background:radial-gradient(circle,rgba(127,192,136,.14),transparent 68%)}
+  background:radial-gradient(circle,rgba(var(--leaf-rgb),.14),transparent 68%)}
 .s-art svg{position:relative}
 /* צביר הפנים במצב הריק של הקרובים. אותה שפה של .ppav שמעל המספר,
    בגודל של איור: הראשון בסדר ה-DOM הוא הימני ב-RTL, ולכן גם העליון.
@@ -609,11 +702,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .fx2 .avsvg{width:100%;height:100%}
 /* התג כמעט אטום ובטבעת ירוקה: בכיסוי שקוף על דמות כהה הוא נבלע,
    ושני העיגולים נמסים זה לזה. direction:ltr כי "+2" בעברית נקרא "2+". */
-.fx2 .ov{position:absolute;inset:0;background:rgba(26,50,31,.95);display:flex;
+.fx2 .ov{position:absolute;inset:0;background:var(--leaf-veil);display:flex;
   align-items:center;justify-content:center;font-size:12px;font-weight:700;
-  color:#CDE6D1;font-style:normal;direction:ltr;unicode-bidi:isolate;letter-spacing:-.03em}
+  color:var(--leaf-ink-2);font-style:normal;direction:ltr;unicode-bidi:isolate;letter-spacing:-.03em}
 .fx2 .ov::after{content:"";position:absolute;inset:0;border-radius:50%;
-  border:1px solid rgba(127,192,136,.35)}
+  border:1px solid rgba(var(--leaf-rgb),.35)}
 /* מעבר לשתיים הראשונות: רק כרטיס "הצצה" אחד נוסף מוצג, באותה דהייה
    שמשמשת את .gsample במסכים ריקים — לא רק opacity, גם דוהה אל תוך
    הרקע ופחות רווי. השאר לא מצוירים בכלל עד שמבקשים. */
@@ -634,7 +727,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .nc-track .rail .fut{position:absolute;inset:0;border-radius:2px;background:repeating-linear-gradient(-90deg,var(--line) 0 5px,transparent 5px 10px)}
 .nc-track .rail .f{position:absolute;top:0;right:0;height:100%;border-radius:2px;background:linear-gradient(270deg,var(--leaf),var(--leaf-2))}
 .nc-track .rail .medal{position:absolute;top:50%;transform:translate(50%,-50%);width:24px;height:24px;border-radius:50%;
-  background:var(--s1);border:1.5px solid var(--leaf);display:grid;place-items:center;box-shadow:0 0 0 3px var(--s1),0 1px 4px rgba(0,0,0,.4)}
+  background:var(--s1);border:1.5px solid var(--leaf);display:grid;place-items:center;box-shadow:0 0 0 3px var(--s1),0 1px 4px var(--shadow)}
 .nc-track .goal{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:5px}
 .nc-track .goal .disc{width:24px;height:24px;border-radius:50%;background:var(--s1);border:1.5px dashed var(--line-2);
   display:grid;place-items:center;font-size:11px;opacity:.75}
@@ -710,7 +803,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .myface{display:flex;align-items:center;gap:13px;margin-bottom:16px}
 .myface .pic{position:relative;width:62px;height:62px;border-radius:19px;overflow:hidden;flex-shrink:0;
   background:var(--s2);border:1px solid var(--line);cursor:pointer}
-.myface .pic .cam{position:absolute;inset:auto 0 0 0;height:19px;background:rgba(6,8,5,.72);
+.myface .pic .cam{position:absolute;inset:auto 0 0 0;height:19px;background:var(--pic-veil);
   display:grid;place-items:center;font-size:9.5px;color:var(--tx-2)}
 .myface .who b{display:block;font-size:16px;font-weight:600}
 .myface .who span{display:block;font-size:11.5px;color:var(--tx-2);margin-top:3px}
@@ -744,7 +837,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* התג יושב על התא ולא על השורה: הוא אומר "התמונה הזאת מוצגת כאן",
    וזו העובדה היחידה שאי אפשר לראות מהשורה שמתחת. */
 .kgrid .cam{position:absolute;inset-inline-end:-3px;bottom:-3px;width:20px;height:20px;
-  border-radius:50%;background:var(--leaf);color:#0E1A10;display:grid;place-items:center;
+  border-radius:50%;background:var(--leaf);color:var(--on-leaf);display:grid;place-items:center;
   font-size:10px;border:2px solid var(--s1);line-height:1}
 .kgrid button.on .cam{border-color:var(--leaf-bg)}
 /* התא ששוכב על הצד, כשהמניין אינו מתחלק בשלוש. הוא נשאר תא ברשת
@@ -776,13 +869,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* payment methods + letters */
 .pm{border:1px solid var(--line);border-radius:14px;padding:13px;background:var(--s1);margin-bottom:9px}
 .pm.live{border-color:var(--leaf-line);background:var(--leaf-bg)}
-.pm.warn{border-color:#5A3742;background:var(--rose-bg)}
+.pm.warn{border-color:var(--rose-line);background:var(--rose-bg)}
 .pm-h{display:flex;align-items:center;gap:9px}
 .pm-h b{flex:1;font-size:13px;font-weight:500}
 .pm-tag{font-size:9.5px;letter-spacing:.06em;padding:3px 9px;border-radius:999px;flex-shrink:0}
-.pm-tag.on{background:var(--leaf);color:#12210F}
+.pm-tag.on{background:var(--leaf);color:var(--on-leaf)}
 .pm-tag.off{border:1px solid var(--line);color:var(--tx-3)}
-.pm-tag.bad{background:var(--rose);color:#2A1F22}
+.pm-tag.bad{background:var(--rose);color:var(--on-rose)}
 .pm p{font-size:11px;color:var(--tx-2);line-height:1.6;margin-top:7px}
 .pm .act{font-family:inherit;font-size:11px;margin-top:10px;padding:6px 13px;border-radius:999px;cursor:pointer;
   background:transparent;border:1px solid var(--line-2);color:var(--tx-2)}
@@ -801,7 +894,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   display:grid;place-items:center;font-size:14px;color:var(--tx-2);cursor:pointer;transition:.15s;flex-shrink:0}
 .editbtn:hover{border-color:var(--line-2);color:var(--tx)}
 .warn{background:var(--sun-bg);border:1px solid var(--sun-line);border-radius:10px;padding:11px 12px;
-  font-size:11px;line-height:1.55;color:#C4AE84;margin-top:8px}
+  font-size:11px;line-height:1.55;color:var(--sun-txt);margin-top:8px}
 
 /* ===== detail screen (time journey) ===== */
 /* הציר והאיור נשאו יחד את אותה שאלה — כמה מהדרך עברנו — ואף אחד מהם לא
@@ -819,7 +912,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .dm-act{font-family:inherit;font-size:12.5px;font-weight:500;color:var(--leaf);
   border:1px solid var(--leaf-line);background:var(--leaf-bg);border-radius:999px;
   padding:0 15px;height:44px;cursor:pointer;flex-shrink:0;transition:.15s;margin-bottom:1px}
-.dm-act:hover{border-color:var(--leaf);background:#20321F}
+.dm-act:hover{border-color:var(--leaf);background:var(--leaf-bg-2)}
 .dm-split{font-size:11.5px;color:var(--tx-3);margin:7px 0 0}
 /* הפילוח מתחת למספר של הרגע. אותו דפוס כמו במסך הבית: שני צבעים,
    שניהם ירוקים — כי שניהם כסף שקיים. */
@@ -843,10 +936,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .dm-chart{position:relative;margin-top:14px;touch-action:pan-y}
 .dm-chart svg{display:block;width:100%;height:auto;overflow:visible}
 .dm-endlbl{position:absolute;font-size:10.5px;font-weight:500;color:var(--sun-soft);white-space:nowrap;
-  background:rgba(20,22,19,.88);border-radius:6px;padding:2px 7px;pointer-events:none}
+  background:var(--veil);border-radius:6px;padding:2px 7px;pointer-events:none}
 .dm-medal{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--bg);
   border:1.5px solid var(--leaf);display:grid;place-items:center;pointer-events:none;
-  box-shadow:0 0 0 3px var(--bg),0 0 0 6px rgba(127,192,136,.14);
+  box-shadow:0 0 0 3px var(--bg),0 0 0 6px rgba(var(--leaf-rgb),.14);
   transition:right .3s cubic-bezier(.22,.85,.3,1),top .3s cubic-bezier(.22,.85,.3,1)}
 .dm-medal.snap{transition:none}
 .dm-medal.idle::after{content:'';position:absolute;box-sizing:border-box;
@@ -943,7 +1036,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .reladd:hover{border-color:var(--tx-3);color:var(--tx-2)}
 .relbox{width:19px;height:19px;border-radius:6px;border:1.5px solid var(--line-2);
   flex-shrink:0;display:grid;place-items:center}
-.relbox.on{background:var(--leaf);border-color:var(--leaf)}
+.relbox.on{background:var(--leaf);border-color:var(--leaf);color:var(--on-leaf)}
 .relbox svg{display:block}
 .rx.done{background:transparent;border-color:var(--line);color:var(--tx-3)}
 .cbr.pend{opacity:.6}
@@ -969,18 +1062,18 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .codebox{width:100%;font-family:inherit;font-size:25px;font-weight:600;letter-spacing:.3em;text-align:center;
   padding:16px 10px;border:1.5px solid var(--line-2);border-radius:13px;background:var(--s1);color:var(--tx);
   direction:ltr;text-transform:uppercase}
-.codebox:focus{outline:none;border-color:var(--leaf);box-shadow:0 0 0 3px rgba(127,192,136,.14)}
+.codebox:focus{outline:none;border-color:var(--leaf);box-shadow:0 0 0 3px rgba(var(--leaf-rgb),.14)}
 .codebox::placeholder{color:var(--tx-3)}
 .verified{display:flex;align-items:center;gap:11px;background:var(--leaf-bg);border:1px solid var(--leaf-line);
   border-radius:12px;padding:13px 14px}
-.verified .vi{width:30px;height:30px;border-radius:50%;background:var(--leaf);color:#0E1A10;display:grid;
+.verified .vi{width:30px;height:30px;border-radius:50%;background:var(--leaf);color:var(--on-leaf);display:grid;
   place-items:center;font-size:15px;font-weight:700;flex-shrink:0}
 .verified b{display:block;font-size:13px;font-weight:500;color:var(--leaf)}
-.verified p{font-size:10.5px;color:#8FB794;margin-top:2px;line-height:1.45}
+.verified p{font-size:10.5px;color:var(--leaf-txt);margin-top:2px;line-height:1.45}
 
 /* ===== bottom tab bar ===== */
 .tabbar{flex-shrink:0;z-index:5;display:flex;align-items:flex-end;justify-content:space-around;
-  padding:9px 12px 4px;background:rgba(18,20,17,.94);backdrop-filter:blur(9px);
+  padding:9px 12px 4px;background:var(--bar);backdrop-filter:blur(9px);
   border-top:1px solid var(--line)}
 .tab{flex:1;background:none;border:none;font-family:inherit;color:var(--tx-3);cursor:pointer;
   display:flex;flex-direction:column;align-items:center;gap:4px;font-size:9.5px;padding:3px 0;
@@ -1001,16 +1094,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .tab .ic{font-size:17px;line-height:1;height:20px;display:grid;place-items:center}
 .tab.on{color:var(--leaf)}
 .tab.center{flex:0 0 auto}
-.tab.center .ic{width:44px;height:44px;border-radius:15px;background:var(--leaf);color:#0E1A10;display:grid;place-items:center;
-  font-size:24px;font-weight:500;margin-top:-20px;box-shadow:0 5px 14px rgba(127,192,136,.32);border:3px solid var(--bg)}
+.tab.center .ic{width:44px;height:44px;border-radius:15px;background:var(--leaf);color:var(--on-leaf);display:grid;place-items:center;
+  font-size:24px;font-weight:500;margin-top:-20px;box-shadow:0 5px 14px rgba(var(--leaf-rgb),.32);border:3px solid var(--bg)}
 .tab.center span{color:var(--tx-2)}
 /* in-app toast + confirmation sheet — native alert()/confirm() are blocked in the frame */
 .toast{position:absolute;left:50%;bottom:88px;z-index:40;transform:translateX(-50%) translateY(10px);
-  background:#282C26;color:var(--tx);border:1px solid var(--line);border-radius:13px;
+  background:var(--toast);color:var(--tx);border:1px solid var(--line);border-radius:13px;
   padding:10px 16px;font-size:12.5px;line-height:1.5;max-width:78%;text-align:center;
-  box-shadow:0 12px 26px -10px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s}
+  box-shadow:0 12px 26px -10px var(--shadow-2);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-.scrim{position:absolute;inset:0;z-index:50;background:rgba(5,7,4,.66);display:flex;align-items:flex-end;
+.scrim{position:absolute;inset:0;z-index:50;background:var(--scrim);display:flex;align-items:flex-end;
   opacity:0;pointer-events:none;transition:opacity .2s}
 .scrim.on{opacity:1;pointer-events:auto}
 .sheet{width:100%;background:var(--s1);border-top:1px solid var(--line);border-radius:20px 20px 0 0;
@@ -1033,7 +1126,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* סמל הנבט של האפליקציה (#sprout-art), לא אמוג'י — אותו סמל כמו במסך
    הפתיחה, בסרגל התחתון ובסיום ההרשמה. */
 .lg-err{font-size:12px;line-height:1.55;color:var(--rose);background:var(--rose-bg);
-  border:1px solid #5B3D45;border-radius:11px;padding:10px 12px;margin:0 0 14px;text-align:right}
+  border:1px solid var(--rose-line);border-radius:11px;padding:10px 12px;margin:0 0 14px;text-align:right}
 [data-name="כניסה"] .scr-icon{text-align:center;margin-bottom:10px;color:var(--leaf)}
 [data-name="כניסה"] .scr-icon svg{display:block;margin:0 auto}
 .brandmark{color:var(--leaf);line-height:0}
@@ -1375,12 +1468,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ---- how-it-works story (screen 21) ---- */
 .how-story{position:relative;min-height:100%;overflow:hidden}
 .how-bars{position:absolute;top:0;left:0;right:0;display:flex;gap:5px;padding:14px 14px 0;z-index:10}
-.how-bar{flex:1;height:3px;border-radius:2px;background:rgba(237,239,233,.18);overflow:hidden}
+.how-bar{flex:1;height:3px;border-radius:2px;background:var(--track);overflow:hidden}
 .how-bar i{display:block;height:100%;width:0%;background:var(--tx);border-radius:2px}
 .how-bar.done i{width:100%!important;transition:none}
 .how-bar.live i{transition:width linear}
 .how-close{position:absolute;top:20px;left:14px;z-index:12;width:26px;height:26px;border-radius:50%;
-  border:none;background:rgba(0,0,0,.35);color:var(--tx);font-size:13px;line-height:1;cursor:pointer;
+  border:none;background:var(--shadow);color:var(--tx);font-size:13px;line-height:1;cursor:pointer;
   display:flex;align-items:center;justify-content:center;font-family:inherit}
 /* אזורי המגע הם שקופים, ולכן הם בלתי נראים — עד שאנדרואיד צובע אותם.
    דפדפן נייד מסמן כל אלמנט לחיץ בריבוע מודגש, וכאן זה יצא מלבן טורקיז
@@ -1425,7 +1518,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .how-occasions{font-size:20px;letter-spacing:6px;opacity:.7;margin:16px 0 2px}
 .how-waits{margin-top:12px;font-size:12.5px;color:var(--tx-3)}
 .how-start{position:absolute;left:22px;right:22px;bottom:22px;z-index:11;padding:13px;border-radius:12px;
-  border:none;background:var(--leaf);color:#12140f;font-family:inherit;font-size:14px;font-weight:600;
+  border:none;background:var(--leaf);color:var(--on-leaf);font-family:inherit;font-size:14px;font-weight:600;
   cursor:pointer}
 @media (prefers-reduced-motion:reduce){
   .how-story *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
@@ -1443,16 +1536,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   border:1px solid var(--line);background:transparent;color:var(--tx-3);cursor:pointer;transition:.15s}
 .emptybtn.on{background:var(--leaf-bg);border-color:var(--leaf-line);color:var(--leaf)}
 .hint b{color:var(--leaf);font-weight:500}
-.req{border:1px solid #5A3742;background:var(--rose-bg);border-radius:14px;padding:13px;margin-bottom:9px}
+.req{border:1px solid var(--rose-line);background:var(--rose-bg);border-radius:14px;padding:13px;margin-bottom:9px}
 .req .rq-h{display:flex;align-items:center;gap:10px}
 .req .rq-h .ra{width:32px;height:32px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--s2)}
 .req .rq-h .ra svg{display:block;width:100%;height:100%}
 .req .rq-h b{flex:1;font-size:12.5px;font-weight:500}
 .req .rq-h span{font-size:10px;color:var(--tx-3);flex-shrink:0}
-.req p{font-size:11px;color:#D9AEB6;line-height:1.6;margin-top:8px}
+.req p{font-size:11px;color:var(--rose-txt);line-height:1.6;margin-top:8px}
 .req .rq-a{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}
 .req .rq-a button{font-family:inherit;font-size:11.5px;padding:8px;border-radius:10px;cursor:pointer}
-.req .rq-a .ok{background:var(--leaf);color:#12210F;border:none}
+.req .rq-a .ok{background:var(--leaf);color:var(--on-leaf);border:none}
 .req .rq-a .no{background:transparent;border:1px solid var(--line-2);color:var(--tx-2)}
 .fold{font-family:inherit;font-size:11px;color:var(--tx-3);background:none;border:none;cursor:pointer;
   padding:4px 0;text-decoration:underline;text-underline-offset:3px}
@@ -1469,7 +1562,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '946c81b';
+window.NETA_BUILD = '2f525ad';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1622,6 +1715,10 @@ window.NETA_CONFIG = {
   <g id="ic-bell" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 3.4 C8.6 3.4 6.8 5.9 6.8 9.2 C6.8 13.2 5.4 14.8 5.4 16.2 H18.6 C18.6 14.8 17.2 13.2 17.2 9.2 C17.2 5.9 15.4 3.4 12 3.4 Z"/>
     <path d="M10 18.6 C10.4 19.8 11.1 20.4 12 20.4 C12.9 20.4 13.6 19.8 14 18.6"/>
+  </g>
+  <g id="ic-theme">
+    <circle cx="12" cy="12" r="8.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    <path d="M12 3.4 A8.6 8.6 0 0 1 12 20.6 Z" fill="currentColor"/>
   </g>
   <g id="sprout-art">
     <line x1="30" y1="62" x2="30" y2="20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
@@ -2193,7 +2290,7 @@ window.NETA_CONFIG = {
 <section class="screen" data-name="פדיון">
   <div class="center gap"><div style="font-size:26px" id="rd-icon">🎂</div><h2 style="margin:8px 0 4px" id="rd-h">הגיע היום, דניאל</h2><p class="sub" id="rd-sub">אוגוסט 2032 · הנטיעה שלך הבשילה</p></div>
   <div class="card"><div class="stat"><span class="k">נפתחה</span><span class="v" id="rd-planted">2019</span></div><div class="stat"><span class="k" id="rd-whok">השקיעו עבורך</span><span class="v" id="rd-who">4 אנשים</span></div><div class="stat"><span class="k">סכום לפדיון</span><span class="v" style="color:var(--leaf)" id="rd-sum">35,300 ₪</span></div></div>
-  <div class="card" style="background:var(--sun-bg);border-color:#3D3520"><div class="row gap-s"><span>✉</span><b style="font-size:13.5px" id="rd-lcount">3 מכתבים מחכים לך</b></div><p class="sub" style="color:#C4AE84" id="rd-lsub">נכתבו לפני שנים על ידי סבתא, דוד יוסי ואמא ואבא. הם נפתחים היום, יחד איתך.</p></div>
+  <div class="card" style="background:var(--sun-bg);border-color:var(--sun-line)"><div class="row gap-s"><span>✉</span><b style="font-size:13.5px" id="rd-lcount">3 מכתבים מחכים לך</b></div><p class="sub" style="color:var(--sun-txt)" id="rd-lsub">נכתבו לפני שנים על ידי סבתא, דוד יוסי ואמא ואבא. הם נפתחים היום, יחד איתך.</p></div>
   <div class="lock gap"><b style="display:block;margin-bottom:4px;font-size:13.5px">אימות זהות</b><p class="sub">הפדיון מתבצע מול הגוף הפיננסי המנהל, לאחר אימות זהות מלא. נטע לא מחזיקה ולא מנהלת את הכספים.</p></div>
   <button class="btn" onclick="go(13)">התחל אימות ופדיון</button>
 </section>
@@ -2273,7 +2370,8 @@ window.NETA_CONFIG = {
   <div class="card tap" id="pf-pwcard" style="display:none" onclick="openSetPassword()"><div class="row"><div class="dot g"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-key"/></svg></div><div style="flex:1"><div class="title">סיסמה</div><div class="meta">כניסה מהירה בלי לחכות לקוד למייל</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
   <div class="card tap"><div class="row"><div class="dot g"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-shield"/></svg></div><div style="flex:1"><div class="title">אבטחה ואימות זהות</div><div class="meta">אימות מלא נדרש רק במועד הפדיון</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
   <div class="card tap"><div class="row"><div class="dot g"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-bell"/></svg></div><div style="flex:1"><div class="title">התראות</div><div class="meta">הפקדות, אבני דרך ומכתבים</div></div><span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span></div></div>
-  <div class="lock" style="text-align:right;margin-top:5px"><p class="sub" style="color:#C4AE84">הכספים מוחזקים ומנוהלים בגוף פיננסי מוסדר. נטע היא שכבת החוויה בלבד ואינה מחזיקה את הכסף.</p></div>
+  <div class="card"><div class="row"><div class="dot g"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-theme"/></svg></div><div style="flex:1"><div class="title">מראה</div><div class="meta">נשמר במכשיר הזה</div></div><div class="chips thpick" id="th-pick"><button type="button" onclick="setTheme('dark')">כהה</button><button type="button" onclick="setTheme('light')">בהיר</button></div></div></div>
+  <div class="lock" style="text-align:right;margin-top:5px"><p class="sub" style="color:var(--sun-txt)">הכספים מוחזקים ומנוהלים בגוף פיננסי מוסדר. נטע היא שכבת החוויה בלבד ואינה מחזיקה את הכסף.</p></div>
 </section>
 
 <!-- 11 EDIT -->
@@ -2355,7 +2453,7 @@ window.NETA_CONFIG = {
     <div class="stat"><span class="k">הנהנה</span><span class="v" id="e-bene">דניאל</span></div>
   </div>
   <div class="lock" style="text-align:right">
-    <p class="sub" style="color:#C4AE84">מועד הפתיחה הוא עובדה שנרשמה ואינו משתנה. שינוי זהות הנהנה הוא פעולה משפטית בחשבון נעול, ומתבצע מול הגוף הפיננסי המנהל בלבד, לא באפליקציה.</p>
+    <p class="sub" style="color:var(--sun-txt)">מועד הפתיחה הוא עובדה שנרשמה ואינו משתנה. שינוי זהות הנהנה הוא פעולה משפטית בחשבון נעול, ומתבצע מול הגוף הפיננסי המנהל בלבד, לא באפליקציה.</p>
     <button class="btn ghost" style="margin-top:10px" onclick="toast('פנייה נשלחה לגוף הפיננסי המנהל')">בקש שינוי מול הגוף המנהל</button>
   </div>
 
@@ -2381,7 +2479,7 @@ window.NETA_CONFIG = {
 
   <div class="lock" style="text-align:right">
     <b style="display:block;margin-bottom:5px;font-size:12.5px">הקוד לא מעביר כסף בעצמו</b>
-    <p class="sub" style="color:#C4AE84">הוא פותח את התהליך ומזהה איזו נטיעה נפדית. שחרור הכסף בפועל מתבצע רק לאחר אימות זהות מלא מול הגוף הפיננסי המנהל, ורק לחשבון שעל שמך. אם הקוד הגיע לידיים לא נכונות, הוא לא מספיק כדי לקחת את הכסף.</p>
+    <p class="sub" style="color:var(--sun-txt)">הוא פותח את התהליך ומזהה איזו נטיעה נפדית. שחרור הכסף בפועל מתבצע רק לאחר אימות זהות מלא מול הגוף הפיננסי המנהל, ורק לחשבון שעל שמך. אם הקוד הגיע לידיים לא נכונות, הוא לא מספיק כדי לקחת את הכסף.</p>
   </div>
 
   <p class="fine center" style="margin-top:14px">לא קיבלת קוד? <b style="color:var(--leaf)">שלח שוב</b></p>
@@ -2413,7 +2511,7 @@ window.NETA_CONFIG = {
 
   <div class="card" style="background:var(--sun-bg);border-color:var(--sun-line)">
     <div class="row gap-s"><span>✉</span><b style="font-size:13px">3 המכתבים שלך נפתחים עכשיו</b></div>
-    <p class="sub" style="color:#C4AE84">הם ייפתחו יחד עם אישור הפדיון, ויישארו שלך לתמיד, גם אם תבחר למשוך את הכסף.</p>
+    <p class="sub" style="color:var(--sun-txt)">הם ייפתחו יחד עם אישור הפדיון, ויישארו שלך לתמיד, גם אם תבחר למשוך את הכסף.</p>
   </div>
 
   <button class="btn" style="margin-top:14px" onclick="toast('הפדיון אושר · המכתבים נפתחים')">אשר את הפדיון</button>
@@ -2439,7 +2537,7 @@ window.NETA_CONFIG = {
        אותם. -->
   <div class="card gap" id="resume-card" style="display:none;background:var(--sun-bg);border-color:var(--sun-line)">
     <div class="row gap-s"><span>⏸</span><b style="font-size:13px;font-weight:500;color:var(--sun)">הנטיעה שהתחלת ממתינה</b></div>
-    <p class="sub" style="color:#C4AE84" id="resume-t">בר המצווה של דניאל · 100 ₪ בחודש. נשאר רק לחבר אמצעי תשלום כדי שההפקדה הראשונה תצא.</p>
+    <p class="sub" style="color:var(--sun-txt)" id="resume-t">בר המצווה של דניאל · 100 ₪ בחודש. נשאר רק לחבר אמצעי תשלום כדי שההפקדה הראשונה תצא.</p>
     <button class="btn" style="margin-top:12px" onclick="resumeOnbo()">השלם והפעל</button>
   </div>
   <!-- כרטיס "ממתין לאישור שלך" ישב כאן, בראש המסך מעל הכול. הוא ירד
@@ -2634,7 +2732,7 @@ window.NETA_CONFIG = {
     <span class="tax-goal"><span class="disc dash">🎂</span><span class="yr">2039</span></span>
   </div>
   <div class="lock" style="text-align:right;margin-top:26px">
-    <p class="sub" style="color:#C4AE84">הנבט עומד בתחילת הציר. ב-1 בספטמבר הוא יזוז בפעם הראשונה, ומשם הוא רק ממשיך.</p>
+    <p class="sub" style="color:var(--sun-txt)">הנבט עומד בתחילת הציר. ב-1 בספטמבר הוא יזוז בפעם הראשונה, ומשם הוא רק ממשיך.</p>
   </div>
   <div class="two" style="margin-top:18px"><button class="btn" onclick="go(2)">השקע עוד</button><button class="btn ghost" onclick="openInvitePicker()">הזמן קרובים</button></div>
 </section>
@@ -2895,7 +2993,7 @@ window.NETA_CONFIG = {
     <p class="sub" id="pi-sub">להיות שותף/ה שווה, לא רק להשקיע</p>
   </div>
 
-  <div class="card center" style="background:var(--leaf-bg);border-color:#2A4530">
+  <div class="card center" style="background:var(--leaf-bg);border-color:var(--leaf-line)">
     <div style="font-size:22px" id="pi-icon">🎂</div>
     <b style="display:block;margin:6px 0 4px;font-size:14px" id="pi-title">בר המצווה של דניאל</b>
     <p class="sub" style="color:#A8CBAC" id="pi-meta">המועד המיוחל: אוגוסט 2032 · נצבר עד כה 15,600 ₪</p>
@@ -2910,7 +3008,7 @@ window.NETA_CONFIG = {
   <p class="fine gap">זה שונה מהזמנה רגילה לקרוב: קרוב רואה רק את מה שהוא השקיע ולא יכול לשנות כלום. שותפות היא בעלות משותפת אמיתית, לא השתתפות.</p>
 
   <div class="two"><button class="btn" onclick="acceptPartner()">קבל שותפות</button><button class="btn ghost" onclick="declinePartner()">לא עכשיו</button></div>
-  <div class="note" id="pi-done" style="display:none;text-align:center;margin-top:14px">🎉 <b style="color:var(--leaf)">קיבלת את השותפות</b><p class="sub" style="color:#C6E3C9">מעכשיו אתם רשומים כבעלים שווים.</p></div>
+  <div class="note" id="pi-done" style="display:none;text-align:center;margin-top:14px">🎉 <b style="color:var(--leaf)">קיבלת את השותפות</b><p class="sub" style="color:var(--leaf-ink-2)">מעכשיו אתם רשומים כבעלים שווים.</p></div>
 </section>
 
 <!-- 26 SHARED LINK (what someone who opens the link sees, before signing in) -->
@@ -7512,7 +7610,7 @@ let relInviteKey='';
 /* מי סומן לשליחה, לפי המקום ברשימה. מתאפס בכניסה ובכל החלפת רגע. */
 let invSel={};
 const TICK='<svg width="11" height="9" viewBox="0 0 11 9" aria-hidden="true">'+
-  '<path d="M1 4.6 L4 7.6 L10 1.4" fill="none" stroke="#0E1A10" stroke-width="1.9" '+
+  '<path d="M1 4.6 L4 7.6 L10 1.4" fill="none" stroke="currentColor" stroke-width="1.9" '+
   'stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function invSelIdx(){
   return Object.keys(invSel).filter(function(k){return invSel[k]})
@@ -8577,6 +8675,9 @@ function removeRelative(i){
   done();
 }
 function buildProfile(){
+  /* לפני הפיצול ולא אחריו: למסלול של החשבון החי יש return מוקדם,
+     ומתחתיו הצ'יפים היו נשארים בלי סימון. */
+  paintTheme();
   /* בחשבון אמיתי הספירות מגיעות מהמודל שנטען, לא מ-plants{} שבקובץ. */
   if(liveAccount()){
     const m=lastModel;
@@ -8817,6 +8918,27 @@ function attrText(v){
 /* גיליון אחד לשם ולתמונה, כמו ב"נעים להכיר" וב"מי אתה". שומר רק את מה
    שהשתנה בפועל: מי שנכנס לשנות שם לא ישלח בקשת אווטאר מיותרת, ולהפך.
    שתי הבקשות רצות במקביל, וההודעה מנוסחת לפי מה שבאמת נשמר. */
+/* ── מראה ─────────────────────────────────────────────────────────
+   שני מצבים, והכהה הוא ברירת המחדל: הוא הזהות של האפליקציה, ומי
+   שלא בחר לא אמור לקבל משהו אחר. הערך נקרא מ-localStorage בכל
+   פעם ואינו נשמר במשתנה, ולכן אין מצב שבו הכפתור אומר דבר אחד
+   והמסמך נושא אחר. */
+function themeNow(){
+  try{return localStorage.getItem('neta-theme')==='light'?'light':'dark'}
+  catch(e){return 'dark'}
+}
+function setTheme(t){
+  const el=document.documentElement;
+  if(t==='light')el.setAttribute('data-theme','light');
+  else el.removeAttribute('data-theme');
+  try{localStorage.setItem('neta-theme',t)}catch(e){}
+  paintTheme();
+}
+function paintTheme(){
+  const dark=themeNow()==='dark';
+  document.querySelectorAll('#th-pick button').forEach(function(b,i){
+    b.classList.toggle('on',(i===0)===dark)});
+}
 function editMyIdentity(){
   const nowName=liveAccount()?((netaServer.profile&&netaServer.profile.name)||'')
                              :(topbars[10][0]||'');
