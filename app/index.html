@@ -152,6 +152,14 @@ body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse
 .device{position:relative;width:100%;max-width:430px;height:100dvh;background:var(--bg);
   display:flex;flex-direction:column;overflow:hidden}
 .device .notch,.device .statusbar,.device .home-indicator{display:none}
+/* האוויר מעל ההאדר. כשמסגרת הפלאפון הייתה כאן, החריץ ושורת הסטטוס
+   המדומים נתנו כ-44 פיקסל, והם ירדו יחד איתה — מה שנשאר היה הריפוד
+   של ההאדר עצמו, 18 פיקסל, שמעולם לא נועד להיות כל המרווח. הכלל
+   יושב על .device ולא על .topbar כי הוא צריך לחול גם על המסכים שאין
+   בהם האדר, כמו אשף ההקמה. וה-env אינו קישוט: בטאב של דפדפן הוא אפס
+   ומתקבל בדיוק 14, אבל במסך הבית, כשהאפליקציה רצה במסך מלא, שורת
+   הסטטוס של המערכת יושבת מעל התוכן והשם היה נכנס מתחת לשעון. */
+.device{padding-top:calc(14px + env(safe-area-inset-top))}
 /* מה שהאינדיקטור נתן קודם: אוויר מתחת לסרגל. עכשיו זה שטח הבטוח של
    המכשיר עצמו, שגם מכבד מחווני מערכת אמיתיים. */
 .tabbar{padding-bottom:calc(4px + env(safe-area-inset-bottom))}
@@ -433,6 +441,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .esfaces>span:nth-child(1){z-index:3;position:relative}
 .esfaces>span:nth-child(2){z-index:2;position:relative}
 .esfaces .avsvg{width:100%;height:100%;display:block}
+/* המסכה כאן עגולה והדמויות מצוירות עד קצה הריבוע, ולכן מה שיושב
+   בפינה נחתך. נמדד בפיקסלים ולא בעין (inkout.js): הדיו של נכדה יוצא
+   מהעיגול ב-3.8 אחוז, שני הקוקואים שלה; של חברה ב-2.2, השיער שיורד
+   לצד הגוף; של חבר ב-0.5, קצה המצחייה. שאר השלוש עשרה נכנסות, אבל
+   דמויות הילדים מגיעות עד 23.7 מתוך רדיוס 24 בעוד שרוב המבוגרים
+   עוצרים ב-19.5, וזה מה שנקרא כזום.
+   ההקטנה עוגנה לתחתית ולא למרכז: הכתפיים אמורות להיחתך לעדשה, וזו
+   הצורה שהצביר בנוי עליה. מרכוז ניתק אותן מהקצה והבוסט ריחף. */
+.esfaces .avsvg,.fu-ring svg,.ppav .avsvg{transform:scale(.92);transform-origin:50% 100%}
 /* הרקע של הפרצוף היה אפוי בתוך ה-SVG: כל אחת מ-16 הדמויות פתחה ב-rect
    כהה משלה, ולכן בערכה הבהירה הפרצופים היו ריבועים כהים על דף בהיר.
    עכשיו ה-rect הוא currentColor והצבע נקבע ב-CSS, כלומר הוא מתהפך עם
@@ -1600,7 +1617,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7a9d260';
+window.NETA_BUILD = 'f1691ea';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
