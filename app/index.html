@@ -132,9 +132,9 @@
    יהיה זהב על כל כרטיס במסך והדגש יאבד את משמעותו. */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse 70% 55% at 50% 20%,var(--page-1),var(--page-2) 65%);
-  color:var(--tx);display:flex;flex-direction:column;align-items:center;padding:10px 10px 24px;
-  min-height:100vh;-webkit-font-smoothing:antialiased}
-.wrap{width:100%;max-width:390px;display:flex;flex-direction:column;align-items:center}
+  color:var(--tx);display:flex;flex-direction:column;align-items:center;padding:0;
+  min-height:100dvh;-webkit-font-smoothing:antialiased}
+.wrap{width:100%;max-width:430px;display:flex;flex-direction:column;align-items:center}
 .devlabel{font-size:9.5px;letter-spacing:.1em;color:var(--tx-3);margin:18px 0 8px;text-transform:uppercase}
 .nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;width:100%}
 .nav button{flex:0 0 auto;font-family:inherit;font-size:11px;padding:7px 12px;border-radius:8px;
@@ -144,10 +144,17 @@ body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse
 /* הרוחב נקבע מהרוחב בלבד. הגובה הוא שנחתך אל החלון כשאין מקום —
    max-height גובר על היחס, המסגרת מתקצרת, והסרגל התחתון נשאר בפנים.
    ניסיון קודם הגביל את הרוחב לפי הגובה, וכל האפליקציה התכווצה. */
-.device{position:relative;width:min(390px,94vw);
-  aspect-ratio:390/844;height:auto;max-height:calc(100dvh - 22px);background:var(--bg);
-  border-radius:46px;border:9px solid var(--shell);box-shadow:0 40px 70px -25px var(--shadow-2),0 0 0 1px var(--inset) inset;
+/* המסגרת של הטלפון ירדה. מה שנשאר מ-.device הוא מה שהיא באמת עשתה:
+   עמודה בגובה החלון שגוללת בפנים, ברוחב של מסך טלפון. בלי מסגרת,
+   בלי פינות, בלי צל, ובלי יחס גובה-רוחב — הגובה הוא החלון עצמו.
+   הבלימה על 430 היא כדי שהאפליקציה לא תימתח לרוחב מסך מחשב; היא
+   נשארת תמיד עמודה, כי כל 27 המסכים נבנו לרוחב הזה. */
+.device{position:relative;width:100%;max-width:430px;height:100dvh;background:var(--bg);
   display:flex;flex-direction:column;overflow:hidden}
+.device .notch,.device .statusbar,.device .home-indicator{display:none}
+/* מה שהאינדיקטור נתן קודם: אוויר מתחת לסרגל. עכשיו זה שטח הבטוח של
+   המכשיר עצמו, שגם מכבד מחווני מערכת אמיתיים. */
+.tabbar{padding-bottom:calc(4px + env(safe-area-inset-bottom))}
 .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:118px;height:24px;
   background:var(--shell);border-radius:0 0 15px 15px;z-index:30}
 .statusbar{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;
@@ -1575,7 +1582,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '5cbce45';
+window.NETA_BUILD = 'ff2b542';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
