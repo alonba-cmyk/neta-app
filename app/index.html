@@ -419,7 +419,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .eyebrow.big{margin:30px 0 10px}
 .hdr-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:30px 0 10px}
 .hdr-row .eyebrow.big{margin:0}
-.hdr-link{font-family:inherit;font-size:10.5px;color:var(--leaf-soft);background:none;border:none;padding:0;cursor:pointer;flex-shrink:0}
 .summary{padding:6px 2px 0}
 /* ‏flex-start ולא center: מסך הבית מחזיק רק טקסט, ו"הנטיעות שלי"
    מחזיק גם נבט בגובה 68. במרכוז המספר של "שלי" נדחף למטה בחצי ההפרש,
@@ -1115,21 +1114,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .cbr.pend{opacity:.6}
 .cbp{font-size:10.5px;color:var(--tx-3);flex-shrink:0}
 
-/* טבלת "הצפי לעתיד" — סיכום צפי לכל הנטיעות המיועדות, בגיליון תחתון.
-   עמודת השם גמישה (minmax(0,1fr)) והמספרים לפי התוכן (auto) — כך שם
-   ארוך גולש לשורה שנייה במקום להיחתך, ושנת היעד לעולם לא נקטעת. */
-.tbl{margin-top:2px}
-.tbl .r{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:11.5px;align-items:baseline}
-.tbl .r.h{font-size:10px;letter-spacing:.06em;color:var(--tx-3);padding-top:2px}
-.tbl .r:last-child{border-bottom:none}
-.tbl .n{color:var(--tx);overflow-wrap:break-word;line-height:1.35}
-.tbl .a{color:var(--tx-2);font-variant-numeric:tabular-nums;text-align:left;white-space:nowrap}
-.tbl .b{color:var(--sun-soft);font-weight:600;font-variant-numeric:tabular-nums;text-align:left;white-space:nowrap}
-/* טבלה בלי שורת סיכום מבקשת מהקורא לחבר בראש חמישה מספרים בני שש
-   ספרות. השורה הזאת עושה את זה במקומו. */
-.tbl .r.tot{border-bottom:none;border-top:1px solid var(--line-2);margin-top:3px;padding-top:11px}
-.tbl .r.tot .n{font-weight:500}
-.tbl .r.tot .b{font-size:13px}
 
 /* ===== redeem code ===== */
 .codebox{width:100%;font-family:inherit;font-size:25px;font-weight:600;letter-spacing:.3em;text-align:center;
@@ -1635,7 +1619,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'c623e37';
+window.NETA_BUILD = 'b4bbb55';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1878,9 +1862,11 @@ window.NETA_CONFIG = {
        ולכן גם שני הסכומים אינם מתחברים: המספר הגדול הוא הסקשן הראשון
        בלבד. חיבור שלהם היה מאחד כסף של שתי משפחות למספר אחד, וזה
        בדיוק מה שסעיף 16 ב-open-decisions אוסר. -->
+  <!-- קישור "הצפי לעתיד" ישב כאן, לצד הכותרת, ופתח גיליון עם טבלה
+       של כל הרגעים. הוא ירד: הצפי לרגע יושב במסך הרגע עצמו, לחיצה
+       אחת מתחת, והצד הזהוב בראש המסך כבר אומר את הסכום. -->
   <div class="hdr-row">
     <p class="eyebrow big" id="own-head">ילד אחד</p>
-    <button class="hdr-link" id="proj-link" style="display:none" onclick="showProjectionSheet()">הצפי לעתיד ›</button>
   </div>
 
   <!-- הרגעים של מי שנבחר, ומתחתיהם מי נוטע לו. שורת "מי נוטע" נושאת
@@ -10337,7 +10323,8 @@ function targetLine(p){
    "העתיד שלנו" מציג נהנה אחד בכל פעם, ולכן אין בו יותר מה לקפל. */
 
 /* אותו סינון שקובע אם "יעד" מופיע על גבי כרטיס בודד — כאן משמש כדי
-   להחליט אם קישור "הצפי לעתיד" מוצג בכלל, ומה נכנס לטבלה שהוא פותח. */
+   להחליט אם לצד הזהוב בראש "העתיד שלנו" יש מה להראות. גיליון "הצפי
+   לעתיד" שהיה נפתח מקישור ליד הכותרת ירד: הצפי לרגע יושב במסך הרגע. */
 function projectablePlantings(model){
   return ((model&&model.plantings)||[]).filter(function(p){
     return p.designated&&p.projection>p.accrued;
@@ -10346,9 +10333,8 @@ function projectablePlantings(model){
 /* ‏tidyMetaRow ירדה יחד עם הצפי. היא שמרה על הנקודה המפרידה של
    הפריט השלישי בשורת העובדות, ומאז שהצפי עלה לראש נשארו שם שני
    פריטים בלבד שנכנסים בכל רוחב. */
-/* הסכום העתידי המצטבר. שורת הסטטיסטיקה וטבלת "הצפי לעתיד" חייבות
-   להסכים, ולכן שתיהן סוכמות בדיוק את אותה רשימה — אחרת המשתמש רואה
-   מספר אחד בכותרת ומחבר מספר אחר מהטבלה.
+/* הסכום העתידי המצטבר, הצד הזהוב בראש "העתיד שלנו". סוכם בדיוק את
+   projectablePlantings, אותה רשימה שקובעת אם יש מה להראות שם בכלל.
 
    מה שנסכם כאן הוא סה"כ הנטיעות, לא חלקו של המשתמש בהן: my_plantings
    מחזיר רק נטיעות שהוא פתח, אבל accrued ו-projection שלהן כוללים גם
@@ -10369,29 +10355,6 @@ function projectedHorizon(rows){
   });
   if(y===null)return '';
   return months[m]?(' עד '+months[m]+' '+y):(' עד '+y);
-}
-function showProjectionSheet(){
-  const rows=projectablePlantings(lastModel);
-  if(!rows.length)return;
-  txt('sh-t','הצפי לעתיד');
-  document.getElementById('sh-b').innerHTML=
-    'בקצב ההפקדות הנוכחי, לכל נטיעה בתאריך שלה:'+
-    '<div class="tbl">'+
-      '<div class="r h"><span>נטיעה</span><span class="a">נצבר</span><span class="b" style="color:var(--tx-3);font-weight:400">צפוי אז</span></div>'+
-      rows.map(function(p){
-        return '<div class="r"><span class="n">'+p.icon+' '+p.name+' · '+p.targetYear+'</span>'+
-          '<span class="a">'+shekel(p.accrued)+'</span>'+
-          '<span class="b">כ-'+shekel(p.projection)+'</span></div>';
-      }).join('')+
-      (rows.length>1
-        ? '<div class="r tot"><span class="n">סך הכול</span>'+
-          '<span class="a">'+shekel(rows.reduce(function(t,p){return t+Number(p.accrued||0)},0))+'</span>'+
-          '<span class="b">כ-'+shekel(projectedTotal(rows))+'</span></div>'
-        : '')+
-    '</div>';
-  sheetFn=null;sheetAlt=null;
-  document.getElementById('sh-acts').innerHTML='<button class="btn" onclick="sheetClose()">סגור</button>';
-  sheetShow();
 }
 
 /* ─── הדגם שבתחתית מסך ריק ────────────────────────────────────────────
@@ -10930,8 +10893,6 @@ function buildHomeSummary(){
       }
     }
     const proj=projectablePlantings({plantings:here});
-    const projLink=document.getElementById('proj-link');
-    if(projLink)projLink.style.display=proj.length?'':'none';
     const futGrp=document.getElementById('s-futbox');
     const duo=document.getElementById('s-duo');
     if(duo)duo.classList.toggle('solo',!proj.length);
@@ -10948,8 +10909,8 @@ function buildHomeSummary(){
 
          מה שיורד איתו: כשיש כמה רגעים שמבשילים בשנים שונות, הסכום
          הוא חיבור של תחזיות ליום אחר כל אחת — מספר שאינו קיים באף
-         יום נתון. הצגתי את זה, ואלון בחר בקיצור. הפירוט המלא, עם
-         התאריך לכל רגע, נשאר בגיליון "הצפי לעתיד" שמעל הרשימה. */
+         יום נתון. הצגתי את זה, ואלון בחר בקיצור. הפירוט לכל רגע, עם
+         התאריך שלו, יושב במסך הרגע עצמו, לחיצה אחת מתחת. */
       txt('s-fut','כ-'+shekel(projectedTotal(proj)));
       /* "יחכו לו" צריך מגדר, ורגע אחד גם נותן מועד אמיתי במקום
          "במועדים". שניהם קיימים רק כשיש רגע אחד בדיוק, ובלי מגדר
