@@ -1631,7 +1631,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '704a1db';
+window.NETA_BUILD = '89ca07d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3214,8 +3214,8 @@ window.NETA_CONFIG = {
      הם גם יכולים לנשום במקום להידחס לתוך כרטיס בתוך כרטיס. -->
 <section class="screen" data-name="ההשקעה של">
   <div class="row gap" style="align-items:center">
-    <div class="pic" style="width:44px;height:44px;border-radius:14px;overflow:hidden;background:var(--s2);border:1px solid var(--line);flex:0 0 auto">
-      <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent" id="pv-av"/></svg></div>
+    <div class="pic" id="pv-av" style="width:44px;height:44px;border-radius:14px;overflow:hidden;background:var(--s2);border:1px solid var(--line);flex:0 0 auto">
+      <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></div>
     <div style="flex:1;min-width:0">
       <div class="title" style="font-size:14.5px" id="pv-name">·</div>
       <div class="meta" id="pv-sub" style="margin-top:3px">·</div></div>
@@ -4959,9 +4959,16 @@ function whoCopy(){
   if(bf)bf.placeholder='אימייל או טלפון של '+nm;
   const a=document.querySelector('#cw-self-av use');
   if(a)a.setAttribute('href','#'+cAvatar);
-  const m=document.querySelector('#cw-me-av use');
-  if(m)m.setAttribute('href','#'+((liveAccount()&&netaServer.profile&&
-        netaServer.profile.avatar_key)||'av-parent'));
+  /* הפנים שלי דרך faceHTML ולא דרך href: avatar_key מחזיק גם נתיב
+     לתמונה אמיתית, ו-<use href="#uuid/…"> הוא פרצוף ריק. אותו נתיב
+     כמו בהאדר (applyMyAvatar), כולל החתימה כשהקישור עוד לא הגיע. */
+  const me=document.getElementById('cw-me-av');
+  if(me){
+    const av=(liveAccount()&&netaServer.profile&&netaServer.profile.avatar_key)||'av-parent';
+    me.innerHTML=faceHTML(av,'av-parent');
+    if(av.indexOf('av-')!==0&&!photoUrl(av))
+      signFaces([av]).then(function(){if(photoUrl(av))me.innerHTML=faceHTML(av,'av-parent')});
+  }
 }
 function checkBene(){
   /* מקור אחד לשם: מה שהוקלד בשלב 1. "הילד" הוא מילת מילוי לכיתובים
@@ -6650,7 +6657,12 @@ function openPerson(i){
   const proj=w[5]!=null?Number(w[5]):Math.round(accrued*ratio);
   pvNow={key:p.key,idx:i,isMe:isMe,accrued:accrued,proj:proj};
 
-  document.getElementById('pv-av').setAttribute('href','#'+w[0]);
+  /* הפנים של מי שנוטע דרך faceHTML: avatar של משתתף חי הוא
+     profiles.avatar_key, שיכול להיות נתיב לתמונה ולא דמות. */
+  const pvav=document.getElementById('pv-av');
+  pvav.innerHTML=faceHTML(w[0],'av-parent');
+  if(w[0]&&w[0].indexOf('av-')!==0&&!photoUrl(w[0]))
+    signFaces([w[0]]).then(function(){if(photoUrl(w[0]))pvav.innerHTML=faceHTML(w[0],'av-parent')});
   txt('pv-name',isMe?'ההשקעה שלך':('ההשקעה של '+w[1]));
   /* מי האדם — היחס והמגדר שלו — ולא תיאור של הרגע, שכבר כתוב בכותרת
      שמעליו. כשאין יחס ואין תאריך, המשפט נופל חזרה על הרגע. */
