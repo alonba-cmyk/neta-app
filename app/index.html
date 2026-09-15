@@ -448,8 +448,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    דמויות הילדים מגיעות עד 23.7 מתוך רדיוס 24 בעוד שרוב המבוגרים
    עוצרים ב-19.5, וזה מה שנקרא כזום.
    ההקטנה עוגנה לתחתית ולא למרכז: הכתפיים אמורות להיחתך לעדשה, וזו
-   הצורה שהצביר בנוי עליה. מרכוז ניתק אותן מהקצה והבוסט ריחף. */
-.esfaces .avsvg,.fu-ring svg,.ppav .avsvg{transform:scale(.92);transform-origin:50% 100%}
+   הצורה שהצביר בנוי עליה. מרכוז ניתק אותן מהקצה והבוסט ריחף.
+   84 אחוז ולא 92: ב-92 שום דבר כבר לא נחתך, אבל הראש עדיין נגע
+   בדופן ונקרא כזום. ב-80 הכתפיים מתחילות להתנתק מתחתית העיגול,
+   וזה הגבול מהצד השני. */
+/* התמונה האמיתית של ילד ממלאת את העיגול והציור לא, וזה מכוון: תמונה
+   היא תצלום שנחתך, וציור הוא בוסט שצויר עד קצה הריבוע ואין לו מה
+   לתת לפינות. */
+.esfaces .avsvg,.fu-ring svg,.ppav .avsvg{transform:scale(.84);transform-origin:50% 100%}
 /* הרקע של הפרצוף היה אפוי בתוך ה-SVG: כל אחת מ-16 הדמויות פתחה ב-rect
    כהה משלה, ולכן בערכה הבהירה הפרצופים היו ריבועים כהים על דף בהיר.
    עכשיו ה-rect הוא currentColor והצבע נקבע ב-CSS, כלומר הוא מתהפך עם
@@ -618,21 +624,21 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   scrollbar-width:none;margin:0 -18px 18px;padding:7px 18px 6px}
 .fu-pick::-webkit-scrollbar{display:none}
 .fu-item{display:flex;flex-direction:column;align-items:center;gap:7px;flex:0 0 auto;
-  width:50px;background:none;border:none;padding:0;font-family:inherit;cursor:pointer}
+  width:60px;background:none;border:none;padding:0;font-family:inherit;cursor:pointer}
 /* הטבעת מצוירת ב-box-shadow ולכן היא יוצאת 4 פיקסלים מחוץ לעיגול.
    בלי הריפוד העליון ב-fu-pick היא נאכלת על ידי overflow ונראית
    כאילו התמונה חתוכה בכותרת. */
-.fu-ring{width:50px;height:50px;border-radius:50%;overflow:hidden;background:var(--s2);
+.fu-ring{width:60px;height:60px;border-radius:50%;overflow:hidden;background:var(--s2);
   display:block;position:relative;opacity:.5;transition:opacity .18s,box-shadow .2s}
 .fu-ring svg{display:block;width:100%;height:100%}
-.fu-item span{font-size:10.5px;color:var(--tx-3);white-space:nowrap;max-width:52px;
+.fu-item span{font-size:10.5px;color:var(--tx-3);white-space:nowrap;max-width:64px;
   overflow:hidden;text-overflow:ellipsis;text-align:center;transition:color .18s}
 .fu-item.on .fu-ring{opacity:1;box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--leaf)}
 .fu-item.on span{color:var(--leaf);font-weight:500}
-.fu-ring.emoji{display:grid;place-items:center;font-size:20px}
+.fu-ring.emoji{display:grid;place-items:center;font-size:24px}
 /* מקווקו ולא מלא: הוא הזמנה ולא אדם, ובאותה שפה של "+ פתח נטיעה חדשה" */
 .fu-item.fu-add .fu-ring{background:none;border:1px dashed var(--line-2);opacity:1;
-  display:grid;place-items:center;color:var(--leaf);font-size:22px}
+  display:grid;place-items:center;color:var(--leaf);font-size:26px}
 
 /* שורות הרגעים של מי שנבחר */
 .fu-mrow{display:flex;align-items:center;gap:9px;padding:8px 0;cursor:pointer}
@@ -1239,7 +1245,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הפרצוף אינו מכוסה על ידי שכנו, ובגודל שמאפשר להקיש עליו בלי לפגוע
    בבחירה שמתחתיו. */
 .fu-item{position:relative}
-.fu-pen{position:absolute;top:-2px;left:-2px;width:20px;height:20px;border-radius:50%;
+.fu-pen{position:absolute;top:-2px;left:-2px;width:22px;height:22px;border-radius:50%;
   background:var(--s2);border:1px solid var(--line-2);color:var(--tx-2);
   display:grid;place-items:center;font-size:10px;font-style:normal;line-height:1;
   cursor:pointer;z-index:2}
@@ -1617,7 +1623,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f1691ea';
+window.NETA_BUILD = 'c9251f4';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2394,7 +2400,7 @@ window.NETA_CONFIG = {
     <!-- הנבט ירד: הוא זהה לזה שב"כל הנטיעות". במקומו שורת הפיד עצמה
          בגודל איור, פרצוף עם תג הרגע, כי זה מה שיופיע כאן. -->
     <div class="art"><span class="bigfav" aria-hidden="true">
-      <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg><i>🎂</i></span></div>
+      <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg><i>🎂</i></span></div>
     <h3 id="act-e-h">כאן יופיעו אבני הדרך<br>לרגעים הכי משמעותיים שלהם</h3>
     <p id="act-e-p">קרוב שהפקיד, אבן דרך שנחצתה, מכתב שנוסף. הכול מתחיל בנטיעה.</p>
     <button class="btn" id="act-e-cta" onclick="actEmptyCta()">פתח את הנטיעה הראשונה</button>
