@@ -91,7 +91,7 @@
   color-scheme:light;
   --bg:#F4F6F1;--s1:#FFFFFF;--s2:#EBEEE6;--line:#DBE0D3;--line-2:#BFC7B5;
   --tx:#1B1F18;--tx-2:#5A6252;--tx-3:#656D5D;
-  --leaf:#266C33;--leaf-2:#1F5F2D;--leaf-soft:#2F6B3D;--leaf-bg:#D5E7DA;--leaf-line:#B0D2B8;
+  --leaf:#266C33;--leaf-2:#1F5F2D;--leaf-soft:#2F6B3D;--leaf-bg:#F4F7EF;--leaf-line:#E1E6D8;
   --sun:#8A6A12;--sun-2:#6E5410;--sun-soft:#8A6A12;--sun-bg:#F2E2BA;--sun-line:#D8C289;
   --rose:#B23A4E;--rose-bg:#F8DDE2;
   --rule:#EDEFE8;
@@ -233,7 +233,13 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 .card.tap{cursor:pointer;transition:.15s}.card.tap:hover{border-color:var(--line-2)}
 .row{display:flex;align-items:center;gap:10px}
 .dot{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:15px;flex-shrink:0}
-.dot.g{background:var(--leaf-bg)}.dot.s{background:var(--sun-bg)}
+.dot.g{background:var(--leaf-bg)}
+/* המשבצת הירקרקה נשענה על הפרש בין המילוי לרקע הדף. מרגע שהמילוי
+   ירד לגוון של האתר, ההפרש הזה כמעט נעלם על רקע --bg, והעיגול
+   שמסביב לאמוג'י פשוט לא נראה. באתר אותה משבצת נושאת קו שיער,
+   וזה מה שמחזיק אותה; כאן הוא נכתב כצל פנימי ולא כ-border, כדי
+   שהוא לא יוסיף שני פיקסלים לרוחב של אלמנטים בגודל קבוע. */
+.dot.g,.fic,.esfaces.occ>span{box-shadow:inset 0 0 0 1px var(--leaf-line)}.dot.s{background:var(--sun-bg)}
 /* ריבוע שמחזיק אמוג'י מקבל את הצבע שלו מהאמוג'י עצמו; ריבוע שמחזיק
    אייקון מצויר צובע אותו לפי הריבוע, כדי שאותו אייקון יעבוד גם על רקע
    אחר בלי גרסה שנייה שלו. */
@@ -1594,7 +1600,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd13069d';
+window.NETA_BUILD = '1328692';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
