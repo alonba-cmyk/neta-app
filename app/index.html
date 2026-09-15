@@ -27,7 +27,7 @@
      עדיין נקרא כשלוש. */
   --tx:#EDEFE9;--tx-2:#9BA396;--tx-3:#808878;
   --leaf:#7FC088;--leaf-2:#5FA36A;--leaf-soft:#A8CBAC;--leaf-bg:#1B2A1D;--leaf-line:#2A4530;
-  --sun:#D9B25F;--sun-2:#BE9748;--sun-soft:#E5CB96;--sun-bg:#2A2318;--sun-line:#3D3520;
+  --sun:#D9B25F;--sun-2:#BE9748;--sun-soft:#E5CB96;--sun-big:#E5CB96;--sun-bg:#2A2318;--sun-line:#3D3520;
   --rose:#D99BA6;--rose-bg:#2A1F22;
   /* קו מפריד פנימי, שקט מ---line: הוא מפריד בתוך כרטיס ולא בין כרטיסים.
      היה בשימוש בשלושה מקומות בלי שהוגדר, ולכן פשוט לא צויר. */
@@ -96,7 +96,7 @@
   --bg:#FFFFFF;--s1:#FFFFFF;--s2:#EEE9DF;--line:#E3DCCF;--line-2:#C9BFAE;
   --tx:#24302B;--tx-2:#3B4741;--tx-3:#4B564F;
   --leaf:#1F4D3A;--leaf-2:#173B2D;--leaf-soft:#4B775C;--leaf-bg:#F5F1E8;--leaf-line:#D9CDB8;
-  --sun:#8A6546;--sun-2:#6E5138;--sun-soft:#8A6546;--sun-bg:#EFE6DA;--sun-line:#D9CDB8;
+  --sun:#847455;--sun-2:#6A5A3E;--sun-soft:#847455;--sun-big:#9C865C;--sun-bg:#EFE6DA;--sun-line:#D9CDB8;
   --rose:#A34A3A;--rose-bg:#F0E2DF;
   --rule:#EEE9DF;
 
@@ -108,8 +108,8 @@
   --leaf-bg-2:#8FBC8F;
   --leaf-veil:rgba(249,248,244,.95);
   --leaf-rgb:31,77,58;
-  --sun-txt:#7F5D40;
-  --sun-ink:#6C4F37;
+  --sun-txt:#756545;
+  --sun-ink:#6A5A3E;
   --rose-line:#E0C1BC;
   --rose-txt:#863D30;
   --shell:#D9CDB8;
@@ -559,7 +559,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    אוויר ב-390 ושניים ב-320, כלומר נגיעה. בערכים כאן: עשרה ושישה. */
 .duo .n{font-size:clamp(19px,6.4vw,26px);font-weight:600;color:var(--leaf);letter-spacing:-.028em;
   line-height:1;white-space:nowrap;font-variant-numeric:tabular-nums}
-.duo .n.fut{color:var(--sun-soft)}
+/* המספר הגדול של הצפי הוא היחיד שנושא --sun-big: חול בהיר, 3.5:1 על
+   לבן, שמותר רק לטקסט גדול. שאר הצפי (11 עד 15 פיקסל) נשאר --sun-soft,
+   אותו חול מוכהה עד 4.5:1. משתנה אחד לשניהם היה מפיל 13 כיתובים
+   קטנים מהסף, או מכהה את המספר שנבחר. */
+.duo .n.fut{color:var(--sun-big)}
 .duo .l{font-size:11.5px;color:var(--tx-2);margin-top:7px;line-height:1.5}
 /* המסך הזה מציג נהנה אחד, והפרצוף שמעליו מתמרכז. שני החצאים מקבלים
    רוחב זהה והזוג ממורכז, ולכן הגבול ביניהם — הקו המפריד — נוחת על
@@ -1627,7 +1631,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'df0d171';
+window.NETA_BUILD = '704a1db';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
