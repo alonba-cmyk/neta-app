@@ -630,8 +630,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ── הבורר של "העתיד שלנו" ───────────────────────────────────────
    כל השמות כאן בתחילית fu-, כי .pk ו-.who כבר קיימים בקובץ בהקשרים
    אחרים, ושם קלאס שכבר תפוס הוא באג שקט. */
+/* 28 ולא 18: נמדד ב-390, ומתחת למספרים יש 30 פיקסל עד כותרת הסקשן.
+   ב-18 יצא 24 מול 30, כלומר המספרים נשענו על הבורר ונקראו כתווית שלו;
+   ב-28 זה 34 מול 30. 38 כבר יוצר בור של 44 מול 30 והמספרים מתחילים
+   להיראות שייכים לרשימה שמתחתיהם. התיקון יושב על הבורר ולא על
+   המספרים, כי מה שמשתנה הוא האוויר שאחרי הבורר. */
 .fu-pick{display:flex;gap:11px;align-items:flex-start;overflow-x:auto;
-  scrollbar-width:none;margin:0 -18px 18px;padding:7px 18px 6px}
+  scrollbar-width:none;margin:0 -18px 28px;padding:7px 18px 6px}
 .fu-pick::-webkit-scrollbar{display:none}
 .fu-item{display:flex;flex-direction:column;align-items:center;gap:7px;flex:0 0 auto;
   width:60px;background:none;border:none;padding:0;font-family:inherit;cursor:pointer}
@@ -1628,7 +1633,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0b1b9e6';
+window.NETA_BUILD = '95b3708';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -10052,9 +10057,16 @@ function plantingName(type,who,designated){
 function demoPlanting(k){
   const p=plants[k];
   /* בהדגמה "כמה נטעתי" יושב כמחרוזת בשורת "אתה" שברשימת המשתתפים */
+  /* אין שורת "אתה" ברשימה שקיימת פירושו שלא נטעתי כאן כלום. הנפילה
+     האחורית ל-p.now*100 זיכתה אותי בכל הסכום דווקא בנטיעות שמישהו
+     אחר פתח והפקיד בהן לבדו: "הדירה של נועה" של סבתא רחל ו"הגיוס של
+     דניאל" של דוד יוסי נספרו כשלי במלואם. התוצאה הייתה ש"ממך" בלע את
+     "מהקרובים", הפס נעלם כי others יצא 0, ואותה נטיעה נספרה גם
+     ב"ההשקעות שלי" כאילו הפקדתי בה. הנפילה האחורית נשארת רק לשורה
+     בלי רשימת משתתפים בכלל, ששם היא באמת שלי. */
   const meRow=(p.who||[]).find(function(w){return w[1]==='אתה'});
   const mineAg=meRow?Math.round(parseFloat(String(meRow[2]).replace(/[^\d.]/g,''))*100)
-                   :p.now*100;
+                   :((p.who&&p.who.length)?0:p.now*100);
   return {key:k,name:p.name,icon:p.icon,designated:p.designated!==false,
           /* המין נוסע עם השורה כי הדמות של הילד נגזרת ממנו כשאין
              דמות שמורה, ובלעדיו נועה ודניאל היו מקבלים את "אחר". */
