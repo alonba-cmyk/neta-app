@@ -1174,8 +1174,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 @supports (height:1dvh){.sheet{max-height:min(86%,78dvh)}}
 .chips{display:flex;gap:7px;flex-wrap:wrap;margin:4px 0 2px}
 .chips button{font-family:inherit;font-size:11.5px;padding:8px 13px;border-radius:11px;cursor:pointer;
-  background:var(--s2);border:1px solid var(--line);color:var(--tx-2);transition:.15s;text-align:right}
-.chips button.on{background:var(--leaf-bg);border-color:var(--leaf-line);color:var(--leaf)}
+  background:var(--s1);border:1px solid var(--line);color:var(--tx-2);transition:.15s;text-align:right}
+/* מה שנבחר צבוע מלא, כמו תיבת הסימון בהזמנה. עד "עתיד ירוק" הנבחר
+   היה ערוגה בהירה והלא-נבחר משטח קרם, שני צבעים שונים; בפלטה החדשה
+   שניהם קרם, והנבחר אפילו בהיר יותר מהשני, כלומר נראה פחות לחוץ.
+   הכלל של הצבע לא השתנה, הפלטה שינתה את מה שהוא אומר. */
+.chips button.on{background:var(--leaf);border-color:var(--leaf);color:var(--on-leaf);font-weight:600}
 /* עיצוב "כניסה" ו"פתיחת חשבון" בלבד — לא הקלאסים הגלובליים, כדי לא
    להזיז 25 מסכים אחרים ששותפים אותם קלאסים. */
 [data-name="כניסה"] h2,[data-name="כניסה"] .sub,[data-name="כניסה"] #lg-fine,
@@ -1619,7 +1623,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b4bbb55';
+window.NETA_BUILD = '3c5f135';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1732,6 +1736,15 @@ window.NETA_CONFIG = {
     <path d="M16.7 15.7 C13.8 15.7 12.1 13.9 12.1 11.1 C14.9 11.1 16.7 12.9 16.7 15.7 Z"/>
     <path d="M16.7 14.4 C19.4 14.4 21.2 12.6 21.2 9.8 C18.4 9.8 16.7 11.6 16.7 14.4 Z"/>
     <path d="M6.8 2.7 V10.8 M2.8 6.7 H10.8"/>
+  </g>
+  <!-- "העתיד שלנו": דרך שמתכנסת לאופק, שני קווים על הכביש, ושמש
+       בקצה. ic-garden נשאר בקובץ אף שאיש אינו קורא לו כרגע: הוא
+       הערוגה, והוא היה הטאב הזה לפני שהנבט עבר ל"ההשקעות שלי". -->
+  <g id="ic-path" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3.5 20.5 L9.8 8.2 H14.2 L20.5 20.5"/>
+    <path d="M12 11.6 V13.6"/>
+    <path d="M12 16.2 V18.4" opacity=".6"/>
+    <circle cx="12" cy="4.6" r="2.1" fill="currentColor" stroke="none"/>
   </g>
   <g id="ic-garden" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <path d="M3.2 20.8 H20.8"/>
@@ -3348,11 +3361,11 @@ window.NETA_CONFIG = {
   <h2 class="gap" style="margin-bottom:18px">את מי תרצה להוסיף?</h2>
   <div class="pick" id="ap-kind">
     <button type="button" class="on" data-k="with" onclick="apKind(this,'with')">
-      <span class="fc"><svg viewBox="0 0 40 40"><use href="#av-someone"/></svg></span>
+      <span class="fc"><svg viewBox="0 0 40 40"><use href="#av-granny"/></svg></span>
       <span class="nm"><b>מישהו שאני נוטע איתו</b>
         <span>סבתא, דוד, חבר, אח, מישהו שארצה להזמין להשקיע איתי</span></span></button>
     <button type="button" data-k="for" onclick="apKind(this,'for')">
-      <span class="fc"><svg viewBox="0 0 40 40"><use href="#av-kid2"/></svg></span>
+      <span class="fc"><svg viewBox="0 0 40 40"><use href="#av-kid1"/></svg></span>
       <span class="nm"><b>מישהו שאני נוטע עבורו</b>
         <span>קרוב יקר לי שארצה להשקיע בעתידו</span></span></button>
   </div>
@@ -3459,8 +3472,8 @@ window.NETA_CONFIG = {
        55 אחוז מגובה קופסת 24 על 24 בעוד שהנבט תופס 96, ולכן באותו
        height הגן היה יוצא נמוך בשליש. החיתוך הוא לתיבת הדיו כולל עובי
        הקו, והגובה מכוון לגובה הדיו של הנבט. נמדד בסריקת פיקסלים. -->
-  <button class="tab on" onclick="openHome()"><span class="ic"><svg width="27.32" height="18.45" viewBox="2.3 8.6 19.4 13.1" aria-hidden="true"><use href="#ic-garden"/></svg></span><span class="lb"><span>ההשקעות</span><span>שלי</span></span></button>
-  <button class="tab" onclick="openFutureTab()"><span class="ic"><svg width="13" height="18.5" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>העתיד</span><span>שלנו</span></span></button>
+  <button class="tab on" onclick="openHome()"><span class="ic"><svg width="13" height="18.5" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>ההשקעות</span><span>שלי</span></span></button>
+  <button class="tab" onclick="openFutureTab()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-path"/></svg></span><span class="lb"><span>העתיד</span><span>שלנו</span></span></button>
   <button class="tab center" onclick="startCreate()"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg></span><span class="lb"><span>נטיעה</span></span></button>
   <button class="tab" onclick="openPeople()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-kin"/></svg></span><span class="lb"><span>הקרובים</span><span>שלי</span></span></button>
   <button class="tab" id="tab-act" onclick="go(9)"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></span><span class="lb"><span>פעילות</span></span></button>
