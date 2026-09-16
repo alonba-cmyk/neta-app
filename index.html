@@ -110,10 +110,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 2
 .pr i{display:block;font-style:normal;font-size:12.5px;color:var(--tx3)}
 .pr>div{flex:1}
 .am{font-size:15px;font-weight:800;color:var(--lf);font-variant-numeric:tabular-nums}
-.tot{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;
-  background:#fff;border-top:1px solid var(--ln)}
-.tot span{font-size:13.5px;color:var(--tx2)}
-.tot b{font-size:20px;font-weight:800;color:var(--lf);letter-spacing:-.03em}
+/* השורה התחתונה ירוקה מלאה. הסכום הזה הוא כל הטיעון של הסקשן,
+   שלושה אנשים שמצטרפים למספר אחד, וירוק מלא הוא מה שאומר "כסף
+   שקיים" בכל האפליקציה. נמדד: לבן על הירוק 9.63:1, והקרם 8.54:1. */
+.tot{display:flex;justify-content:space-between;align-items:center;padding:15px 16px;
+  background:var(--lf);border-top:0}
+.tot span{font-size:13.5px;color:var(--lf2);font-weight:600}
+.tot b{font-size:23px;font-weight:800;color:#fff;letter-spacing:-.03em}
 .av.sq{width:46px;height:46px;border-radius:14px;overflow:hidden;background:var(--lf2);
   border:1.5px solid var(--lfl);flex:0 0 auto;display:block}
 .av.sq .po{width:100%;height:100%;display:block}
@@ -166,7 +169,7 @@ foot .fl span,foot .fl a{color:#E3DCCF;text-decoration:none}
 foot .cr{font-size:11.5px;margin:22px 0 0;line-height:1.7;color:#A09889}
 foot .brand{color:#F5F1E8}foot .brand .lf{color:#8FBC8F}
 </style>
-<!-- Neta@71a932d -->
+<!-- Neta@0b1b9e6 -->
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><g id="sprout">
