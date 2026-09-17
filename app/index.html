@@ -938,6 +938,9 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   font-size:11.5px;cursor:pointer;font-family:inherit;
   transition:border-color .15s,background .15s,color .15s}
 .kgrid button.on{border-color:var(--leaf);background:var(--leaf-bg);color:var(--leaf)}
+/* משבצת התמונה כשהיא הפרצוף הנבחר: הכיתוב מקבל את המשקל, המסגרת
+   לא. זו אינה בחירת קרבה, ולכן היא אינה נראית כמוה. */
+.kgrid button.pick{color:var(--leaf)}
 .kgrid .f{width:46px;height:46px;border-radius:13px;overflow:hidden;position:relative;
   background:var(--s2)}
 .kgrid .f svg,.kgrid .f img{display:block;width:100%;height:100%;object-fit:cover}
@@ -1695,7 +1698,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'e996ccc';
+window.NETA_BUILD = 'c57361e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -8390,8 +8393,12 @@ function kinGridHTML(keys,sel,fn,photo,o){
   /* המשבצת קיימת כל עוד יש תמונה, ומסומנת רק כשהיא הנבחרת. בחירת
      ציור אינה מוחקת אותה: היא נשארת שם עד שמירה, ואפשר לחזור אליה
      בלחיצה. מחיקה בפועל היא "חזרה לדמות" שבשורה מתחת לרשת. */
+  /* משבצת התמונה אינה מקבלת on, אף כשהיא הפרצוף הנבחר: הטבעת
+     אומרת איזו קרבה נבחרה והווי אומר איזה פרצוף מוצג, ושתי
+     העובדות אינן אותה עובדה. כשהיא קיבלה גם טבעת היו שני תאים
+     מסומנים על המסך והסימון הפסיק להגיד מה נבחר. */
   const shot=photo
-    ? '<button type="button"'+(o.photoOn?' class="on"':'')+
+    ? '<button type="button"'+(o.photoOn?' class="pick"':'')+
       ' onclick="'+(o.onPhoto||'')+'">'+
       '<span class="f"><img src="'+attrText(photo)+'" alt="">'+
       (o.photoOn?'<span class="cam">\u2713</span>':'')+
