@@ -1467,6 +1467,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שהיה דוחף את הפיד אל מתחת לקיפול. הגדלים לקוחים מ-.es כדי שהראש
    ייקרא כמו זה שב"הקרובים שלי", שממנו הוא בא. */
 #act-head{text-align:center;padding:4px 4px 0;margin-bottom:16px}
+/* ואותו ראש ב"העתיד שלנו", בגרסה קצרה: האיור הוא קו ולא פרצוף, ולכן
+   46 ולא 81. הוא יושב מעל הבורר ולכן המרווח מתחתיו קטן יותר. */
+#fut-head{text-align:center;padding:2px 4px 0;margin-bottom:14px}
+#fut-head .art{color:var(--leaf);display:grid;place-items:center;margin-bottom:9px}
+#fut-head h3{font-size:16px;font-weight:600;line-height:1.35;text-wrap:balance}
+#fut-head p{font-size:12.5px;color:var(--tx-2);line-height:1.6;margin:6px auto 0;max-width:290px}
 #act-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:12px}
 #act-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
 #act-head p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin:8px auto 0;max-width:290px}
@@ -1753,7 +1759,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '539277c';
+window.NETA_BUILD = 'f989d8e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1961,6 +1967,23 @@ window.NETA_CONFIG = {
 <!-- 0 HOME -->
 <section class="screen on" data-name="העתיד שלנו">
   <div id="home-full">
+  <!-- ראש מאויר, כמו זה שבפעילות. הוא יושב בתוך home-full ולא מעליו,
+       ולכן הוא נסגר ונפתח עם המסך המלא בלי שום לוגיקה נוספת: setEmpty
+       ו-applyTabSources שתיהן מזיזות את home-full, וראש שחי בחוץ היה
+       נשאר על המסך לצד המצב הריק, כלומר שני איורים.
+
+       האיור הוא ic-path, האייקון של הטאב עצמו, ולא פרצופים: הבורר
+       שמתחתיו הוא ארבעה פרצופים אמיתיים, ושלושה מצוירים מעליו היו
+       שבעה פרצופים בגלילה אחת. זה נמדד בהרכבה על החי לפני הבחירה.
+
+       ידוע ונבחר: השורה השנייה חוזרת על "ומי נוטע איתך" שבשורה
+       העליונה. הוצגו לצידה חמש חלופות, ואלון בחר את זו. המחיר:
+       המספר הגדול יורד מ-220 ל-339. -->
+  <div id="fut-head">
+    <div class="art"><svg width="46" height="46" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-path"/></svg></div>
+    <h3>הדרך של כל אחד מהם</h3>
+    <p>מה שמחכה להם, ומי נוטע איתך.</p>
+  </div>
   <!-- הבורר. פריט לכל נהנה, ואחריהם צ'יפ ההוספה: פרצוף בודד בשורה
        נראה כמו שריד, ולצידו הוא נראה כמו התחלה. המסך מציג נהנה אחד
        בכל פעם, והפתיחה היא על מי שהרגע שלו הקרוב ביותר. -->
@@ -2544,20 +2567,22 @@ window.NETA_CONFIG = {
        באותו מסך. אותו רכיב בדיוק שנושא את המצב הריק, פרצוף עם תג רגע,
        כי זה מה שהפיד עשוי ממנו.
 
-       הוא יושב מתחת ל-pend-act ולא מעליו: מה שממתין לתשובה שלך נעוץ
-       בראש, וראש מאויר שנדחף מעליו היה מוריד משימה מתחת לקישוט.
+       הוא יושב בתוך act-full ולכן נסגר ונפתח איתו בלי לוגיקה נוספת:
+       syncActEmpty אינה הכתובת היחידה שמזיזה את הגוש, applyTabSources
+       מזיזה אותו גם היא, וראש שחי בחוץ היה נשאר על המסך לצד המצב הריק.
+       והוא מתחת ל-pend-act: מה שממתין לתשובה שלך נעוץ בראש, וראש
+       מאויר שנדחף מעליו היה מוריד משימה מתחת לקישוט.
 
        והוא אכן חוזר על השורה העליונה ("מה קרה לאחרונה · הרגעים שקרו
        סביבך"). זה נמדד והוצג לפני הבחירה, לצד ארבע חלופות שקטות יותר,
        ואלון בחר את הגרסה המלאה. המחיר: הפיד מתחיל ב-256 במקום ב-93. -->
-  <div id="act-head" style="display:none">
+  <div id="act-full">
+  <div id="act-head">
     <div class="art"><span class="bigfav" aria-hidden="true">
       <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg><i>🎂</i></span></div>
     <h3>כל מה שקרה מאז שנטעת</h3>
     <p>קרוב שהפקיד, אבן דרך שנחצתה, מכתב שנוסף.</p>
   </div>
-
-  <div id="act-full">
   <!-- בלי כרטיס עוטף: הוא הקיף רשימה שלמה ולא הוסיף לה גבול שיש לו
        משמעות. בלי הערת ההסבר שהייתה כאן — היא הסבירה למשתמש מה הוא
        רואה אחרי שכבר ראה, ומקומה במצב הריק, שם היא כבר קיימת. -->
@@ -4209,17 +4234,11 @@ let feedCount=null;
 function syncActEmpty(){
   const box=document.getElementById('act-empty'),full=document.getElementById('act-full');
   if(!box||!full)return;
-  /* הראש המאויר חי בדיוק כמו act-full, ולכן הוא נקבע כאן ולא במקום
-     נוסף: שתי פונקציות ציור שכל אחת מחליטה בנפרד אם להציג אותו היו
-     מתנגשות לפי סדר הקריאות, בדיוק כמו ב-paintPending. */
-  const head=document.getElementById('act-head');
-  const showHead=function(on){if(head)head.style.display=on?'':'none'};
-  if(peekOn){box.style.display='none';full.style.display='none';showHead(false);return}
+  if(peekOn){box.style.display='none';full.style.display='none';return}
   const noPlantings=isEmpty||(liveAccount()&&LIVE_TABS.indexOf('act')<0);
   const empty=noPlantings||feedCount===0;
   box.style.display=empty?'':'none';
   full.style.display=empty?'none':'';
-  showHead(!empty);
   if(empty)paintActEmpty(!noPlantings);
 }
 /* שני מצבים, ושתי פעולות שונות. מי שאין לו נטיעה פותח אחת; מי שכבר יש
