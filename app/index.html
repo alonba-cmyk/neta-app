@@ -1409,12 +1409,20 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    20/0). הכפתור שמעליהם נוחת באותו פיקסל בדיוק בארבעת המסכים, והגוש
    שמתחתיו זז בכל מעבר בין טאבים.
 
-   הערכים הקודמים, למי שירצה לחזור אליהם: .gsample>* עם --ghost
-   ו---ghost-sat, ומעליהם #home-ghost>*, #act-ghost>* ו-#rel-ghost>*
-   עם --ghost-2; #kin-ghost בגובה 181 ועם הקלאס tall במארקאפ
-   (.gsample.tall בגובה 212 ודהייה מ-46 אחוז); #home-ghost בגובה
-   150; #rel-ghost במרווח 16/6; ובלי שני הכללים שמפשיטים את הכרטיס. */
-.gsample{position:relative;width:100%;margin-top:20px;height:132px;overflow:hidden;
+   שתי תחנות קודמות, למי שירצה לחזור:
+
+   ‏(1) לפני האיחוד (ee50115): .gsample>* עם --ghost ו---ghost-sat,
+   ומעליהם #home-ghost>*, #act-ghost>* ו-#rel-ghost>* עם --ghost-2;
+   ‏#kin-ghost בגובה 181 ועם הקלאס tall במארקאפ (.gsample.tall בגובה
+   212 ודהייה מ-46 אחוז); #home-ghost בגובה 150; #rel-ghost במרווח
+   16/6; ובלי כרטיס עוטף בדגם הפעילות.
+
+   ‏(2) שורות חשופות (64bcdcc): גובה 132, ושני כללים שהפשיטו את
+   המסגרת, .gsample>.card{border:0;background:none;padding:0} ו-
+   .gsample .ncard{border:0;background:none;border-radius:0;margin:0;
+   padding-inline:0;border-bottom:1px solid var(--line)}, ובלי
+   הכרטיס העוטף בדגם הפעילות. */
+.gsample{position:relative;width:100%;margin-top:20px;height:150px;overflow:hidden;
   text-align:right;pointer-events:none;user-select:none}
 /* עמעום אחד לכולם, והוא הגבוה מבין השניים: שלושה מארבעת הדגמים נושאים
    פרצופים, ופרצוף מלא צבע ב-34 אחוז ובסטורציה של 45 יוצא כתם אפור ולא
@@ -1422,17 +1430,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .gsample > *{opacity:var(--ghost-2);filter:saturate(var(--ghost-sat-2))}
 .gsample:after{content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(to bottom,transparent 22%,var(--bg) 99%)}
-/* דגם הוא רשימה שנמשכת ונעלמת, ולכן אין לו מסגרת: הדהייה היא מה שסוגר
-   אותו, וגבול כרטיס אומר בדיוק את ההפך, "זה נגמר כאן". הכרטיס שעוטף
-   את התוכן האמיתי מופשט כאן, והקו הדק בין שורה לשורה הוא מה שמפריד,
-   בדיוק כמו בפיד של הפעילות.
-
-   מחיר ידוע: ב"ההשקעות שלי" התוכן האמיתי הוא כרטיסים נפרדים ולא שורות,
-   ושם ההפשטה היא הפרה קטנה של "הדגם מראה את מה שבאמת יופיע". נבחר
-   ביודעין, כי זה דגם ולא נתונים. */
-.gsample > .card{border:0;background:none;padding:0}
-.gsample .ncard{border:0;background:none;border-radius:0;margin:0;
-  padding-inline:0;border-bottom:1px solid var(--line);cursor:default}
+/* והדגם יושב בכרטיס, בארבעתם. שלושה מהם ממילא היו בתוך כרטיס כי זה
+   מה שהתוכן האמיתי שלהם הוא, והפעילות קיבלה עטיפה ב-buildGhosts.
+   הכרטיס אומר איפה הדגם נגמר לפני שהדהייה אומרת את זה, והוא גם שומר
+   על ההבטחה שהדגם מראה את מה שבאמת יופיע: ב"ההשקעות שלי" התוכן הוא
+   כרטיסים נפרדים ולא שורות. */
+.gsample .ncard{margin-bottom:9px;cursor:default}
 .gsample .feed:last-child{border-bottom:0}
 /* הדגם של הקרובים אינו לחיץ: שורה ברשימה האמיתית פותחת עריכה, וכאן
    אין את מי לערוך. המרווח העליון בא מ-.gsample, והתחתון הוא הפרדה
@@ -1716,7 +1719,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '64bcdcc';
+window.NETA_BUILD = 'dbe397d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -10765,15 +10768,18 @@ function buildGhosts(){
      האמיתי עם חצי שורה הציג שלושה נבטים במקום פרצוף עם תג רגע,
      שהוא בדיוק מה שהאיור שמעליו מבטיח. השורה שלי נושאת את אייקון
      הנטיעה, ושורה של קרוב את פניו, כפי שהפיד החי עושה. */
+  /* ‏בכרטיס, כמו שלושת הדגמים האחרים. הפיד עצמו אינו בכרטיס, כי שם
+     זו רשימה שנמשכת על כל המסך; דגם הוא גוש אחד שנגמר, והמסגרת
+     אומרת איפה. הריפוד הוא זה של כרטיס שמחזיק שורות ולא תוכן. */
   const act=document.getElementById('act-ghost');
-  if(act)act.innerHTML=[
+  if(act)act.innerHTML='<div class="card" style="padding:6px 12px;margin:0">'+[
     {kind:'contribution',actor:'סבתא רחל',avatar:'av-granny',icon:'🎂',
      name:'בר המצווה של דניאל',isMe:false,amount:null,at:daysAgo(1)},
     {kind:'contribution',name:'בר המצווה של דניאל',icon:'🎂',
      isMe:true,amount:15000,at:daysAgo(8)},
     {kind:'letter_signed',actor:'דוד יוסי',avatar:'av-uncle',icon:'🎂',
      name:'בר המצווה של דניאל',isMe:false,at:daysAgo(34)}
-  ].map(feedRowHTML).join('');
+  ].map(feedRowHTML).join('')+'</div>';
 }
 
 /* המודל האחרון שנטען. הפרופיל נשען עליו כדי לא לפנות לשרת פעם שנייה. */
