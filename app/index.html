@@ -1782,7 +1782,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7057d4a';
+window.NETA_BUILD = '5de8204';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2931,13 +2931,15 @@ window.NETA_CONFIG = {
        והוא יורד גם במצב הזמנה: שם המסך שואל למי לשלוח, ו"מי כבר
        נוטע איתך" הוא דיווח על מה שכבר קרה.
 
-       הצביר כאן בלי התג ＋ שיש למצב הריק: התג אומר "אפשר להוסיף",
-       וזו הזמנה לפעולה ששייכת למסך שאין בו איש. -->
+       והצביר כאן זהה לזה של המצב הריק, תגי ＋ ועוד. הצעתי אותו בלי
+       התגים, בטענה שהתג אומר "אפשר להוסיף" וזו הזמנה ששייכת למסך
+       שאין בו איש, ואלון ביקש את התגים. שני המצבים ממילא לעולם אינם
+       מוצגים יחד, ולכן איור זהה אינו שתי אמירות על מסך אחד. -->
   <div id="rel-head" style="display:none">
-    <div class="art"><span class="esfaces" aria-hidden="true">
-      <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></span>
-      <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></span>
-      <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-friend"/></svg></span>
+    <div class="art"><span class="esfaces plus" aria-hidden="true">
+      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></span><i>＋</i></span>
+      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></span><i>＋</i></span>
+      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-friend"/></svg></span><i>＋</i></span>
     </span></div>
     <h3>מי כבר נוטע איתך</h3>
     <p>כל אחד מהם בוחר בעצמו כמה להשקיע, ובאיזה רגע.</p>
