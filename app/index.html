@@ -1768,7 +1768,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '22a794e';
+window.NETA_BUILD = 'b6aab4b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4463,6 +4463,40 @@ function hideUnbuiltSignIn(){
    זהים לחלוטין. המעבר לטלפון הוא החלפת נקודת קצה, לא עיצוב מחדש. */
 function loginIsEmail(){return !!netaServer}
 
+/* קוד שמודבק מהמייל מגיע עם מה שסביבו. גל הדביקה את השורה מהמייל
+   והשדה קיבל טקסט וספרות יחד, השרת דחה אותו, ושום דבר במסך לא אמר
+   למה. הניקוי הוא ב-input ולא רק בשליחה, כדי שמה שרואים הוא מה
+   שנשלח.
+
+   ולא "להשאיר רק ספרות" על כל הטקסט: "הקוד שלך 482913 תקף ל-60
+   דקות" היה מתחבר ל-48291360, כלומר תיקון שיוצר קוד שגוי במקום
+   לדחות אחד. לכן בהדבקה לוקחים את רצף הספרות הראשון שאורכו ארבע
+   ומעלה, וברצפים קצרים בלבד (למשל "48 29 13") מחברים אותם.
+
+   הקלדה נשארת בניקוי פשוט, כי מי שמקליד אינו מכניס רצפים זרים. */
+function otpDigits(raw){
+  const runs=String(raw==null?'':raw).match(/\d+/g)||[];
+  const long=runs.filter(function(r){return r.length>=4});
+  return long.length?long[0]:runs.join('');
+}
+function otpClean(el){
+  if(!el)return;
+  el.setAttribute('autocomplete','one-time-code');
+  el.addEventListener('paste',function(e){
+    const dt=e.clipboardData||window.clipboardData;
+    if(!dt)return;
+    const raw=dt.getData('text')||'';
+    /* הדבקה של ספרות בלבד נשארת בידי הדפדפן, כדי לא לשבור undo. */
+    if(!raw||!/\D/.test(raw))return;
+    e.preventDefault();
+    el.value=otpDigits(raw);
+    el.dispatchEvent(new Event('input',{bubbles:true}));
+  });
+  el.addEventListener('input',function(){
+    const d=(el.value||'').replace(/\D+/g,'');
+    if(d!==el.value)el.value=d;
+  });
+}
 function loginPrep(){
   if(!netaServer)return;
   const f=document.getElementById('lg-phone');
@@ -4534,8 +4568,8 @@ function loginNext(){
     return;
   }
 
-  const c=(document.getElementById('lg-otp')||{}).value;
-  if(!c||!c.trim()){toast('הזן את הקוד שנשלח אליך');return}
+  const c=otpDigits((document.getElementById('lg-otp')||{}).value);
+  if(!c){toast('הזן את הקוד שנשלח אליך');return}
 
   if(!netaServer){
     txt('id-verified','המספר '+userPhone+' אומת');
@@ -4546,7 +4580,7 @@ function loginNext(){
   }
 
   loginBusy(true,'מאמת…');
-  netaServer.verifyCode(userPhone,c.trim())
+  netaServer.verifyCode(userPhone,c)
     .then(function(){return netaServer.loadProfile()})
     .then(function(prof){
       const known=!!prof;
@@ -5930,7 +5964,7 @@ function joNext(){
     });
     return;
   }
-  const code=((document.getElementById('jo-otp')||{}).value||'').trim();
+  const code=otpDigits((document.getElementById('jo-otp')||{}).value);
   if(!code){toast('הזן את הקוד שנשלח אליך');return}
   btn.disabled=true;txt('jo-cta','מאמת…');
   netaServer.verifyCode(joMail,code)
@@ -12621,6 +12655,7 @@ function setEmpty(on){
 document.getElementById('empty-btn').onclick=function(){setEmpty(!isEmpty)};
 
 document.getElementById('id-avpick').innerHTML=avpickHTML('av-parent');
+otpClean(document.getElementById('lg-otp'));otpClean(document.getElementById('jo-otp'));
 loginPrep();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();applyTabSources();buildGhosts();
 /* סשן שמור מהכניסה הקודמת — טוענים את הפרופיל לפני שהמסך נצבע. */
 if(liveAccount()){netaServer.loadProfile().then(applyIdentity).then(buildHomeSummary).catch(function(){});}
