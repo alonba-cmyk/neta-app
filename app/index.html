@@ -1635,7 +1635,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '44b5eda';
+window.NETA_BUILD = 'fd7976c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4972,8 +4972,15 @@ function whoCopy(){
   /* "הנהנה" הוא מונח מהמסד. המסך הזה מדבר בשמות, ולכן גם השדה. */
   const bf=document.getElementById('c-bene');
   if(bf)bf.placeholder='אימייל או טלפון של '+nm;
-  const a=document.querySelector('#cw-self-av use');
-  if(a)a.setAttribute('href','#'+cAvatar);
+  /* גם הפנים של הילד, מאותה סיבה בדיוק: בשלב 1 אפשר להעלות תמונה
+     אמיתית, והיא יושבת ב-cPhoto כ-blob מקומי בעוד cAvatar נשאר הדמות
+     שנבחרה קודם. ‏<use href="#av-kid1"> התעלם מההעלאה, ומי שהעלה
+     תמונה ראה כאן פרצוף של מישהו אחר. ‏cPhoto קודם, כמו ברשת של
+     שלב 1 (kidAvGridHTML), ואחרת kidFaceHTML שמבדילה בין דמות לנתיב. */
+  const self=document.getElementById('cw-self-av');
+  if(self)self.innerHTML=(cPhoto&&cPhoto.url)
+    ? '<img class="kidimg" src="'+attrText(cPhoto.url)+'" alt="" width="40" height="40">'
+    : kidFaceHTML(cAvatar,40);
   /* הפנים שלי דרך faceHTML ולא דרך href: avatar_key מחזיק גם נתיב
      לתמונה אמיתית, ו-<use href="#uuid/…"> הוא פרצוף ריק. אותו נתיב
      כמו בהאדר (applyMyAvatar), כולל החתימה כשהקישור עוד לא הגיע. */
