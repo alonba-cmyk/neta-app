@@ -1462,6 +1462,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #home-empty p,#kin-empty p,#rel-list .es p{max-width:290px}
 #home-empty .fine{max-width:290px}
 .es .art{margin-bottom:16px;color:var(--leaf)}
+/* הראש המאויר של הפעילות. ממוקד למזהה ולא ל-.es: הוא אינו מצב ריק,
+   אין בו כפתור שצריך להתיישר עם טאב אחר, ו-.es נושא min-height של 62%
+   שהיה דוחף את הפיד אל מתחת לקיפול. הגדלים לקוחים מ-.es כדי שהראש
+   ייקרא כמו זה שב"הקרובים שלי", שממנו הוא בא. */
+#act-head{text-align:center;padding:4px 4px 0;margin-bottom:16px}
+#act-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:12px}
+#act-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
+#act-head p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin:8px auto 0;max-width:290px}
 /* גוש האיור נעול לגובה אחד בארבעת המסכים הריקים של הסרגל, כדי שהכותרת,
    הפסקה והכפתור ינחתו באותה שורה בכל טאב. בלי הנעילה כל איור קבע את
    הגובה של עצמו — 85 בבית, 81 בנטיעות שלי, 61 בפעילות — והמעבר בין
@@ -1745,7 +1753,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0cf5204';
+window.NETA_BUILD = '539277c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2529,6 +2537,24 @@ window.NETA_CONFIG = {
     <div class="fday"><span id="later-peek-h">·</span></div>
     <div id="later-peek-rows"></div>
     <button class="link" onclick="openLaterInvite()">להצטרף ולראות הכול</button>
+  </div>
+
+  <!-- ראש מאויר קבוע, כמו ב"הקרובים שלי". הוא אינו מצב ריק: הוא מוצג
+       דווקא כשיש תוכן, ויורד כש-act-empty עולה, אחרת היו שני איורים
+       באותו מסך. אותו רכיב בדיוק שנושא את המצב הריק, פרצוף עם תג רגע,
+       כי זה מה שהפיד עשוי ממנו.
+
+       הוא יושב מתחת ל-pend-act ולא מעליו: מה שממתין לתשובה שלך נעוץ
+       בראש, וראש מאויר שנדחף מעליו היה מוריד משימה מתחת לקישוט.
+
+       והוא אכן חוזר על השורה העליונה ("מה קרה לאחרונה · הרגעים שקרו
+       סביבך"). זה נמדד והוצג לפני הבחירה, לצד ארבע חלופות שקטות יותר,
+       ואלון בחר את הגרסה המלאה. המחיר: הפיד מתחיל ב-256 במקום ב-93. -->
+  <div id="act-head" style="display:none">
+    <div class="art"><span class="bigfav" aria-hidden="true">
+      <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg><i>🎂</i></span></div>
+    <h3>כל מה שקרה מאז שנטעת</h3>
+    <p>קרוב שהפקיד, אבן דרך שנחצתה, מכתב שנוסף.</p>
   </div>
 
   <div id="act-full">
@@ -4183,11 +4209,17 @@ let feedCount=null;
 function syncActEmpty(){
   const box=document.getElementById('act-empty'),full=document.getElementById('act-full');
   if(!box||!full)return;
-  if(peekOn){box.style.display='none';full.style.display='none';return}
+  /* הראש המאויר חי בדיוק כמו act-full, ולכן הוא נקבע כאן ולא במקום
+     נוסף: שתי פונקציות ציור שכל אחת מחליטה בנפרד אם להציג אותו היו
+     מתנגשות לפי סדר הקריאות, בדיוק כמו ב-paintPending. */
+  const head=document.getElementById('act-head');
+  const showHead=function(on){if(head)head.style.display=on?'':'none'};
+  if(peekOn){box.style.display='none';full.style.display='none';showHead(false);return}
   const noPlantings=isEmpty||(liveAccount()&&LIVE_TABS.indexOf('act')<0);
   const empty=noPlantings||feedCount===0;
   box.style.display=empty?'':'none';
   full.style.display=empty?'none':'';
+  showHead(!empty);
   if(empty)paintActEmpty(!noPlantings);
 }
 /* שני מצבים, ושתי פעולות שונות. מי שאין לו נטיעה פותח אחת; מי שכבר יש
