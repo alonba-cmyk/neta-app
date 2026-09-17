@@ -1409,7 +1409,9 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .gsample .ncard{margin-bottom:9px;cursor:default}
 /* הדגם של הקרובים אינו לחיץ: שורה ברשימה האמיתית פותחת עריכה, וכאן
    אין את מי לערוך. */
-#rel-ghost{pointer-events:none;margin:16px 0 6px}
+/* ‏20 מלמעלה כמו .gsample, ולא 16: הדגם הזה יושב מחוץ ל-.es ולכן
+   קיבל בזמנו מרווח משלו. התחתון נשאר, כי אחריו בא טקסט ולא סוף מסך. */
+#rel-ghost{pointer-events:none;margin:20px 0 6px;height:150px}
 #rel-ghost .rel{cursor:default}
 /* פרצוף מלא צבע ב-.34 ובסטורציה של 45 אחוז יוצא כתם אפור, ולא פנים.
    שאר הדגמים מחזיקים טקסט ואמוג'י ושורדים את זה; כאן צריך קצת יותר. */
@@ -1706,7 +1708,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '79941d0';
+window.NETA_BUILD = '829a800';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -10745,7 +10747,11 @@ function buildGhosts(){
      הוא יושב אחרי "הוסף קרוב" ולא לפניו: הפעולה קודמת, והדגם אומר
      "כך זה ייראה" אחריה. */
   const rel=document.getElementById('rel-ghost');
-  if(rel)rel.innerHTML='<div class="card">'+REL_SAMPLE.map(function(r){
+  /* אותו כרטיס בדיוק כמו בדגם של "העתיד שלנו": ריפוד של 6/12 ובלי
+     מרווח תחתון. ‏.card ברירת המחדל הוא 14 מכל צד, וזה מרווח של
+     כרטיס שמחזיק תוכן; כרטיס שמחזיק שורות נותן להן את הריפוד שלהן
+     והוא עצמו נשאר צר, אחרת יש שתי שכבות של אוויר סביב כל שורה. */
+  if(rel)rel.innerHTML='<div class="card" style="padding:6px 12px;margin:0">'+REL_SAMPLE.map(function(r){
     return relRowHTML(r,'<span class="rx">'+
       (r.status==='invited'?'שלח שוב':'הזמן')+'</span>');
   }).join('')+'</div>';
