@@ -1374,6 +1374,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שתי שורות. הגודל נשמר: הפרצוף הוא 60 ב-390 מול 62 בשלוש עמודות,
    ו-clamp מוריד אותו רק במכשירים צרים שבהם 4 תאים לא היו נכנסים. */
 [data-name="הקמה"] .kgrid{grid-template-columns:repeat(4,1fr)}
+/* עם משבצת התמונה יש תשעה תאים, ותשעה בארבע עמודות הם 4+4+1: שורה
+   שלישית עם תא בודד, שדוחפת את "המשך" ל-733 במכשיר בן 640. חמש
+   עמודות הופכות אותם ל-5+4, כלומר אותן שתי שורות ואותו גובה בדיוק.
+   הפרצוף מתכווץ בהתאם, וזה קורה רק אחרי העלאה, כלומר אחרי פעולה
+   מפורשת ולא במצב ההתחלתי. */
+[data-name="הקמה"] .kgrid.five{grid-template-columns:repeat(5,1fr)}
+[data-name="הקמה"] .kgrid.five .f{width:clamp(40px,12.2vw,54px);
+  height:clamp(40px,12.2vw,54px)}
 [data-name="הקמה"] .kgrid .f{width:clamp(48px,15.5vw,62px);
   height:clamp(48px,15.5vw,62px);border-radius:17px}
 [data-name="הקמה"] .kgrid button.span2{grid-column:span 2}
@@ -1768,7 +1776,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b6aab4b';
+window.NETA_BUILD = 'b9ca540';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2119,8 +2127,13 @@ window.NETA_CONFIG = {
   <p class="sub gap">בעוד כמה שנים מישהו ייהנה ממה שנטעת היום</p>
   <!-- השם לבדו בשורה. בן/בת ישבו כאן וירדו עם בורר הדמויות: הקרבה
        שבשאלה הבאה כבר נושאת מגדר, והצ'יפים חוזרים רק אחרי "אחר". -->
-  <div class="field"><label>איך קוראים לו?</label>
-    <input type="text" id="c-name" placeholder="למשל: דניאל"></div>
+  <div class="field" id="c-namefield"><label id="c-namelbl">איך קוראים לו?</label>
+    <input type="text" id="c-name" placeholder="למשל: דניאל">
+    <!-- "עבורי" עונה על השאלה הזאת מראש. הערך מוצג ואינו נשאל, וזו
+         כבר המוסכמת באשף (.fixedval), ולא שדה מושבת שנראה כמו משהו
+         שאפשר להקליד בו. -->
+    <div class="fixedval" id="c-selfname" style="display:none">
+      <span id="c-selfname-v"></span><span style="font-size:11.5px">מהפרופיל שלך</span></div></div>
   <!-- הקרבה, ואיתה הפרצוף. השם קודם לה, כי הוא מה שמזהה את הרגע
        בכל שאר האפליקציה והיא רק הפרצוף שלו.
 
@@ -3829,9 +3842,12 @@ let cPhoto=null;
 let cPhotoOn=false;
 function paintCAv(){
   const box=document.getElementById('c-avpick');
-  if(box)box.innerHTML=kinGridHTML(KIN_FOR,cRel,'pickCRel',cPhoto&&cPhoto.url,
+  /* שמונה תאים הם 4+4, ועם משבצת התמונה תשעה, שהם 5+4. הכיתה
+     נקבעת כאן ולא ב-CSS, כי מספר התאים ידוע רק בזמן הציור. */
+  if(box)box.classList.toggle('five',!!(cPhoto&&cPhoto.url));
+  if(box)box.innerHTML=kinGridHTML(KIN_SELF,cRel,'pickCRel',cPhoto&&cPhoto.url,
     {other:'av-kid7',otherLabel:'אחר',cols:4,wideClass:'span2',
-     onPhoto:'cUsePhoto()',photoOn:cPhotoOn});
+     faceOf:selfFaceCell,onPhoto:'cUsePhoto()',photoOn:cPhotoOn});
   cPaintUp();
 }
 /* אותה שורה בשני מצבים, כמו בשני המסכים האחרים שנושאים את הרשת.
@@ -3877,12 +3893,13 @@ function cPickPhoto(){
 function pickCRel(el,k){
   cPhotoOn=false;
   cRel=k;cRelTouched=true;cAvTouched=true;
-  cAvatar=kinAv(k,'av-kid7');
+  cAvatar=(k==='self')?selfAvatar():kinAv(k,'av-kid7');
   const other=(k==='other');
   const fr=document.getElementById('c-relfree');
   if(fr)fr.style.display=other?'block':'none';
   const sx=document.getElementById('c-sex');
   if(sx)sx.style.display=other?'flex':'none';
+  cSelfName();
   paintCAv();
   const x=other?null:kinSex(k);
   /* לא setSex: הצ'יפ נדלק ישירות, כי setSex מסמנת את הכפתור שנלחץ
@@ -3890,6 +3907,28 @@ function pickCRel(el,k){
      כבר השתנתה. */
   if(!sexTouched&&x&&x!==beneSex){beneSex=x;markSexChip(x);beneCopy();checkBene();updateGoal()}
 }
+/* השדה "איך קוראים לו?" כשהנהנה הוא אני. השם כבר ידוע, ולכן הוא
+   מוצג ואינו נשאל. בלי שם בפרופיל אין ממה למלא והשדה נשאר שדה, כי
+   ערך קבוע ריק גרוע משאלה.
+
+   הערך נכתב גם ל-c-name עצמו ולא רק לתצוגה: כל שאר האשף קורא משם
+   (cName, cPaintUp, prev, checkBene), ולהחריג אותם היה מפזר את
+   "מי הנהנה" לעשרה מקומות. */
+function cSelfName(){
+  const f=document.getElementById('c-selfname'),nm=document.getElementById('c-name');
+  const lbl=document.getElementById('c-namelbl');
+  if(!f||!nm)return;
+  const on=(cRel==='self')&&!!selfName();
+  if(on&&!cSelfOn){cSelfPrev=nm.value;nm.value=selfName()}
+  if(!on&&cSelfOn){nm.value=cSelfPrev||''}
+  cSelfOn=on;
+  txt('c-selfname-v',on?selfName():'');
+  f.style.display=on?'':'none';
+  nm.style.display=on?'none':'';
+  if(lbl)lbl.textContent=on?'הנטיעה היא שלך':'איך קוראים לו?';
+  cPaintUp();prev();checkBene();
+}
+let cSelfOn=false,cSelfPrev='';
 /* מה שנשמר ב-beneficiaries.relation: מפתח מוכר, או הטקסט של "אחר". */
 function cRelValue(){
   if(cRel==='other')return (((document.getElementById('c-relfree')||{}).value)||'').trim();
@@ -8481,7 +8520,10 @@ const KIN={
   grandson     :{chip:'נכד',    me:'הנכד שלי',    kid:'',    g:'m',av:'av-kid3'},
   granddaughter:{chip:'נכדה',   me:'הנכדה שלי',   kid:'',    g:'f',av:'av-kid4'},
   nephew       :{chip:'אחיין',  me:'האחיין שלי',  kid:'',    g:'m',av:'av-kid5'},
-  niece        :{chip:'אחיינית',me:'האחיינית שלי',kid:'',    g:'f',av:'av-kid6'}
+  niece        :{chip:'אחיינית',me:'האחיינית שלי',kid:'',    g:'f',av:'av-kid6'},
+  /* הנהנה הוא אני. אין לו av קבוע: הפרצוף בא מהפרופיל, ולכן הוא
+     נמסר לרשת דרך faceOf ולא דרך kinAv. */
+  self         :{chip:'עבורי',  me:'אני',          kid:'',    g:null,av:null}
 };
 /* מי שנוטע איתי, ומי שנוטעים עבורו. אותה שאלה, שתי רשימות.
    ‏aunt ו-uncle נשארים ב-KIN ואינם מוצעים: הדוד של הילד הוא האח
@@ -8492,6 +8534,43 @@ const KIN={
 const KIN_WITH=['mother','father','mother_law','father_law','sister','brother',
                 'friend_f','friend_m'];
 const KIN_FOR=['son','daughter','grandson','granddaughter','nephew','niece'];
+/* אותה רשימה ועוד "עבורי", באשף בלבד. שבע קרבות ועוד "אחר" הן שמונה
+   תאים, כלומר 4+4 מלאות: אין חור בשורה האחרונה ואין תא שנמתח על
+   שתיים כדי לסתום אותו.
+
+   ולא ב"+ הוסף אדם · עבורו": שם מוסיפים אדם לפנקס, ואני איני אדם
+   שאני מוסיף לעצמי. בגיליון העריכה היא מופיעה רק כשהיא כבר הנבחרת
+   (ראו kidRelKeys), כדי שנטיעה שנשמרה כ"עבורי" תציג תא מסומן ולא
+   רשת בלי סימון — אותה מלכודת של KID_AV בת ארבע.
+
+   הפרצוף בא מהפרופיל, אבל מה שנשמר הוא דמות מהספרייט בלבד: נתיב
+   תמונה של פרופיל יושב ב-bucket אחר מזה של הילדים, וחתימה שלו
+   כתמונת ילד מחזירה קישור שבור. התצוגה מדויקת, האחסון בטוח. */
+const KIN_SELF=KIN_FOR.concat(['self']);
+function myAvatarKey(){
+  return (liveAccount()&&netaServer.profile&&netaServer.profile.avatar_key)||'';
+}
+/* הפרצוף שנשמר לנהנה "עבורי": דמות בלבד, ולכן מי שיש לו תמונה
+   מקבל את הדמות הנייטרלית. */
+function selfAvatar(){
+  const a=myAvatarKey();
+  return (a&&a.indexOf('av-')===0)?a:'av-parent';
+}
+/* השם שמופיע בשדה כשבוחרים "עבורי". בחשבון חי הוא מהפרופיל,
+   ובהדגמה מהכותרת של מסך הפרופיל. ריק פירושו שאין ממה למלא,
+   ואז השדה נשאר שדה. */
+function selfName(){
+  return myName()||topbars[10][0]||'';
+}
+/* "עבורי" מופיעה בגיליון העריכה רק כשהיא כבר הנבחרת: שם מתקנים
+   ילד שקיים, ולא הופכים אותו לעצמך. מה שכן חייב להיות שם הוא התא
+   המסומן, אחרת נטיעה שנשמרה כך נפתחת ברשת בלי שום סימון. */
+function kidRelKeys(){
+  return window.__kidRel==='self'?KIN_SELF:KIN_FOR;
+}
+function selfFaceCell(k){
+  return k==='self' ? faceHTML(myAvatarKey(),'av-parent') : '';
+}
 /* ערך שאינו מפתח מוכר הוא טקסט חופשי מ"אחר", או מחרוזת שנשמרה
    לפני 0068. בשני המקרים הוא מוצג כפי שהוא, ולכן אין מיגרציה על
    נתונים קיימים ואין רגע שבו רשימה נראית שבורה. */
@@ -8525,9 +8604,12 @@ function kinGridHTML(keys,sel,fn,photo,o){
   const cell=function(k,label,av,wide){
     const on=(k===sel);
     const cls=(wide?wideCls:'')+(on?(wide?' on':'on'):'');
+    /* faceOf מחליף את תוכן המשבצת כולה ולא רק את ה-href, כי פרצוף
+       שבא מהפרופיל יכול להיות נתיב לתמונה ולא מזהה בספרייט. */
+    const face=(o.faceOf&&o.faceOf(k))||
+      ('<svg viewBox="0 0 40 40"><use href="#'+av+'"/></svg>');
     return '<button type="button"'+(cls?' class="'+cls.trim()+'"':'')+' '+
-      'onclick="'+fn+'(this,\''+k+'\')"><span class="f">'+
-      '<svg viewBox="0 0 40 40"><use href="#'+av+'"/></svg>'+'</span>'+
+      'onclick="'+fn+'(this,\''+k+'\')"><span class="f">'+face+'</span>'+
       '<span>'+label+'</span></button>';
   };
   /* המשבצת קיימת כל עוד יש תמונה, ומסומנת רק כשהיא הנבחרת. בחירת
@@ -11887,8 +11969,9 @@ function editKid(id){
        דמויות אחרות. */
     '<label>מי הוא עבורך?</label>'+
     '<div class="kgrid" id="k-rel">'+
-      kinGridHTML(KIN_FOR,window.__kidRel,'kidPickRel',kidPhoto&&kidPhoto.url,
+      kinGridHTML(kidRelKeys(),window.__kidRel,'kidPickRel',kidPhoto&&kidPhoto.url,
                   {other:'av-kid7',otherLabel:'אחר, ואומר בעצמי',
+                   faceOf:selfFaceCell,
                    onPhoto:'kidUsePhoto()',photoOn:kidPhotoOn})+'</div>'+
     '<button type="button" class="uprow" id="k-up" onclick="kidPhotoTap(event)"></button>'+
     '<input type="text" id="k-relfree" placeholder="למשל: הבן של אחותי" '+
@@ -11922,8 +12005,8 @@ let kidPhoto=null;
 let kidPhotoOn=false,kidPhotoAv='';
 function kidPaintAv(){
   const box=document.getElementById('k-rel');
-  if(box)box.innerHTML=kinGridHTML(KIN_FOR,window.__kidRel,'kidPickRel',
-    kidPhoto&&kidPhoto.url,{other:'av-kid7',otherLabel:'אחר, ואומר בעצמי',
+  if(box)box.innerHTML=kinGridHTML(kidRelKeys(),window.__kidRel,'kidPickRel',
+    kidPhoto&&kidPhoto.url,{other:'av-kid7',otherLabel:'אחר, ואומר בעצמי',faceOf:selfFaceCell,
                             onPhoto:'kidUsePhoto()',photoOn:kidPhotoOn});
   kidPaintUp();
 }
