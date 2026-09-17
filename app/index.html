@@ -512,12 +512,17 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ה-＋ ירוק בתוך אותו עיגול לבן: הוא פעולה ולא עובדה. עיגול ירוק
    מלא היה משלש את המסה הירוקה מעל כפתור ירוק ברוחב מלא. */
 .esfaces.plus>span>i{color:var(--leaf);font-size:14px}
-/* וכשהתג נושא פרצוף ולא סימן, הוא ערוגה עם טבעת של הרקע ולא לבן
-   עם קו: פרצוף ממלא את העיגול ואין מה להכיל. 29 ולא 25 כמו תג
-   הרגע: אמוג'י נקרא בגודל הזה ופרצוף יוצא כתם, ו-33 כבר מכסה
-   נתח מהרגע שמתחתיו. נמדד בשלושה גדלים. */
+/* וכשהתג נושא פרצוף, הוא אותו עיגול בדיוק כמו תג הרגע: רקע
+   ‏--bg עם קו --line. גם משטח הפרצוף עצמו לבן, כי ה-rect בספרייט
+   הוא currentColor והכלל הגלובלי צובע אותו --s2; בלי ההצהרה הזאת
+   התג היה ערוגה בתוך ערוגה. וטבעת של --bg לבדה נעלמת במקום שבו
+   התג חורג מהעיגול אל הדף, שגם הוא לבן.
+
+   29 ולא 25 כמו תג הרגע: אמוג'י נקרא בגודל הזה ופרצוף יוצא כתם,
+   ו-33 כבר מכסה נתח מהרגע שמתחתיו. נמדד בשלושה גדלים. */
 .esfaces.occ.plus>span>i{width:29px;height:29px;overflow:hidden;padding:0;
-  background:var(--s2);border:2px solid var(--bg)}
+  background:var(--bg);border:1px solid var(--line)}
+.esfaces.occ.plus>span>i .avsvg{color:var(--bg)}
 .esfaces.occ>span{display:grid;place-items:center;font-size:30px;line-height:1}
 .ppav{position:relative;display:flex;align-items:center}
 /* שלוש משבצות תמיד, בגודל אחד ובצורה אחת, ולכן רוחב קבוע — העמודה
@@ -1690,7 +1695,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '821f8b3';
+window.NETA_BUILD = 'e996ccc';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -8503,8 +8508,9 @@ function apPaintRelUp(){
   up.className='uprow'+(apRelPhoto?' has':'');
   up.innerHTML=apRelPhoto
     ? '<span class="ic"><img src="'+attrText(apRelPhoto.url)+'" alt=""></span>'+
-      '<span class="t"><b>התמונה'+of+'</b><i>מוצגת בתא שנבחר</i></span>'+
-      '<span class="rm" data-rm="1">חזרה לדמות</span>'
+      '<span class="t"><b>התמונה'+of+'</b><i>'+
+        (apRelPhotoOn?'הפרצוף שיוצג':'במשבצת הראשונה, לחץ כדי לבחור בה')+
+      '</i></span><span class="rm" data-rm="1">חזרה לדמות</span>'
     : '<span class="ic">\uFF0B</span>'+
       '<span class="t"><b>העלה תמונה'+of+'</b><i>במקום הדמות שנבחרה</i></span>';
 }
@@ -8604,8 +8610,9 @@ function apPaintKidUp(){
   up.className='uprow'+(apPhoto?' has':'');
   up.innerHTML=apPhoto
     ? '<span class="ic"><img src="'+attrText(apPhoto.url)+'" alt=""></span>'+
-      '<span class="t"><b>התמונה'+of+'</b><i>מוצגת בתא שנבחר</i></span>'+
-      '<span class="rm" data-rm="1">חזרה לדמות</span>'
+      '<span class="t"><b>התמונה'+of+'</b><i>'+
+        (apPhotoOn?'הפרצוף שיוצג':'במשבצת הראשונה, לחץ כדי לבחור בה')+
+      '</i></span><span class="rm" data-rm="1">חזרה לדמות</span>'
     : '<span class="ic">\uFF0B</span>'+
       '<span class="t"><b>העלה תמונה'+of+'</b><i>במקום הדמות שנבחרה</i></span>';
 }
@@ -11763,7 +11770,8 @@ function kidPaintUp(){
   up.innerHTML=kidPhoto
     ? '<span class="ic"><img src="'+attrText(kidPhoto.url)+'" alt=""></span>'+
       '<span class="t"><b>התמונה'+of+'</b><i>'+
-        (kidPhoto.blob?'תישמר כשתלחץ "שמור"':'מוצגת בתא שנבחר')+'</i></span>'+
+        (kidPhotoOn?(kidPhoto.blob?'תישמר כשתלחץ "שמור"':'הפרצוף שיוצג')
+                   :'במשבצת הראשונה, לחץ כדי לבחור בה')+'</i></span>'+
       '<span class="rm" data-rm="1">חזרה לדמות</span>'
     : '<span class="ic">\uFF0B</span>'+
       '<span class="t"><b>העלה תמונה'+of+'</b><i>במקום הדמות שנבחרה</i></span>';
