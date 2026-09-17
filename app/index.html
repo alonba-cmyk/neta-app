@@ -1635,7 +1635,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '06093d0';
+window.NETA_BUILD = '6e31749';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7534,9 +7534,20 @@ function kidMoments(b){
 function kidOf_(key){
   return (benes||[]).filter(function(b){return String(b.id||b.name)===String(key)})[0];
 }
+/* המזהה של פריט בבורר נבנה מהנטיעה ולא מהישות: `kidGroups` מקבצת לפי
+   `kidKey`, שהוא `beneficiary_id` כשיש ושם הילד כשאין, ולכן נטיעה
+   שנוצרה לפני 0061 מקבלת מזהה 'k:'+שם. כפתור שבנה 'k:'+b.id לא נמצא
+   ברשימה, ואז `buildHomeSummary` נפלה ל-`fuDefault` ובחרה ילד אחר
+   לגמרי: לחיצה על "העתיד שלה" בשורה של לני נחתה על טוני, בלי שגיאה.
+   לילד בלי רגעים אין קבוצה, ושם המזהה של הישות הוא הנכון. */
+function fuKeyOf(b){
+  if(!b)return '';
+  const rows=kidMoments(b);
+  return 'k:'+(rows.length?kidKey(rows[0]):(b.id||b.name));
+}
 function kidMomentsGo(key){
   const b=kidOf_(key); if(!b)return;
-  fuPick='k:'+(b.id||b.name);
+  fuPick=fuKeyOf(b);
   openFuture();
 }
 function kidOpenMoment(key){
@@ -8410,7 +8421,7 @@ function apExit(){
      הקרובים, שבו ההקשר מתאפס. */
   if(apFrom&&apKindMode!=='for'){openRelatives(relBack,apFrom);return}
   if(apKindMode==='for'){
-    if(apKidSaved)fuPick='k:'+(apKidSaved.id||apKidSaved.name);
+    if(apKidSaved)fuPick=fuKeyOf(apKidSaved);
     openFuture();
     buildHomeSummary();
     return;
