@@ -79,7 +79,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 2
 .hero .und{font-size:12.5px;margin:14px 0 0;color:var(--tx3)}
 
 .S{padding:56px 22px;background:var(--bg)}
-.S.tint{background:var(--tint)}
+/* הדף כולו לבן. הגוון הזה היה הפיסוק היחיד בדף, ואלון בחר להסיר
+   אותו: מרגע שיש רק משטח אחד, ההפרדה בין סקשנים היא הריווח והכותרות.
+   ‏--tint נשאר מוגדר, כי הוא עדיין חצי הדרך אל הערוגה ויכול לשמש. */
+.S.tint{background:var(--bg)}
 .S h2{font-weight:800;letter-spacing:-.04em;line-height:1.14;margin:0;font-size:30px;text-wrap:balance}
 .S .sub{font-size:15.5px;line-height:1.7;color:var(--tx2);margin:14px 0 0}
 .S h4{font-size:19px;font-weight:700;letter-spacing:-.025em;margin:0 0 6px}
@@ -158,7 +161,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 2
 .qa details[open] summary:before{transform:rotate(-135deg);margin-top:3px}
 .qa .an{font-size:14.5px;line-height:1.7;color:var(--tx2);margin:0 0 16px;padding-inline-start:19px}
 
-.end{padding:60px 22px;background:var(--lf2);text-align:center}
+.end{padding:60px 22px;background:var(--bg);text-align:center}
 .end h2{font-size:30px;font-weight:800;letter-spacing:-.04em;margin:0 0 12px;line-height:1.14}
 .end p{font-size:15.5px;color:var(--tx2);margin:0 0 24px}
 .end .cta{max-width:320px;margin:0 auto}
@@ -169,7 +172,7 @@ foot .fl span,foot .fl a{color:#E3DCCF;text-decoration:none}
 foot .cr{font-size:11.5px;margin:22px 0 0;line-height:1.7;color:#A09889}
 foot .brand{color:#F5F1E8}foot .brand .lf{color:#8FBC8F}
 </style>
-<!-- Neta@2b5f5e1 -->
+<!-- Neta@a1d39bc -->
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><g id="sprout">
