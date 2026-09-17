@@ -1666,7 +1666,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'a1d39bc';
+window.NETA_BUILD = '754044a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -8374,7 +8374,7 @@ function apPaintRelUp(){
   up.innerHTML=apRelPhoto
     ? '<span class="ic"><img src="'+attrText(apRelPhoto.url)+'" alt=""></span>'+
       '<span class="t"><b>התמונה'+of+'</b><i>מוצגת בתא שנבחר</i></span>'+
-      '<span class="rm" data-rm="1">הסר</span>'
+      '<span class="rm" data-rm="1">חזרה לדמות</span>'
     : '<span class="ic">\uFF0B</span>'+
       '<span class="t"><b>העלה תמונה'+of+'</b><i>במקום הדמות שנבחרה</i></span>';
 }
@@ -8468,7 +8468,7 @@ function apPaintKidUp(){
   up.innerHTML=apPhoto
     ? '<span class="ic"><img src="'+attrText(apPhoto.url)+'" alt=""></span>'+
       '<span class="t"><b>התמונה'+of+'</b><i>מוצגת בתא שנבחר</i></span>'+
-      '<span class="rm" data-rm="1">הסר</span>'
+      '<span class="rm" data-rm="1">חזרה לדמות</span>'
     : '<span class="ic">\uFF0B</span>'+
       '<span class="t"><b>העלה תמונה'+of+'</b><i>במקום הדמות שנבחרה</i></span>';
 }
@@ -11600,7 +11600,7 @@ function kidPaintUp(){
     ? '<span class="ic"><img src="'+attrText(kidPhoto.url)+'" alt=""></span>'+
       '<span class="t"><b>התמונה'+of+'</b><i>'+
         (kidPhoto.blob?'תישמר כשתלחץ "שמור"':'מוצגת בתא שנבחר')+'</i></span>'+
-      '<span class="rm" data-rm="1">הסר</span>'
+      '<span class="rm" data-rm="1">חזרה לדמות</span>'
     : '<span class="ic">\uFF0B</span>'+
       '<span class="t"><b>העלה תמונה'+of+'</b><i>במקום הדמות שנבחרה</i></span>';
 }
@@ -11609,8 +11609,14 @@ function kidPhotoTap(ev){
   if(t&&t.closest&&t.closest('[data-rm]')){kidClearPhoto();return}
   kidPickPhoto();
 }
-/* "הסר" מחזיר לדמות שהקרבה גוזרת, ולא לדמות ששמורה: התמונה היא
-   מה שהוסר, ומה שנשאר הוא ברירת המחדל של הקרבה הנבחרת. */
+/* הכפתור מחזיר לדמות שהקרבה גוזרת, ולא לדמות ששמורה: התמונה היא
+   מה שהוסר, ומה שנשאר הוא ברירת המחדל של הקרבה הנבחרת.
+
+   ולכן הוא נקרא "חזרה לדמות" ולא "הסר". כל עוד יש תמונה היא יושבת
+   בתא הנבחר ונודדת איתו, כלומר הרשת מפסיקה להיות בורר: כל תא שנלחץ
+   מציג את אותה תמונה. זה מכוון, כי הרשת שואלת "מי הוא עבורך" ולא
+   "איזה ציור", אבל זה משאיר את מי שרוצה לחזור לציור בלי דרך גלויה.
+   "הסר" הוא הדרך, והוא נקרא כמחיקה. השם החדש אומר מה קורה. */
 function kidClearPhoto(){
   if(kidPhoto&&kidPhoto.blob&&kidPhoto.url)URL.revokeObjectURL(kidPhoto.url);
   kidPhoto=null;
