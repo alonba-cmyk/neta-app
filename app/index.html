@@ -1051,9 +1051,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    בהירה מפרידה את הסמן מרקע כהה. בבהירה הן לבן על לבן, כלומר לא עשו
    דבר, ומה שנשאר היה עיגול חיוור על שטח צבוע. הצל מחליף אותן ועובד
    בשתי הערכות. */
+/* ‏translateY לפני הסיבוב, כי החוד ולא המרכז הוא שמצביע. ה-JS ממקם
+   את המרכז על נקודת הנתון (חצי הגודל בכל ציר), ובריבוע מסובב ב-45
+   מעלות הפינה החדה יורדת מתחת למרכז ב-‎0.7071 מהצלע, כלומר 21.2
+   פיקסלים ב-30. בלי ההזזה הסיכה מצביעה מתחת לקו. */
 .dm-medal{position:absolute;width:30px;height:30px;border-radius:50% 50% 50% 4px;
   background:var(--leaf);color:var(--on-leaf);border:0;
-  display:grid;place-items:center;pointer-events:none;transform:rotate(-45deg);
+  display:grid;place-items:center;pointer-events:none;
+  transform:translateY(-21.21px) rotate(-45deg);
   box-shadow:0 0 0 2.5px var(--bg),0 2px 6px rgba(36,48,43,.22);
   transition:right .3s cubic-bezier(.22,.85,.3,1),top .3s cubic-bezier(.22,.85,.3,1)}
 .dm-medal svg{transform:rotate(45deg);width:15px;height:16px}
@@ -1666,7 +1671,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '699e3e9';
+window.NETA_BUILD = '4bc35e6';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -8286,10 +8291,15 @@ function kinGridHTML(keys,sel,fn,photo,o){
       '<svg viewBox="0 0 40 40"><use href="#'+av+'"/></svg>'+'</span>'+
       '<span>'+label+'</span></button>';
   };
+  /* המשבצת קיימת כל עוד יש תמונה, ומסומנת רק כשהיא הנבחרת. בחירת
+     ציור אינה מוחקת אותה: היא נשארת שם עד שמירה, ואפשר לחזור אליה
+     בלחיצה. מחיקה בפועל היא "חזרה לדמות" שבשורה מתחת לרשת. */
   const shot=photo
-    ? '<button type="button" class="on" onclick="'+(o.onPhoto||'')+'">'+
+    ? '<button type="button"'+(o.photoOn?' class="on"':'')+
+      ' onclick="'+(o.onPhoto||'')+'">'+
       '<span class="f"><img src="'+attrText(photo)+'" alt="">'+
-      '<span class="cam">\u2713</span></span><span>התמונה</span></button>'
+      (o.photoOn?'<span class="cam">\u2713</span>':'')+
+      '</span><span>התמונה</span></button>'
     : '';
   /* "אחר" שוכב על הצד רק כשכל מה שלפניו ממלא שורות שלמות, ואז הוא
      ממילא נשאר לבדו בשורה אחרונה. שש קרבות הן שתי שורות מלאות והוא
@@ -8304,6 +8314,8 @@ function kinGridHTML(keys,sel,fn,photo,o){
 }
 let apKindMode='with',apStep=0,apRel='mother',apAv='av-granny',
     apKidAv='av-kid1',apKidSexV='m',apKidRel='son',apPhoto=null,apPlants=[];
+/* אותה הבחנה כמו בגיליון העריכה: התמונה נשארת קיימת גם כשנבחר ציור. */
+let apPhotoOn=false,apRelPhotoOn=false;
 /* תמונה אמיתית של הקרוב, נפרדת מ-apPhoto שהיא של הילד: שני
    המסלולים חיים באותו אשף, ומשתנה אחד היה גורר תמונה שהועלתה
    במסלול אחד אל התצוגה של השני. */
@@ -8346,7 +8358,7 @@ function openAddPerson(){
      היחיד לשניהם, ואין פרמטר שאפשר לשכוח להעביר. */
   apFrom=relInviteKey||'';
   apKindMode='with';apStep=0;apRel='mother';apAv='av-granny';
-  apKidAv='av-kid1';apKidSexV='m';apKidRel='son';apPhoto=null;
+  apKidAv='av-kid1';apKidSexV='m';apKidRel='son';apPhoto=null;apPhotoOn=false;
   if(apRelPhoto&&apRelPhoto.url)URL.revokeObjectURL(apRelPhoto.url);
   apRelPhoto=null;
   /* מרגע: הרגע ידוע כבר עכשיו, ולא רק בשמירה. בלי זה השלב האחרון
@@ -8378,7 +8390,8 @@ function apKind(el,k){
 function apPaintRel(){
   const g=document.getElementById('ap-rel');
   if(g)g.innerHTML=kinGridHTML(KIN_WITH,apRel,'apPickRel',
-                               apRelPhoto&&apRelPhoto.url,{onPhoto:'apRelPickPhoto()'});
+                               apRelPhoto&&apRelPhoto.url,
+                               {onPhoto:'apUseRelPhoto()',photoOn:apRelPhotoOn});
   apPaintRelUp();
 }
 /* אותה שורה בשני מצבים. השם נכנס לכיתוב כשהוקלד, ולכן הציור
@@ -8406,21 +8419,21 @@ function apRelPhotoTap(ev){
 function apRelPickPhoto(){
   pickPhotoInto(function(ph){
     if(apRelPhoto&&apRelPhoto.url)URL.revokeObjectURL(apRelPhoto.url);
-    apRelPhoto=ph;
+    apRelPhoto=ph;apRelPhotoOn=true;
     apPaintRel();
   });
 }
+function apUseRelPhoto(){ if(apRelPhoto){apRelPhotoOn=true;apPaintRel()} }
 function apRelClearPhoto(){
   if(apRelPhoto&&apRelPhoto.url)URL.revokeObjectURL(apRelPhoto.url);
-  apRelPhoto=null;
+  apRelPhoto=null;apRelPhotoOn=false;
   apPaintRel();
 }
 /* בחירת תא קרבה מורידה את התמונה: הרשת היא בורר, ולחיצה על ציור
    פירושה "זה הפרצוף שיוצג". התמונה יושבת במשבצת משלה ואפשר לחזור
    אליה בלחיצה עליה. */
 function apPickRel(el,r){
-  if(apRelPhoto&&apRelPhoto.url)URL.revokeObjectURL(apRelPhoto.url);
-  apRelPhoto=null;
+  apRelPhotoOn=false;
   apRel=r;
   document.getElementById('ap-relfree').style.display=(r==='other')?'block':'none';
   apPaintRel();
@@ -8458,8 +8471,7 @@ function apKidSex(el,x){
 /* הקרבה גוזרת את המין, ולכן הצ'יפים נשארים מוסתרים. "אחר" הוא
    טקסט חופשי שאין ממנו מה לגזור, ורק שם הם חוזרים. */
 function apPickKidRel(el,k){
-  if(apPhoto&&apPhoto.url)URL.revokeObjectURL(apPhoto.url);
-  apPhoto=null;
+  apPhotoOn=false;
   apKidRel=k;
   const other=(k==='other');
   document.getElementById('ap-kidrelfree').style.display=other?'block':'none';
@@ -8480,7 +8492,7 @@ function apPaintKidAv(){
   const box=document.getElementById('ap-kidrel');
   if(box)box.innerHTML=kinGridHTML(KIN_FOR,apKidRel,'apPickKidRel',
     apPhoto&&apPhoto.url,{other:'av-kid7',otherLabel:'אחר, ואומר בעצמי',
-                          onPhoto:'apPickPhoto()'});
+                          onPhoto:'apUsePhoto()',photoOn:apPhotoOn});
   apPaintKidUp();
 }
 /* אותה שורה בשני מצבים, כמו ברשת המבוגרים. השם נכנס לכיתוב כשהוקלד,
@@ -8503,9 +8515,10 @@ function apKidPhotoTap(ev){
   if(t&&t.closest&&t.closest('[data-rm]')){apKidClearPhoto();return}
   apPickPhoto();
 }
+function apUsePhoto(){ if(apPhoto){apPhotoOn=true;apPaintKidAv()} }
 function apKidClearPhoto(){
   if(apPhoto&&apPhoto.url)URL.revokeObjectURL(apPhoto.url);
-  apPhoto=null;
+  apPhoto=null;apPhotoOn=false;
   apPaintKidAv();
 }
 /* קובץ מקומי, מכווץ בדפדפן ל-256 ומועלה כ-JPEG. הכיווץ אינו קישוט:
@@ -8513,7 +8526,7 @@ function apKidClearPhoto(){
 function apPickPhoto(){
   pickPhotoInto(function(ph){
     if(apPhoto&&apPhoto.url)URL.revokeObjectURL(apPhoto.url);
-    apPhoto=ph;
+    apPhoto=ph;apPhotoOn=true;
     apPaintKidAv();
   });
 }
@@ -8668,7 +8681,7 @@ function apSave(){
     /* מה שחזר מהשרת הוא הנתיב של התמונה שהועלתה, ולכן הוא גובר על
        הדמות. בלי חשבון חי אין נתיב, והמקומי הוא הקישור בדפדפן. */
     if(saved&&saved.avatar_key)r.av=saved.avatar_key;
-    else if(apRelPhoto&&apRelPhoto.url&&!liveAccount()){
+    else if(apRelPhotoOn&&apRelPhoto&&apRelPhoto.url&&!liveAccount()){
       photoCache[apRelPhoto.url]=apRelPhoto.url;r.av=apRelPhoto.url;
       /* הקישור עבר לשורה, ולכן אינו של האשף יותר: פתיחה נוספת של
          האשף משחררת את apRelPhoto, וזה היה מרוקן את התמונה של מי
@@ -8691,7 +8704,7 @@ function apSave(){
   };
   if(liveAccount()){
     netaServer.addRelative({name:r.name,relation:r.rel,avatar:r.av,
-                            photo:apRelPhoto&&apRelPhoto.blob,
+                            photo:apRelPhotoOn&&apRelPhoto&&apRelPhoto.blob,
                             contact:c,channel:r.chan==='wa'?'whatsapp':'email'})
       .then(function(saved){
         /* החתימה לפני הציור, כמו בכל תמונה אחרת: photoUrl סינכרונית,
@@ -8728,7 +8741,7 @@ function apSaveKid(){
   if(!src.addBeneficiary){finish(apKidAv);return}
   const btn=document.querySelector('#ap-4 .btn');
   if(btn){btn.disabled=true;btn.style.opacity='.55';btn.textContent='שומר…'}
-  src.addBeneficiary(nm,apKidSexV,apKidAv,apPhoto&&apPhoto.blob,rel)
+  src.addBeneficiary(nm,apKidSexV,apKidAv,apPhotoOn&&apPhoto&&apPhoto.blob,rel)
     .then(function(b){
       if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='המשך'}
       apKidId=b&&b.id||null;
@@ -11568,6 +11581,7 @@ function editKid(id){
      שמבדיל בשמירה בין "החלף תמונה" ל"השאר כפי שהיא". */
   const hasPhoto=!!(av&&av.indexOf('av-')!==0);
   kidPhoto=(hasPhoto&&photoUrl(av))?{url:photoUrl(av)}:null;
+  kidPhotoOn=hasPhoto;kidPhotoAv=hasPhoto?av:'';
   /* הקישור החתום אולי עוד לא הגיע. בלי הציור השני הגיליון היה
      מראה דמות מסומנת לילד שיש לו תמונה, כלומר אומר שהיא נמחקה. */
   if(hasPhoto&&!kidPhoto)signPhotos([av]).then(function(){
@@ -11583,7 +11597,7 @@ function editKid(id){
     '<div class="kgrid" id="k-rel">'+
       kinGridHTML(KIN_FOR,window.__kidRel,'kidPickRel',kidPhoto&&kidPhoto.url,
                   {other:'av-kid7',otherLabel:'אחר, ואומר בעצמי',
-                   onPhoto:'kidPickPhoto()'})+'</div>'+
+                   onPhoto:'kidUsePhoto()',photoOn:kidPhotoOn})+'</div>'+
     '<button type="button" class="uprow" id="k-up" onclick="kidPhotoTap(event)"></button>'+
     '<input type="text" id="k-relfree" placeholder="למשל: הבן של אחותי" '+
       'value="'+attrText(window.__kidRelFree)+'" style="margin-top:8px;display:'+
@@ -11610,11 +11624,15 @@ function editKid(id){
 /* תמונה שנבחרה בגיליון הזה. אותו רכיב של שני האשפים, ולכן גם אותה
    התנהגות: בחירת דמות מבטלת תמונה, ובחירת תמונה מבטלת דמות. */
 let kidPhoto=null;
+/* האם התמונה היא הפרצוף הנבחר. היא נשארת קיימת גם כשנבחר ציור,
+   כי עד "שמור" לא קרה כלום ואין סיבה לאבד העלאה. kidPhotoAv מחזיק
+   את הנתיב השמור, כדי שחזרה לתמונה תחזיר גם את הערך שיישמר. */
+let kidPhotoOn=false,kidPhotoAv='';
 function kidPaintAv(){
   const box=document.getElementById('k-rel');
   if(box)box.innerHTML=kinGridHTML(KIN_FOR,window.__kidRel,'kidPickRel',
     kidPhoto&&kidPhoto.url,{other:'av-kid7',otherLabel:'אחר, ואומר בעצמי',
-                            onPhoto:'kidPickPhoto()'});
+                            onPhoto:'kidUsePhoto()',photoOn:kidPhotoOn});
   kidPaintUp();
 }
 /* השם ידוע כאן מראש ואינו ניתן לעריכה, ולכן הכיתוב נכתב פעם אחת. */
@@ -11632,6 +11650,14 @@ function kidPaintUp(){
     : '<span class="ic">\uFF0B</span>'+
       '<span class="t"><b>העלה תמונה'+of+'</b><i>במקום הדמות שנבחרה</i></span>';
 }
+/* לחיצה על משבצת התמונה בוחרת אותה חזרה. ההחלפה וההסרה יושבות
+   בשורה שמתחת לרשת, כי הן פעולות על הקובץ ולא בחירה. */
+function kidUsePhoto(){
+  if(!kidPhoto)return;
+  kidPhotoOn=true;
+  if(kidPhotoAv)window.__kidAv=kidPhotoAv;
+  kidPaintAv();
+}
 function kidPhotoTap(ev){
   const t=ev&&ev.target;
   if(t&&t.closest&&t.closest('[data-rm]')){kidClearPhoto();return}
@@ -11647,14 +11673,14 @@ function kidPhotoTap(ev){
    "הסר" הוא הדרך, והוא נקרא כמחיקה. השם החדש אומר מה קורה. */
 function kidClearPhoto(){
   if(kidPhoto&&kidPhoto.blob&&kidPhoto.url)URL.revokeObjectURL(kidPhoto.url);
-  kidPhoto=null;
+  kidPhoto=null;kidPhotoOn=false;kidPhotoAv='';
   window.__kidAv=kinAv(window.__kidRel,'av-kid7');
   kidPaintAv();
 }
 function kidPickPhoto(){
   pickPhotoInto(function(ph){
     if(kidPhoto&&kidPhoto.blob&&kidPhoto.url)URL.revokeObjectURL(kidPhoto.url);
-    kidPhoto=ph;
+    kidPhoto=ph;kidPhotoOn=true;kidPhotoAv='';
     kidPaintAv();
   });
 }
@@ -11663,8 +11689,7 @@ function kidPickSex(el,x){
   [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
 }
 function kidPickRel(el,k){
-  if(kidPhoto&&kidPhoto.blob&&kidPhoto.url)URL.revokeObjectURL(kidPhoto.url);
-  kidPhoto=null;
+  kidPhotoOn=false;
   window.__kidRel=k;
   const other=(k==='other');
   const fr=document.getElementById('k-relfree'),sx=document.getElementById('k-sex');
@@ -11715,8 +11740,10 @@ function saveKid(id){
   /* התמונה מועלית קודם, כי הנתיב שלה הוא הערך שנשמר ב-avatar.
      בלי blob אין העלאה, והערך הקיים נשאר כפי שהוא: כך בחירת קרבה
      בלבד אינה נוגעת בתמונה. */
+  /* ה-blob נשלח רק כשהתמונה היא הפרצוף הנבחר. מי שהעלה תמונה ואז
+     בחר ציור מקבל את הציור, וההעלאה פשוט לא נשלחת. */
   src.saveBeneficiary(id,window.__kidSex,window.__kidAv,rel,
-                      kidPhoto&&kidPhoto.blob)
+                      kidPhotoOn&&kidPhoto&&kidPhoto.blob)
     .then(function(av){
       if(av)(benes||[]).forEach(function(x){if(x.id===id)x.avatar=av});
       return buildHomeSummary();
@@ -12244,6 +12271,11 @@ function detail(y){
     const half=(md.offsetWidth||30)/2;
     md.style.right='calc('+(((CH_W-chartX(n/CH.total))/CH_W)*100)+'% - '+half+'px)';
     md.style.top='calc('+((chartY(amt,CH.max)/CH_H)*100)+'% - '+half+'px)';
+    /* בקצה הסיכה מגיעה בדיוק אל נקודת הסיום, ששם יושבת גם תווית הסכום
+       הצפוי. הסיכה גבוהה מהעיגול שהיה כאן ולכן היא מכסה אותה, ואז
+       המספר נעלם. התווית יורדת שם, והסיכה עצמה מסמנת את אותה נקודה. */
+    const el2=document.getElementById('d-endlbl');
+    if(el2)el2.style.visibility=(n>=CH.total-0.001)?'hidden':'';
   }
   /* המספר שמתעדכן הוא זה שרואים. בנוטע יחיד הגרף מועבר למסך הרגע
      (‏moneyToDetail), אבל בלוק המספר יושב מעל pv-move ולכן נשאר
