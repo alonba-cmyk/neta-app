@@ -493,16 +493,25 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 
    התג ממוקם absolute ולכן אינו משפיע על גובה הגוש, שנשאר 81 בכל
    ארבעת המצבים הריקים. */
-.esfaces.kids>span{overflow:visible;position:relative}
+/* שני המצבים הריקים שנושאים פרצופים חולקים את התג. ב"העתיד שלנו"
+   הוא רגע, ואומר בשביל מה הפרצוף הזה כאן; ב"הקרובים שלי" הוא ＋,
+   ואומר שאפשר להוסיף. בלי התג השני מהם נקרא כאיור של משפחה
+   עיצובית אחרת, אותה עובדה שהצביר של הרגעים הראה. */
+.esfaces.kids>span,.esfaces.plus>span{overflow:visible;position:relative}
 /* חפיפה רדודה יותר מ-20 הפיקסלים של שאר הצבירים: שם הפרצופים הם
    גוש אחד, וכאן על כל אחד יושב תג בקצה שלו. ב-20 התג של הפרצוף
    הימני נחת בדיוק על מרכז האמצעי, שלושת הפרצופים והתגים נקראו
    כשורה אחת צפופה, ומהפרצוף האמצעי נשארה רצועה. */
-.esfaces.kids>span+span{margin-right:-10px}
-.esfaces.kids .fc{display:block;width:100%;height:100%;border-radius:50%;overflow:hidden}
-.esfaces.kids>span>i{position:absolute;bottom:-1px;left:-4px;width:25px;height:25px;
+.esfaces.kids>span+span,.esfaces.plus>span+span{margin-right:-10px}
+.esfaces.kids .fc,.esfaces.plus .fc{display:block;width:100%;height:100%;
+  border-radius:50%;overflow:hidden}
+.esfaces.kids>span>i,.esfaces.plus>span>i{position:absolute;bottom:-1px;left:-4px;
+  width:25px;height:25px;
   border-radius:50%;background:var(--bg);border:1px solid var(--line);
   display:grid;place-items:center;font-size:12px;font-style:normal;line-height:1}
+/* ה-＋ ירוק בתוך אותו עיגול לבן: הוא פעולה ולא עובדה. עיגול ירוק
+   מלא היה משלש את המסה הירוקה מעל כפתור ירוק ברוחב מלא. */
+.esfaces.plus>span>i{color:var(--leaf);font-size:14px}
 .esfaces.occ>span{display:grid;place-items:center;font-size:30px;line-height:1}
 .ppav{position:relative;display:flex;align-items:center}
 /* שלוש משבצות תמיד, בגודל אחד ובצורה אחת, ולכן רוחב קבוע — העמודה
@@ -1333,20 +1342,21 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ── בוררי ההקמה ────────────────────────────────────────────────
    ממוקדים למסך "הקמה" ולא לקלאסים הגלובליים: .pill ו-.chips משרתים
    27 מסכים, והרשת כאן היא צורה של המסך הזה בלבד. */
-/* ארבע עמודות ולא חמש: ההעלאה ועוד שבע דמויות הן שמונה משבצות,
-   כלומר שתי שורות מלאות. בחמש הן נשארו חמש ושלוש. */
-[data-name="הקמה"] .avbig{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-[data-name="הקמה"] .avbig button{aspect-ratio:1;border-radius:14px;overflow:hidden;padding:0;
-  cursor:pointer;border:1.5px solid var(--line);background:var(--s2);display:block;transition:.15s}
-[data-name="הקמה"] .avbig button:hover{border-color:var(--line-2)}
-/* הטבעת הפנימית ולא רק גבול: ארבעה ריבועים צמודים בגודל זהה, וגבול
-   ירוק לבדו על אחד מהם נבלע בין השלושה. */
-[data-name="הקמה"] .avbig button.on{border-color:var(--leaf);box-shadow:0 0 0 3px var(--leaf-bg)}
-[data-name="הקמה"] .avbig svg,[data-name="הקמה"] .avbig img{display:block;
-  width:100%;height:100%;object-fit:cover}
-[data-name="הקמה"] .avbig .up{border-style:dashed;border-color:var(--line-2);
-  color:var(--tx-3);font-size:17px;line-height:1;display:grid;place-items:center}
-[data-name="הקמה"] .avbig .up:hover{border-color:var(--tx-2);color:var(--tx-2)}
+/* רשת הקרבה של האשף נושאת פרצופים גדולים יותר מאשר בגיליון העריכה
+   ובאשף ההוספה. שם היא שורה אחת בתוך טופס, וכאן היא השאלה של המסך,
+   והיא יורשת את המקום שתפס בורר הדמויות שירד. 46 הפיקסלים של הרשת
+   הכללית נקראו כאן כשורת אייקונים ולא כבחירה.
+
+   וארבע עמודות ולא שלוש, כמו שהיה לבורר הדמויות. בשלוש, שבעה תאים
+   הם שלוש שורות, והשלישית דחפה את "המשך" 68 פיקסלים מתחת לקיפול
+   במכשיר בן 640. בארבע הם 4+3 ו"אחר" ממלא את החור (span2), כלומר
+   שתי שורות. הגודל נשמר: הפרצוף הוא 60 ב-390 מול 62 בשלוש עמודות,
+   ו-clamp מוריד אותו רק במכשירים צרים שבהם 4 תאים לא היו נכנסים. */
+[data-name="הקמה"] .kgrid{grid-template-columns:repeat(4,1fr)}
+[data-name="הקמה"] .kgrid .f{width:clamp(48px,15.5vw,62px);
+  height:clamp(48px,15.5vw,62px);border-radius:17px}
+[data-name="הקמה"] .kgrid button.span2{grid-column:span 2}
+[data-name="הקמה"] .kgrid .cam{width:22px;height:22px;font-size:11px}
 [data-name="הקמה"] .occgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 [data-name="הקמה"] .occgrid button{border:1px solid var(--line);background:var(--s1);
   border-radius:12px;padding:13px 5px 11px;cursor:pointer;font-family:inherit;color:var(--tx-2);
@@ -1674,7 +1684,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'c2d1ee0';
+window.NETA_BUILD = '09f6da9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2023,28 +2033,32 @@ window.NETA_CONFIG = {
   <div id="cp-0">
   <h2 class="gap-x">עבור מי הנטיעה?</h2>
   <p class="sub gap">בעוד כמה שנים מישהו ייהנה ממה שנטעת היום</p>
-  <!-- בן/בת חזר לשורה של השם. כשדה משלו, עם תווית ועם שורת הסבר,
-       הוא תפס שלושה בלוקים על שאלה בת מילה אחת ודחף את הכפתור
-       הראשי מתחת לקיפול. -->
+  <!-- השם לבדו בשורה. בן/בת ישבו כאן וירדו עם בורר הדמויות: הקרבה
+       שבשאלה הבאה כבר נושאת מגדר, והצ'יפים חוזרים רק אחרי "אחר". -->
   <div class="field"><label>איך קוראים לו?</label>
-    <div class="row" style="gap:8px;align-items:stretch">
-      <input type="text" id="c-name" placeholder="למשל: דניאל" style="flex:1">
-      <div class="chips" id="c-sex" style="margin:0;flex:0 0 auto">
-        <button class="on" onclick="setSex(this,'m')">בן</button>
-        <button onclick="setSex(this,'f')">בת</button>
-      </div>
-    </div></div>
-  <!-- הדמות. השם קודם לה, כי הוא מה שמזהה את הרגע בכל שאר האפליקציה
-       והיא רק הפרצוף שלו.
+    <input type="text" id="c-name" placeholder="למשל: דניאל"></div>
+  <!-- הקרבה, ואיתה הפרצוף. השם קודם לה, כי הוא מה שמזהה את הרגע
+       בכל שאר האפליקציה והיא רק הפרצוף שלו.
 
-       ארבע הדמויות הן שתי בנות ושני בנים, ולכן הבחירה בהן קובעת גם
-       את beneficiary_sex, שארבע שורות באפליקציה מוטות לפיו ("יחכו
-       לו", "עבורו", "שמו", וקוד הפדיון). היא קובעת אותו כברירת מחדל
-       גלויה ולא כהסקה שקטה: שורת הצ'יפים נשארת מתחתיה, מסומנת, ומי
-       שבחר דמות בגלל צבע השיער רואה מיד מה נקבע ומתקן. -->
-  <div class="field" id="c-avfield"><label>בחר דמות, או העלה תמונה</label>
-    <div class="avbig" id="c-avpick"></div>
-    <p class="fine" id="c-upnote" style="margin-top:8px;display:none"></p></div>
+       כאן ישב בורר של שבע דמויות ועוד משבצת העלאה, ומעליו שאלת
+       בן/בת. כלומר שתי שאלות על אותה עובדה, ואף אחת מהן לא זו
+       שהמשתמש באמת יודע: "נכד" אומר גם מי הוא, גם איזה פרצוף,
+       וגם בן או בת. אותה רשת בדיוק כמו ב"+ הוסף אדם · עבורו"
+       ובגיליון העריכה של הילד, ולכן ילד שנוצר כאן יכול לחזור
+       לפרצוף שלו בעריכה.
+
+       beneficiary_sex נגזר מהקרבה (kinSex), וארבע שורות באפליקציה
+       מוטות לפיו ("יחכו לו", "עבורו", "שמו", וקוד הפדיון). מי
+       שבחר "אחר" אין ממה לגזור אצלו, ואצלו בלבד הצ'יפים חוזרים. -->
+  <div class="field" id="c-avfield"><label>מי הוא עבורך?</label>
+    <div class="kgrid" id="c-avpick"></div>
+    <button type="button" class="uprow" id="c-up" onclick="cPhotoTap(event)"></button>
+    <input type="text" id="c-relfree" placeholder="למשל: הבן של אחותי"
+           style="margin-top:8px;display:none">
+    <div class="chips" id="c-sex" style="margin-top:8px;display:none">
+      <button class="on" onclick="setSex(this,'m')">בן</button>
+      <button onclick="setSex(this,'f')">בת</button>
+    </div></div>
   <label class="chk" id="c-undecidedbox"><input type="checkbox" id="c-undecided" onchange="toggleDesig(this)">
     <span>עוד לא החלטתי עבור מי, כרגע אני רק רוצה לשים כסף ליום עתידי</span></label>
   <button class="btn gap" style="margin-top:16px" onclick="toOccasion()">המשך</button>
@@ -3659,25 +3673,15 @@ let cAvatar='av-kid1';
    תמונה אמיתית של לביא נמחקה על ידי av-kid1, ברירת המחדל של אשף
    שהמשתמש לא נגע בבורר שלו כלל. */
 let cAvTouched=false;
-/* ‏av-kid7 אינו כאן בכוונה: הוא הפרצוף הנייטרלי של "אחר", ואין
-   ממנו מה לגזור. הגזירה פשוט אינה קורית, והצ'יפ נשאר כפי שהוא. */
-const AV_SEX={'av-kid1':'m','av-kid2':'f','av-kid3':'m','av-kid4':'f',
-              'av-kid5':'m','av-kid6':'f'};
+/* הקרבה שנבחרה ברשת, ומה שנגזר ממנה. בורר הדמויות ושאלת בן/בת
+   ירדו מכאן לטובתה: "נכד" אומר את שלושתם במילה אחת.
+
+   ‏cRelTouched הוא אותו דגל כמו cAvTouched, ומאותה סיבה: 'son' היא
+   ברירת מחדל שאיש לא בחר, ורשומת ילד קיים לא תידרס בה. */
+let cRel='son',cRelTouched=false;
 function markSexChip(x){
   document.querySelectorAll('#c-sex button').forEach(function(b,i){
     b.classList.toggle('on',(i===0)===(x==='m'))});
-}
-/* אותו בורר בשני המקומות שבהם בוחרים פרצוף לילד: שלב 1 בהקמה, ושלב
-   "עבור מי" בהוספת אדם. חמש משבצות, וההעלאה ראשונה כי היא הדבר היחיד
-   שאינו ברירת מחדל. */
-function kidAvGridHTML(sel,photo,onPick,onUp){
-  const shot=photo
-    ? '<button type="button" class="on" onclick="'+onUp+'"><img class="kidimg" src="'+attrText(photo.url)+'" alt=""></button>'
-    : '<button type="button" class="up" onclick="'+onUp+'" aria-label="העלה תמונה">＋</button>';
-  return shot+KID_AV.map(function(a){
-    return '<button type="button" class="'+(!photo&&a===sel?'on':'')+'" data-av="'+a+'" '+
-      'onclick="'+onPick+'(this,\''+a+'\')" aria-label="דמות"><svg viewBox="0 0 40 40">'+
-      '<use href="#'+a+'"/></svg></button>'}).join('');
 }
 /* בוחר קובץ, מכווץ אותו ל-256 ומחזיר blob. הכיווץ אינו קישוט: תמונה
    מהטלפון היא 3 עד 8 מגה, וה-bucket חוסם מעל 2. */
@@ -3694,29 +3698,76 @@ function pickPhotoInto(cb){
   inp.click();
 }
 let cPhoto=null;
+/* האם התמונה היא הפרצוף הנבחר. היא נשארת קיימת גם כשנבחרה קרבה
+   אחרת, כי עד "המשך" עוד לא נשמר דבר ואין סיבה לאבד העלאה. */
+let cPhotoOn=false;
 function paintCAv(){
   const box=document.getElementById('c-avpick');
-  if(box)box.innerHTML=kidAvGridHTML(cAvatar,cPhoto,'pickKidAv','cPickPhoto()');
+  if(box)box.innerHTML=kinGridHTML(KIN_FOR,cRel,'pickCRel',cPhoto&&cPhoto.url,
+    {other:'av-kid7',otherLabel:'אחר',cols:4,wideClass:'span2',
+     onPhoto:'cUsePhoto()',photoOn:cPhotoOn});
+  cPaintUp();
+}
+/* אותה שורה בשני מצבים, כמו בשני המסכים האחרים שנושאים את הרשת.
+   השם נכנס לכיתוב כשהוקלד, ולכן היא נצבעת גם על כל הקלדה בשדה. */
+function cPaintUp(){
+  const up=document.getElementById('c-up');
+  if(!up)return;
+  const nm=((document.getElementById('c-name')||{}).value||'').trim();
+  const of=nm?(' של '+nm):'';
+  up.className='uprow'+(cPhoto?' has':'');
+  up.innerHTML=cPhoto
+    ? '<span class="ic"><img src="'+attrText(cPhoto.url)+'" alt=""></span>'+
+      '<span class="t"><b>התמונה'+of+'</b><i>'+
+        (cPhotoOn?'תישמר יחד עם הנטיעה':'במשבצת הראשונה, לחץ כדי לבחור בה')+
+      '</i></span><span class="rm" data-rm="1">חזרה לדמות</span>'
+    : '<span class="ic">＋</span>'+
+      '<span class="t"><b>העלה תמונה'+of+'</b><i>במקום הדמות שנבחרה</i></span>';
+}
+function cPhotoTap(ev){
+  const t=ev&&ev.target;
+  if(t&&t.closest&&t.closest('[data-rm]')){cClearPhoto();return}
+  cPickPhoto();
+}
+/* לחיצה על משבצת התמונה בוחרת אותה חזרה. */
+function cUsePhoto(){ if(cPhoto){cPhotoOn=true;cAvTouched=true;paintCAv()} }
+/* "חזרה לדמות" מחזיר לפרצוף שהקרבה גוזרת ולא לדמות ששמורה: התמונה
+   היא מה שהוסר, ומה שנשאר הוא ברירת המחדל של הקרבה הנבחרת. */
+function cClearPhoto(){
+  if(cPhoto&&cPhoto.blob&&cPhoto.url)URL.revokeObjectURL(cPhoto.url);
+  cPhoto=null;cPhotoOn=false;cAvTouched=true;
+  cAvatar=kinAv(cRel,'av-kid7');
+  paintCAv();
 }
 function cPickPhoto(){
   pickPhotoInto(function(ph){
-    if(cPhoto&&cPhoto.url)URL.revokeObjectURL(cPhoto.url);
-    cPhoto=ph;cAvTouched=true;
-    const n=document.getElementById('c-upnote');
-    if(n){n.style.display='block';
-          n.textContent='התמונה תישמר יחד עם הנטיעה. אפשר להחליף אותה בכל שלב.'}
+    if(cPhoto&&cPhoto.blob&&cPhoto.url)URL.revokeObjectURL(cPhoto.url);
+    cPhoto=ph;cPhotoOn=true;cAvTouched=true;
     paintCAv();
   });
 }
-function pickKidAv(el,a){
-  cAvatar=a;cPhoto=null;cAvTouched=true;
-  const n=document.getElementById('c-upnote'); if(n)n.style.display='none';
+/* הקרבה גוזרת את הפרצוף ואת המין. "אחר" הוא טקסט חופשי שאין ממנו
+   מה לגזור, ורק שם חוזרים הצ'יפים. */
+function pickCRel(el,k){
+  cPhotoOn=false;
+  cRel=k;cRelTouched=true;cAvTouched=true;
+  cAvatar=kinAv(k,'av-kid7');
+  const other=(k==='other');
+  const fr=document.getElementById('c-relfree');
+  if(fr)fr.style.display=other?'block':'none';
+  const sx=document.getElementById('c-sex');
+  if(sx)sx.style.display=other?'flex':'none';
   paintCAv();
-  const x=AV_SEX[a];
-  /* לא setSex: הצ'יפ נדלק ישירות, כי setSex מסמן את הכפתור שנלחץ
+  const x=other?null:kinSex(k);
+  /* לא setSex: הצ'יפ נדלק ישירות, כי setSex מסמנת את הכפתור שנלחץ
      ואיש לא לחץ על צ'יפ. שאר מה שהיא עושה כן דרוש, כי ההטיה
      כבר השתנתה. */
   if(!sexTouched&&x&&x!==beneSex){beneSex=x;markSexChip(x);beneCopy();checkBene();updateGoal()}
+}
+/* מה שנשמר ב-beneficiaries.relation: מפתח מוכר, או הטקסט של "אחר". */
+function cRelValue(){
+  if(cRel==='other')return (((document.getElementById('c-relfree')||{}).value)||'').trim();
+  return cRel;
 }
 /* בחירה מפורשת בצ'יפ. מרגע שנעשתה, הדמות אינה דורסת אותה: הצ'יפים
    יושבים מעל הדמויות, ובלי הדגל הזה מי שסימן "בת" ואז בחר דמות היה
@@ -3803,6 +3854,9 @@ function prev(){
   preview.icon=cIcon;
 }
 [cName,cCustom,cDate].forEach(el=>el.addEventListener('input',function(){prev();checkBene();render()}));prev();
+/* שורת ההעלאה נושאת את השם ("התמונה של דניאל"), ולכן היא נצבעת
+   מחדש על כל הקלדה בשדה השם. */
+cName.addEventListener('input',function(){cPaintUp()});
 /* shareMode עדיין נקרא ונכתב — investIn טוענת אותו מהנטיעה שמפקידים
    בה, ומסך הסיכום מציג אותו. מה שירד הוא רק הבורר שקבע אותו באשף. */
 let shareMode='private',isNewPlant=false;
@@ -4810,10 +4864,13 @@ function startCreate(){
   /* הדמות הראשונה ואיתה הצ'יפ שהיא מסמנת. עד כה beneSex היה 'm'
      בלי ששום צ'יפ נדלק, כלומר ברירת מחדל שאיש לא ראה ולכן איש לא
      תיקן. */
-  cAvatar='av-kid1';cAvTouched=false;
-  if(cPhoto&&cPhoto.url)URL.revokeObjectURL(cPhoto.url);
-  cPhoto=null;
-  const un=document.getElementById('c-upnote'); if(un)un.style.display='none';
+  cRel='son';cRelTouched=false;
+  cAvatar=kinAv('son','av-kid7');cAvTouched=false;
+  if(cPhoto&&cPhoto.blob&&cPhoto.url)URL.revokeObjectURL(cPhoto.url);
+  cPhoto=null;cPhotoOn=false;
+  const rf=document.getElementById('c-relfree');
+  if(rf){rf.value='';rf.style.display='none'}
+  const sxb=document.getElementById('c-sex'); if(sxb)sxb.style.display='none';
   paintCAv();
   const cu=document.getElementById('c-custom');
   if(cu){cu.value='';cu.style.display='none'}
@@ -5047,7 +5104,9 @@ function toggleDesig(cb){
      הוא הזמנה לבחור משהו שלא יישמר. */
   const avf=document.getElementById('c-avfield');
   if(avf)avf.style.display=designated?'':'none';
-  document.getElementById('c-sex').style.display=designated?'':'none';
+  /* הצ'יפים יושבים בתוך c-avfield ויורדים איתו. אין להם שורה משלהם
+     כאן: pickCRel הוא מי שמחליט אם הם מוצגים, ולכן שורה שמדליקה
+     אותם לפי designated הייתה מחזירה אותם למי שלא בחר "אחר". */
   document.getElementById('c-whofield').style.display=designated?'':'none';
   document.getElementById('c-benefields').style.display=designated?'block':'none';
   document.getElementById('c-safebtn').style.display=designated?'':'none';
@@ -5072,9 +5131,10 @@ function whoCopy(){
      אמיתית, והיא יושבת ב-cPhoto כ-blob מקומי בעוד cAvatar נשאר הדמות
      שנבחרה קודם. ‏<use href="#av-kid1"> התעלם מההעלאה, ומי שהעלה
      תמונה ראה כאן פרצוף של מישהו אחר. ‏cPhoto קודם, כמו ברשת של
-     שלב 1 (kidAvGridHTML), ואחרת kidFaceHTML שמבדילה בין דמות לנתיב. */
+     שלב 1, וגם שם רק כשהיא הפרצוף הנבחר (cPhotoOn); אחרת
+     kidFaceHTML, שמבדילה בין דמות לנתיב. */
   const self=document.getElementById('cw-self-av');
-  if(self)self.innerHTML=(cPhoto&&cPhoto.url)
+  if(self)self.innerHTML=(cPhotoOn&&cPhoto&&cPhoto.url)
     ? '<img class="kidimg" src="'+attrText(cPhoto.url)+'" alt="" width="40" height="40">'
     : kidFaceHTML(cAvatar,40);
   /* הפנים שלי דרך faceHTML ולא דרך href: avatar_key מחזיק גם נתיב
@@ -6239,9 +6299,15 @@ function plantingFromFlow(){
     /* לא מה שהבורר מראה אלא אם מישהו בחר בו. ילד קיים נפתח עם הדמות
        שלו, ובלי הדגל הזה האשף היה כותב אותה בחזרה גם כשלא נגעו בו. */
     avatarPicked:desig?cAvTouched:false,
+    /* הקרבה שנבחרה ברשת של שלב 1. נכתבת ל-beneficiaries.relation,
+       ומשם היא מה שגיליון העריכה של הילד קורא. relPicked הוא אותו
+       דגל כמו avatarPicked: 'son' היא ברירת מחדל, ואשף שלא נגעו
+       בה בו לא ידרוס קרבה שכבר שמורה לילד. */
+    rel:desig?cRelValue():null,
+    relPicked:desig?cRelTouched:false,
     /* הקובץ עצמו, לא נתיב. ההעלאה קורית ב-beneficiaryId, כי רק שם
        ידוע אם בכלל יש ילד לשמור עליו. */
-    photo:desig?(cPhoto&&cPhoto.blob)||null:null,
+    photo:desig?(cPhotoOn&&cPhoto&&cPhoto.blob)||null:null,
     targetDate:cDate?cDate.value:null,
     targetYear:d?d.getFullYear():null,
     targetMonth:d?d.getMonth():null,
@@ -7529,9 +7595,10 @@ function buildRelatives(){
        אנשים. קודם ישב כאן אייקון קווי ב-52 פיקסל ובכותרת מוקטנת, ולכן
        החלק העליון של המסך נראה כמו משפחה עיצובית אחרת. */
     box.innerHTML='<div class="es" style="min-height:0;padding:26px 4px 18px">'+
-      '<div class="art"><span class="esfaces" aria-hidden="true">'+
+      '<div class="art"><span class="esfaces plus" aria-hidden="true">'+
       ['av-granny','av-uncle','av-friend'].map(function(a){
-        return '<span><svg class="avsvg" viewBox="0 0 40 40"><use href="#'+a+'"/></svg></span>';
+        return '<span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40">'+
+               '<use href="#'+a+'"/></svg></span><i>\uFF0B</i></span>';
       }).join('')+'</span></div>'+
       /* שתי שורות בכותרת: השאלה וההוראה הן משפט אחד, ומשפט נפרד
          מתחתיהן הפך אותן לשתי אמירות. הפסקה נשארת ואומרת משהו אחר. */
@@ -7659,7 +7726,7 @@ function kidMomentsGo(key){
 }
 function kidOpenMoment(key){
   const b=kidOf_(key); if(!b)return;
-  prefillKid(b.name,b.avatar||kidAvatar(b.name,b.sex),b.sex);
+  prefillKid(b.name,b.avatar||kidAvatar(b.name,b.sex),b.sex,b.relation);
 }
 function relGhost(on){
   const g=document.getElementById('rel-ghost');
@@ -8286,9 +8353,10 @@ function kinAv(v,fb){const k=KIN[v];return (k&&k.av)||fb||'av-someone'}
    והווי מסמן איזה פרצוף מוצג. שתי עובדות שונות, שני סימונים. */
 function kinGridHTML(keys,sel,fn,photo,o){
   o=o||{};
+  const wideCls=o.wideClass||'wide';
   const cell=function(k,label,av,wide){
     const on=(k===sel);
-    const cls=(wide?'wide':'')+(on?(wide?' on':'on'):'');
+    const cls=(wide?wideCls:'')+(on?(wide?' on':'on'):'');
     return '<button type="button"'+(cls?' class="'+cls.trim()+'"':'')+' '+
       'onclick="'+fn+'(this,\''+k+'\')"><span class="f">'+
       '<svg viewBox="0 0 40 40"><use href="#'+av+'"/></svg>'+'</span>'+
@@ -8312,8 +8380,16 @@ function kinGridHTML(keys,sel,fn,photo,o){
      ועוד תמונה יש שבעה תאים, ותא רחב אחריהם משאיר חור של שני תאים
      בשורה השלישית. נמדד על המסך, לא חושב על הנייר. */
   const before=keys.length+(photo?1:0);
+  /* ‏cols=4 הוא האשף בלבד, ושם "רחב" אינו שורה שלמה אלא שני תאים:
+     הוא ממלא את החור שבשורה האחרונה במקום לפתוח שורה שלישית. שבעה
+     תאים בארבע עמודות הם 4+3 עם חור אחד, ועם משבצת תמונה הם שמונה
+     בדיוק ואין מה למלא. שורה שלישית שם דוחפת את "המשך" מתחת לקיפול
+     במכשיר בן 640 פיקסל. */
+  const wide=(o.cols===4)
+    ? ((4-((before+1)%4))%4)===1
+    : (before%3===0);
   return shot+keys.map(function(k){return cell(k,KIN[k].chip,kinAv(k,o.other))}).join('')+
-    cell('other',o.otherLabel||'אחר',o.other||'av-someone',before%3===0);
+    cell('other',o.otherLabel||'אחר',o.other||'av-someone',wide);
 }
 let apKindMode='with',apStep=0,apRel='mother',apAv='av-granny',
     apKidAv='av-kid1',apKidSexV='m',apKidRel='son',apPhoto=null,apPlants=[];
@@ -8728,7 +8804,7 @@ function apSaveKid(){
   const src=netaSource();
   const rel=apKidRelValue();
   const finish=function(av,id){
-    apKidSaved={name:nm,av:av||apKidAv,id:id||null};
+    apKidSaved={name:nm,av:av||apKidAv,id:id||null,rel:rel};
     /* נדחף לרשימה המקומית ולא רק נשמר בשרת: הציור הבא קורא את benes,
        וסבב נוסף לשרת רק כדי לראות את מה שהרגע נשמר הוא המתנה מיותרת.
        ‏listBeneficiaries תחזיר את אותה שורה בטעינה הבאה, ו-fuWithBenes
@@ -8762,28 +8838,41 @@ function apSaveKid(){
 let apKidSaved=null,apKidId=null;
 /* פותח הקמה על ילד ידוע. שני מקומות מגיעים לכאן: סוף "+ הוסף קרוב ·
    עבורו", והכפתור של המצב הריק כשנבחר בבורר ילד שעוד אין לו רגע. */
-function prefillKid(name,av,sex){
+function prefillKid(name,av,sex,rel){
   startCreate();
   const f=document.getElementById('c-name');
   if(f){f.value=name||'';f.dispatchEvent(new Event('input'))}
-  if(av&&KID_AV.indexOf(av)>=0){
-    const b=document.querySelector('#c-avpick button[data-av="'+av+'"]');
-    if(b)pickKidAv(b,av);
-  }else if(av){
-    /* תמונה אמיתית אין לה כפתור בספרייה, ולכן היא מוצגת במשבצת
-       ההעלאה. בלי blob: הקובץ כבר בשרת ואין מה להעלות שוב, ולכן
-       גם אין העלאה כפולה ל-bucket. */
-    const u=(apPhoto&&apPhoto.url)||photoUrl(av);
-    if(u)cPhoto={url:u};
+  /* הקרבה קודמת לדמות, כי היא מה שגוזר אותה. כשהיא ידועה התא שלה
+     נבחר, וכשאינה ידועה מחפשים את הקרבה שהדמות השמורה שייכת לה:
+     כל דמות ילד ברשת היא קרבה אחת בדיוק. */
+  if(rel&&KIN_FOR.indexOf(rel)>=0)cRel=rel;
+  else if(!rel&&av&&av.indexOf('av-')===0){
+    if(av==='av-kid7')cRel='other';
+    else KIN_FOR.forEach(function(k){if(kinAv(k)===av)cRel=k});
   }
-  /* בכל שלושת המקרים הערך בא מהילד ולא מהמשתמש, ולכן הוא אינו
-     נחשב בחירה ואינו נכתב בחזרה אל הילד. */
-  cAvTouched=false;
+  cAvatar=av||kinAv(cRel,'av-kid7');
+  if(av&&av.indexOf('av-')!==0){
+    /* תמונה אמיתית אין לה תא ברשת, ולכן היא המשבצת הראשונה ומסומנת.
+       בלי blob: הקובץ כבר בשרת ואין מה להעלות שוב, ולכן גם אין
+       העלאה כפולה ל-bucket. */
+    const u=(apPhoto&&apPhoto.url)||photoUrl(av);
+    if(u){cPhoto={url:u};cPhotoOn=true}
+  }
+  /* בכל המקרים הערך בא מהילד ולא מהמשתמש, ולכן הוא אינו נחשב
+     בחירה ואינו נכתב בחזרה אל הילד. */
+  cAvTouched=false;cRelTouched=false;
+  /* ילד ש"אחר" הוא הקרבה שלו מגיע עם השדה החופשי ועם הצ'יפים
+     פתוחים, כי pickCRel לא רצה כאן ואיש לא לחץ על תא. */
+  const other=(cRel==='other');
+  const fr=document.getElementById('c-relfree');
+  if(fr)fr.style.display=other?'block':'none';
+  const sx=document.getElementById('c-sex');
+  if(sx)sx.style.display=other?'flex':'none';
   if(sex==='m'||sex==='f'){markSexChip(sex);beneSex=sex}
   paintCAv();
 }
 function apOpenMoment(){
-  if(apKidSaved)prefillKid(apKidSaved.name,apKidSaved.av,apKidSexV);
+  if(apKidSaved)prefillKid(apKidSaved.name,apKidSaved.av,apKidSexV,apKidSaved.rel);
   else startCreate();
 }
 /* הסרה מתוך "העתיד שלנו": הילד הנבחר הוא מה שעל המסך, ואין צורך
@@ -8796,7 +8885,7 @@ function removeSelKid(){
 }
 function gardenEmptyCta(){
   const sel=lastFuSel;
-  if(sel&&sel.pending)prefillKid(sel.name,sel.av,sel.sex);
+  if(sel&&sel.pending)prefillKid(sel.name,sel.av,sel.sex,sel.rel);
   else startCreate();
 }
 /* פרצוף אחד, משתי הצורות שהעמודה יכולה להחזיק. תמונה שהנתיב שלה
@@ -10045,7 +10134,7 @@ function netaBackend(cfg){
         /* ‏{} ולא כלום: send קוראת opts.headers, ו-GET בלי אובייקט
            אפשרויות נופל שם על undefined. שאר הקריאות בקובץ תמיד
            מעבירות אחד, ולכן זה לא צף עד עכשיו. */
-        return call('/rest/v1/beneficiaries?select=id,sex,avatar&created_by=eq.'+uid+
+        return call('/rest/v1/beneficiaries?select=id,sex,avatar,relation&created_by=eq.'+uid+
                     '&name=eq.'+encodeURIComponent(nm),{})
           .then(function(rows){return (rows&&rows[0])||null});
       };
@@ -10064,6 +10153,7 @@ function netaBackend(cfg){
           /* רק תמונה שהועלתה עכשיו או דמות שנבחרה עכשיו. בלי התנאי
              הזה אשף שהמשתמש לא נגע בבורר שלו היה מוחק תמונה שמורה. */
           if(want&&want!==r.avatar&&(path||p.avatarPicked))patch.avatar=want;
+          if(p.rel&&p.rel!==r.relation&&p.relPicked)patch.relation=p.rel;
           /* הישות היא הכותב, והעמודה על הנטיעה היא מטמון שלה: היא
              מקבלת את מה שלילד באמת יש. */
           p.avatar=patch.avatar||r.avatar||p.avatar;
@@ -10076,7 +10166,11 @@ function netaBackend(cfg){
         return call('/rest/v1/beneficiaries',{method:'POST',
           headers:{Prefer:'return=representation'},
           body:JSON.stringify({created_by:uid,name:nm,
-                               sex:p.sex||null,avatar:want||null})})
+                               sex:p.sex||null,avatar:want||null,
+                               /* ילד חדש מקבל את הקרבה גם בלי relPicked:
+                                  התא מסומן על המסך מהרגע הראשון, כלומר
+                                  זו ברירת מחדל גלויה ולא הסקה שקטה. */
+                               relation:p.rel||null})})
           .then(function(rr){return rr&&rr[0]?rr[0].id:null});
       });
       })
@@ -11473,6 +11567,7 @@ function fuWithBenes(items){
     return b&&b.name&&!(b.id&&byId[b.id])&&!byName[String(b.name).trim()];
   }).map(function(b){
     return {id:'k:'+(b.id||b.name),name:b.name,kidId:b.id||null,sex:b.sex||null,
+            rel:b.relation||'',
             av:b.avatar||kidAvatar(b.name,b.sex),rows:[],accrued:0,mine:0,proj:0,
             people:[],pending:true};
   });
