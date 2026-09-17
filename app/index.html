@@ -944,6 +944,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .kgrid .f{width:46px;height:46px;border-radius:13px;overflow:hidden;position:relative;
   background:var(--s2)}
 .kgrid .f svg,.kgrid .f img{display:block;width:100%;height:100%;object-fit:cover}
+/* בתא הנבחר המשבצת יושבת על --bg ולא על --s2. הערוגה של התא הנבחר
+   והמשבצת הן כמעט אותו קרם (1.06:1), ולכן הפרצוף והריבוע שמסביבו
+   נבלעו זה בזה ורק התא הנבחר איבד את הצורה שיש לכל השאר. הצבע
+   מוחלף גם על ה-svg עצמו, כי ה-rect בספרייט הוא currentColor
+   והכלל הגלובלי צובע אותו --s2. */
+.kgrid button.on .f{background:var(--bg)}
+.kgrid button.on .f svg{color:var(--bg)}
 /* התג יושב על התא ולא על השורה: הוא אומר "התמונה הזאת מוצגת כאן",
    וזו העובדה היחידה שאי אפשר לראות מהשורה שמתחת. */
 .kgrid .cam{position:absolute;inset-inline-end:-3px;bottom:-3px;width:20px;height:20px;
@@ -1698,7 +1705,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'c57361e';
+window.NETA_BUILD = '4fa11ab';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
