@@ -980,6 +980,27 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .warn{background:var(--sun-bg);border:1px solid var(--sun-line);border-radius:10px;padding:11px 12px;
   font-size:11px;line-height:1.55;color:var(--sun-txt);margin-top:8px}
 
+/* שורת הסכום הגדולה שמעל הסליידר. המספר הוא קלט ולא תווית, ולכן
+   ‏render כותב אליו value ולא textContent: השינוי הזה שקט לגמרי
+   ב-textContent על input, המספר פשוט אינו מתעדכן. */
+.amtbig{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 12px}
+.amtstep{width:38px;height:38px;flex:none;border-radius:11px;border:1px solid var(--line);
+  background:var(--s1);font:inherit;font-size:20px;line-height:1;color:var(--tx-2);
+  cursor:pointer;display:grid;place-items:center;transition:.15s}
+.amtstep:hover{border-color:var(--line-2);color:var(--tx)}
+.amtstep:active{background:var(--s2)}
+.amtmid{flex:1;text-align:center;min-width:0}
+/* בלי direction:ltr. הוא הזיז את השקל לימין המספר, כלומר "₪ 430"
+   בקריאה, בעוד שכל סכום אחר באפליקציה נכתב "430 ₪". בזרימה של
+   ‏RTL הילד הראשון יושב מימין, ולכן הקלט מימין והשקל משמאלו.
+   הספרות עצמן נשארות LTR ממילא, זה כלל של הדפדפן. */
+.amtin{display:inline-flex;align-items:baseline;gap:5px}
+.amtin input{font:inherit;font-size:30px;font-weight:800;letter-spacing:-.03em;color:var(--leaf);
+  background:none;border:0;padding:0;text-align:center;width:4.4ch;min-width:0;
+  font-variant-numeric:tabular-nums}
+.amtin input:focus{outline:none;box-shadow:0 2px 0 var(--leaf-line)}
+.amtin i{font-style:normal;font-size:30px;font-weight:800;color:var(--leaf);letter-spacing:-.03em}
+.amtsub{display:block;font-size:11.5px;color:var(--tx-3);margin-top:1px}
 /* ===== detail screen (time journey) ===== */
 /* הציר והאיור נשאו יחד את אותה שאלה — כמה מהדרך עברנו — ואף אחד מהם לא
    ענה על השאלה שבאמת מחזיקה הורה: כמה מהכסף שיהיה שם לא הגיע ממנו.
@@ -1021,15 +1042,25 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .dm-chart svg{display:block;width:100%;height:auto;overflow:visible}
 .dm-endlbl{position:absolute;font-size:10.5px;font-weight:500;color:var(--sun-soft);white-space:nowrap;
   background:var(--veil);border-radius:6px;padding:2px 7px;pointer-events:none}
-.dm-medal{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--bg);
-  border:1.5px solid var(--leaf);display:grid;place-items:center;pointer-events:none;
-  box-shadow:0 0 0 3px var(--bg),0 0 0 6px rgba(var(--leaf-rgb),.14);
+/* סיכה ולא עיגול. עיגול יושב על הקו ומכסה אותו, וסיכה נוגעת בו בקצה:
+   היא מצביעה על נקודה אחת במקום לסמן אזור. הצורה היא ריבוע מעוגל
+   בשלוש פינות, מסובב ב-45 מעלות, כך שהפינה הרביעית מחודדת כלפי מטה;
+   ה-svg שבתוכה מסובב חזרה.
+
+   הטבעת הלבנה וההילה הירוקה שהיו כאן קודם נבנו לערכה הכהה, שם טבעת
+   בהירה מפרידה את הסמן מרקע כהה. בבהירה הן לבן על לבן, כלומר לא עשו
+   דבר, ומה שנשאר היה עיגול חיוור על שטח צבוע. הצל מחליף אותן ועובד
+   בשתי הערכות. */
+.dm-medal{position:absolute;width:30px;height:30px;border-radius:50% 50% 50% 4px;
+  background:var(--leaf);color:var(--on-leaf);border:0;
+  display:grid;place-items:center;pointer-events:none;transform:rotate(-45deg);
+  box-shadow:0 0 0 2.5px var(--bg),0 2px 6px rgba(36,48,43,.22);
   transition:right .3s cubic-bezier(.22,.85,.3,1),top .3s cubic-bezier(.22,.85,.3,1)}
+.dm-medal svg{transform:rotate(45deg);width:15px;height:16px}
 .dm-medal.snap{transition:none}
-.dm-medal.idle::after{content:'';position:absolute;box-sizing:border-box;
-  top:-1.5px;right:-1.5px;width:26px;height:26px;border-radius:50%;
-  border:1.5px solid var(--leaf);opacity:0;pointer-events:none;
-  animation:sproutRipple 4.2s cubic-bezier(.2,.6,.35,1) infinite}
+/* ההילה המהבהבת הייתה טבעת עגולה סביב עיגול, ועל סיכה היא נקראת
+   כטעות. צורת הסיכה עצמה כבר אומרת "אפשר לגרור", ולכן היא יורדת. */
+.dm-medal.idle::after{display:none}
 /* המחוון פרוש על כל שטח התרשים ושקוף: מה שנגרר בעין הוא הנטע שעל הקו. */
 .dm-chart input[type=range]{position:absolute;inset:0;width:100%;height:100%;margin:0;
   -webkit-appearance:none;appearance:none;background:none;cursor:ew-resize;opacity:0}
@@ -1635,7 +1666,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'fd7976c';
+window.NETA_BUILD = '2b5f5e1';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1810,7 +1841,7 @@ window.NETA_CONFIG = {
     <path d="M30 33 C 43 28, 49 14, 41 7 C 33 15, 31 25, 30 33" fill="currentColor" opacity=".72"/>
   </g>
   <symbol id="chev" viewBox="0 0 7 12"><path d="M6 1L1.5 6L6 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-  <symbol id="sprout" viewBox="0 0 14 15"><line x1="7" y1="14" x2="7" y2="5.5" stroke="#7FC088" stroke-width="1.4" stroke-linecap="round"/><path d="M7 9.5 C 4 8.7, 2.8 5.4, 4.4 4 C 6 5.2, 6.7 7.4, 7 9.5" fill="#7FC088"/><path d="M7 7.8 C 10 7, 11.2 3.8, 9.6 2.4 C 8 3.6, 7.3 5.7, 7 7.8" fill="#7FC088"/></symbol>
+  <symbol id="sprout" viewBox="0 0 14 15"><line x1="7" y1="14" x2="7" y2="5.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M7 9.5 C 4 8.7, 2.8 5.4, 4.4 4 C 6 5.2, 6.7 7.4, 7 9.5" fill="currentColor"/><path d="M7 7.8 C 10 7, 11.2 3.8, 9.6 2.4 C 8 3.6, 7.3 5.7, 7 7.8" fill="currentColor"/></symbol>
 </svg>
 
 <div class="wrap">
@@ -2137,8 +2168,22 @@ window.NETA_CONFIG = {
   <p class="eyebrow" id="eb-freq">כל חודש או פעם אחת</p>
   <div class="two gap"><button class="pill" data-f="m" onclick="setFreq('m')">כל חודש</button><button class="pill" data-f="l" onclick="setFreq('l')">סכום חד פעמי</button></div>
   <p class="hint" id="freq-stop-hint" style="margin:-2px 0 10px">אפשר לעצור את ההפקדה בכל רגע.</p>
-  <div id="panel-m" class="field"><div class="row"><input type="range" id="amt-m" min="20" max="1000" step="10" value="100"><b id="out-m" style="min-width:62px;text-align:left;font-size:13.5px">100 ₪</b></div></div>
-  <div id="panel-l" class="field" style="display:none"><div class="row"><input type="range" id="amt-l" min="100" max="30000" step="100" value="1000"><b id="out-l" style="min-width:74px;text-align:left;font-size:13.5px">1,000 ₪</b></div></div>
+  <!-- הסכום גדול ובמרכז, ולא תווית קטנה לצד הסליידר. במסך הזה המספר
+     הגדול היחיד היה הצפי, כלומר התשובה לשאלה אחרת, ומי ששאל "כמה אני
+     משקיע" קיבל תשובה רק בטקסט קטן. הפלוס והמינוס אינם קישוט: סליידר
+     טוב לחקור בו ורע לקבוע בו, ומי שיודע שהוא רוצה 250 לא רוצה לגרור. -->
+  <div id="panel-m" class="field"><div class="amtbig">
+    <button type="button" class="amtstep" onclick="amtStep('m',-1)" aria-label="פחות">−</button>
+    <div class="amtmid"><span class="amtin"><input id="out-m" inputmode="numeric" value="100" aria-label="סכום חודשי"><i>₪</i></span>
+      <span class="amtsub">בכל חודש</span></div>
+    <button type="button" class="amtstep" onclick="amtStep('m',1)" aria-label="עוד">＋</button>
+  </div><div class="row"><input type="range" id="amt-m" min="20" max="1000" step="10" value="100"></div></div>
+    <div id="panel-l" class="field" style="display:none"><div class="amtbig">
+    <button type="button" class="amtstep" onclick="amtStep('l',-1)" aria-label="פחות">−</button>
+    <div class="amtmid"><span class="amtin"><input id="out-l" inputmode="numeric" value="1,000" aria-label="סכום חד פעמי"><i>₪</i></span>
+      <span class="amtsub">פעם אחת</span></div>
+    <button type="button" class="amtstep" onclick="amtStep('l',1)" aria-label="עוד">＋</button>
+  </div><div class="row"><input type="range" id="amt-l" min="100" max="30000" step="100" value="1000"></div></div>
   <div class="hero" id="hero"><p class="hero-label" id="hero-label">בחר למטה מה יקרה לכסף עד אז</p><p class="hero-label" id="hero-mid" style="display:none"></p><p class="hero-num" id="hero-num">·</p><p class="hero-sub" id="hero-sub"></p></div>
 
   <p class="eyebrow" id="eb-term" style="margin-top:20px">מתי תרצה לקצור את הפירות?</p>
@@ -2811,7 +2856,7 @@ window.NETA_CONFIG = {
       <span class="yr">נשתל היום</span>
     </span>
     <div class="tax-rail"><div class="tax-fut"></div><div class="tax-past" style="width:0"></div>
-      <span class="tax-medal idle" style="right:0"><svg width="14" height="15" viewBox="0 0 14 15"><use href="#sprout"/></svg></span>
+      <span class="tax-medal idle" style="right:0;color:#7FC088"><svg width="14" height="15" viewBox="0 0 14 15"><use href="#sprout"/></svg></span>
     </div>
     <span class="tax-goal"><span class="disc dash">🎂</span><span class="yr">2039</span></span>
   </div>
@@ -4533,7 +4578,7 @@ function trackNote(t){
   el.style.display=t?'':'none';
 }
 function fvCalc(v,r){const y=goal.years;if(r===0)return freq==='m'?v*y*12:v;if(freq==='m'){const m=r/12,n=y*12;return v*((Math.pow(1+m,n)-1)/m)}return v*Math.pow(1+r,y)}
-function render(){const v=freq==='m'?+amtM.value:+amtL.value;if(freq==='m')document.getElementById('out-m').textContent=v.toLocaleString('he-IL')+' ₪';else document.getElementById('out-l').textContent=v.toLocaleString('he-IL')+' ₪';const label=document.getElementById('hero-label'),mid=document.getElementById('hero-mid'),num=document.getElementById('hero-num'),sub=document.getElementById('hero-sub'),fine=document.getElementById('fine');if(mode===null){label.textContent='בחרו למטה מה יקרה לכסף עד אז';mid.style.display='none';num.textContent='·';num.classList.add('idle');sub.textContent='';fine.textContent='';
+function render(){const v=freq==='m'?+amtM.value:+amtL.value;amtShow(freq,v);const label=document.getElementById('hero-label'),mid=document.getElementById('hero-mid'),num=document.getElementById('hero-num'),sub=document.getElementById('hero-sub'),fine=document.getElementById('fine');if(mode===null){label.textContent='בחרו למטה מה יקרה לכסף עד אז';mid.style.display='none';num.textContent='·';num.classList.add('idle');sub.textContent='';fine.textContent='';
     /* הסכום ידוע כבר עכשיו, והצפי עוד לא. הסרגל הדביק היה ריק עד
        שנבחר מסלול — כלומר קו מפריד ריק מתחת לכותרת לאורך כל החלק
        הראשון של המסך, בדיוק כשגוללים ורוצים לזכור כמה בחרת. */
@@ -4550,7 +4595,50 @@ document.querySelectorAll('.opt[data-m]').forEach(el=>el.onclick=()=>{
   next?.scrollIntoView({block:'center',behavior:'smooth'});
 });
 document.querySelectorAll('.trk').forEach(t=>t.onclick=()=>setTrack(t));
-amtM.oninput=render;amtL.oninput=render;setFreq('m');
+amtM.oninput=render;amtL.oninput=render;
+/* המספר מוצג בשלושה מקומות שונים (חודשי, חד פעמי) ולכן הכתיבה אליו
+   יושבת בפונקציה אחת. הפסיקים נכתבים בתצוגה ונשלפים בקריאה. */
+function amtShow(k,v){
+  const el=document.getElementById(k==='m'?'out-m':'out-l');
+  if(el&&document.activeElement!==el)el.value=v.toLocaleString('he-IL');
+}
+function amtRange(k){return k==='m'?amtM:amtL}
+function amtClamp(k,v){
+  const r=amtRange(k),min=+r.min,max=+r.max,st=+r.step||1;
+  if(!isFinite(v))return +r.value;
+  v=Math.round(v/st)*st;
+  return Math.min(max,Math.max(min,v));
+}
+function amtSet(k,v){
+  const r=amtRange(k);
+  r.value=amtClamp(k,v);
+  render();
+}
+function amtStep(k,dir){
+  const r=amtRange(k);
+  amtSet(k,+r.value+dir*(+r.step||1));
+  amtShow(k,+r.value);
+}
+/* הקלדה: בזמן ההקלדה רק ספרות, והקיבוע לטווח ולצעד קורה ביציאה מהשדה
+   או ב-Enter. קיבוע בכל הקשה היה הופך "25" ל-30 לפני שהספיקו להקליד
+   את הספרה השלישית. */
+['m','l'].forEach(function(k){
+  const el=document.getElementById(k==='m'?'out-m':'out-l');
+  if(!el)return;
+  el.addEventListener('input',function(){
+    const raw=el.value.replace(/[^\d]/g,'');
+    el.value=raw;
+    const n=parseInt(raw,10);
+    if(isFinite(n)){const r=amtRange(k);r.value=Math.min(+r.max,Math.max(+r.min,n));render();}
+  });
+  el.addEventListener('blur',function(){
+    const n=parseInt(el.value.replace(/[^\d]/g,''),10);
+    amtSet(k,isFinite(n)?n:+amtRange(k).value);
+    amtShow(k,+amtRange(k).value);
+  });
+  el.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();el.blur()}});
+});
+setFreq('m');
 let idDone=false;
 function toPayment(){
   if(onbo && !idDone){go(ONBO.identity);return}
@@ -12114,8 +12202,11 @@ function detail(y){
   const amt=y===0?CH.now:CH.val(n);
   const md=document.getElementById('d-medal');
   if(md){
-    md.style.right='calc('+(((CH_W-chartX(n/CH.total))/CH_W)*100)+'% - 13px)';
-    md.style.top='calc('+((chartY(amt,CH.max)/CH_H)*100)+'% - 13px)';
+    /* חצי הגודל בפועל ולא 13 קשיח: הסמן היה 26 והפך ל-30, ומספר
+       קשיח היה מזיז אותו שני פיקסלים מהנקודה בלי שדבר יצעק. */
+    const half=(md.offsetWidth||30)/2;
+    md.style.right='calc('+(((CH_W-chartX(n/CH.total))/CH_W)*100)+'% - '+half+'px)';
+    md.style.top='calc('+((chartY(amt,CH.max)/CH_H)*100)+'% - '+half+'px)';
   }
   /* המספר שמתעדכן הוא זה שרואים. בנוטע יחיד הגרף מועבר למסך הרגע
      (‏moneyToDetail), אבל בלוק המספר יושב מעל pv-move ולכן נשאר
