@@ -1480,6 +1480,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    בכל מעבר. ההתאמה נעשית כאן ולא ב-.es, כי אותו ריפוד מיישר גם את
    שלושת המצבים הריקים האחרים זה לזה. */
 #act-head{text-align:center;padding:26px 4px 0;margin-bottom:16px}
+/* ואותו ראש ב"הקרובים שלי". הריפוד העליון זהה לזה של .es, כדי
+   שהאיור ינחת באותו פיקסל כמו במצב הריק של אותו מסך וכמו בפעילות. */
+#rel-head{text-align:center;padding:26px 4px 0;margin-bottom:16px}
+#rel-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:12px}
+#rel-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
+#rel-head p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin:8px auto 0;max-width:290px}
 /* הפרצוף בראש הוא 64 ולא 70, ולכן זהה בדיוק לפרצוף שבצביר של
    "הקרובים שלי" (.esfaces>span), וכך גם התג שעליו (25 במקום 34).
    שני המסכים שכנים בסרגל, והעין עוברת ביניהם בלחיצה אחת: 70 מול 64
@@ -1776,7 +1782,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b9ca540';
+window.NETA_BUILD = '7057d4a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2917,6 +2923,25 @@ window.NETA_CONFIG = {
        שמו; ומי שנכנס מהטאב אינו במצב הזמנה כלל, והרגע נבחר בגיליון
        של inviteRelative לאדם שהוא בוחר. בורר כאן היה שואל שאלה
        שהתשובה עליה כבר על המסך. -->
+  <!-- ראש מאויר, כמו זה שבפעילות ומאותה סיבה: המסך מקבל פנים לפני
+       שהוא מתחיל לדווח. הוא מוצג כשיש קרובים, ויורד כשהרשימה ריקה,
+       כי אז המצב הריק שבתוך rel-list כבר נושא איור וכותרת משלו ושני
+       איורים באותו מסך הם מסך אחר.
+
+       והוא יורד גם במצב הזמנה: שם המסך שואל למי לשלוח, ו"מי כבר
+       נוטע איתך" הוא דיווח על מה שכבר קרה.
+
+       הצביר כאן בלי התג ＋ שיש למצב הריק: התג אומר "אפשר להוסיף",
+       וזו הזמנה לפעולה ששייכת למסך שאין בו איש. -->
+  <div id="rel-head" style="display:none">
+    <div class="art"><span class="esfaces" aria-hidden="true">
+      <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></span>
+      <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></span>
+      <span><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-friend"/></svg></span>
+    </span></div>
+    <h3>מי כבר נוטע איתך</h3>
+    <p>כל אחד מהם בוחר בעצמו כמה להשקיע, ובאיזה רגע.</p>
+  </div>
   <div class="card" id="rel-list"></div>
   <!-- הקבוצה השנייה של האשף. "+ הוסף אדם" מציע שתי דרכים, ועד כה רק
        אחת מהן נגמרה במשהו שרואים במסך שממנו יצאו: ילד נשמר, קיבל
@@ -3899,7 +3924,16 @@ function pickCRel(el,k){
   if(fr)fr.style.display=other?'block':'none';
   const sx=document.getElementById('c-sex');
   if(sx)sx.style.display=other?'flex':'none';
+  /* השלב שיורד היה עונה על "מי מאשר את הפדיון", ולכן התשובה נקבעת
+     כאן ולא נשארת ריקה: "אני, עבורו" היא בדיוק המצב הזה, והיא מה
+     ש-WHO_MAP ממפה ל-mine/guardian. בלי זה הרשומה נשמרת עם מה
+     שנבחר בנטיעה הקודמת. */
+  if(k==='self'){whoMode='me';famMode=WHO_MAP.me[0];beneMode=WHO_MAP.me[1];}
   cSelfName();
+  /* הסרגל מתקצר או מתארך כאן, ולא רק במעבר לשלב הבא: מי שבחר
+     "עבורי" בשלב הראשון צריך לראות מיד "מתוך 5". זו אותה שורה
+     שיושבת ב-toggleDesig מאותה סיבה בדיוק. */
+  if(creating)flowBar(stepNo('who'),C_LABELS[0]);
   paintCAv();
   const x=other?null:kinSex(k);
   /* לא setSex: הצ'יפ נדלק ישירות, כי setSex מסמנת את הכפתור שנלחץ
@@ -5030,9 +5064,18 @@ let creating=false;
    מופשט — וברירת המחדל שלו הייתה ממילא "פרטית", כך שברוב המקרים הוא
    מסך שלוחצים עליו "המשך". ההחלטה עברה למקום שיש בו הקשר: מסך הרגע,
    שבו "פתח לקרובים" הוא עכשיו הכפתור הראשי. */
-function flowSteps(){return (onbo?6:5)+(designated?1:0)}
+/* שלב "מי יקבל את הכסף" שואל על אדם שלישי: אני עבורו, הוא בעצמו,
+   ההורה שלו, או מישהו אחר. כשהנהנה הוא אני, ארבע התשובות הן אותה
+   תשובה, ו-self_guardian שבמסד (0040) כבר מזהה שהכתובת היא של מי
+   שפתח ומאשר לבד. שאלה שיש לה תשובה אחת אינה שאלה, ולכן השלב יורד
+   ‏— בדיוק כמו שהוא יורד כשאין נהנה בכלל. */
+function beneIsMe(){return designated&&cRel==='self'}
+/* מי שהשלב יורד לו רואה סרגל קצר יותר. שתי הפונקציות שכנות בכוונה:
+   אחת סופרת את הנקודות והשנייה אומרת באיזו מהן אנחנו, ותיקון של רק
+   אחת מהן נותן סרגל שמראה מספר אחד ומכריז אחר. */
+function flowSteps(){return (onbo?6:5)+((designated&&!beneIsMe())?1:0)}
 function stepNo(key){
-  const d=designated?1:0;
+  const d=(designated&&!beneIsMe())?1:0;
   if(key==='who')return 1;
   if(key==='occ')return 2;
   if(key==='amount')return 3;
@@ -5127,8 +5170,10 @@ function backFromAmount(){cStepGo(1);go(1)}
 function backFromPay(){
   if(onbo){go(ONBO.identity);return}
   if(creating){
-    if(designated){cStepGo(2);go(1);return}
-    go(2);return; // בלי נהנה, השלב שלפני תשלום הוא מסך הסכום עצמו
+    if(designated&&!beneIsMe()){cStepGo(2);go(1);return}
+    /* בלי נהנה, וגם כשהנהנה הוא אני, השלב שלפני תשלום הוא מסך
+       הסכום עצמו. */
+    go(2);return;
   }
   goHome();
 }
@@ -5142,8 +5187,22 @@ function afterAmount(){
     if(b&&b.scrollIntoView)b.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
-  if(creating && designated){cStepGo(2);go(1);return}
+  if(creating && designated && !beneIsMe()){cStepGo(2);go(1);return}
+  /* הבדיקה שהייתה בשלב שדילגנו עליו. בלי כתובת בחשבון הרשומה נשמרת
+     עם approver=guardian ובלי מורשה, כלומר רגע שאיש אינו יכול לפדות,
+     וזה נכון גם כשהנהנה הוא אני. דילוג על מסך אינו דילוג על מה
+     שהמסך בדק. */
+  if(beneIsMe()&&!selfCanRedeem())return;
   toPayment();
+}
+/* הכתובת שאליה יישלח קוד הפדיון כשהנהנה הוא אני. בהדגמה אין חשבון
+   וגם אין שמירה, ולכן הבדיקה חיה בלבד, כמו זו שב-beneContinue. */
+function selfCanRedeem(){
+  if(liveAccount()&&!myEmail()){
+    toast('לא מצאנו את הכתובת שלך. השלם את הפרופיל, או בחר נהנה אחר');
+    return false;
+  }
+  return true;
 }
 /* כתובת שאינה מייל לא תמצא איש: auth.users נושאת email, ו-guardian_requests
    משווה מולה. מספר טלפון בשדה הזה נשמר, לא מתאים לאיש, ו"נשלח אליו אישור"
@@ -7786,6 +7845,10 @@ function apSentSheet(r,keys,emailed){
 }
 function buildRelatives(){
   const box=document.getElementById('rel-list');
+  /* הראש חי הפוך למצב הריק: הוא מוצג כשיש קרובים, ויורד כשאין,
+     ולכן ההחלטה יושבת כאן ולא במקום נוסף. */
+  const head=document.getElementById('rel-head');
+  if(head)head.style.display=(relatives.length&&!relInviteKey)?'':'none';
   /* בראש ולא בכל ענף: לפונקציה שלושה מסלולי יציאה, ומי שנשכח בהם
      השאיר את הכיתוב של מצב ההזמנה על מסך שאינו במצב הזמנה. */
   paintInvSend();
