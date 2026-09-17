@@ -1401,7 +1401,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* הדגם שבתחתית מסך ריק: איך המסך ייראה כשיהיה בו תוכן. דוהה אל תוך הרקע
    ולא לחיץ — הוא תמונה, לא נתונים. הוא חי בתוך .es ולכן נעלם מעצמו ברגע
    שיש נטיעה אמיתית להראות. */
-.gsample{position:relative;width:100%;margin-top:20px;height:132px;overflow:hidden;
+.gsample{position:relative;width:100%;margin-top:20px;height:150px;overflow:hidden;
   text-align:right;pointer-events:none;user-select:none}
 .gsample > *{opacity:var(--ghost);filter:saturate(var(--ghost-sat))}
 .gsample:after{content:"";position:absolute;inset:0;pointer-events:none;
@@ -1411,22 +1411,30 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    אין את מי לערוך. */
 /* ‏20 מלמעלה כמו .gsample, ולא 16: הדגם הזה יושב מחוץ ל-.es ולכן
    קיבל בזמנו מרווח משלו. התחתון נשאר, כי אחריו בא טקסט ולא סוף מסך. */
-#rel-ghost{pointer-events:none;margin:20px 0 6px;height:150px}
+/* ‏12 ולא 20: הכפתור שמעליו נושא gap-s עם 8 פיקסלים מלמטה, ובעמודת
+   flex מרווחים אינם מתמוטטים, כלומר 8+20 היו 28 ודוחפים את הדגם
+   שמונה פיקסלים נמוך יותר מבשאר המסכים. 8+12 הם 20 בדיוק כמו שם. */
+#rel-ghost{pointer-events:none;margin:12px 0 6px}
 #rel-ghost .rel{cursor:default}
 /* פרצוף מלא צבע ב-.34 ובסטורציה של 45 אחוז יוצא כתם אפור, ולא פנים.
    שאר הדגמים מחזיקים טקסט ואמוג'י ושורדים את זה; כאן צריך קצת יותר. */
 #rel-ghost>*{opacity:var(--ghost-2);filter:saturate(var(--ghost-sat-2))}
-.gsample.tall{height:212px}
-.gsample.tall:after{background:linear-gradient(to bottom,transparent 46%,var(--bg) 99%)}
 .gsample .feed:last-child{border-bottom:0}
 /* הדגם כאן הוא שני כרטיסי 05ג — 86 פיקסל כל אחד ועוד 9 מרווח, בדיוק
    כמו הכרטיס האמיתי, כך שמה שיופיע כאן יופיע במקום שהוא מסמן. הראשון
    שלם והשני נבלע בדהייה. אין כאן חריגות מ-.gsample: העמעום והדהייה
-   הסטנדרטיים תוכננו בדיוק לכרטיסים כאלה. */
-#kin-ghost{height:181px}
-/* הגובה מכוון כך ששורת "מי נוטע" עוד מבצבצת מבעד לדהייה: היא החלק
-   שמבדיל את המסך הזה מכל השאר, ודגם שחותך אותה מבטיח רשימה ולא מעגל. */
-#home-ghost{height:150px}
+   הסטנדרטיים תוכננו בדיוק לכרטיסים כאלה.
+
+   הגובה היה 181 (שני כרטיסים שלמים) וירד ל-150 כמו כל השאר: קצה
+   תחתון שנוחת במקום אחר בכל טאב הוא קפיצה, והכרטיס השני עדיין
+   מבצבץ מבעד לדהייה. */
+/* ‏150 בכולם. הגובה של "העתיד שלנו" הוא שקבע: הוא מכוון כך ששורת
+   "מי נוטע" עוד מבצבצת מבעד לדהייה, והיא החלק שמבדיל את המסך הזה
+   מכל השאר. שאר שלושת הדגמים אינם מאבדים שום שורה ב-150.
+
+   מה שזה סוגר: הדגם היה 132 בשניים, 150 באחד ו-181 ברביעי, ולכן
+   הקצה התחתון של הגוש נחת בארבעה מקומות שונים והמעבר בין הטאבים
+   קפץ. כל מה שמעל הכפתור כבר נוחת באותו פיקסל (btnpos.js). */
 /* פרצוף מלא צבע ב-.34 ובסטורציה של 45 אחוז יוצא כתם אפור ולא פנים,
    בדיוק כמו בדגם של הקרובים. ומאותו רגע שדגם הפעילות נושא פרצופים
    ולא נבטים, הוא בדיוק באותה סירה. */
@@ -1708,7 +1716,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '829a800';
+window.NETA_BUILD = 'afd46f9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2794,7 +2802,7 @@ window.NETA_CONFIG = {
          לשנות") בשורה משלה. בזרימה חופשית "עת." נשאר לבדו בשורה
          שלישית, או ש"אפשר לשנות" נדחק לסוף הראשונה ונקרא כחלק מהתחזית. -->
     <p class="fine">100 ₪ בחודש יהפכו לכ-23,500 ₪ בעוד 13 שנה.<br>אפשר לשנות בכל עת.</p>
-    <div class="gsample tall" id="kin-ghost" aria-hidden="true"></div>
+    <div class="gsample" id="kin-ghost" aria-hidden="true"></div>
   </div>
   <!-- מה שממתין לתשובה שלך: בקשת אישור כהורה, הזמנה שנדחתה, או
        שתיהן. השורות נבנות ב-pendRowsHTML ומוזרקות לשני המקומות מאותו
