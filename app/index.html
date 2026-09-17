@@ -1635,7 +1635,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6e31749';
+window.NETA_BUILD = '44b5eda';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7548,6 +7548,10 @@ function fuKeyOf(b){
 function kidMomentsGo(key){
   const b=kidOf_(key); if(!b)return;
   fuPick=fuKeyOf(b);
+  /* ‏go אינו מצייר, ולכן קביעת fuPick לבדה אינה מזיזה את הבורר:
+     המסך נפתח על מי שצויר בפעם הקודמת. אותה קריאה מפורשת יושבת
+     ב-openFutureTab וב-apExit מאותה סיבה. */
+  buildHomeSummary();
   openFuture();
 }
 function kidOpenMoment(key){
