@@ -1482,12 +1482,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #act-head .bigfav{width:64px;height:64px}
 #act-head .bigfav>.avsvg{border-radius:20px}
 #act-head .bigfav>i{width:25px;height:25px;border-radius:8px;font-size:12px;bottom:-5px;left:-7px}
-/* ואותו ראש ב"העתיד שלנו", בגרסה קצרה: האיור הוא קו ולא פרצוף, ולכן
-   46 ולא 81. הוא יושב מעל הבורר ולכן המרווח מתחתיו קטן יותר. */
-#fut-head{text-align:center;padding:2px 4px 0;margin-bottom:14px}
-#fut-head .art{color:var(--leaf);display:grid;place-items:center;margin-bottom:9px}
-#fut-head h3{font-size:16px;font-weight:600;line-height:1.35;text-wrap:balance}
-#fut-head p{font-size:12.5px;color:var(--tx-2);line-height:1.6;margin:6px auto 0;max-width:290px}
 #act-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:12px}
 #act-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
 #act-head p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin:8px auto 0;max-width:290px}
@@ -1774,7 +1768,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '95cec3b';
+window.NETA_BUILD = '22a794e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -1982,23 +1976,6 @@ window.NETA_CONFIG = {
 <!-- 0 HOME -->
 <section class="screen on" data-name="העתיד שלנו">
   <div id="home-full">
-  <!-- ראש מאויר, כמו זה שבפעילות. הוא יושב בתוך home-full ולא מעליו,
-       ולכן הוא נסגר ונפתח עם המסך המלא בלי שום לוגיקה נוספת: setEmpty
-       ו-applyTabSources שתיהן מזיזות את home-full, וראש שחי בחוץ היה
-       נשאר על המסך לצד המצב הריק, כלומר שני איורים.
-
-       האיור הוא ic-path, האייקון של הטאב עצמו, ולא פרצופים: הבורר
-       שמתחתיו הוא ארבעה פרצופים אמיתיים, ושלושה מצוירים מעליו היו
-       שבעה פרצופים בגלילה אחת. זה נמדד בהרכבה על החי לפני הבחירה.
-
-       ידוע ונבחר: השורה השנייה חוזרת על "ומי נוטע איתך" שבשורה
-       העליונה. הוצגו לצידה חמש חלופות, ואלון בחר את זו. המחיר:
-       המספר הגדול יורד מ-220 ל-339. -->
-  <div id="fut-head">
-    <div class="art"><svg width="46" height="46" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-path"/></svg></div>
-    <h3>הדרך של כל אחד מהם</h3>
-    <p>מה שמחכה להם, ומי נוטע איתך.</p>
-  </div>
   <!-- הבורר. פריט לכל נהנה, ואחריהם צ'יפ ההוספה: פרצוף בודד בשורה
        נראה כמו שריד, ולצידו הוא נראה כמו התחלה. המסך מציג נהנה אחד
        בכל פעם, והפתיחה היא על מי שהרגע שלו הקרוב ביותר. -->
