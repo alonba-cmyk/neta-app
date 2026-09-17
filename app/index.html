@@ -1400,35 +1400,45 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   padding:26px 4px;min-height:62%}
 /* הדגם שבתחתית מסך ריק: איך המסך ייראה כשיהיה בו תוכן. דוהה אל תוך הרקע
    ולא לחיץ — הוא תמונה, לא נתונים. הוא חי בתוך .es ולכן נעלם מעצמו ברגע
-   שיש נטיעה אמיתית להראות. */
+   שיש נטיעה אמיתית להראות.
+
+   ארבעת הדגמים זהים בעטיפה ונבדלים רק בתוכן. כל אחד נכתב בזמנו מול
+   המסך שלו, ולכן הם נבדלו בחמישה דברים בבת אחת: העמעום (50 אחוז
+   ב"ההשקעות שלי" מול 60 בשאר), הסטורציה (68 מול 90), התחלת הדהייה
+   (46 אחוז מול 22), הגובה (132, 150, 181) והמרווח (16/6 בקרובים מול
+   20/0). הכפתור שמעליהם נוחת באותו פיקסל בדיוק בארבעת המסכים, והגוש
+   שמתחתיו זז בכל מעבר בין טאבים.
+
+   הערכים הקודמים, למי שירצה לחזור אליהם: .gsample>* עם --ghost
+   ו---ghost-sat, ומעליהם #home-ghost>*, #act-ghost>* ו-#rel-ghost>*
+   עם --ghost-2; #kin-ghost בגובה 181 ועם הקלאס tall במארקאפ
+   (.gsample.tall בגובה 212 ודהייה מ-46 אחוז); #home-ghost בגובה
+   150; #rel-ghost במרווח 16/6; ובלי שני הכללים שמפשיטים את הכרטיס. */
 .gsample{position:relative;width:100%;margin-top:20px;height:132px;overflow:hidden;
   text-align:right;pointer-events:none;user-select:none}
-.gsample > *{opacity:var(--ghost);filter:saturate(var(--ghost-sat))}
+/* עמעום אחד לכולם, והוא הגבוה מבין השניים: שלושה מארבעת הדגמים נושאים
+   פרצופים, ופרצוף מלא צבע ב-34 אחוז ובסטורציה של 45 יוצא כתם אפור ולא
+   פנים. טקסט ואמוג'י שורדים את הנמוך, פרצוף לא. */
+.gsample > *{opacity:var(--ghost-2);filter:saturate(var(--ghost-sat-2))}
 .gsample:after{content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(to bottom,transparent 22%,var(--bg) 99%)}
-.gsample .ncard{margin-bottom:9px;cursor:default}
-/* הדגם של הקרובים אינו לחיץ: שורה ברשימה האמיתית פותחת עריכה, וכאן
-   אין את מי לערוך. */
-#rel-ghost{pointer-events:none;margin:16px 0 6px}
-#rel-ghost .rel{cursor:default}
-/* פרצוף מלא צבע ב-.34 ובסטורציה של 45 אחוז יוצא כתם אפור, ולא פנים.
-   שאר הדגמים מחזיקים טקסט ואמוג'י ושורדים את זה; כאן צריך קצת יותר. */
-#rel-ghost>*{opacity:var(--ghost-2);filter:saturate(var(--ghost-sat-2))}
-.gsample.tall{height:212px}
-.gsample.tall:after{background:linear-gradient(to bottom,transparent 46%,var(--bg) 99%)}
+/* דגם הוא רשימה שנמשכת ונעלמת, ולכן אין לו מסגרת: הדהייה היא מה שסוגר
+   אותו, וגבול כרטיס אומר בדיוק את ההפך, "זה נגמר כאן". הכרטיס שעוטף
+   את התוכן האמיתי מופשט כאן, והקו הדק בין שורה לשורה הוא מה שמפריד,
+   בדיוק כמו בפיד של הפעילות.
+
+   מחיר ידוע: ב"ההשקעות שלי" התוכן האמיתי הוא כרטיסים נפרדים ולא שורות,
+   ושם ההפשטה היא הפרה קטנה של "הדגם מראה את מה שבאמת יופיע". נבחר
+   ביודעין, כי זה דגם ולא נתונים. */
+.gsample > .card{border:0;background:none;padding:0}
+.gsample .ncard{border:0;background:none;border-radius:0;margin:0;
+  padding-inline:0;border-bottom:1px solid var(--line);cursor:default}
 .gsample .feed:last-child{border-bottom:0}
-/* הדגם כאן הוא שני כרטיסי 05ג — 86 פיקסל כל אחד ועוד 9 מרווח, בדיוק
-   כמו הכרטיס האמיתי, כך שמה שיופיע כאן יופיע במקום שהוא מסמן. הראשון
-   שלם והשני נבלע בדהייה. אין כאן חריגות מ-.gsample: העמעום והדהייה
-   הסטנדרטיים תוכננו בדיוק לכרטיסים כאלה. */
-#kin-ghost{height:181px}
-/* הגובה מכוון כך ששורת "מי נוטע" עוד מבצבצת מבעד לדהייה: היא החלק
-   שמבדיל את המסך הזה מכל השאר, ודגם שחותך אותה מבטיח רשימה ולא מעגל. */
-#home-ghost{height:150px}
-/* פרצוף מלא צבע ב-.34 ובסטורציה של 45 אחוז יוצא כתם אפור ולא פנים,
-   בדיוק כמו בדגם של הקרובים. ומאותו רגע שדגם הפעילות נושא פרצופים
-   ולא נבטים, הוא בדיוק באותה סירה. */
-#home-ghost > *,#act-ghost > *{opacity:var(--ghost-2);filter:saturate(var(--ghost-sat-2))}
+/* הדגם של הקרובים אינו לחיץ: שורה ברשימה האמיתית פותחת עריכה, וכאן
+   אין את מי לערוך. המרווח העליון בא מ-.gsample, והתחתון הוא הפרדה
+   ממה שבא אחריו במסך. */
+#rel-ghost .rel{cursor:default}
+#rel-ghost{margin-bottom:6px}
 /* המסך הריק של הבית בלבד, ולא .es הגלובלי שמשרת עוד שני מסכים.
 
    רוחב: 27ch נתנו לפסקה 190px, והיא נשברה לשלוש שורות. שתי שורות
@@ -1706,7 +1716,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ee50115';
+window.NETA_BUILD = '64bcdcc';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2792,7 +2802,7 @@ window.NETA_CONFIG = {
          לשנות") בשורה משלה. בזרימה חופשית "עת." נשאר לבדו בשורה
          שלישית, או ש"אפשר לשנות" נדחק לסוף הראשונה ונקרא כחלק מהתחזית. -->
     <p class="fine">100 ₪ בחודש יהפכו לכ-23,500 ₪ בעוד 13 שנה.<br>אפשר לשנות בכל עת.</p>
-    <div class="gsample tall" id="kin-ghost" aria-hidden="true"></div>
+    <div class="gsample" id="kin-ghost" aria-hidden="true"></div>
   </div>
   <!-- מה שממתין לתשובה שלך: בקשת אישור כהורה, הזמנה שנדחתה, או
        שתיהן. השורות נבנות ב-pendRowsHTML ומוזרקות לשני המקומות מאותו
