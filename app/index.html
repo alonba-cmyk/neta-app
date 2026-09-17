@@ -1426,8 +1426,9 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שמבדיל את המסך הזה מכל השאר, ודגם שחותך אותה מבטיח רשימה ולא מעגל. */
 #home-ghost{height:150px}
 /* פרצוף מלא צבע ב-.34 ובסטורציה של 45 אחוז יוצא כתם אפור ולא פנים,
-   בדיוק כמו בדגם של הקרובים. */
-#home-ghost > *{opacity:var(--ghost-2);filter:saturate(var(--ghost-sat-2))}
+   בדיוק כמו בדגם של הקרובים. ומאותו רגע שדגם הפעילות נושא פרצופים
+   ולא נבטים, הוא בדיוק באותה סירה. */
+#home-ghost > *,#act-ghost > *{opacity:var(--ghost-2);filter:saturate(var(--ghost-sat-2))}
 /* המסך הריק של הבית בלבד, ולא .es הגלובלי שמשרת עוד שני מסכים.
 
    רוחב: 27ch נתנו לפסקה 190px, והיא נשברה לשלוש שורות. שתי שורות
@@ -1705,7 +1706,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4fa11ab';
+window.NETA_BUILD = 'ee50115';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -10439,13 +10440,23 @@ function demoRecurring(back,day){
             amount:r[2],isMe:true,contribKind:'recurring',at:inMonth(back,day)};
   });
 }
+/* ‏avatar ו-icon בכל שורה, כמו במקור החי (actor_avatar מ-0031).
+   בלעדיהם ההדגמה הציגה נבט במקום פרצוף, כלומר עברה על נתיב אחר
+   מזה של חשבון אמיתי בדיוק במסך שכל כולו פרצופים. */
 demoSource.feed=function(){
   return Promise.resolve([
-    {kind:'contribution',   actor:'דוד יוסי', name:'הגיוס של דניאל',
+    /* ‏🪖 ולא ★ שב-plants.danielArmy: אותה נטיעה מופיעה באותו מסך
+       גם בשורות הקבועות (DEMO_RECUR), ושני אייקונים לרגע אחד נקראים
+       כשני רגעים. ★ הוא גם תו טקסט ולא אמוג'י, ולכן הוא יוצא
+       חד-צבעי בין שכנים צבעוניים. */
+    {kind:'contribution',   actor:'דוד יוסי', avatar:'av-uncle', icon:'🪖',
+     name:'הגיוס של דניאל',
      amount:5000, isMe:false, contribKind:'gift', at:daysAgo(2)},
-    {kind:'contribution',   actor:'אתה',      name:'הלימודים של נועה',
+    {kind:'contribution',   actor:'אתה',      icon:'🎓',
+     name:'הלימודים של נועה',
      amount:6000, isMe:true,  contribKind:'one_time', at:daysAgo(7)},
-    {kind:'letter_signed',  actor:'סבתא רחל', name:'הדירה של נועה',
+    {kind:'letter_signed',  actor:'סבתא רחל', avatar:'av-granny', icon:'🏠',
+     name:'הדירה של נועה',
      amount:null, isMe:false, at:daysAgo(14)},
     {kind:'anniversary',    actor:null,       name:'בר המצווה של דניאל',
      amount:null, isMe:false, at:daysAgo(32), years:6, icon:'🎂'}
@@ -10739,13 +10750,19 @@ function buildGhosts(){
       (r.status==='invited'?'שלח שוב':'הזמן')+'</span>');
   }).join('')+'</div>';
 
+  /* ‏avatar ו-icon בכל שורה, ולא רק שם וסכום. feedRowHTML נופלת
+     לנבט כשאין icon ולאייקון כשאין avatar, ולכן דגם שנבנה מהרכיב
+     האמיתי עם חצי שורה הציג שלושה נבטים במקום פרצוף עם תג רגע,
+     שהוא בדיוק מה שהאיור שמעליו מבטיח. השורה שלי נושאת את אייקון
+     הנטיעה, ושורה של קרוב את פניו, כפי שהפיד החי עושה. */
   const act=document.getElementById('act-ghost');
   if(act)act.innerHTML=[
-    {kind:'contribution',actor:'סבתא רחל',name:'בר המצווה של דניאל',
-     isMe:false,amount:null,at:daysAgo(1)},
-    {kind:'contribution',name:'בר המצווה של דניאל',isMe:true,amount:15000,at:daysAgo(8)},
-    {kind:'letter_signed',actor:'דוד יוסי',name:'בר המצווה של דניאל',
-     isMe:false,at:daysAgo(34)}
+    {kind:'contribution',actor:'סבתא רחל',avatar:'av-granny',icon:'🎂',
+     name:'בר המצווה של דניאל',isMe:false,amount:null,at:daysAgo(1)},
+    {kind:'contribution',name:'בר המצווה של דניאל',icon:'🎂',
+     isMe:true,amount:15000,at:daysAgo(8)},
+    {kind:'letter_signed',actor:'דוד יוסי',avatar:'av-uncle',icon:'🎂',
+     name:'בר המצווה של דניאל',isMe:false,at:daysAgo(34)}
   ].map(feedRowHTML).join('');
 }
 
