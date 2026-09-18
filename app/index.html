@@ -1850,7 +1850,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '9e479b9';
+window.NETA_BUILD = '3cc73b2';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3062,7 +3062,7 @@ window.NETA_CONFIG = {
   <div class="card" id="rel-list"></div>
   <button class="btn gap-s" id="rel-send" style="display:none"
           onclick="invPreview()">המשך</button>
-  <button class="btn gap-s" id="rel-add" onclick="openAddPerson()">+ הוסף קרוב</button>
+  <button class="btn gap-s" id="rel-add" onclick="openAddPerson('with')">+ הוסף קרוב</button>
   <!-- כך זה ייראה כשקרובים יצטרפו. אותו דגם דוהה שיש בשלושת המצבים
        הריקים האחרים, ומאותו מקור: שורות אמיתיות של הרשימה עם שמות
        ההדגמה, ולא ציור שלהן. -->
@@ -8024,7 +8024,7 @@ function buildRelatives(){
     /* ההוספה היא פעולת רשימה: היא מוסיפה שורה, ולכן מקומה בסוף
        הרשימה ולא בשורת הפעולות שמתחתיה. שם היא גם נקראה כאלטרנטיבה
        שקולה לשליחה, שאינה. */
-    '<div class="reladd" onclick="openAddPerson()">+ הזמן מישהו שאינו ברשימה</div>';
+    '<div class="reladd" onclick="openAddPerson(&quot;with&quot;)">+ הזמן מישהו שאינו ברשימה</div>';
     relMeta();return;
   }
   box.innerHTML=relatives.map(function(r,i){
@@ -8051,7 +8051,7 @@ function buildRelatives(){
        ההזמנה: היא מוסיפה שורה, ולכן מקומה בתוך מה שהיא משנה. הכפתור
        הירוק נשאר רק במצב הריק, כי מצב ריק בלי פעולה הוא בדיוק מה
        שתוקן כאן קודם. */
-    '<div class="reladd" onclick="openAddPerson()">+ הוסף קרוב</div>';
+    '<div class="reladd" onclick="openAddPerson(&quot;with&quot;)">+ הוסף קרוב</div>';
   relMeta();
 }
 /* שורה אחת, שני שימושים: הרשימה האמיתית והדגם הדוהה שמתחת למצב הריק.
@@ -8079,7 +8079,7 @@ function paintKidSection(){
      עבורו נעשית בפאנל הראשון של האשף. */
   if(!rows.length){
     box.style.border='none';box.style.background='none';box.style.padding='0';
-    box.innerHTML='<div class="reladd" style="margin-top:0" onclick="openAddPerson()">+ הוסף קרוב</div>';
+    box.innerHTML='<div class="reladd" style="margin-top:0" onclick="openAddPerson(&quot;for&quot;)">+ הוסף קרוב</div>';
     return;
   }
   box.style.border='';box.style.background='';box.style.padding='';
@@ -8103,7 +8103,7 @@ function paintKidSection(){
       '<span class="rn"><b>'+attrText(b.name)+'</b><i>'+attrText(sub)+'</i></span>'+
       act+'</div>';
   }).join('')+
-    '<div class="reladd" onclick="openAddPerson()">+ הוסף קרוב</div>';
+    '<div class="reladd" onclick="openAddPerson(&quot;for&quot;)">+ הוסף קרוב</div>';
 }
 function kidMoments(b){
   const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
@@ -8902,11 +8902,18 @@ function apShow(){
   txt('ap-lbl','שלב '+(apStep+1)+' מתוך '+list.length+' · '+lbls[apStep]);
   document.querySelector('.stage').scrollTo?.(0,0);
 }
-function openAddPerson(){
+function openAddPerson(kind){
   /* מצב הזמנה: הרגע ידוע, ולכן גם הסוג. relInviteKey הוא המקור
      היחיד לשניהם, ואין פרמטר שאפשר לשכוח להעביר. */
   apFrom=relInviteKey||'';
-  apKindMode='with';apStep=0;apRel='mother';apAv='av-granny';
+  /* והסוג בא מהשורה שנלחצה. "+ הוסף קרוב" מופיע פעמיים באותו מסך,
+     פעם בסוף רשימת הקרובים ופעם בסוף רשימת הילדים, ושתיהן פותחות
+     את אותו פאנל עם אותה שאלה. זה נבחר במפורש (ראו CLAUDE.md),
+     ולכן מה שמשתנה כאן אינו השאלה אלא התשובה שמסומנת כשהיא נפתחת:
+     מי שלחץ בתוך רשימת הילדים כבר אמר "עבורו".
+     מצב הזמנה גובר, כי שם השאלה היא למי לשלוח וזה תמיד "איתו". */
+  apKindMode=(!apFrom&&kind==='for')?'for':'with';
+  apStep=0;apRel='mother';apAv='av-granny';
   apKidAv='av-kid1';apKidSexV='m';apKidRel='son';apPhoto=null;apPhotoOn=false;
   if(apRelPhoto&&apRelPhoto.url)URL.revokeObjectURL(apRelPhoto.url);
   apRelPhoto=null;
@@ -8914,8 +8921,10 @@ function openAddPerson(){
      הכריז "לא סימנת רגע" ונשא כפתור "הוסף לרשימה" על מסלול שכל כולו
      הזמנה לרגע מסוים. */
   apPlants=apFrom?[apFrom]:[];
-  document.querySelectorAll('#ap-kind button').forEach(function(x,i){
-    x.classList.toggle('on',i===0)});
+  /* לפי data-k ולא לפי אינדקס: אינדקס קשיח מסמן תמיד את הראשון,
+     וזה בדיוק מה שהיה כאן. */
+  document.querySelectorAll('#ap-kind button').forEach(function(x){
+    x.classList.toggle('on',x.dataset.k===apKindMode)});
   ['ap-name','ap-relfree','ap-contact','ap-kidname','ap-kidrelfree'].forEach(function(id){
     const el=document.getElementById(id); if(el)el.value='';
   });
