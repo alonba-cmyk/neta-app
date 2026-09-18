@@ -896,9 +896,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* שורה בלי "מי" נמוכה יותר, כי אין בה שורה שנייה — ולא רק בגלל שהיא
    ריקה: הריווח מתהדק איתה כדי שהפיד ייראה רשימה ולא טבלה מרווחת. */
 .fr.one{padding:7px 0}
-.fr.one .fic,.fr.one .fav{width:30px;height:30px}
-.fr.one .fic{border-radius:9px;font-size:14px}
-.fr.one .fic svg{width:16px;height:16px}
+/* הריבוע עצמו נשאר 34 גם כאן. הוא היה 30 בשורה בלי "מי", כלומר
+   הפיד החזיק שני גדלים של אותו רכיב זה מתחת לזה, ואלון ראה את זה
+   מיד: "למה הריבוע של הבית קטן יותר מהריבוע של הטבעת". מה שמתהדק
+   בשורה קצרה הוא הריווח שמעליה ומתחתיה, לא האייקון שבתוכה: הריווח
+   הוא תכונה של השורה, והאייקון הוא רכיב שחוזר בכל השורות. */
 
 /* ===== edit screen ===== */
 .sw{position:relative;width:38px;height:22px;border-radius:11px;background:var(--s2);border:1px solid var(--line-2);
@@ -1850,7 +1852,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '3cc73b2';
+window.NETA_BUILD = '075295c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
