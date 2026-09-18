@@ -1511,8 +1511,8 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #fut-head{text-align:center;padding:26px 4px 0;margin-bottom:16px}
 #fut-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:12px}
 #fut-head .art svg{display:block}
-#fut-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance;margin:0}
-#fut-head p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin:8px auto 0;max-width:290px}
+#fut-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance;
+  margin:0 auto;max-width:300px}
 /* ── "ההשקעות שלי": אותו מבנה ראש, במספר במקום בכותרת ─────────────
    שני הטאבים השכנים פותחים באיור ממורכז ומתחתיו טקסט, וזה היה המסך
    היחיד שפותח בשורה: מספר מימין ונבט משמאלו. עכשיו הנבט עולה מעל
@@ -1823,7 +1823,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f634e57';
+window.NETA_BUILD = 'ef17cec';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2046,8 +2046,11 @@ window.NETA_CONFIG = {
        שאינו הרשת שעליה הוא מצויר, ולכן נראתה ממנו פינה. -->
   <div id="fut-head">
     <div class="art"><svg width="62" height="62" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-path"/></svg></div>
-    <h3>מה מחכה להם?</h3>
-    <p>כמה נצבר לכל אחד, ומי נוטע איתך</p>
+    <!-- שתי שורות בכותרת ובלי משפט שקט מתחתיהן: השאלה ומה שעונה
+         עליה הן אמירה אחת, ושורה אפורה שחוזרת על אותה עובדה במשקל
+         שני מוסיפה שכבה ולא מידע. זה גם מה שמחזיר 30 פיקסלים למספר
+         הגדול, שהמסך הזה משלם עליהם יותר מכל מסך אחר. -->
+    <h3>מה מחכה להם?<br>כמה נצבר לכל אחד, ומי נוטע איתך</h3>
   </div>
   <!-- הבורר. פריט לכל נהנה, ואחריהם צ'יפ ההוספה: פרצוף בודד בשורה
        נראה כמו שריד, ולצידו הוא נראה כמו התחלה. המסך מציג נהנה אחד
