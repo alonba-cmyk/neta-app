@@ -1852,7 +1852,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '075295c';
+window.NETA_BUILD = '1caf05e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2079,8 +2079,11 @@ window.NETA_CONFIG = {
 
        והגרסה הראשונה קיבלה viewBox של 70x46, שאינו הרשת שעליה הוא
        מצויר בכלל, ולכן נראתה ממנו פינה. -->
+  <!-- ניסוי: האייקון ירד מכאן. אם הוא חוזר, הוא
+       <div class="art"><svg width="50" height="52" viewBox="2.4 1.5 19.2 20"
+       aria-hidden="true"><use href="#ic-path"/></svg></div>, וה-CSS שלו
+       (#fut-head .art) עדיין בקובץ. -->
   <div id="fut-head">
-    <div class="art"><svg width="50" height="52" viewBox="2.4 1.5 19.2 20" aria-hidden="true"><use href="#ic-path"/></svg></div>
     <!-- שתי שורות בכותרת ובלי משפט שקט מתחתיהן: השאלה ומה שעונה
          עליה הן אמירה אחת, ושורה אפורה שחוזרת על אותה עובדה במשקל
          שני מוסיפה שכבה ולא מידע. זה גם מה שמחזיר 30 פיקסלים למספר
