@@ -1787,7 +1787,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '69838a5';
+window.NETA_BUILD = 'ec98a83';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2992,11 +2992,6 @@ window.NETA_CONFIG = {
        יורד, כי שם הרשימה היא בחירה מרובה של נמענים. -->
   <p class="eyebrow" id="kid-head" style="display:none">מי שאני נוטע עבורו</p>
   <div class="card" id="kid-list" style="display:none"></div>
-  <!-- לכל רשימה הכפתור שלה. מרגע ש"+ הוסף קרוב" נוקב בסוג, סקשן
-       הילדים נשאר בלי שום פעולה, ואין במסך דרך להוסיף ילד. הוא מוצג
-       גם כשאין ילדים, כי זו הדרך היחידה באפליקציה להוסיף ילד בלי
-       לפתוח לו רגע, ורשימה שאינה קיימת עוד אינה סיבה להסתיר אותה. -->
-  <button class="btn gap-s" id="kid-add" onclick="openAddPerson('for')">+ הוסף ילד</button>
 
   <!-- "רגעים שהזמינו אותך אליהם" ירדה מכאן. המסך הזה הוא על אנשים,
        ומאז שמסך הבית מחזיק סקשן "נטיעות עבור אחרים" אותו רגע בדיוק
@@ -7967,9 +7962,13 @@ function paintKidSection(){
   /* הסקשן נשאר על המסך גם בלי ילדים, בשורה אחת במקום בכרטיס. הכפתור
      שמתחתיו הוא הדרך היחידה להוסיף ילד בלי לפתוח לו רגע, וכפתור בלי
      התווית שמעליו נקרא כשייך לרשימה הקודמת. */
+  /* ההוספה היא שורה מקווקוות בתוך הרשימה ולא כפתור מלא מתחתיה, בדיוק
+     כמו "+ הזמן מישהו שאינו ברשימה" ברשימה שמעל. שני כפתורים ירוקים
+     על מסך אחד הם שתי פעולות ראשיות, והן גם אינן אותו דבר: להוסיף
+     קרוב זו הזמנה, ולהוסיף ילד לא. */
   if(!rows.length){
     box.style.border='none';box.style.background='none';box.style.padding='0';
-    box.innerHTML='<p class="fine" style="margin:0">עוד לא הוספת ילד. כאן יופיעו מי שאתה נוטע עבורם, עם הרגעים שנפתחו להם.</p>';
+    box.innerHTML='<div class="reladd" style="margin-top:0" onclick="openAddPerson(\'for\')">+ הוסף ילד</div>';
     return;
   }
   box.style.border='';box.style.background='';box.style.padding='';
@@ -7992,7 +7991,8 @@ function paintKidSection(){
       '<div class="ra">'+kidFaceHTML(b.avatar||kidAvatar(b.name,b.sex),34)+'</div>'+
       '<span class="rn"><b>'+attrText(b.name)+'</b><i>'+attrText(sub)+'</i></span>'+
       act+'</div>';
-  }).join('');
+  }).join('')+
+    '<div class="reladd" onclick="openAddPerson(\'for\')">+ הוסף ילד</div>';
 }
 function kidMoments(b){
   const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
@@ -8211,8 +8211,6 @@ function paintInvSend(){
   const b=document.getElementById('rel-send'),add=document.getElementById('rel-add');
   /* במצב הזמנה ההוספה יושבת בסוף הרשימה, ולכן הכפתור שמתחתיה יורד.
      מחוץ למצב הזמנה הוא הפעולה הראשית של המסך ונשאר. */
-  const kadd=document.getElementById('kid-add');
-  if(kadd)kadd.style.display=relInviteKey?'none':'';
   if(add){
     add.style.display=relInviteKey?'none':'';
     add.className='btn gap-s';
