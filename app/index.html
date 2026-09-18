@@ -1491,16 +1491,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #rel-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:12px}
 #rel-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
 #rel-head p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin:8px auto 0;max-width:290px}
-/* הפרצוף בראש הוא 64 ולא 70, ולכן זהה בדיוק לפרצוף שבצביר של
-   "הקרובים שלי" (.esfaces>span), וכך גם התג שעליו (25 במקום 34).
-   שני המסכים שכנים בסרגל, והעין עוברת ביניהם בלחיצה אחת: 70 מול 64
-   נקרא כקפיצה של האיור. הרדיוס נגזר מאותה פרופורציה (22 מתוך 70 הם
-   20 מתוך 64), כי מה שנשאר שונה בכוונה הוא הצורה ולא הגודל: שם עיגול,
-   כאן ריבוע מעוגל, בדיוק כמו שורת פיד. ממוקד ל-#act-head: ב-#act-empty
-   ‏.bigfav נשאר 70, כי שם הוא כוון מול שלושת המצבים הריקים האחרים. */
-#act-head .bigfav{width:64px;height:64px}
-#act-head .bigfav>.avsvg{border-radius:20px}
-#act-head .bigfav>i{width:25px;height:25px;border-radius:8px;font-size:12px;bottom:-5px;left:-7px}
+/* הפרצוף בראש הוא הרכיב של הצביר ב"הקרובים שלי" (.esfaces.kids)
+   בפרצוף אחד, ולכן אין כאן שום כלל גודל: 64 והתג של 25 מגיעים משם.
+   קודם ישב כאן .bigfav מוקטן ל-64 עם רדיוס 20, כלומר ריבוע מעוגל,
+   בטענה ששורת פיד היא ריבוע מעוגל והאיור הוא שורת פיד בגודל איור.
+   **אלון ראה את זה כשתי שפות בשני טאבים שכנים**, והצורה יושרה.
+   ‏`#act-empty` לא נגע: שם `.bigfav` נשאר 70 בריבוע מעוגל, כי הוא
+   כוון מול שלושת המצבים הריקים האחרים ולא מול הטאב השכן. */
 #act-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:12px}
 #act-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
 #act-head p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin:8px auto 0;max-width:290px}
@@ -1787,7 +1784,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ef3d08b';
+window.NETA_BUILD = 'b7b9a7d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2594,8 +2591,12 @@ window.NETA_CONFIG = {
        ואלון בחר את הגרסה המלאה. המחיר: הפיד מתחיל ב-256 במקום ב-93. -->
   <div id="act-full">
   <div id="act-head">
-    <div class="art"><span class="bigfav" aria-hidden="true">
-      <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg><i>🎂</i></span></div>
+    <!-- אותו רכיב בדיוק כמו בצביר של "הקרובים שלי" (.esfaces.kids),
+         בפרצוף אחד: עיגול של 64 ותג רגע של 25. הריבוע המעוגל שהיה
+         כאן ירד, ראו את ההערה ב-CSS. -->
+    <div class="art"><span class="esfaces kids" aria-hidden="true">
+      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></span><i>🎂</i></span>
+    </span></div>
     <!-- שתי שורות בכותרת ושתיים במשפט, כמו ב"הקרובים שלי": שאלה
          ואחריה מה שהיא עונה. השורה השנייה אומרת למה זה חשוב ולא מה
          יש ברשימה, כי המשפט האפור שמתחתיה כבר מונה את מה שיש. -->
