@@ -1787,7 +1787,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ec98a83';
+window.NETA_BUILD = 'cf191d6';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2956,6 +2956,12 @@ window.NETA_CONFIG = {
     <h3>מי כבר נוטע איתך?<br>הזמן את סבתא, אח או דוד קרוב</h3>
     <p>מזמינים את הקרובים להשקיע<br>בעתיד של היקרים לך מכל</p>
   </div>
+  <!-- תווית לרשימה, כמו זו של הילדים מתחתיה: שתי רשימות במסך אחד,
+       ואחת מהן בלי שם היא רשימה שצריך להסיק מה יש בה. היא עולה ויורדת
+       יחד עם הראש, כלומר רק כשיש רשימה: במצב הריק היא ריחפה בראש המסך
+       26 פיקסלים מעל האיור ונקראה כשורה יתומה, ושם ממילא הכותרת
+       המאוירת אומרת את מה שהיא אומרת. -->
+  <p class="eyebrow" id="rel-eyebrow" style="display:none">מי שנוטע איתי</p>
   <div class="card" id="rel-list"></div>
   <button class="btn gap-s" id="rel-send" style="display:none"
           onclick="invPreview()">המשך</button>
@@ -7866,8 +7872,10 @@ function buildRelatives(){
   const box=document.getElementById('rel-list');
   /* הראש חי הפוך למצב הריק: הוא מוצג כשיש קרובים, ויורד כשאין,
      ולכן ההחלטה יושבת כאן ולא במקום נוסף. */
-  const head=document.getElementById('rel-head');
-  if(head)head.style.display=(relatives.length&&!relInviteKey)?'':'none';
+  const head=document.getElementById('rel-head'),eb=document.getElementById('rel-eyebrow');
+  const withRel=!!(relatives.length&&!relInviteKey);
+  if(head)head.style.display=withRel?'':'none';
+  if(eb)eb.style.display=withRel?'':'none';
   /* בראש ולא בכל ענף: לפונקציה שלושה מסלולי יציאה, ומי שנשכח בהם
      השאיר את הכיתוב של מצב ההזמנה על מסך שאינו במצב הזמנה. */
   paintInvSend();
