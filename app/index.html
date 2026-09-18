@@ -1869,7 +1869,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '368cbea';
+window.NETA_BUILD = '1231b4f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4143,7 +4143,8 @@ const OCCASION_PHRASE={
    וכותרת שאינה מזכירה את מי שנבחר קודם נקראת כמסך שאינו קשור. */
 function occHead(){
   const nm=((document.getElementById('c-name')||{}).value||'').trim();
-  txt('cp1-h',(designated&&nm)?('לאיזה רגע '+bs('בחייו','בחייה')+' של '+nm+'?')
+  txt('cp1-h',beneIsMe()?'לאיזה רגע בחייך?'
+    :(designated&&nm)?('לאיזה רגע '+bs('בחייו','בחייה')+' של '+nm+'?')
                               :'לאיזה רגע?');
 }
 function occasionPhrase(){
@@ -4155,6 +4156,15 @@ function occasionPhrase(){
   const nm=(cName.value||'הילד').trim();
   const t=cType==='custom'?(cCustom.value.trim()||'המטרה'):cType;
   const p=OCCASION_PHRASE[t];
+  /* "לקראת בר/בת המצווה של אלון בר דוד" על עצמי. הביטויים בטבלה
+     נגמרים ב"של " או ב"בשביל ", ולכן די להחליף את הזנב במקום לכתוב
+     טבלה שנייה שתצטרך להתעדכן פעמיים. */
+  if(beneIsMe()){
+    if(p&&/של $/.test(p))return p.replace(/של $/,'שלך');
+    if(p&&/בשביל $/.test(p))return p+'עצמך';
+    if(p)return p.replace('NAME','עצמך');
+    return 'לקראת '+t+' שלך';
+  }
   if(p)return p.includes('NAME')?p.replace('NAME',nm):p+nm;
   return 'לקראת '+t+' של '+nm;
 }
@@ -4934,7 +4944,9 @@ function updateGoal(){
   if(cDate.value){const d=new Date(cDate.value);dateLabel=months[d.getMonth()]+' '+d.getFullYear();years=yearsUntil(cDate.value);}
   goal={name:designated?n:t,type:t,icon:cIcon,dateLabel:dateLabel,years:years,desig:designated};
   /* amount comes first on this screen — it's what the screen is actually for; term is a refinement under it */
-  txt('eb-term',(designated?('מתי תרצה ש'+n+' '+bs('יוכל','תוכל')+' לקצור את הפירות?'):'מתי תרצה לקצור את הפירות?'));
+  txt('eb-term',(designated&&!beneIsMe())
+    ?('מתי תרצה ש'+n+' '+bs('יוכל','תוכל')+' לקצור את הפירות?')
+    :'מתי תרצה לקצור את הפירות?');
   txt('ct-icon',cIcon);
   document.getElementById('ct-title').textContent=designated?('השקע עבור '+n):('השקע ל'+t);
   /* the header no longer states the date — it is an input on this screen now */
@@ -5214,6 +5226,25 @@ let creating=false;
    שפתח ומאשר לבד. שאלה שיש לה תשובה אחת אינה שאלה, ולכן השלב יורד
    ‏— בדיוק כמו שהוא יורד כשאין נהנה בכלל. */
 function beneIsMe(){return designated&&cRel==='self'}
+/* כשהנהנה הוא אני, השם המלא חוזר בכל כותרת ובכל משפט. הוא נכון, והוא
+   גם נקרא כמו טופס: "לאיזה רגע בחייו של אלון בר דוד?" במקום "לאיזה
+   רגע בחייך?". שתי דרכים לדעת את אותה עובדה, ולכן שני שמות קרובים:
+   באשף זו הקרבה שנבחרה ברשת, ובמסכים שקוראים מהמסד זו
+   beneficiaries.relation. מי שמוסיף מסך חדש בוחר לפי מה שיש לו ביד. */
+function isSelfRel(r){return r==='self'}
+/* בשם ולא במזהה, כי mi-meta מקבל רשימת שמות ולא שורות. אם אין ישות
+   מתאימה התשובה היא לא, כלומר הניסוח נשאר כפי שהיה. */
+function beneRel(id){
+  if(!id)return '';
+  const b=(benes||[]).filter(function(x){return x.id===id})[0];
+  return (b&&b.relation)||'';
+}
+function isSelfName(nm){
+  if(!nm)return false;
+  const t=String(nm).trim();
+  return (benes||[]).some(function(b){
+    return isSelfRel(b.relation)&&String(b.name||'').trim()===t});
+}
 /* מי שהשלב יורד לו רואה סרגל קצר יותר. שתי הפונקציות שכנות בכוונה:
    אחת סופרת את הנקודות והשנייה אומרת באיזו מהן אנחנו, ותיקון של רק
    אחת מהן נותן סרגל שמראה מספר אחד ומכריז אחר. */
@@ -6502,6 +6533,11 @@ function ahaOccasion(){
 }
 function ahaDayLine(){
   const o=ahaOccasion();
+  /* כל שורות INVITE_LINE מדברות על הנהנה בגוף שלישי ("X עוד לא יודע,
+     אבל..."), וזה קורס כשהנהנה הוא מי שקורא. השורה כאן אומרת את אותו
+     הדבר עליו. */
+  if(beneIsMe())
+    return 'ביום שבו כולם יביאו מעטפה, אחת כבר תחכה לך שנים.';
   return inviteLine(o.kid,o.occ,o.sex);
 }
 /* copy on the payment + aha screens follows the planting being deposited into */
@@ -6543,11 +6579,15 @@ function ahaCopy(){
   const el=document.getElementById('aha-sub');
   if(isNewPlant){
     const grows=freq==='m'||mode!=='keep';
-    el.innerHTML=
-      'איזה כיף שכבר עכשיו חשבת כמה צעדים קדימה והשקעת בעתיד '+bs('שלו','שלה')+'. '+
-      (grows?'מעכשיו תוכל לראות את זה גדל לאורך השנים, ו'
-            :'מעכשיו זה שמור ומחכה, ו')+
-      '<b>'+nm+'</b> '+bs('יקצור','תקצור')+' את הפירות ברגע המיוחל.';
+    el.innerHTML=beneIsMe()
+      ? ('איזה כיף שכבר עכשיו חשבת כמה צעדים קדימה והשקעת בעתיד שלך. '+
+         (grows?'מעכשיו תוכל לראות את זה גדל לאורך השנים, ו'
+               :'מעכשיו זה שמור ומחכה, ו')+
+         '<b>תקצור את הפירות</b> ברגע המיוחל.')
+      : ('איזה כיף שכבר עכשיו חשבת כמה צעדים קדימה והשקעת בעתיד '+bs('שלו','שלה')+'. '+
+         (grows?'מעכשיו תוכל לראות את זה גדל לאורך השנים, ו'
+               :'מעכשיו זה שמור ומחכה, ו')+
+         '<b>'+nm+'</b> '+bs('יקצור','תקצור')+' את הפירות ברגע המיוחל.');
     return;
   }
   let p=null;try{p=plantAt(cur);}catch(e){}
@@ -6831,7 +6871,9 @@ function celebrate(){
   const h2=document.getElementById('aha-h2');
   if(h2)h2.innerHTML=goal.desig===false
     ? (isNewPlant?'זהו, בשעה טובה.<br>הקופה שלך נפתחה!':'הוספת לקופה שלך')
-    : (isNewPlant?('זהו, בשעה טובה.<br>ההשקעה עבור '+attrText(goal.name)+' נוצרה בהצלחה!')
+    : (isNewPlant?(beneIsMe()
+        ? 'זהו, בשעה טובה.<br>ההשקעה שלך נוצרה בהצלחה!'
+        : ('זהו, בשעה טובה.<br>ההשקעה עבור '+attrText(goal.name)+' נוצרה בהצלחה!'))
                  :('העלה שלך נוסף לעץ של '+goal.name));
   if(onbo){
     const v=freq==='m'?+amtM.value:+amtL.value;
@@ -11450,6 +11492,10 @@ function buildHomeSummary(){
     if(missing.length)signPhotos(missing).then(function(){
       if(missing.some(function(x){return photoUrl(x)}))buildHomeSummary();
     });
+    const mineNeed=selfPaths(fuAll);
+    if(mineNeed.length)signFaces(mineNeed).then(function(){
+      if(mineNeed.some(function(x){return photoUrl(x)}))buildHomeSummary();
+    });
     const faces=facePaths(model.plantings);
     if(faces.length)signFaces(faces).then(function(){
       if(faces.some(function(x){return photoUrl(x)}))buildHomeSummary();
@@ -11634,8 +11680,11 @@ function buildHomeSummary(){
     ownHead.style.display=selEmpty?'none':'';
     /* הכותרת מתארת את הרשימה שמתחתיה, שהיא הרגעים של מי שנבחר. */
     if(!selEmpty&&sel)txt('own-head',
-      sel.rows.length===1 ? ('הרגע של '+firstName(sel.name))
-                          : (hebCount(sel.rows.length)+' הרגעים של '+firstName(sel.name)));
+      isSelfRel(sel.rel)
+        ? (sel.rows.length===1 ? 'הרגע שלך'
+                               : (hebCount(sel.rows.length)+' הרגעים שלך'))
+        : (sel.rows.length===1 ? ('הרגע של '+firstName(sel.name))
+                               : (hebCount(sel.rows.length)+' הרגעים של '+firstName(sel.name))));
 
     /* הכרטיסייה: הרגעים של מי שנבחר, ומתחתיהם מי נוטע לו. כשאין עוד
        איש, אותה שורה נושאת גם את ההזמנה — הפעולה יושבת ליד העובדה
@@ -11742,6 +11791,7 @@ function buildHomeSummary(){
         const w=bShortWhen(one),when=w?('ב'+w):'';
         /* השם ולא הכינוי: המקור החי אינו מחזיר את מין הנהנה, ולכן
            "יחכו לו" היה ניחוש. עם השם אין מה לנחש. */
+        if(sel&&isSelfRel(sel.rel))return ['יחכו לך',when];
         if(nm)return ['יחכו ל'+nm,when];
         if(one.sex==='f')return ['יחכו לה',when];
         if(one.sex==='m')return ['יחכו לו',when];
@@ -11875,7 +11925,8 @@ function paintInvestments(){
      הכיתוב עובר לצורה הכללית. */
   const who=beneficiariesOf(rows);
   txt('mi-meta',
-    who.length===1 ? ('זה מה שכבר השקעת בעתיד של '+who[0]) :
+    who.length===1 ? ('זה מה שכבר השקעת בעתיד '+
+                      (isSelfName(who[0])?'שלך':('של '+who[0]))) :
     who.length>1   ? 'זה מה שכבר השקעת בעתיד של היקרים שלך'
                    : 'זה מה שכבר השקעת, עוד בלי לקבוע למי');
   document.getElementById('mi-list').innerHTML=rows.map(ivCardHTML).join('');
@@ -12010,8 +12061,16 @@ function kidFace(rows,name){
 function fuItems(own){
   const kg=kidGroups(own);
   const out=kg.groups.map(function(g){
-    return {id:'k:'+(g.kidId||g.kid),name:g.kid,kidId:g.kidId,
-            av:kidFace(g.rows,g.kid),
+    const rel=beneRel(g.kidId);
+    /* מה שנשמר לנהנה "עבורי" הוא דמות מהספרייט בלבד, כי נתיב תמונת
+       פרופיל יושב ב-bucket אחר וחתימה שלו כתמונת ילד מחזירה קישור
+       שבור. אבל התמונה כן קיימת, והיא כבר בהאדר של אותו מסך: מי
+       שהעלה אותה רואה את עצמו למעלה ודמות מצוירת בבורר שמתחת.
+       כאן היא נלקחת מהפרופיל בזמן הציור, ונחתמת מול ה-bucket שלה. */
+    const mineAv=isSelfRel(rel)?myAvatarKey():'';
+    const isPhoto=mineAv&&mineAv.indexOf('av-')!==0;
+    return {id:'k:'+(g.kidId||g.kid),name:g.kid,kidId:g.kidId,rel:rel,
+            av:isPhoto?mineAv:kidFace(g.rows,g.kid),selfav:!!isPhoto,
             rows:g.rows,accrued:g.accrued,mine:g.mine,proj:g.proj,people:g.people};
   });
   kg.loose.forEach(function(p){
@@ -12055,8 +12114,15 @@ function pickFuture(id){fuPick=id;buildHomeSummary();}
 /* נתיבי התמונות שברשימה. הם נחתמים לפני הציור ולא בתוכו, ולכן
    הציור נשאר סינכרוני. */
 function photoPaths(items){
-  return (items||[]).map(function(x){return x.av}).filter(function(a){
-    return a&&a.indexOf('av-')!==0});
+  return (items||[]).filter(function(x){return !x.selfav})
+    .map(function(x){return x.av}).filter(function(a){
+      return a&&a.indexOf('av-')!==0});
+}
+/* אותם פריטים, אבל אלה שהפרצוף שלהם הוא תמונת הפרופיל שלי. שני
+   ה-bucket נכנסים לאותו מטמון, ולכן ההפרדה היא רק בחתימה. */
+function selfPaths(items){
+  return (items||[]).filter(function(x){return x.selfav&&x.av&&!photoUrl(x.av)})
+    .map(function(x){return x.av});
 }
 /* תמונות הפרופיל של כל מי שמופיע במודל, ולא רק שלי. הן יושבות
    ב-bucket אחר מזה של הילדים (profile-photos מול kid-photos),
