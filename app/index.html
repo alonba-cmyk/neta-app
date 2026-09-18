@@ -1499,6 +1499,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ‏`#act-empty` לא נגע: שם `.bigfav` נשאר 70 בריבוע מעוגל, כי הוא
    כוון מול שלושת המצבים הריקים האחרים ולא מול הטאב השכן. */
 #act-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:12px}
+/* ואותו ראש ב"העתיד שלנו". כאן האיור הוא קו ולא פרצוף, ולכן הוא
+   מקבל גובה גוש זהה (81) אבל האייקון עצמו 62. */
+#fut-head{text-align:center;padding:26px 4px 0;margin-bottom:16px}
+#fut-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:12px}
+#fut-head .art svg{display:block}
+#fut-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance;margin:0}
+#fut-head p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin:8px auto 0;max-width:290px}
 /* ── "ההשקעות שלי": אותו מבנה ראש, במספר במקום בכותרת ─────────────
    שני הטאבים השכנים פותחים באיור ממורכז ומתחתיו טקסט, וזה היה המסך
    היחיד שפותח בשורה: מספר מימין ונבט משמאלו. עכשיו הנבט עולה מעל
@@ -1809,7 +1816,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '88b3186';
+window.NETA_BUILD = 'c45d974';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2017,6 +2024,24 @@ window.NETA_CONFIG = {
 <!-- 0 HOME -->
 <section class="screen on" data-name="העתיד שלנו">
   <div id="home-full">
+  <!-- ראש מאויר, כמו בשלושת הטאבים האחרים: איור ממורכז בגוש של 81,
+       כותרת מתחתיו ומשפט שקט. הוא חי בתוך home-full ולא מעליו, מאותה
+       סיבה שהראש בפעילות חי בתוך act-full: applyTabSources מזיזה את
+       הגוש בעצמה, ואלמנט שחייב להיעלם יחד איתו יושב בתוכו.
+
+       האיור הוא ic-path, האייקון של הטאב עצמו, ובמפורש לא פרצופים:
+       הבורר שמתחתיו הוא ארבעה פרצופים אמיתיים, ושלושה מצוירים מעליו
+       היו שבעה פרצופים בגלילה אחת. מאותה סיבה הוא גם אינו הפרצוף של
+       מי שנבחר, שנוסה ונפסל כאן: פרצוף גדול מעל שורת פרצופים קטנים
+       הוא אותו אדם פעמיים.
+
+       ‏62x62 על רשת של 24x24. הגרסה הראשונה קיבלה viewBox של 70x46,
+       שאינו הרשת שעליה הוא מצויר, ולכן נראתה ממנו פינה. -->
+  <div id="fut-head">
+    <div class="art"><svg width="62" height="62" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-path"/></svg></div>
+    <h3>מה מחכה להם?</h3>
+    <p>כמה נצבר לכל אחד, ומי נוטע איתך</p>
+  </div>
   <!-- הבורר. פריט לכל נהנה, ואחריהם צ'יפ ההוספה: פרצוף בודד בשורה
        נראה כמו שריד, ולצידו הוא נראה כמו התחלה. המסך מציג נהנה אחד
        בכל פעם, והפתיחה היא על מי שהרגע שלו הקרוב ביותר. -->
