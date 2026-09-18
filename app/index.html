@@ -1869,7 +1869,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6832b10';
+window.NETA_BUILD = '38ae80a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3682,11 +3682,15 @@ window.NETA_CONFIG = {
     <p class="sub" id="jo-sub">שני פרטים, ואפשר להיכנס.</p>
   </div>
 
-  <div class="field" style="margin-top:18px">
-    <label>השם שלך</label>
-    <input type="text" id="jo-name" placeholder="איך שייקרא לך אצל מי שנוטע איתך">
-    <div id="jo-av"></div>
-  </div>
+  <!-- השם והתמונה ירדו מכאן, וזה לא קיצור אלא סדר. המסך הזה רץ לפני
+       האימות, ולכן הוא אינו יכול לדעת אם מי שעומד מולו כבר רשום: לשאול
+       את השרת "האם הכתובת הזאת רשומה" הוא אורקל שמאפשר לכל מי שמחזיק
+       קישור לברר מי רשום אצלנו. התוצאה הייתה ש"נעים להכיר, גל" נאמר
+       למי שיש לה חשבון שנים, לצד שדה שם ובורר תמונה שכבר יש לה.
+
+       אחרי הקוד כבר יודעים: introduceThen שואל רק את מי שאין לו פרופיל,
+       והוא קיים ועובד ממילא. וגם לחדשה זה הסדר הנכון, כי היא כבר לא
+       ממלאת טופס לפני שהיא יודעת שהקוד בכלל הגיע. -->
 
   <!-- הכתובת ידועה מההזמנה, ולכן היא מוצגת ולא נשאלת. מסכה ולא הערך
        המלא: קישור אישי ניתן להעברה, ומי שיפתח אותו אינו צריך לראות
@@ -3920,7 +3924,29 @@ const topbars={
 const REL_TOPBAR=topbars[15].slice();
 const NOCHROME=[19,20,21,22,23,25,26,27,29,30];
 const REVIEW=24;
+/* מסך הבית מסומן on כבר ב-HTML, ולכן הוא נצבע כל עוד לא ידוע מה
+   להראות. ‏openShared ו-landSignedIn כבר מסתירים את הבמה בדיוק מהסיבה
+   הזאת, וכל אחד מהם עושה זאת בעצמו; זה אותו דפוס, כפונקציה, כדי שגם
+   נתיב שלישי יוכל להשתמש בו.
+
+   השחרור יושב ב-go() ולא בכל מסלול בנפרד: הבמה מוסתרת כדי לדלג על
+   הציור הראשון, וברגע שמישהו בחר מסך אין יותר מה להסתיר. הטיימר הוא
+   רשת ביטחון — אם השרת לא עונה, עדיף מסך בית מלא תוכן ישן מאשר
+   אפליקציה שנשארת ריקה לנצח. */
+let stageHold=null;
+function holdStage(ms){
+  const stage=document.querySelector('.stage');
+  if(!stage||stageHold)return;
+  stage.style.visibility='hidden';
+  const t=setTimeout(function(){releaseStage()},ms||4000);
+  stageHold=function(){clearTimeout(t);stage.style.visibility=''};
+}
+function releaseStage(){
+  if(!stageHold)return;
+  const f=stageHold;stageHold=null;f();
+}
 function go(i){
+  releaseStage();
   if(i===ONBO.welcome)playSplash();
   document.getElementById('tabbar').style.display=NOCHROME.includes(i)?'none':'';
   if(i===2){flowBar(stepNo('amount'),'כמה תשקיע');document.getElementById('amt-back').style.display=creating?'':'none';txt('amt-cta',creating?'המשך':'השקע עכשיו');}
@@ -5971,7 +5997,10 @@ function paintSharedCard(r,pre){
   /* השאלה נושאת את שם המזמין, ולכן היא גם מה שמחליף את "כבר נטע כאן".
      מספר, לא שמות: רשימת שמות מתחילה להיות פרופיל של משפחה. */
   const el=document.getElementById(q+'ask');
-  if(el)el.innerHTML='תרצה/י להצטרף להשקעה שנטע'+
+  /* בלי פנייה לנמען: להזמנה יש שם ואין מגדר, וניחוש לפי שם נפסל
+     בכל שאר המוצר. "להצטרף" אומר את אותו הדבר בלי מין בכלל, בדיוק
+     כמו "הזמנה בפועל נשלחת רק מהחשבון שלך" במייל ההצעה. */
+  if(el)el.innerHTML='להצטרף להשקעה שנטע'+
     '<span class="gname"><b>'+firstName(who)+'</b>?</span>';
   const n=Number(r.participants)||0;
   txt(q+'meta','נטיעה שנפתחה לקראת '+r.target_year+
@@ -6159,20 +6188,12 @@ function startJoin(){
 function openJoin(){
   const known=!!inviteKnows.mail;
   joMail=inviteKnows.mail;
-  txt('jo-h',inviteKnows.name?('נעים להכיר, '+firstName(inviteKnows.name)):'נעים להכיר');
-  /* בשם מי שהזמין, כשידוע מי הוא. בלי מגדר שמור הניסוח עובר לצורה
-     הסתמית: לוכסן שני באותו משפט, ליד "תרגיש/י", היה הופך אותו
-     לטופס. */
-  const by=firstName(inviteKnows.by), bySex=inviteKnows.bySex;
-  txt('jo-sub',!known ? 'שני פרטים, ואפשר להיכנס.'
-    : (by&&(bySex==='m'||bySex==='f')
-        ? (by+' כבר '+(bySex==='f'?'סיפרה':'סיפר')+' לנו איך קוראים לך, אבל תרגיש/י חופשי לשנות.')
-        : 'כבר סיפרו לנו איך קוראים לך, אבל תרגיש/י חופשי לשנות.'));
-  const nm=document.getElementById('jo-name');
-  if(nm)nm.value=inviteKnows.name||'';
-  pickedAv='av-parent';
-  const av=document.getElementById('jo-av');
-  if(av)av.innerHTML='<label style="margin-top:11px">תמונה</label>'+avpickHTML('av-parent');
+  /* "נעים להכיר" ירד: המסך הזה רואה גם את מי שכבר רשום, והוא אינו יכול
+     לדעת מי מהם זה (ראו ההערה במסך). מה שהוא כן עושה נכון לשניהם הוא
+     לאמת את הכתובת, ולכן זה מה שכתוב. */
+  txt('jo-h','נשאר רק לאמת את הכתובת');
+  txt('jo-sub',known ? 'נשלח קוד לכתובת שאליה הגיעה ההזמנה. אין סיסמה.'
+                     : 'נשלח קוד לכתובת שתזין. אין סיסמה.');
   txt('jo-mask',maskMail(joMail));
   document.getElementById('jo-known').style.display=known?'':'none';
   document.getElementById('jo-askmail').style.display=known?'none':'';
@@ -6206,8 +6227,6 @@ function joResend(){
   },function(e){toast((e&&e.message)||'לא הצלחנו לשלוח')});
 }
 function joNext(){
-  const nm=((document.getElementById('jo-name')||{}).value||'').trim();
-  if(!nm){toast('צריך שם');(document.getElementById('jo-name')||{}).focus&&document.getElementById('jo-name').focus();return}
   const box=document.getElementById('jo-codebox');
   const btn=document.getElementById('jo-cta');
   if(box.style.display==='none'){
@@ -6228,7 +6247,10 @@ function joNext(){
       if(kn)kn.style.display='none';
       txt('jo-codelbl','הקוד נשלח ל'+maskMail(joMail));
       txt('jo-cta','הצטרף לנטיעה');
-      keepCodeSent({where:'join',mail:joMail,name:nm,
+      /* השם שנשמר הוא זה שההזמנה נושאת ולא כזה שהוקלד כאן, כי כאן
+         כבר אין מה להקליד. הוא מה ש-offerInviteName משווה מולו אחרי
+         שהסבב מתחדש. */
+      keepCodeSent({where:'join',mail:joMail,name:inviteKnows.name||'',
                     by:inviteKnows.by,bySex:inviteKnows.bySex});
       const o=document.getElementById('jo-otp');if(o)o.focus();
     },function(e){
@@ -6243,18 +6265,17 @@ function joNext(){
   netaServer.verifyCode(joMail,code)
     .then(function(){return netaServer.loadProfile()})
     .then(function(prof){
-      /* למי שכבר יש חשבון, השם שבחר לעצמו נשאר שלו. השדה בטופס הזה
-         נושא את מה שהמזמין כתב עליו ("סבתא רחל"), ו-ensureProfile
-         דרס בו בשקט את השם שמופיע לכל מי שנוטע איתו. השאלה אם לשנות
-         כבר קיימת, והיא נשאלת פעם אחת ב-offerInviteName. */
-      if(prof&&prof.name)return prof;
-      return netaServer.ensureProfile(nm,pickedAv);
-    })
-    .then(function(){
       applyIdentity();dropCodeSent();
       btn.disabled=false;txt('jo-cta','הצטרף לנטיעה');
-      /* הפרופיל נוצר כאן, ולכן introduceThen לא תשאל שוב. */
-      if(!finishJoin()){setEmpty(false);buildHomeSummary();goHome()}
+      /* מי שכבר יש לו פרופיל ממשיך ישר. מי שאין לו נשאל ב-introduceThen,
+         שרץ בתוך finishJoin ושואל רק את מי שבאמת חדש. זה גם מה שמחזיר
+         את "נעים להכיר" למקום שבו הוא נכון.
+
+         ‏finishJoin מחזירה false רק כשאין טוקן ממתין, מצב שאינו אמור
+         לקרות במסלול הזה; גם אז מי שאין לו שם נשאל לפני שהוא נוחת. */
+      if(finishJoin())return;
+      const land=function(){setEmpty(false);buildHomeSummary();goHome()};
+      if(prof&&prof.name)land(); else introduceThen(null,land);
     })
     .catch(function(e){
       btn.disabled=false;txt('jo-cta','הצטרף לנטיעה');
@@ -6288,6 +6309,8 @@ function finishJoin(){
       });
     });
   }).catch(function(e){
+    /* גיליון אינו מעבר מסך, ולכן go() לא ישחרר את הבמה כאן. */
+    releaseStage();
     ask('לא הצלחנו לצרף אותך',(e&&e.message)||'אפשר לנסות שוב.','הבנתי');
   });
   return true;
@@ -6303,7 +6326,10 @@ function introduceThen(plantingId,next){
     pickedAv='av-parent';
     sheetForm('נעים להכיר',
       'איך שייקרא לך אצל מי שהזמין אותך, ואיך זה יופיע לילד ביום שהנטיעה נפתחת.'+
-      '<label>שם</label><input type="text" id="jn-name" placeholder="למשל: סבתא רחל">'+
+      /* ‏value ולא placeholder: מה שהמזמין הקליד הוא תשובה ולא רמז,
+         וזה מה שמסך ההצטרפות מילא מראש לפני שהשדה ירד ממנו. */
+      '<label>שם</label><input type="text" id="jn-name" value="'+
+        attrText(inviteKnows.name||'')+'" placeholder="למשל: סבתא רחל">'+
       '<label>תמונה</label>'+avpickHTML('av-parent')+
       (plantingId?'<label>מה את/ה לילד</label><input type="text" id="jn-rel" placeholder="למשל: סבתא">':''),
       'המשך',
@@ -13179,8 +13205,26 @@ const sharedToken=sharedTokenInUrl();
    ההזמנה או למסך הפתיחה. */
 if(resumeCodeSent()){}
 else if(sharedToken&&liveAccount()){
-  /* מחובר שפתח קישור — אין טעם להראות לו כרטיס אנונימי ולבקש שיתחבר. */
-  keepInvite(sharedToken);finishJoin();
+  /* מחובר שפתח קישור — אין טעם להראות לו כרטיס אנונימי ולבקש שיתחבר.
+     אבל הוא כן צריך את מה שהכרטיס יודע: inviteKnows נכתב ב-
+     paintSharedCard בלבד, והמסלול הזה מדלג עליו, ולכן offerInviteName
+     קיבל שם ריק ויצא מיד. התוצאה הייתה שאותה הזמנה בדיוק, עם אותו
+     פער שמות, שאלה את מי שהיה מנותק ושתקה למי שהיה מחובר — ומי
+     שמחובר הופיע למזמין בשם שבחר לעצמו בלי שאיש ידע שהיה פער.
+
+     ‏sharedSummary היא אותה קריאה שמזינה את הכרטיס, ולכן אין כאן
+     מקור נתונים שני. היא אינה חוסמת: אם היא נכשלת, הצירוף ממשיך
+     בדיוק כפי שהיה. */
+  keepInvite(sharedToken);
+  holdStage();
+  const goJoin=function(){finishJoin()};
+  netaServer.sharedSummary(sharedToken).then(function(r){
+    if(r)inviteKnows={name:(r.invitee_name||'').trim(),
+                      mail:(r.invitee_contact||'').trim(),
+                      by:(r.inviter_name||'').trim(),
+                      bySex:r.inviter_sex||null};
+    goJoin();
+  },goJoin);
 } else if(!sharedToken||!openShared(sharedToken)){
   /* וסבב כניסה שנקטע באמצע חוזר לאותה נקודה. */
   if(liveAccount()&&pendingInvite()&&finishJoin()){}
