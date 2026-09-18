@@ -1787,7 +1787,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '63acc3e';
+window.NETA_BUILD = '3f36316';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2959,7 +2959,7 @@ window.NETA_CONFIG = {
   <div class="card" id="rel-list"></div>
   <button class="btn gap-s" id="rel-send" style="display:none"
           onclick="invPreview()">המשך</button>
-  <button class="btn gap-s" id="rel-add" onclick="openAddPerson()">+ הוסף אדם</button>
+  <button class="btn gap-s" id="rel-add" onclick="openAddPerson()">+ הוסף קרוב</button>
   <!-- כך זה ייראה כשקרובים יצטרפו. אותו דגם דוהה שיש בשלושת המצבים
        הריקים האחרים, ומאותו מקור: שורות אמיתיות של הרשימה עם שמות
        ההדגמה, ולא ציור שלהן. -->
@@ -8200,10 +8200,13 @@ function paintInvSend(){
   if(add){
     add.style.display=relInviteKey?'none':'';
     add.className='btn gap-s';
-    /* "אדם" ולא "קרוב": הפאנל הראשון שואל "את מי תרצה להוסיף" ומציע
-       שתי דרכים, וילד אינו קרוב שנוטע איתי. שם שמבטיח אחת מהשתיים
-       הוא נקודת ההתחלה של הבלבול. */
-    add.textContent='+ הוסף אדם';
+    /* "קרוב" ולא "אדם", לבקשת אלון. הנימוק שנשמע לפני השינוי: הפאנל
+       הראשון שואל "את מי תרצה להוסיף" ומציע שתי דרכים, וילד אינו
+       קרוב שנוטע איתי, ולכן שם שמבטיח אחת מהשתיים הוא נקודת ההתחלה
+       של הבלבול. מה שמקזז: מרגע שהכפתור עלה אל מתחת לרשימת הקרובים
+       הוא קורא ליד הרשימה שהוא שייך לה. אם סקשן הילדים יקבל כפתור
+       משלו, זו הנקודה שבה שני השמות ייפרדו. */
+    add.textContent='+ הוסף קרוב';
   }
   if(!b)return;
   if(!relInviteKey){b.style.display='none';return}
