@@ -1787,7 +1787,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '8f633c8';
+window.NETA_BUILD = '9e052d3';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2965,7 +2965,7 @@ window.NETA_CONFIG = {
   <div class="card" id="rel-list"></div>
   <button class="btn gap-s" id="rel-send" style="display:none"
           onclick="invPreview()">המשך</button>
-  <button class="btn gap-s" id="rel-add" onclick="openAddPerson('with')">+ הוסף קרוב</button>
+  <button class="btn gap-s" id="rel-add" onclick="openAddPerson()">+ הוסף קרוב</button>
   <!-- כך זה ייראה כשקרובים יצטרפו. אותו דגם דוהה שיש בשלושת המצבים
        הריקים האחרים, ומאותו מקור: שורות אמיתיות של הרשימה עם שמות
        ההדגמה, ולא ציור שלהן. -->
@@ -7954,7 +7954,7 @@ function buildRelatives(){
        ההזמנה: היא מוסיפה שורה, ולכן מקומה בתוך מה שהיא משנה. הכפתור
        הירוק נשאר רק במצב הריק, כי מצב ריק בלי פעולה הוא בדיוק מה
        שתוקן כאן קודם. */
-    '<div class="reladd" onclick="openAddPerson(\'with\')">+ הוסף קרוב</div>';
+    '<div class="reladd" onclick="openAddPerson()">+ הוסף קרוב</div>';
   relMeta();
 }
 /* שורה אחת, שני שימושים: הרשימה האמיתית והדגם הדוהה שמתחת למצב הריק.
@@ -7976,12 +7976,13 @@ function paintKidSection(){
      שמתחתיו הוא הדרך היחידה להוסיף ילד בלי לפתוח לו רגע, וכפתור בלי
      התווית שמעליו נקרא כשייך לרשימה הקודמת. */
   /* ההוספה היא שורה מקווקוות בתוך הרשימה ולא כפתור מלא מתחתיה, בדיוק
-     כמו "+ הזמן מישהו שאינו ברשימה" ברשימה שמעל. שני כפתורים ירוקים
-     על מסך אחד הם שתי פעולות ראשיות, והן גם אינן אותו דבר: להוסיף
-     קרוב זו הזמנה, ולהוסיף ילד לא. */
+     כמו ברשימה שמעל. שני כפתורים ירוקים על מסך אחד הם שתי פעולות
+     ראשיות, וכאן זו פעולה אחת שיש לה שתי כניסות. הכיתוב זהה בשתיהן
+     ("+ הוסף קרוב"), וההבחנה בין מי שנוטע איתי לבין מי שאני נוטע
+     עבורו נעשית בפאנל הראשון של האשף. */
   if(!rows.length){
     box.style.border='none';box.style.background='none';box.style.padding='0';
-    box.innerHTML='<div class="reladd" style="margin-top:0" onclick="openAddPerson(\'for\')">+ הוסף ילד</div>';
+    box.innerHTML='<div class="reladd" style="margin-top:0" onclick="openAddPerson()">+ הוסף קרוב</div>';
     return;
   }
   box.style.border='';box.style.background='';box.style.padding='';
@@ -8005,7 +8006,7 @@ function paintKidSection(){
       '<span class="rn"><b>'+attrText(b.name)+'</b><i>'+attrText(sub)+'</i></span>'+
       act+'</div>';
   }).join('')+
-    '<div class="reladd" onclick="openAddPerson(\'for\')">+ הוסף ילד</div>';
+    '<div class="reladd" onclick="openAddPerson()">+ הוסף קרוב</div>';
 }
 function kidMoments(b){
   const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
@@ -8778,21 +8779,19 @@ let apFrom='';
    הרשימה נבנית ולא נקראת מקבוע: כשאין רגע להזמין אליו הפאנל אינו רק
    מדולג אלא גם אינו נספר בסרגל. עד כה הסרגל הכריז ארבעה שלבים ואז
    דילג על הרביעי בשקט. */
-/* הכניסה שנוקבת בסוג מורידה את הפאנל הראשון. שני הכפתורים במסך
-   "הקרובים שלי" אומרים מה הם מוסיפים, קרוב או ילד, ולכן מסך ששואל
-   "את מי תרצה להוסיף" עם התשובה כבר מסומנת הוא קליק על שאלה שנענתה.
-   ‏`.reladd` שבתוך הרשימה נשאר בלי סוג, כי שם ההקשר הוא רגע ולא סוג. */
-let apKindFixed=false;
-function apCut(l){return apKindFixed?l.slice(1):l}
+/* כל הכניסות עוברות בפאנל הראשון, "את מי תרצה להוסיף". נוסה קיצור
+   שבו כל שורת הוספה נוקבת בסוג ומדלגת עליו, ואלון החזיר את השאלה:
+   השורות אומרות "הוסף קרוב" בשתי הרשימות, וההבחנה בין מי שנוטע איתי
+   לבין מי שאני נוטע עבורו נעשית במסך אחד שמסביר את שתיהן. */
 function apPanels(){
-  if(apKindMode==='for')return apCut(AP_FOR);
+  if(apKindMode==='for')return AP_FOR;
   if(apFrom)return ['ap-1','ap-2'];
-  return apCut(invitablePlantings().length?AP_WITH:['ap-0','ap-1','ap-2']);
+  return invitablePlantings().length?AP_WITH:['ap-0','ap-1','ap-2'];
 }
 function apLabels(){
-  if(apKindMode==='for')return apCut(AP_LBL_FOR);
+  if(apKindMode==='for')return AP_LBL_FOR;
   if(apFrom)return ['מי זה','לאן'];
-  return apCut(invitablePlantings().length?AP_LBL_WITH:['את מי','מי זה','לאן']);
+  return invitablePlantings().length?AP_LBL_WITH:['את מי','מי זה','לאן'];
 }
 function apShow(){
   const list=apPanels();
@@ -8806,12 +8805,11 @@ function apShow(){
   txt('ap-lbl','שלב '+(apStep+1)+' מתוך '+list.length+' · '+lbls[apStep]);
   document.querySelector('.stage').scrollTo?.(0,0);
 }
-function openAddPerson(kind){
+function openAddPerson(){
   /* מצב הזמנה: הרגע ידוע, ולכן גם הסוג. relInviteKey הוא המקור
      היחיד לשניהם, ואין פרמטר שאפשר לשכוח להעביר. */
   apFrom=relInviteKey||'';
-  apKindFixed=!!kind&&!apFrom;
-  apKindMode=(kind==='for')?'for':'with';apStep=0;apRel='mother';apAv='av-granny';
+  apKindMode='with';apStep=0;apRel='mother';apAv='av-granny';
   apKidAv='av-kid1';apKidSexV='m';apKidRel='son';apPhoto=null;apPhotoOn=false;
   if(apRelPhoto&&apRelPhoto.url)URL.revokeObjectURL(apRelPhoto.url);
   apRelPhoto=null;
@@ -8819,10 +8817,8 @@ function openAddPerson(kind){
      הכריז "לא סימנת רגע" ונשא כפתור "הוסף לרשימה" על מסלול שכל כולו
      הזמנה לרגע מסוים. */
   apPlants=apFrom?[apFrom]:[];
-  /* הכרטיסייה המסומנת היא הסוג שנבחר, גם כשהפאנל עצמו אינו מוצג:
-     מי שיחזור אליו דרך "חזרה" יראה את מה שהוא בחר. */
   document.querySelectorAll('#ap-kind button').forEach(function(x,i){
-    x.classList.toggle('on',i===(apKindMode==='for'?1:0))});
+    x.classList.toggle('on',i===0)});
   ['ap-name','ap-relfree','ap-contact','ap-kidname','ap-kidrelfree'].forEach(function(id){
     const el=document.getElementById(id); if(el)el.value='';
   });
@@ -9006,15 +9002,7 @@ function shrinkImage(file,size){
     img.src=url;
   });
 }
-/* "חזרה" מהשלב הראשון היא ביטול, ולכן היא מחזירה למסך שממנו נכנסו.
-   ‏apExit הוא היציאה שאחרי שמירה, והיא מובילה למקום שבו רואים את מה
-   שנוצר: במסלול "עבורו" זה "העתיד שלנו". מי שנכנס מ"+ הוסף ילד"
-   והתחרט לא יצר דבר, ונחיתה בטאב אחר נקראת כאילו כן. */
-function apBack(){
-  if(apStep>0){apStep--;apShow();return}
-  if(apKindFixed){openRelatives(relBack);return}
-  apExit();
-}
+function apBack(){if(apStep>0){apStep--;apShow()}else apExit()}
 /* היציאה מובילה למסך שמראה את מה שנוצר, ולא תמיד לקרובים. ילד אינו
    קרוב שנוטע איתי אלא מי שנוטעים עבורו, ולכן הוא אינו ברשימת הקרובים
    בכוונה: הפעולה על כל שורה שם היא "הזמן", ואין לה משמעות על ילד.
