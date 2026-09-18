@@ -1527,7 +1527,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #act-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:8px}
 /* ואותו ראש ב"העתיד שלנו". כאן האיור הוא קו ולא פרצוף, ולכן הגוש
    הוא גובה האייקון עצמו ולא 81. */
-#fut-head{text-align:center;padding:10px 4px 0;margin-bottom:12px}
+/* 22 ולא 12 כמו בשני הראשים האחרים: מרגע שהאייקון ירד, הכותרת
+   והבורר הם שני גושים סמוכים בלי שום דבר ביניהם, והרווח הנראה בין
+   שורת הטקסט התחתונה לפרצוף הראשון היה 19. עכשיו 29. עשרת הפיקסלים
+   האלה יורדים מהמספר הגדול (274 ל-284), וזה עדיין הרבה מתחת ל-334
+   שהיה כשהאייקון היה כאן. */
+#fut-head{text-align:center;padding:10px 4px 0;margin-bottom:22px}
 /* האייקון נשאר בגודל שהיה (דיו של כ-47), ומה שירד הוא האוויר
    סביבו: ה-viewBox חתוך לדיו (ראו ההערה ב-#ic-path), והגוש הוא
    גובה האייקון עצמו ולא 81, כי גוש של 81 סביב ציור של 52 הוא 15
@@ -1852,7 +1857,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1caf05e';
+window.NETA_BUILD = 'ee90820';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
