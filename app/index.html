@@ -1869,7 +1869,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1231b4f';
+window.NETA_BUILD = '06436df';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3754,7 +3754,7 @@ window.NETA_CONFIG = {
     <button type="button" data-k="for" onclick="apKind(this,'for')">
       <span class="fc"><svg viewBox="0 0 40 40"><use href="#av-kid1"/></svg></span>
       <span class="nm"><b>מישהו שאני נוטע עבורו</b>
-        <span>קרוב יקר לי שארצה להשקיע בעתידו</span></span></button>
+        <span>בת, נכד, אחיין, הילד של חברים, מישהו שארצה להשקיע בעתיד שלו</span></span></button>
   </div>
   <button class="btn gap" style="margin-top:18px" onclick="apNext()">המשך</button>
   <button class="link backlink" onclick="apExit()">חזרה</button>
@@ -6531,13 +6531,37 @@ function ahaOccasion(){
   let p=null;try{p=plantAt(cur)}catch(e){}
   return p?{occ:p.occasion,sex:p.sex,kid:p.kid||''}:{occ:null,sex:null,kid:''};
 }
+/* כל שורות INVITE_LINE מדברות על הנהנה בגוף שלישי ("X עוד לא יודע,
+   אבל..."), וזה קורס כשהנהנה הוא מי שקורא. עד כה היה כאן משפט אחד
+   שהחליף את כולן, "ביום שבו כולם יביאו מעטפה, אחת כבר תחכה לך" —
+   והוא הוטה נכון ועדיין היה שגוי: המעטפה היא סצנה שבה אחרים מביאים
+   לך מתנה בחגיגה שלך, כלומר היא מציבה את מי שפתח לעצמו השקעה בתור
+   הילד שמקבל. אלון ראה את זה.
+
+   מה שהמסך הזה אומר בנתיב הרגיל הוא "מישהו חשב עליך לפני שידעת".
+   בנתיב "עבורי" אין מישהו אחר, ולכן הוא אומר את הדבר האחר שנכון:
+   מה שתרצה ברגע ההוא כבר יהיה שם, כי היום החלטת.
+
+   אותם עצמים מוחשיים של INVITE_LINE (דאגה אחת פחות, קרקע להתחיל
+   ממנה, המפתחות, לארוז ולצאת), כי הם מה שהופך את המשפט לתמונה. */
+const SELF_DAY={
+  studies   :'כשתתחיל ללמוד, תהיה לך דאגה אחת פחות.',
+  apartment :'כשתחפש דירה, כבר תהיה לך קרקע להתחיל ממנה.',
+  first_car :'כשתרצה רכב, המפתחות כבר לא יהיו השאלה.',
+  army_trip :'כשתשתחרר, תוכל פשוט לארוז ולצאת.',
+  wedding   :'ביום שתתחתן, לא תצטרך לחשוב מאיפה.',
+  /* בר מצווה כרגע שאדם פותח לעצמו הוא מקרה קצה אמיתי, ואין לו
+     תמונה משלו שאינה מגוחכת. הוא נופל לניטרלי בכוונה. */
+  open_fund :'עוד לא ידוע לאיזה רגע, אבל כשהוא יגיע כבר יחכה משהו.'
+};
+const SELF_DAY_ANY='מה שהתחלת היום ימשיך לגדול, ויחכה לך בדיוק ברגע שבחרת.';
 function ahaDayLine(){
   const o=ahaOccasion();
-  /* כל שורות INVITE_LINE מדברות על הנהנה בגוף שלישי ("X עוד לא יודע,
-     אבל..."), וזה קורס כשהנהנה הוא מי שקורא. השורה כאן אומרת את אותו
-     הדבר עליו. */
-  if(beneIsMe())
-    return 'ביום שבו כולם יביאו מעטפה, אחת כבר תחכה לך שנים.';
+  /* שתי דרכים לדעת, כמו בכל שאר "כשהנהנה הוא אני": באשף זו הקרבה
+     שנבחרה, ובהפקדה חוזרת לרגע קיים זה השם שעל הרגע. בלי השנייה,
+     הפקדה שנייה לאותה נטיעה הייתה חוזרת לגוף שלישי. */
+  if(beneIsMe()||isSelfName(o.kid))
+    return SELF_DAY[o.occ]||SELF_DAY_ANY;
   return inviteLine(o.kid,o.occ,o.sex);
 }
 /* copy on the payment + aha screens follows the planting being deposited into */
@@ -11832,6 +11856,21 @@ function buildHomeSummary(){
    אין כאן קריאה נוספת לשרת: הרשימה היא lastModel, אותו מודל שמסך הבית
    כבר טען. מסך שמראה סכום אחר מזה שבמסך הקודם, כי הוא שאל שוב בזמן
    אחר, גרוע ממסך שמתעדכן רגע מאוחר יותר. */
+/* שם הרגע כפי שמציגים אותו לבעליו. במסד הוא נשמר כ"בר המצווה של
+   אלון בר דוד", וזה נכון: זה השם שקרוב רואה בהזמנה ובפיד, ושם הנהנה
+   הוא חלק ממנו. אבל כשהנהנה הוא מי שקורא, מסך שכל כולו שלו מדבר עליו
+   בגוף שלישי ובשמו המלא. אותה משפחה בדיוק כמו תשעת המקומות של
+   selfsay.js, רק שכאן המחרוזת מגיעה מהמסד ולא נבנית בלקוח.
+
+   שתי דרכים לדעת, כמו בכל שאר המוצר: לפי הישות כשיש מזהה, ולפי השם
+   כשאין (הדגמה, ושורות שנוצרו לפני 0061). */
+function plantTitle(p){
+  const nm=String((p&&p.name)||'');
+  const i=nm.indexOf(' של ');
+  if(i<0)return nm;
+  const self=p.kidId?isSelfRel(beneRel(p.kidId)):isSelfName(nm.slice(i+4));
+  return self?(nm.slice(0,i)+' שלך'):nm;
+}
 function ivCardHTML(p){
   const mine=Number(p.mine==null?p.accrued:p.mine);
   const mo=Number(p.myMonthly||0);
@@ -11845,7 +11884,7 @@ function ivCardHTML(p){
   const pj=Number(p.myProjection||0);
   /* "נטעת 0 ₪" הוא מספר שקיומו מודיע על היעדרו. במקומו נאמר מה כן
      קרה: הוזמנת, והרגע מחכה להפקדה הראשונה שלך. */
-  return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נטעת',
+  return plantCard({key:p.key,icon:p.icon,name:plantTitle(p),verb:'נטעת',
                     amount:mine,
                     amountText:mine>0?'':'הוזמנת, עוד לא נטעת',
                     capTop:mine>0&&pj>mine?shekel(pj):'',
