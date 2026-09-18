@@ -69,14 +69,16 @@ nav.sc{box-shadow:0 1px 0 var(--ln)}
   transition:max-width .28s ease,padding .28s ease,margin .28s ease,opacity .18s ease}
 /* הכפתור אינו במסך הראשון: שם כבר יושבים שני CTA, הכפתור הירוק
    שברוחב מלא והקישור למחשבון, וכפתור שלישי מעליהם הוא אותה פעולה
-   פעמיים. הוא נכנס יחד עם הקו, ברגע שמתחילים לגלול.
+   פעמיים. הוא נכנס ברגע שהכפתור הירוק יוצא מהמסך, ולא עם הקו:
+   הקו אומר "יש כאן שכבה מעל הטקסט" וזה נכון מהפיקסל הראשון,
+   והכפתור עונה על "אין כאן יותר איך להתחיל" וזה נכון רק אחר כך.
    visibility ולא opacity לבדה, אחרת הוא נשאר בסדר הטאבים ובקורא
    המסך כשהוא סגור; ההשהיה מחזיקה אותו נראה עד סוף הסגירה. */
-nav:not(.sc) .nc.pri{max-width:0;padding-inline:0;margin-inline-start:0;
+nav:not(.pri-on) .nc.pri{max-width:0;padding-inline:0;margin-inline-start:0;
   border-width:0;opacity:0;visibility:hidden;pointer-events:none;
   transition:max-width .28s ease,padding .28s ease,margin .28s ease,
     opacity .18s ease,visibility 0s .28s}
-@media(prefers-reduced-motion:reduce){.nc.pri,nav:not(.sc) .nc.pri{transition:none}}
+@media(prefers-reduced-motion:reduce){.nc.pri,nav:not(.pri-on) .nc.pri{transition:none}}
 /* הדפדפן מביא עוגן לראש המסך, ושם יושב עכשיו ההאדר: בלי זה 77
    הפיקסלים הראשונים של הסקשן נשארים מאחוריו. נמדד על שלושת העוגנים. */
 .S[id]{scroll-margin-top:var(--navh)}
@@ -250,7 +252,7 @@ foot .fl span,foot .fl a{color:#E3DCCF;text-decoration:none}
 foot .cr{font-size:11.5px;margin:22px 0 0;line-height:1.7;color:#A09889}
 foot .brand{color:#F5F1E8}foot .brand .lf{color:#8FBC8F}
 </style>
-<!-- Neta@4c050a5 -->
+<!-- Neta@368cbea -->
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><g id="sprout">
@@ -319,14 +321,29 @@ S.querySelector('input[type=range]').oninput=function(){set(+this.value)};
   if(!slow)t=setInterval(function(){go(i+1)},7000);
 })();
 
-/* הקו מתחת להאדר מופיע ברגע שגוללים. המאזין הוא passive ומחליף
-   קלאס בלבד, בלי למדוד דבר. */
+/* שני דברים בהאדר ושני רגעים שונים.
+   הקו מופיע ברגע שגוללים, כי מהפיקסל הראשון הוא שכבה מעל טקסט.
+   הכפתור מופיע רק כשהכפתור הירוק שבכותרת יוצא מהמסך, כי עד אז
+   הוא אותה פעולה פעמיים. IntersectionObserver ולא מדידה בגלילה,
+   כדי שלא נמדוד מיקום בכל תנועת אצבע; בלעדיו נפילה אחורה לסף. */
 (function(){
   var nav=document.querySelector('#page>nav');
   if(!nav)return;
   function mark(){ nav.classList.toggle('sc',window.scrollY>8) }
   mark();
   window.addEventListener('scroll',mark,{passive:true});
+
+  var cta=document.querySelector('.hero .cta');
+  if(!cta)return;
+  function show(on){ nav.classList.toggle('pri-on',on) }
+  if(window.IntersectionObserver){
+    new IntersectionObserver(function(e){ show(!e[0].isIntersecting) },
+      {threshold:0}).observe(cta);
+  }else{
+    var gone=function(){ show(cta.getBoundingClientRect().bottom<0) };
+    gone();
+    window.addEventListener('scroll',gone,{passive:true});
+  }
 })();
 </script>
 </body>
