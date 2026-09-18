@@ -9,11 +9,16 @@
 /* הערכה נקבעת לפני שהדפדפן מצייר משהו. סקריפט בסוף הקובץ היה
    מאוחר מדי: המסך היה נצבע כהה ואז מתהפך, כלומר הבזק בכל טעינה
    אצל מי שבחר בהיר. localStorage ולא החשבון, כי זו העדפה של
-   מכשיר: אותו אדם על מסך בהיר ביום ועל טלפון בלילה רוצה שתיים. */
+   מכשיר: אותו אדם על מסך בהיר ביום ועל טלפון בלילה רוצה שתיים.
+
+   **הבהיר הוא ברירת המחדל**, ולכן התנאי הוא "לא כהה" ולא "בהיר":
+   מי שלא בחר, ומי שה-localStorage שלו חסום, מקבל בהיר. הכהה נשאר
+   ‏`:root` בלי תכונה, כלומר מבנה ה-CSS לא נגע וכל הכללים עדיין
+   מקבלים את שתי הערכות בחינם. */
 (function(){try{
-  if(localStorage.getItem('neta-theme')==='light')
+  if(localStorage.getItem('neta-theme')!=='dark')
     document.documentElement.setAttribute('data-theme','light');
-}catch(e){}})();
+}catch(e){document.documentElement.setAttribute('data-theme','light')}})();
 </script>
 <style>
 :root{
@@ -1857,7 +1862,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ee90820';
+window.NETA_BUILD = '129e1a0';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -9747,13 +9752,13 @@ function attrText(v){
    שהשתנה בפועל: מי שנכנס לשנות שם לא ישלח בקשת אווטאר מיותרת, ולהפך.
    שתי הבקשות רצות במקביל, וההודעה מנוסחת לפי מה שבאמת נשמר. */
 /* ── מראה ─────────────────────────────────────────────────────────
-   שני מצבים, והכהה הוא ברירת המחדל: הוא הזהות של האפליקציה, ומי
-   שלא בחר לא אמור לקבל משהו אחר. הערך נקרא מ-localStorage בכל
+   שני מצבים, והבהיר הוא ברירת המחדל. הערך נקרא מ-localStorage בכל
    פעם ואינו נשמר במשתנה, ולכן אין מצב שבו הכפתור אומר דבר אחד
-   והמסמך נושא אחר. */
+   והמסמך נושא אחר. **התנאי חייב להיות זהה לזה שב-`<head>`**, אחרת
+   הסקריפט המוקדם צובע דבר אחד והצ'יפ בפרופיל מסמן אחר. */
 function themeNow(){
-  try{return localStorage.getItem('neta-theme')==='light'?'light':'dark'}
-  catch(e){return 'dark'}
+  try{return localStorage.getItem('neta-theme')==='dark'?'dark':'light'}
+  catch(e){return 'light'}
 }
 function setTheme(t){
   const el=document.documentElement;
