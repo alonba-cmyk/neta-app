@@ -297,8 +297,15 @@ label{display:block;font-size:11px;color:var(--tx-3);margin-bottom:6px}
 /* email ו-password נכללים במפורש: loginPrep מחליף את שדה הכניסה ל-type=email,
    ובלי השורה הזו הוא נשר מהעיצוב וקיבל את ברירת המחדל של הדפדפן — שדה אפור,
    צר, בלי פינות. אותו דבר קרה לשדות הסיסמה. */
+/* 16px ולא 13.5, ו-16 אינו טעם: זה הסף שמתחתיו סאפארי בנייד מזמזם
+   לתוך השדה ברגע הפוקוס. גל לחצה על שדה האימייל, המסך קפץ לתוך
+   התיבה, והיא לא ראתה את מה שמסביבה. viewport עם maximum-scale היה
+   מכבה את זה בשורה אחת וגם מכבה את הזום הידני למי שצריך אותו.
+   ומה שאינו ברשימה הזאת נשמר בבדיקה ולא בסלקטור: input:not([type])
+   נוסה, והוא (0,1,1) כלומר מנצח את .codebox ומקטין את תיבת הקוד
+   מ-25 ל-16. otpzoom.js מודד כל שדה במקום זה. */
 input[type=text],input[type=email],input[type=password],input[type=date],select,textarea{
-  width:100%;font-family:inherit;font-size:13.5px;padding:10px 11px;
+  width:100%;font-family:inherit;font-size:16px;padding:10px 11px;
   border:1px solid var(--line);border-radius:9px;background:var(--s1);color:var(--tx)}
 textarea{min-height:74px;resize:vertical;line-height:1.6}
 input:focus,select:focus,textarea:focus{outline:1px solid var(--leaf);outline-offset:0;border-color:var(--leaf)}
@@ -1000,7 +1007,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .uprow .rm{flex:0 0 auto;color:var(--tx-3);font-size:11px;
   text-decoration:underline;text-underline-offset:3px}
 .sheet label{display:block;font-size:11px;color:var(--tx-3);margin:11px 0 5px}
-.sheet input[type=text],.sheet textarea{width:100%;font-family:inherit;font-size:13px;color:var(--tx);background:var(--s2);
+.sheet input[type=text],.sheet textarea{width:100%;font-family:inherit;font-size:16px;color:var(--tx);background:var(--s2);
   border:1px solid var(--line);border-radius:10px;padding:10px 12px}
 .sheet textarea{min-height:88px;resize:vertical;line-height:1.6}
 /* payment methods + letters */
@@ -1862,7 +1869,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '2c47aa2';
+window.NETA_BUILD = '4c050a5';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {

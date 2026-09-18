@@ -61,8 +61,22 @@ nav{position:sticky;top:0;z-index:50;background:var(--bg);height:var(--navh);
 /* הקו מופיע רק אחרי גלילה: בראש הדף אין מה להפריד, ובדף שכולו לבן
    בלעדיו הכפתורים נראים צפים על הטקסט. */
 nav.sc{box-shadow:0 1px 0 var(--ln)}
-.hg{display:flex;align-items:center;gap:8px}
-.nc.pri{background:var(--lf);border-color:var(--lf);color:#fff;font-weight:600}
+/* המרווח הוא margin על הכפתור ולא gap על .hg, כדי שהוא יתמוטט יחד
+   איתו כשהוא סגור. */
+.hg{display:flex;align-items:center}
+.nc.pri{background:var(--lf);border-color:var(--lf);color:#fff;font-weight:600;
+  margin-inline-start:8px;white-space:nowrap;overflow:hidden;
+  transition:max-width .28s ease,padding .28s ease,margin .28s ease,opacity .18s ease}
+/* הכפתור אינו במסך הראשון: שם כבר יושבים שני CTA, הכפתור הירוק
+   שברוחב מלא והקישור למחשבון, וכפתור שלישי מעליהם הוא אותה פעולה
+   פעמיים. הוא נכנס יחד עם הקו, ברגע שמתחילים לגלול.
+   visibility ולא opacity לבדה, אחרת הוא נשאר בסדר הטאבים ובקורא
+   המסך כשהוא סגור; ההשהיה מחזיקה אותו נראה עד סוף הסגירה. */
+nav:not(.sc) .nc.pri{max-width:0;padding-inline:0;margin-inline-start:0;
+  border-width:0;opacity:0;visibility:hidden;pointer-events:none;
+  transition:max-width .28s ease,padding .28s ease,margin .28s ease,
+    opacity .18s ease,visibility 0s .28s}
+@media(prefers-reduced-motion:reduce){.nc.pri,nav:not(.sc) .nc.pri{transition:none}}
 /* הדפדפן מביא עוגן לראש המסך, ושם יושב עכשיו ההאדר: בלי זה 77
    הפיקסלים הראשונים של הסקשן נשארים מאחוריו. נמדד על שלושת העוגנים. */
 .S[id]{scroll-margin-top:var(--navh)}
@@ -236,7 +250,7 @@ foot .fl span,foot .fl a{color:#E3DCCF;text-decoration:none}
 foot .cr{font-size:11.5px;margin:22px 0 0;line-height:1.7;color:#A09889}
 foot .brand{color:#F5F1E8}foot .brand .lf{color:#8FBC8F}
 </style>
-<!-- Neta@2c47aa2 -->
+<!-- Neta@4c050a5 -->
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><g id="sprout">
