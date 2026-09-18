@@ -1499,6 +1499,31 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ‏`#act-empty` לא נגע: שם `.bigfav` נשאר 70 בריבוע מעוגל, כי הוא
    כוון מול שלושת המצבים הריקים האחרים ולא מול הטאב השכן. */
 #act-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:12px}
+/* ── "ההשקעות שלי": אותו מבנה ראש, במספר במקום בכותרת ─────────────
+   שני הטאבים השכנים פותחים באיור ממורכז ומתחתיו טקסט, וזה היה המסך
+   היחיד שפותח בשורה: מספר מימין ונבט משמאלו. עכשיו הנבט עולה מעל
+   ומתמרכז, והסדר הוא איור, מספר, כותרת.
+
+   הכותרת אינה אלמנט חדש: זו שורת ה-s-label שכבר הייתה שם, בניסוח
+   של אלון ובמשקל של הכותרות בשני המסכים האחרים (17px/600, שתי
+   שורות ב-390). כלומר לא נוספה שכבת טקסט, אחת השתנתה.
+
+   ושורת העובדות שמתחת לקו ממורכזת גם היא, אחרת היא השורה היחידה
+   במסך שנצמדת לימין מתחת לגוש ממורכז.
+
+   המחיר, שנאמר ונבחר: המספר יורד מ-97 ל-171 והכרטיס הראשון מ-263
+   ל-358. זו אותה משפחה של החלטה שהפילה את הראש המאויר ב"העתיד
+   שלנו", ושם היא נדחתה; כאן הנפילה קטנה בהרבה, ובמכשיר 360x640
+   כרטיס אחד עדיין נשאר מעל הקיפול.
+
+   ממוקד ל-[data-name="הבית"]: .summary משרתת גם את "הנטיעות שלי",
+   ושם המספר עדיין יושב בשורה עם הנבט. */
+[data-name="הבית"] .summary .s-row{flex-direction:column;align-items:center;
+  text-align:center;gap:6px}
+[data-name="הבית"] .summary .s-art{order:-1}
+[data-name="הבית"] .s-meta{justify-content:center}
+[data-name="הבית"] #mi-meta{font-size:17px;font-weight:600;color:var(--tx);
+  line-height:1.35;margin-top:10px;max-width:290px;margin-inline:auto;text-wrap:balance}
 #act-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
 #act-head p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin:8px auto 0;max-width:290px}
 /* גוש האיור נעול לגובה אחד בארבעת המסכים הריקים של הסרגל, כדי שהכותרת,
@@ -1784,7 +1809,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b7b9a7d';
+window.NETA_BUILD = '88b3186';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -11751,9 +11776,9 @@ function paintInvestments(){
      הכיתוב עובר לצורה הכללית. */
   const who=beneficiariesOf(rows);
   txt('mi-meta',
-    who.length===1 ? ('זה הסכום שעד\u00A0כה השקעת בעתיד של '+who[0]) :
-    who.length>1   ? 'זה הסכום שעד\u00A0כה השקעת בעתיד של היקרים שלך'
-                   : 'זה הסכום שעד\u00A0כה השקעת, עוד בלי לקבוע למי');
+    who.length===1 ? ('זה מה שכבר השקעת בעתיד של '+who[0]) :
+    who.length>1   ? 'זה מה שכבר השקעת בעתיד של היקרים שלך'
+                   : 'זה מה שכבר השקעת, עוד בלי לקבוע למי');
   document.getElementById('mi-list').innerHTML=rows.map(ivCardHTML).join('');
 }
 /* מי הנהנים ברשימה, בלי כפילויות. שני מסכי הסיכום חייבים להסכים על
