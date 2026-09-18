@@ -1787,7 +1787,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'cf191d6';
+window.NETA_BUILD = '8f633c8';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7949,7 +7949,12 @@ function buildRelatives(){
       : '<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">שלח שוב</button>';
     else right='<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">הזמן</button>';
     return relRowHTML(r,right,' onclick="editRelative('+i+')"');
-  }).join('');
+  }).join('')+
+    /* ההוספה היא שורה בסוף הרשימה, בדיוק כמו ברשימת הילדים ובמצב
+       ההזמנה: היא מוסיפה שורה, ולכן מקומה בתוך מה שהיא משנה. הכפתור
+       הירוק נשאר רק במצב הריק, כי מצב ריק בלי פעולה הוא בדיוק מה
+       שתוקן כאן קודם. */
+    '<div class="reladd" onclick="openAddPerson(\'with\')">+ הוסף קרוב</div>';
   relMeta();
 }
 /* שורה אחת, שני שימושים: הרשימה האמיתית והדגם הדוהה שמתחת למצב הריק.
@@ -8220,7 +8225,9 @@ function paintInvSend(){
   /* במצב הזמנה ההוספה יושבת בסוף הרשימה, ולכן הכפתור שמתחתיה יורד.
      מחוץ למצב הזמנה הוא הפעולה הראשית של המסך ונשאר. */
   if(add){
-    add.style.display=relInviteKey?'none':'';
+    /* הכפתור הירוק הוא של המצב הריק בלבד. ברשימה מלאה ההוספה יושבת
+       בסוף הרשימה, ובמצב הזמנה הפעולה היא "המשך" ולא הוספה. */
+    add.style.display=(relInviteKey||relatives.length)?'none':'';
     add.className='btn gap-s';
     /* "קרוב" ולא "אדם", לבקשת אלון. הנימוק שנשמע לפני השינוי: הפאנל
        הראשון שואל "את מי תרצה להוסיף" ומציע שתי דרכים, וילד אינו
