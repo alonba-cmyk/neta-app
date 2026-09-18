@@ -671,8 +671,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .fu-pick{display:flex;gap:11px;align-items:flex-start;overflow-x:auto;
   scrollbar-width:none;margin:0 -18px 14px;padding:7px 18px 6px}
 .fu-pick::-webkit-scrollbar{display:none}
+/* ‏transform-origin עליון: ההקטנה מתרחשת כלפי מטה ולכן ראשי כל
+   הפרצופים נשארים על אותו קו, גם כשהם בגדלים שונים. */
 .fu-item{display:flex;flex-direction:column;align-items:center;gap:7px;flex:0 0 auto;
-  width:60px;background:none;border:none;padding:0;font-family:inherit;cursor:pointer}
+  width:60px;background:none;border:none;padding:0;font-family:inherit;cursor:pointer;
+  transform-origin:center top}
 /* הטבעת מצוירת ב-box-shadow ולכן היא יוצאת 4 פיקסלים מחוץ לעיגול.
    בלי הריפוד העליון ב-fu-pick היא נאכלת על ידי overflow ונראית
    כאילו התמונה חתוכה בכותרת. */
@@ -1840,7 +1843,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '53c61eb';
+window.NETA_BUILD = 'a3d5e99';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -12122,6 +12125,44 @@ function fuCenterPick(){
   if(row.scrollTo)row.scrollTo({left:to,behavior:fuPickDrawn?'smooth':'auto'});
   else row.scrollLeft=to;
   fuPickDrawn=true;
+  fuTaperOn(row);
+  fuTaper();
+}
+/* גלגל ולא שורה: כל פריט מתכווץ ודוהה ככל שהוא רחוק ממרכז השורה.
+   הסיבה אינה קישוט. הבורר מגלגל את עצמו כדי שהנבחר יהיה במרכז, ולכן
+   בקצוות נשאר ריפוד ריק, ואלון ראה אותו כחור א-סימטרי. המרכוז עצמו
+   אינו נתון למשא ומתן, ולכן מה שמשתנה הוא מה שהקצה אומר: בשורה שכל
+   הפריטים בה באותו גודל הוא נקרא כמשבצת חסרה, ובגלגל שמתרחק הוא
+   נקרא כ"כאן זה נגמר". נוסו גם לולאה (כל פריט מופיע פעמיים, כולל
+   "הוסף") וסידור מחדש שמעביר את הנבחר לאמצע (סדר הילדים משתנה בכל
+   לחיצה), ושתיהן נפסלו.
+
+   המדידה היא מהמרכז האמיתי של כל פריט ולא מהאינדקס שלו, כי בזמן
+   גלילה ידנית אין "פריט נבחר" באמצע, ומי שנמצא שם הוא מי שנמצא. */
+const FU_MIN=.74,FU_DIM=.45;
+function fuTaper(){
+  const row=document.getElementById('fu-pick');
+  if(!row||!row.clientWidth)return;
+  const c=row.getBoundingClientRect().left+row.clientWidth/2;
+  const reach=row.clientWidth*.62;
+  row.querySelectorAll('.fu-item').forEach(function(it){
+    const b=it.getBoundingClientRect();
+    const k=Math.max(0,1-Math.abs(b.left+b.width/2-c)/reach);
+    it.style.transform='scale('+(FU_MIN+(1-FU_MIN)*k).toFixed(3)+')';
+    it.style.opacity=(FU_DIM+(1-FU_DIM)*k).toFixed(3);
+  });
+}
+/* מאזין אחד לשורה, ומצויר בפריים ולא בכל אירוע גלילה: בלי זה כל
+   תנועת אצבע מריצה מדידה על כל הפריטים. */
+let fuTaperBound=false,fuTaperTick=false;
+function fuTaperOn(row){
+  if(fuTaperBound||!row)return;
+  fuTaperBound=true;
+  row.addEventListener('scroll',function(){
+    if(fuTaperTick)return;
+    fuTaperTick=true;
+    requestAnimationFrame(function(){fuTaperTick=false;fuTaper()});
+  },{passive:true});
 }
 /* שורת רגע. הסכום מוצג רק כשיש כמה רגעים: ברגע אחד הראש כבר נושא
    אותו, ומספר שחוזר על עצמו הוא מה שהופך מסך לעמוס. */
