@@ -2052,7 +2052,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'dca388b';
+window.NETA_BUILD = 'ed54b87';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4034,8 +4034,12 @@ window.NETA_CONFIG = {
     <label>איך תיראה לכל מי שנוטע איתך</label>
     <div class="fixedval"><span id="nf-cur">·</span></div>
   </div>
-  <button class="btn" id="nf-yes" onclick="nameFixYes()">·</button>
-  <button class="btn ghost" style="margin-top:9px" onclick="nameFixNo()">להשאיר כמו שזה</button>
+  <!-- הראשי הוא "להשאיר" ולא "לשנות". הפעולה שמנגד דורסת את השם
+       שהמשתמש בחר לעצמו במה שמישהו אחר הקליד עליו, והיא חלה על כל מקום
+       שבו השם מופיע. הקופסה שמעל מציגה את השם הנוכחי, ולכן הראשי
+       מאשר את מה שרואים במקום להחליף אותו במשהו שאינו על המסך. -->
+  <button class="btn" onclick="nameFixNo()">להשאיר את שלי</button>
+  <button class="btn ghost" style="margin-top:9px" id="nf-yes" onclick="nameFixYes()">·</button>
 </section>
 
 
