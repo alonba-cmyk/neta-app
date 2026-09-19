@@ -2052,7 +2052,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6068517';
+window.NETA_BUILD = 'de7e1d0';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -12428,10 +12428,17 @@ function buildHomeSummary(){
     if(futHead)futHead.style.display=sectEmpty?'none':'';
     const kz=document.getElementById('kid-zero');
     if(kz)kz.style.display=kidZero?'':'none';
-    /* הכפתור המקווקו הוא הפעולה כשיש רשימה. במצב הריק הפעולה כבר
-       יושבת בתוכו, מלאה, ושני כפתורים לאותו דבר הם בחירה מדומה. */
-    const gNew=document.getElementById('garden-new');
-    if(gNew)gNew.style.display=selEmpty?'none':'';
+    /* ‏garden-new אינו נוגע כאן. הוא יושב בתוך `kin-full`, כלומר על
+       "ההשקעות שלי", והשורה הזאת היא הפיינטר של "העתיד שלנו": מסך
+       אחד כיבה את הפעולה היחידה של מסך אחר. אצל מי שרק הוזמן לרגע
+       של קרוב `selEmpty` תמיד נכון, ולכן **כל מוזמן שלא פתח נטיעה
+       משלו ראה את "ההשקעות שלי" בלי שום פעולה** — בדיוק האדם שהמסך
+       הזה אמור להמיר. נמדד: inline-block אחרי paintInvestments,
+       none אחרי buildHomeSummary.
+
+       הנימוק שהיה כאן ("במצב הריק הפעולה כבר יושבת בתוכו, מלאה")
+       נכון ל-`kin-empty`, שהוא ממילא אח של `kin-full` ומחליף אותו
+       כולו. כשהגוש הזה מוצג, הפעולה שבתוכו מוצגת איתו. */
     /* ילד שנבחר ועוד אין לו רגע: המצב הריק מדבר אליו בשמו, והכפתור
        פותח נטיעה שכבר ממולאת בו. "עוד לא נטעת בעצמך" היה אומר לו
        משהו שאינו נכון, כי הוא אולי נטע לילד אחר. */
