@@ -911,6 +911,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .fn{font-size:12.5px;font-weight:500;line-height:1.35}
 .fs{font-size:10.5px;color:var(--tx-3);margin-top:2px}
 .fs.oth{color:var(--leaf-soft)}
+/* הזמן בתוך השורה, ולא ככותרת יום מעליה. בהצצה שבתחתית "ההשקעות
+   שלי" כל שורה היא כרטיס משלה, ואין בין שני כרטיסים מקום לכותרת
+   יום: היא הייתה יושבת על הרווח שביניהם ונקראת כשייכת לכרטיס הלא
+   נכון. לכן שם הזמן יורד אל שורת המשנה, אחרי מי שעשה את זה. בפיד
+   עצמו כלום לא זז, ושם כותרת היום עדיין חוסכת את החזרה על אותו
+   ערך בשמונה שורות. */
+.fs .ft{color:var(--tx-3)}
 .fa{font-size:13.5px;font-weight:600;color:var(--leaf);font-variant-numeric:tabular-nums;flex-shrink:0;white-space:nowrap}
 .fa.oth{color:var(--leaf-soft)}
 .fa.let{font-size:11px;font-weight:500;color:var(--sun-soft)}
@@ -1241,6 +1248,19 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   border:1px dashed var(--leaf);border-radius:9px;padding:11px 0;margin-top:9px;
   color:var(--tx-3);font-size:12.5px;cursor:pointer;transition:.15s}
 .reladd:hover{background:var(--leaf-bg);color:var(--tx-2)}
+/* ההצצה בתחתית "ההשקעות שלי". כל שורה בכרטיס משלה, כמו הנטיעות
+   שמעליה: שתי שורות חשופות בתחתית מסך שכולו כרטיסים נראות צפות,
+   וזה מה שאלון ראה. הריפוד צר כי כרטיס שמחזיק שורה נותן לה את
+   הריפוד שלה ונשאר צר — אותו כלל כמו בדגמים הדוהים. */
+#act-peek{margin-top:26px}
+#act-peek .phead{display:flex;align-items:baseline;justify-content:space-between;
+  gap:10px;margin-bottom:8px}
+#act-peek .phead .eyebrow{margin:0}
+/* כמה קרה מאז שהיית שם. נשמר במכשיר ולא בחשבון, כמו בחירת הערכה:
+   זו שאלה על העין שראתה ולא על החשבון. */
+#act-peek .pnew{font-size:11px;font-weight:600;color:var(--leaf);
+  background:var(--leaf-bg);border-radius:999px;padding:2px 9px;flex-shrink:0}
+#act-peek .pcard{padding:2px 12px}
 /* שורת החזרה לרשימה: בראש הפאנל, שקטה, ובלי קו תחתון. היא ניווט
    ולא קישור בתוך משפט. */
 #c-kidback{display:block;padding:0;margin:0 0 10px;font-size:12.5px;
@@ -1289,6 +1309,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   min-height:24px;line-height:1.25}
 .tab .lb span{white-space:nowrap}
 .tab .ic{font-size:17px;line-height:1;height:20px;display:grid;place-items:center}
+/* הפרצוף כאייקון טאב. הוא הגיע לכאן מהשורה העליונה, שירדה: תמונה
+   בפינת המסך היא מגירה שצריך לגלות, ומשבצת בסרגל התחתון היא יעד
+   ככל השאר. עגול ולא ריבוע מעוגל כמו שהיה למעלה, כי כאן הוא
+   אייקון בשורת אייקונים ולא כרטיס ביקור. */
+.tab .ic.me{width:21px;height:21px;border-radius:50%;overflow:hidden;
+  background:var(--s2);display:block}
+.tab .ic.me .avsvg,.tab .ic.me .avimg{display:block;width:100%;height:100%}
 .tab.on{color:var(--leaf)}
 .tab.center{flex:0 0 auto}
 .tab.center .ic{width:44px;height:44px;border-radius:15px;background:var(--leaf);color:var(--on-leaf);display:grid;place-items:center;
@@ -1463,8 +1490,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .chk input{width:17px;height:17px;accent-color:var(--leaf);flex-shrink:0;margin-top:1px}
 .hint{font-size:10.5px;color:var(--tx-3);margin-top:6px;line-height:1.5}
 /* empty states — never a zero, one action, and no nagging where empty may be permanent */
+/* ‏58 ולא 62, וזה אינו שינוי במצבים הריקים אלא מה ששומר עליהם במקום:
+   השיעור נמדד מגובה הבמה, והבמה גדלה ב-69 פיקסלים כשהשורה העליונה
+   ירדה. ב-62 אחוז של הבמה החדשה הגוש נמתח מעבר לתוכן שלו בשניים
+   מארבעת המסכים, והאיור שלהם נחת 5 פיקסלים נמוך יותר מבשניים
+   האחרים (נמדד ב-412x900 וב-430x932; במכשיר של 844 לא זז דבר).
+   ‏62% מ-745 הם 58% מ-814. נמדד: ארבעתם ב-34 בשישה גדלים. */
 .es{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-  padding:26px 4px;min-height:62%}
+  padding:26px 4px;min-height:58%}
 /* הדגם שבתחתית מסך ריק: איך המסך ייראה כשיהיה בו תוכן. דוהה אל תוך הרקע
    ולא לחיץ — הוא תמונה, לא נתונים. הוא חי בתוך .es ולכן נעלם מעצמו ברגע
    שיש נטיעה אמיתית להראות. */
@@ -1893,7 +1926,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'a2b1289';
+window.NETA_BUILD = '528b187';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2088,7 +2121,9 @@ window.NETA_CONFIG = {
      מסלול נחיתה עובר דרכה. visibility ולא display, כדי לשמור על
      הגובה ולא לקפוץ. -->
 <div class="topbar" id="topbar" style="visibility:hidden">
-  <div class="me" onclick="go(10)" title="הפרופיל שלך"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></div>
+  <!-- ‏onclick ירד: השורה הזאת מוצגת במסך הפרופיל בלבד, וכפתור
+       שמוביל למסך שפתוח אינו כפתור. הכניסה לפרופיל היא הטאב. -->
+  <div class="me" title="התמונה שלך"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></div>
   <div class="tt"><h1 id="tb-t">שלום אלון</h1><div class="sub" id="tb-s">הכסף גדל בזמן שהם גדלים</div></div>
 </div>
 
@@ -3100,6 +3135,21 @@ window.NETA_CONFIG = {
     <p class="fine">100 ₪ בחודש יהפכו לכ-23,500 ₪ בעוד 13 שנה.<br>אפשר לשנות בכל עת.</p>
     <div class="gsample" id="kin-ghost" aria-hidden="true"></div>
   </div>
+  <!-- ההצצה לפעילות. הטאב שלה ירד מהסרגל התחתון לטובת הפרופיל,
+       והכניסה אליה היא מכאן: שתי השורות האחרונות, וקישור לכל השאר.
+       זה גם מה שהיה חסר בטאב — מסך שנכנסים אליו כדי לגלות שלא קרה
+       כלום. כשאין ולו שורה אחת הגוש כולו יורד, כי כרטיס שמוביל
+       למסך ריק הוא בדיוק אותה נסיעה.
+
+       כל שורה בכרטיס משלה, והזמן בתוכה: ראו ההערה ב-CSS. -->
+  <div id="act-peek" style="display:none">
+    <div class="phead">
+      <p class="eyebrow">מה קרה לאחרונה</p>
+      <span id="act-peek-new"></span>
+    </div>
+    <div id="act-peek-rows"></div>
+    <div class="reladd" onclick="openActivity()">כל מה שקרה ›</div>
+  </div>
   <!-- מה שממתין לתשובה שלך: בקשת אישור כהורה, הזמנה שנדחתה, או
        שתיהן. השורות נבנות ב-pendRowsHTML ומוזרקות לשני המקומות מאותו
        מקור, כדי שלא יהיו שוב שתי צורות לאותו דבר. -->
@@ -3112,11 +3162,18 @@ window.NETA_CONFIG = {
 
 <!-- 15 RELATIVES / הקרובים שלי -->
 <section class="screen" data-name="הקרובים שלי">
-  <!-- הכותרת יושבת בשורה העליונה (topbars[15]) ולא כאן, כדי שהמעבר בין
-       יעדי הסרגל לא יקפיץ אותה. שני כיוונים, ולכן שתי רשימות: הכיוון
-       השני — מי הכניס אותי פנימה — לא הוצג כאן מעולם, ואדם שהוזמן לא
-       ראה בשום מסך מי הזמין אותו. -->
+  <!-- הכותרת ישבה בשורה העליונה (topbars[15]) עד שזו ירדה, ואת שם
+       המסך נושא עכשיו הראש המאויר שמתחת. במצב הזמנה, שבו הוא יורד,
+       יש כותרת משלו: rel-invhead. שני כיוונים, ולכן שתי רשימות:
+       הכיוון השני — מי הכניס אותי פנימה — לא הוצג כאן מעולם, ואדם
+       שהוזמן לא ראה בשום מסך מי הזמין אותו. -->
 
+  <!-- הכותרת של מצב ההזמנה. בשאר הזמן הראש המאויר שמתחת נושא את
+       שם המסך; ראו ההערה ב-paintInviteMode. -->
+  <div id="rel-invhead" style="display:none">
+    <h2 class="gap-x">למי לשלוח?</h2>
+    <p class="sub gap" id="rel-invsub"></p>
+  </div>
   <p class="eyebrow" id="req-head" style="display:none">בקשות הצטרפות שממתינות לך</p>
   <div id="req-list"></div>
   <!-- "נוטעים איתך" ירדה: היא חזרה על תת-הכותרת שבשורה העליונה, ובמצב
@@ -3931,9 +3988,15 @@ window.NETA_CONFIG = {
 <!-- BOTTOM TAB BAR -->
 <!-- סדר ה-DOM הוא ימין→שמאל: הראשון הוא הימני ביותר.
 
-     "פרופיל" ירד מכאן אל התמונה שבפינה, שכבר פותחת אותו בכל מסך: זו
-     מגירת הגדרות שנכנסים אליה לעיתים רחוקות, ולא יעד שמתחרה על משבצת.
-     כך הטאב הנכנס נכנס בלי שאיש שילם עליו. -->
+     "פרופיל" ירד מכאן פעם אל התמונה שבפינה, וחזר. מה שהחזיר אותו:
+     התמונה בפינה היא הכניסה היחידה לפרופיל בכל האפליקציה, כלומר
+     מגירה שאין בה שום דבר שאומר שהיא מגירה, והשורה העליונה שהחזיקה
+     אותה עלתה 68 פיקסלים בארבעת המסכים שהיא הופיעה בהם — בזמן
+     שהכותרת שהיא נשאה כבר נאמרת בראש המאויר של כל אחד מהם.
+
+     "פעילות" היא ששילמה על המשבצת, והיא לא נעלמה: ההצצה שבתחתית
+     "ההשקעות שלי" מראה את שתי השורות האחרונות ומובילה למסך המלא.
+     כלומר יעד שנכנסים אליו כשיש מה לראות, במקום טאב שנבדק ריק. -->
 <nav class="tabbar" id="tabbar">
   <!-- "ההשקעות שלי" הוא מה שאני שם, ו"העתיד שלנו" הוא מה שמחכה להם.
        שני הנושאים ישבו קודם באותו מסך, וזה מה שהיה קשה לקרוא.
@@ -3948,11 +4011,11 @@ window.NETA_CONFIG = {
        55 אחוז מגובה קופסת 24 על 24 בעוד שהנבט תופס 96, ולכן באותו
        height הגן היה יוצא נמוך בשליש. החיתוך הוא לתיבת הדיו כולל עובי
        הקו, והגובה מכוון לגובה הדיו של הנבט. נמדד בסריקת פיקסלים. -->
-  <button class="tab on" onclick="openHome()"><span class="ic"><svg width="13" height="18.5" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>ההשקעות</span><span>שלי</span></span></button>
+  <button class="tab on" id="tab-home" onclick="openHome()"><span class="ic"><svg width="13" height="18.5" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>ההשקעות</span><span>שלי</span></span></button>
   <button class="tab" onclick="openFutureTab()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-path"/></svg></span><span class="lb"><span>העתיד</span><span>שלנו</span></span></button>
   <button class="tab center" onclick="startCreate()"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg></span><span class="lb"><span>נטיעה</span></span></button>
   <button class="tab" onclick="openPeople()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-kin"/></svg></span><span class="lb"><span>הקרובים</span><span>שלי</span></span></button>
-  <button class="tab" id="tab-act" onclick="go(9)"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></span><span class="lb"><span>פעילות</span></span></button>
+  <button class="tab" id="tab-me" onclick="go(10)"><span class="ic me"><svg class="avsvg" viewBox="0 0 40 40" aria-hidden="true"><use href="#av-parent"/></svg></span><span class="lb"><span>הפרופיל</span><span>שלי</span></span></button>
 </nav>
 <div class="home-indicator"><span></span></div>
 
@@ -3980,23 +4043,16 @@ const screens=[...document.querySelectorAll('.screen')],nav=document.getElementB
 screens.forEach((s,i)=>{const b=document.createElement('button');b.textContent=(i+1)+' · '+s.dataset.name;b.onclick=()=>go(i);nav.appendChild(b)});
 /* הבית הוא 14 והעתיד שלנו הוא 0. המסכים לא זזו במיקום ב-DOM,
    כי כל go(N) בקובץ נשען על המספר; רק התפקידים התחלפו. */
-const tabScreens={14:0,0:1,1:2,6:3,7:3,15:3,9:4};
+/* מסך 9 (פעילות) מדליק את הטאב הראשון: אליו מגיעים מההצצה שבתחתית
+   "ההשקעות שלי", ומשם אפשר לחזור. */
+const tabScreens={14:0,0:1,1:2,6:3,7:3,15:3,9:0,10:4};
 const ONBO={welcome:19,login:20,how:21,identity:22,done:23};
 let onbo=false;
+/* השורה העליונה נשארה למסך אחד, הפרופיל, שהיא הכותרת שלו. בארבעת
+   יעדי הסרגל היא ירדה יחד עם הפרצוף שבפינה — ראו ההערה בסרגל
+   התחתון. מה שהיא אמרה שם אומר עכשיו הראש המאויר של כל מסך, ובמסך
+   הקרובים היא אף חזרה עליו כמעט מילה במילה. */
 const topbars={
-  0:['העתיד שלנו','כמה נצבר לכל אחד, ומי נוטע איתך'],
-  /* "נותן" היא שפה של תרומה, וכל שאר המוצר מדבר על השקעה ועל נטיעה. */
-  /* הברכה עברה לבית יחד עם התפקיד. השם נכתב לתוכה ב-setMyName. */
-  14:['שלום אלון','מה שאתה משקיע, ולמה זה יהפוך'],
-  /* גם כאן, ולא ככותרת בתוך המסך: ארבעת יעדי הסרגל צריכים כותרת באותו
-     מקום ובאותו גודל, אחרת המעבר ביניהם קופץ. זה היה המסך היחיד מביניהם
-     שהחזיק h2 בתוך הגלילה, ולכן גם התמונה שבפינה נעלמה בו. */
-  /* החצי השני, "ולמי נוטעים איתך", מעולם לא הוצג כאן והוא
-     עכשיו מסך משלו. הכותרת אומרת רק את מה שהמסך באמת מחזיק. */
-  15:['הקרובים שלי','מי נוטע איתך'],
-  /* "הנתינה במשפחה" נכון רק למי שיש לו משפחה במוצר. מי שהוזמנה לרגע
-     של מישהו אחר ועוד לא הצטרפה קראה כאן על משפחה שאין לה. */
-  9:['מה קרה לאחרונה','הרגעים שקרו סביבך'],
   10:['אלון','מלווה 2 נטיעות · שותף ב-2 נוספות']
 };
 /* מסכים שאין בהם סרגל תחתון. 22 ו-26 נוספו אחרי שגל, שהגיעה דרך קישור
@@ -4004,9 +4060,6 @@ const topbars={
    של מישהו אחר. מסך שנפתח לפני שיש חשבון לא מציג ניווט לחשבון. */
 /* ‏29 ו-30 הם "הצטרפות" ו"השם שלך", שנוספו בסוף ה-stage. שניהם
    מסכי דרך פנימה, ולסרגל אין מה לעשות בהם. */
-/* הכיתוב המקורי של מסך הקרובים. הוא מתחלף כשהמסך נפתח כדי לבחור למי
-   לשלוח הזמנה, ואז זו שאלה ולא רשימה. */
-const REL_TOPBAR=topbars[15].slice();
 const NOCHROME=[19,20,21,22,23,25,26,27,29,30];
 const REVIEW=24;
 /* מסך הבית מסומן on כבר ב-HTML, ולכן הוא נצבע כל עוד לא ידוע מה
@@ -4489,7 +4542,9 @@ function paintPending(){
   const home=document.getElementById('pend-home');
   const list=document.getElementById('pend-home-list');
   const act=document.getElementById('pend-act');
-  const tab=document.getElementById('tab-act');
+  /* הנקודה עברה לטאב הבית יחד עם המסך: pend-home יושב בתחתית
+     "ההשקעות שלי", והטאב של הפעילות כבר אינו בסרגל. */
+  const tab=document.getElementById('tab-home');
   const html=items.map(pendRowHTML).join('');
   if(home&&list){
     home.style.display=items.length?'':'none';
@@ -8656,11 +8711,18 @@ function openRelatives(from,inviteKey){
 }
 /* כל מה שתלוי ברגע הנבחר: הכותרת, האזהרה, ובורר הרגע עצמו. נקרא גם
    בכניסה וגם בכל החלפת רגע, כדי ששניהם לא ייפרדו. */
-/* נקרא מ-openRelatives בלבד, שמסיים ב-go(15). go הוא שמצייר את
-   השורה העליונה מ-topbars[15], ולכן כאן רק קובעים אותה. */
 function paintInviteMode(){
   const pl=relInviteKey?plantAt(relInviteKey):null;
-  topbars[15] = pl ? ['למי לשלוח?','ההזמנה ל'+pl.name] : REL_TOPBAR.slice();
+  /* הכותרת הזאת ישבה בשורה העליונה (topbars[15]) עד שזו ירדה. במצב
+     הרגיל הראש המאויר נושא את שם המסך, ובמצב הזמנה הוא יורד בכוונה
+     ("מי כבר נוטע איתך" הוא דיווח, והשאלה כאן היא למי לשלוח) —
+     ובלי השורה הזאת המסך היה נשאר בלי שום כותרת, רשימת אנשים בלי
+     השאלה שהיא עונה עליה. */
+  const ih=document.getElementById('rel-invhead');
+  if(ih){
+    ih.style.display=pl?'':'none';
+    if(pl)txt('rel-invsub','ההזמנה ל'+pl.name);
+  }
   const inv=document.getElementById('rel-invite');
   if(inv)inv.style.display=relInviteKey?'':'none';
   const warn=document.getElementById('rel-warn');
@@ -10076,11 +10138,9 @@ function blankBeforeFirstLoad(){
   /* גם הפנקסים האישיים. הם מאותחלים בקובץ עם משפחת ההדגמה, וניקוי שלהם
      היה תלוי עד כה במתג "מצב ריק" — שזז פעם אחת בלבד. */
   relatives.length=0;letters.length=0;requests.length=0;pays.length=0;
-  topbars[14][0]='שלום';
   topbars[10][0]='';
   txt('pf-name','');
-  const tb=topbars[14];
-  if(document.querySelector('.screen.on')===screens[14]){txt('tb-t',tb[0]);txt('tb-s',tb[1]);}
+  txt('mi-meta','');
 }
 
 function buildConnection(){
@@ -10131,7 +10191,6 @@ function myEmail(){
 }
 function setMyName(name){
   if(!name)return;
-  topbars[14][0]='שלום '+name;
   topbars[10][0]=name;
   txt('pf-name',name);
   /* הכותרת נצבעת בתוך go(), אז מסך שכבר פתוח צריך רענון ידני.
@@ -10142,13 +10201,17 @@ function setMyName(name){
   const cur=document.querySelector('.screen.on');
   const tb=cur?topbars[[...screens].indexOf(cur)]:null;
   if(tb){txt('tb-t',tb[0]);txt('tb-s',tb[1]);}
+  /* הברכה ישבה בשורה העליונה של מסך הבית ("שלום אלון"), וכשזו ירדה
+     השם נעלם מהאפליקציה כולה. הוא חזר לכותרת של "ההשקעות שלי", שהיא
+     ממילא משפט שמדבר אליך. מצוירת שם ולא כאן, ולכן רק רענון. */
+  if(lastModel&&cur===screens[14])paintInvestments();
 }
 /* מחליף את תוכן המשבצת ולא רק את ה-href: נתיב לתמונה אינו מזהה
    בספרייט, ואי אפשר להכניס אותו ל-use. אם הקישור החתום עוד לא
    הגיע, נופלים לדמות וחותמים, והציור השני מגיע מיד אחריו. */
 function applyMyAvatar(av){
   const html=faceHTML(av,'av-parent');
-  document.querySelectorAll('.topbar .me, .hdr .me').forEach(function(box){
+  document.querySelectorAll('.topbar .me, .hdr .me, .tabbar .ic.me').forEach(function(box){
     box.innerHTML=html;
   });
   if(av&&av.indexOf('av-')!==0&&!photoUrl(av))
@@ -11748,7 +11811,9 @@ function relAvatar(name){
   }
   return null;
 }
-function feedRowHTML(e){
+/* ‏withTime נכון בהצצה בלבד. שם אין כותרות יום, כי כל שורה היא
+   כרטיס ואין בין כרטיסים מקום לכותרת. בפיד המלא הכותרת נשארה. */
+function feedRowHTML(e,withTime){
   const mine=!!e.isMe;
   let sub='',amount='',cls='',glyph=e.icon||'🌱',title=e.name;
   /* חלוקה קבועה בכל סוגי השורות: הכותרת אומרת לאן, השורה מתחתיה אומרת
@@ -11800,6 +11865,10 @@ function feedRowHTML(e){
     ? '<div class="fav">'+faceHTML(face,'av-parent')+
       '<span class="fbadge">'+(e.icon||'🌱')+'</span></div>'
     : '<div class="fic'+cls+'">'+glyph+'</div>';
+  if(withTime&&e.at){
+    const ago='<span class="ft">'+agoText(e.at)+'</span>';
+    sub=sub?(sub+' · '+ago):ago;
+  }
   const open=e.key?' onclick="openDetail(\''+e.key+'\')"':'';
   return '<div class="fr'+(sub?'':' one')+'"'+open+'>'+badge+
     '<div class="fx"><div class="fn">'+title+'</div>'+
@@ -11846,8 +11915,62 @@ function buildFeed(){
     box.innerHTML=feedHTML(rows);
     box.style.display=rows.length?'':'none';
     feedCount=rows.length;
+    feedRows=rows;
     syncActEmpty();
+    paintActPeek();
   }).catch(function(){});
+}
+
+/* ─── ההצצה לפעילות, בתחתית "ההשקעות שלי" ────────────────────────
+   הטאב של הפעילות ירד מהסרגל לטובת הפרופיל, וזו הכניסה שבאה במקומו.
+   שתי השורות האחרונות ולא כרטיס שאומר "יש שם משהו": כרטיס כזה עולה
+   בדיוק אותו גובה ואינו אומר מה קרה.
+
+   "כמה חדשים" נשמר במכשיר ולא בחשבון, כמו בחירת הערכה: זו שאלה על
+   העין שראתה, ומי שנכנס ממכשיר שני לא ראה שם דבר. הוא נמחק כשנכנסים
+   למסך המלא ולא כשמסתכלים על ההצצה — ההצצה מראה שתיים ואומרת שיש
+   שבע, ומחיקה בה הייתה מוחקת את החמש שלא נראו.
+
+   ובכניסה ראשונה הוא נזרע ואינו מוצג: חשבון שכל הפיד שלו חדש היה
+   נפתח על "12 חדשים", כלומר מספר שמודיע רק על כך שמעולם לא היית שם. */
+let feedRows=[];
+const SEEN_KEY='neta-feed-seen';
+function feedSeen(){
+  try{return localStorage.getItem(SEEN_KEY)||''}catch(e){return ''}
+}
+function markFeedSeen(){
+  try{localStorage.setItem(SEEN_KEY,new Date().toISOString())}catch(e){}
+}
+function feedNewCount(){
+  const seen=feedSeen();
+  if(!seen)return 0;
+  const t=new Date(seen).getTime();
+  return feedRows.filter(function(e){
+    return e.at&&new Date(e.at).getTime()>t;
+  }).length;
+}
+function paintActPeek(){
+  const box=document.getElementById('act-peek');
+  if(!box)return;
+  if(!feedSeen()&&feedRows.length)markFeedSeen();
+  const rows=feedRows.slice()
+    .sort(function(a,b){return new Date(b.at)-new Date(a.at)}).slice(0,2);
+  box.style.display=rows.length?'':'none';
+  if(!rows.length)return;
+  const n=feedNewCount();
+  document.getElementById('act-peek-new').innerHTML=
+    n?('<span class="pnew">'+(n===1?'חדש אחד':(n+' חדשים'))+'</span>'):'';
+  document.getElementById('act-peek-rows').innerHTML=
+    rows.map(function(e){
+      return '<div class="card pcard">'+feedRowHTML(e,true)+'</div>';
+    }).join('');
+}
+/* הכניסה היחידה למסך הפעילות. הסימון נמחק כאן ולא ב-go(9), כי go
+   הוא גם החזרה אחורה ואינו יודע מאיפה באו. */
+function openActivity(){
+  markFeedSeen();
+  paintActPeek();
+  go(9);
 }
 
 function buildHomeSummary(){
@@ -12350,11 +12473,16 @@ function paintInvestments(){
      כולל התערובת של ילדים שלי עם ילדים של אחרים שהמסך הזה מאחד,
      הכיתוב עובר לצורה הכללית. */
   const who=beneficiariesOf(rows);
-  txt('mi-meta',
+  /* השם פותח את המשפט. הוא ישב בשורה העליונה ("שלום אלון") וירד
+     איתה, וזו הכותרת היחידה באפליקציה שממילא מדברת אליך בגוף שני
+     — כלומר המקום שבו השם אינו קישוט אלא פנייה. firstName כי
+     "שלום אלון בר דוד, זה מה שכבר השקעת" נשבר לשלוש שורות. */
+  const me=firstName(myName()||topbars[10][0]||'');
+  txt('mi-meta',(me?(me+', '):'')+(
     who.length===1 ? ('זה מה שכבר השקעת בעתיד '+
                       (isSelfName(who[0])?'שלך':('של '+who[0]))) :
     who.length>1   ? 'זה מה שכבר השקעת בעתיד של היקרים שלך'
-                   : 'זה מה שכבר השקעת, עוד בלי לקבוע למי');
+                   : 'זה מה שכבר השקעת, עוד בלי לקבוע למי'));
   document.getElementById('mi-list').innerHTML=rows.map(ivCardHTML).join('');
 }
 /* מי הנהנים ברשימה, בלי כפילויות. שני מסכי הסיכום חייבים להסכים על
