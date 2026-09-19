@@ -458,7 +458,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    עכשיו אותו עיגול בדיוק עובר ממתאר למלא, 9.63 בין שני המצבים. זו
    כבר השפה של הצ'יפים ("מה שנבחר צבוע מלא"), ולכן זו צורה אחת עם
    שני מצבים ולא שתי צורות. */
-.nhdr .ab.on{background:var(--leaf);border-color:var(--leaf);color:var(--on-leaf)}
 .nhdr .ab svg{display:block;width:18px;height:18px}
 /* בפינה החיצונית של הכפתור, בדיוק כמו הנקודה שעל הטאב. */
 .nhdr .ab i{position:absolute;top:-1px;left:-1px;width:9px;height:9px;border-radius:50%;
@@ -1678,7 +1677,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הרוחב אינו שווה ואינו יכול להיות: יחס הדיו של האייקון הוא 17:18
    ושל הנבט 40:62, ולכן בגובה זהה האייקון יוצא 57 והנבט 39. מה
    שהעין משווה במעבר בין טאבים הוא הקו העליון והתחתון. */
-#fut-head .art{height:60px;display:grid;place-items:start center;color:var(--leaf);margin-bottom:8px}
+/* 54 = 6 של מרווח פנימי ועוד 48 של דיו. הגובה נגזר מהציור ולא נבחר:
+   גוש שגדול ממנו הוא אוויר שה-CSS אינו מודה בו, וזו בדיוק התקלה
+   שתוארה למעלה כשהרווח הנראה היה 24 בזמן שהכלל אמר 8. */
+#fut-head .art{height:54px;display:grid;place-items:start center;color:var(--leaf);margin-bottom:8px}
 #fut-head .art svg{display:block;margin-top:6px}
 #fut-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance;
   margin:0 auto;max-width:300px}
@@ -2017,7 +2019,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'c3d0bc6';
+window.NETA_BUILD = 'f86efb7';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2215,7 +2217,13 @@ window.NETA_CONFIG = {
      הפרופיל, ואלון בחר בשני הכפתורים. פרצוף לחיץ הוא מה שכל אדם
      מנסה ממילא, וכפתור הוא מה שאומר שאפשר. -->
 <div class="nhdr" id="nhdr" style="visibility:hidden">
-  <div class="me" onclick="go(10)" title="הפרופיל שלך"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></div>
+  <!-- הפרצוף פותח את "השם והתמונה שלי" ולא את הפרופיל. עד כה שניהם
+       הובילו למסך 10, כלומר שתי דרכים לאותו מסך במרחק 44 פיקסלים,
+       וזה נאמר כמחיר כשהשורה נבנתה. עכשיו כל אחד עושה דבר אחר:
+       הפרצוף מוביל אל עצמו, והכפתור שמשמאל אל המסך שמחזיק את כל
+       השאר. זה גם "כפתור מוביל לדבר עצמו": מי שלוחץ על התמונה שלו
+       רוצה להחליף אותה, לא להגיע למסך שממנו מגיעים אליה. -->
+  <div class="me" onclick="editMyIdentity()" title="השם והתמונה שלי"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></div>
   <div class="tt">
     <div class="g" id="nh-greet">בוקר טוב</div>
     <div class="nm" id="nh-name">אלון</div>
@@ -2286,7 +2294,7 @@ window.NETA_CONFIG = {
          מעליו ו-3.5 מתחתיו, והרווח הנראה עד הכותרת אינו מה שה-CSS
          אומר. הגובה 60 והרוחב 57 נגזרים מהדיו של הנבט בטאב השכן,
          ראו ההערה ב-CSS. -->
-    <div class="art"><svg width="50" height="53" viewBox="3.5 2.5 17 18"
+    <div class="art"><svg width="45" height="48" viewBox="3.5 2.5 17 18"
       aria-hidden="true"><use href="#ic-path"/></svg></div>
     <!-- שתי שורות בכותרת ובלי משפט שקט מתחתיהן: השאלה ומה שעונה
          עליה הן אמירה אחת, ושורה אפורה שחוזרת על אותה עובדה במשקל
@@ -2508,7 +2516,7 @@ window.NETA_CONFIG = {
       <button onclick="setSex(this,'f')">בת</button>
     </div></div>
   <label class="chk" id="c-undecidedbox"><input type="checkbox" id="c-undecided" onchange="toggleDesig(this)">
-    <span>עוד לא החלטתי עבור מי, כרגע אני רק רוצה לשים כסף ליום עתידי</span></label>
+    <span>עוד לא החלטתי עבור מי, אני רק רוצה לשים כסף ליום עתידי</span></label>
   <button class="btn gap" id="c-cta" style="margin-top:16px" onclick="toOccasion()">המשך</button>
   </div><!-- /cp-0 -->
 
@@ -4196,8 +4204,9 @@ function paintHeader(i){
   if(!on)return;
   txt('nh-greet',greetNow());
   txt('nh-name',myName()||topbars[10][0]||'');
-  const a=document.getElementById('nh-act');
-  if(a)a.classList.toggle('on',i===9);
+  /* וכפתור הפעילות אינו נדלק במסך שלו, לבקשת אלון. הוא היה `--leaf`
+     מלא (ראו "כפתורי הראש"), ומה שנשאר לסמן איפה אתה הוא הסרגל
+     התחתון בלבד. */
   hd.style.visibility='';
 }
 /* מסכים שאין בהם סרגל תחתון. 22 ו-26 נוספו אחרי שגל, שהגיעה דרך קישור
@@ -5592,16 +5601,23 @@ function isSelfName(nm){
 /* מי שהשלב יורד לו רואה סרגל קצר יותר. שתי הפונקציות שכנות בכוונה:
    אחת סופרת את הנקודות והשנייה אומרת באיזו מהן אנחנו, ותיקון של רק
    אחת מהן נותן סרגל שמראה מספר אחד ומכריז אחר. */
-function flowSteps(){return (onbo?6:5)+((designated&&!beneIsMe())?1:0)}
+/* ושלב "לאיזה רגע" יורד כשאין נהנה. שמונת האריחים הם רגעים בחייו של
+   ילד — בר מצווה, לימודים, טיול אחרי צבא, חתונה — ומי שסימן "עוד לא
+   החלטתי עבור מי, אני רק רוצה לשים כסף ליום עתידי" כבר ענה שאין ילד
+   ואין רגע. לשאול אותו מיד אחר כך לאיזו חתונה זה לסתור את מה שהוא
+   הרגע אמר. הרגע נקבע ל"קופת הפתעות", שהוא האריח שממילא מתאר את זה
+   בדיוק, וזה גם מה שההדגמה מחזיקה מאז ומעולם. */
+function flowSteps(){return (onbo?6:5)+(designated?(beneIsMe()?0:1):-1)}
 function stepNo(key){
   const d=(designated&&!beneIsMe())?1:0;
+  const o=designated?0:-1;
   if(key==='who')return 1;
   if(key==='occ')return 2;
-  if(key==='amount')return 3;
-  if(key==='bene')return 4;
-  if(key==='identity')return 4+d;
-  if(key==='pay')return 4+d+(onbo?1:0);
-  return 5+d+(onbo?1:0); // review
+  if(key==='amount')return 3+o;
+  if(key==='bene')return 4+o;
+  if(key==='identity')return 4+d+o;
+  if(key==='pay')return 4+d+o+(onbo?1:0);
+  return 5+d+o+(onbo?1:0); // review
 }
 function flowBar(cur,label){
   const box=document.getElementById('flowbar'),bar=document.getElementById('steps-top');
@@ -5684,6 +5700,18 @@ function toAmount(){
    שני מסכים אחרי השדה, וטוסט שמפנה לשדה שאינו על המסך אינו עוזר
    לאיש. הבדיקה שם נשארת כרשת ביטחון, כי גם "חזרה" ממסך הסכום
    מגיעה אליה. */
+/* בחירת אריח מהקוד. אותו מסלול בדיוק של הלחיצה עצמה (‏#c-pills), כדי
+   שלא יהיו שני מקומות שקובעים את cType ו-cIcon. */
+function setOccasion(t){
+  const all=document.querySelectorAll('#c-pills button');
+  let hit=null;
+  all.forEach(function(x){const on=x.dataset.t===t;
+    x.classList.toggle('on',on); if(on)hit=x});
+  if(!hit)return;
+  cType=hit.dataset.t;cIcon=hit.dataset.i;
+  cCustom.style.display='none';
+  prev();checkBene();
+}
 function toOccasion(){
   if(designated && !((document.getElementById('c-name')||{}).value||'').trim()){
     /* כשהרשת על המסך ואיש לא נבחר, אין שדה להפנות אליו והבקשה
@@ -5696,11 +5724,15 @@ function toOccasion(){
     const f=document.getElementById('c-name'); if(f)f.focus();
     return;
   }
+  /* ראו flowSteps: בלי נהנה אין רגע לשאול עליו. */
+  if(!designated){setOccasion('קופת הפתעות');commitGoal();return}
   cStepGo(1);
 }
 /* order: עבור מי -> לאיזה רגע -> כמה תשקיע -> [מי יקבל את הכסף, רק אם יש נהנה] -> תשלום.
    השותפות יושבת מיד אחרי "בשביל מי" כי שתיהן אותה שאלה — מי, ועם מי — ולא רוצים שהן יתקררו זו מזו */
-function backFromAmount(){cStepGo(1);go(1)}
+/* וחזרה ממסך הסכום נוחתת על הפאנל שבאמת היה לפניו: בלי נהנה זה
+   "עבור מי" ולא "לאיזה רגע", שכלל לא הוצג. */
+function backFromAmount(){cStepGo(designated?1:0);go(1)}
 function backFromPay(){
   if(onbo){go(ONBO.identity);return}
   if(creating){
@@ -10463,7 +10495,12 @@ function editMyIdentity(){
      ל"פתח/ה" ו"מפקיד/ה" בלעדיה.
 
      ואין ברירת מחדל: ניחוש מגדר לפי שם נפסל בכל שאר המוצר, ולכן
-     גם כאן "לא נבחר" הוא מצב תקף, והצורה הכפולה נשארת. */
+     גם כאן "לא נבחר" הוא מצב תקף, והצורה הכפולה נשארת.
+
+     ושורת ההסבר שהייתה כאן ירדה לבקשת אלון. היא אמרה מה קורה בלי
+     תשובה ("בלי זה נכתוב פתח/ה והפקיד/ה"), וזה נכון — אבל הגיליון
+     הזה הוא שם, פנייה ותמונה, ושורה אפורה שמסבירה את המחיר של
+     דילוג הופכת שאלה אופציונלית לאזהרה. */
   const nowSex=(liveAccount()&&netaServer.profile&&netaServer.profile.sex)||'';
   sheetForm('השם והתמונה שלי',
     'כך אתה מופיע לקרובים שהזמנת, לצד ההשקעות שלך. כתובת הכניסה שלך לא משתנה.'+
@@ -10475,7 +10512,6 @@ function editMyIdentity(){
       '<button type="button" class="'+(nowSex==='f'?'on':'')+'" data-x="f" '+
         'onclick="pickEditSex(this)">בלשון נקבה</button>'+
     '</div>'+
-    '<p class="fine" style="margin-top:7px">בלי זה נכתוב "פתח/ה" ו"הפקיד/ה" בכל מקום שמדבר עליך, וגם במיילים שנשלחים לקרובים.</p>'+
     '<label>בחר דמות, או העלה תמונה</label>'+
       '<div id="me-avpick">'+avpickHTML(nowAv,myPhoto,'myPickPhoto()')+'</div>'+
       '<p class="fine" id="me-upnote" style="margin-top:8px;display:none"></p>',
