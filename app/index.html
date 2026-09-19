@@ -1695,6 +1695,25 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="הבית"] .s-meta{justify-content:center}
 [data-name="הבית"] #mi-meta{font-size:17px;font-weight:600;color:var(--tx);
   line-height:1.35;margin-top:10px;max-width:290px;margin-inline:auto;text-wrap:balance}
+/* שלושת התגים מתפרסים סביב הראש. הכלל הגלובלי של .esfaces.kids
+   ממקם כל i באותה פינה, ולכן שלושתם היו יושבים זה על זה; ממוקד
+   ל-#act-head, כי בכל שאר המקומות יש תג אחד בדיוק.
+
+   הם יושבים על קשת ולא בשלוש פינות: מרכז כל תג נמצא ברדיוס 32
+   ממרכז הפרצוף (28), בזוויות 135, 180 ו-225 מעלות. זה מה שמרחיק
+   ביניהם 24.5 פיקסלים בין מרכז למרכז — יותר מ-22, ולכן הם נוגעים
+   ואינם חופפים. בגרסה הראשונה הם הועתקו מדגם שהפרצוף בו היה 64,
+   וב-56 הם כיסו חצי ממנו.
+
+   ‏bottom:auto מפורש בשניים העליונים, אחרת הוא נשאר מהכלל הגלובלי
+   ושתי ההצהרות נלחמות. */
+#act-head .esfaces.kids>span>i:nth-of-type(1){top:40px;left:-6px;bottom:auto}
+#act-head .esfaces.kids>span>i:nth-of-type(2){top:17px;left:-15px;bottom:auto}
+#act-head .esfaces.kids>span>i:nth-of-type(3){top:-6px;left:-6px;bottom:auto}
+/* הדיו חורג 15 פיקסלים שמאלה מהפרצוף, והריפוד מחזיר אותו למרכז:
+   ‏justify-content:center ממרכז את תיבת התוכן, ולכן ריפוד שמאלי של
+   15 מזיז את הפרצוף 7.5 ימינה ומרכז את הקבוצה כולה. */
+#act-head .esfaces{padding-left:15px}
 #act-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
 /* גוש האיור נעול לגובה אחד בארבעת המסכים הריקים של הסרגל, כדי שהכותרת,
    הפסקה והכפתור ינחתו באותה שורה בכל טאב. בלי הנעילה כל איור קבע את
@@ -1979,7 +1998,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '803fc9b';
+window.NETA_BUILD = '6bb5d95';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2897,10 +2916,18 @@ window.NETA_CONFIG = {
   <div id="act-full">
   <div id="act-head">
     <!-- אותו רכיב בדיוק כמו בצביר של "הקרובים שלי" (.esfaces.kids),
-         בפרצוף אחד: עיגול של 64 ותג רגע של 25. הריבוע המעוגל שהיה
-         כאן ירד, ראו את ההערה ב-CSS. -->
+         בפרצוף אחד. הריבוע המעוגל שהיה כאן ירד, ראו את ההערה ב-CSS.
+
+         **ושלושה תגים ולא אחד.** תג אחד תיאר אירוע בודד, והמסך הזה
+         מתאר הצטברות: "מה קרה מאז שנטעת" הוא רבים. שלושת התגים הם
+         גם שלושת סוגי השורות שהפיד מחזיק, רק בשפה של רגעים.
+
+         ואותה שלישייה בדיוק (🎂🎓🏠) יושבת גם בצביר של המצב הריק
+         ב"הנטיעות שלי", וזה בטוח: המצב ההוא מוצג רק כשאין נטיעות
+         והראש הזה רק כשיש פיד, כלומר שני המסכים לעולם אינם נראים
+         באותו חשבון באותו רגע. -->
     <div class="art"><span class="esfaces kids" aria-hidden="true">
-      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></span><i>🎂</i></span>
+      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></span><i>🎂</i><i>🎓</i><i>🏠</i></span>
     </span></div>
     <!-- שתי שורות, ובלי המשפט האפור שהיה מתחתיהן. הוא מנה את מה
          שיש בפיד ("קרוב שהפקיד, אבן דרך שנחצתה, מכתב שנוסף"), כלומר
