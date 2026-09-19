@@ -581,18 +581,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ה-＋ ירוק בתוך אותו עיגול לבן: הוא פעולה ולא עובדה. עיגול ירוק
    מלא היה משלש את המסה הירוקה מעל כפתור ירוק ברוחב מלא. */
 .esfaces.plus>span>i{color:var(--leaf);font-size:14px}
-/* ─── ההקטנה שבשני הראשים, ובהם בלבד ──────────────────────────────
-   ‏0.875 מהגודל: 64 הופך ל-56, התג מ-25 ל-22, וגוש האיור מ-81 ל-71.
-   **ממוקד ל-#act-head ולא ל-.esfaces הגלובלי**, כי אותו
-   רכיב בדיוק משרת את ארבעת המצבים הריקים, ושם אלון ביקש שלא ייגעו.
-   המחיר: הצביר בראש הוא 56 והצביר במצב הריק של אותו טאב הוא 64.
-   שני המצבים לעולם אינם מוצגים יחד, ולכן זו אינה שתי מידות על מסך
-   אחד אלא מידה אחת לכל מצב. */
-#act-head .esfaces{height:71px}
-#act-head .esfaces>span{width:56px;height:56px}
-#act-head .esfaces>span>i{width:22px;height:22px;font-size:11px}
-#act-head .esfaces.plus>span>i{font-size:12px}
-#act-head .esfaces.occ.plus>span>i{width:25px;height:25px}
+/* ─── ההקטנה שהייתה כאן ירדה ──────────────────────────────────────
+   שני הראשים הוקטנו פעם ב-0.875 (64 ל-56, תג 25 ל-22, גוש 81 ל-71),
+   ואלון ביקש להגדיל אותם בחזרה. המספרים חזרו בדיוק לאלה של הכלל
+   הגלובלי, ולכן אין כאן יותר שום כלל: חמש הצהרות שכפלו את מה שממילא
+   נכון ירדו במקום להיכתב מחדש עם אותם ערכים.
+   המחיר שנשאר: "העתיד שלנו" ו"ההשקעות שלי" לא גדלו איתם, כי אלון
+   ביקש את שני המסכים האלה בלבד, ושם האיור הוא קו ולא פרצוף. */
 /* ותג אחד לצביר, על הפרצוף השמאלי בלבד. שלושה תגים אמרו את אותה
    מילה שלוש פעמים, וזו גם המילה שהפעולה שמתחת כבר אומרת: מה שהם
    צריכים לומר הוא "אפשר להוסיף עוד אחד", וזה נאמר פעם אחת.
@@ -1621,12 +1616,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    פיקסלים גבוה יותר מזו של המצב הריק באותו טאב; האיור עצמו נשאר
    ב-101 בשניהם. */
 #rel-head{text-align:center;padding:26px 4px 0;margin-bottom:12px}
-#rel-head .art{height:71px;display:grid;place-items:center;color:var(--leaf);margin-bottom:8px}
+#rel-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:8px}
 /* ─── האיור: ילד במרכז, מבוגרים סביבו ─────────────────────────────
-   ‏56 ו-38, ולא 64 ו-42 שנמדדו בדף ההשוואה. 64 הוא גודל הצביר במצב
-   הריק של אותו טאב, והראש של "פעילות" הוא 56: שני המסכים שכנים
-   בסרגל והעין עוברת ביניהם בלחיצה אחת, וזו בדיוק הקפיצה שתוקנה
-   כשהראשים ירדו ל-0.875. ‏38 הוא אותו מקדם על 42 בדיוק.
+   ‏64 ו-42, כמו שנמדד בדף ההשוואה. הוא נשלח תחילה ב-56 ו-38, כדי
+   להישאר על ה-0.875 של שני הראשים, ואלון ביקש להגדיל את שניהם
+   בחזרה; הראש של "פעילות" הוא שוב 64, ולכן גם כאן. זה גם גודל
+   הצביר במצב הריק של אותו טאב, ושני המצבים לעולם אינם מוצגים יחד.
 
    ‏align-items:flex-end ולא center, כי מה שמיישר את השלושה הוא קו
    הכתפיים ולא מרכז העיגול: במרכוז הראשים הקטנים מרחפים.
@@ -1637,10 +1632,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #rel-head .kinart>span{border-radius:50%;overflow:hidden;border:3px solid var(--bg);
   background:var(--s2);flex:0 0 auto;display:block}
 #rel-head .kinart>span>.avsvg{display:block;width:100%;height:100%}
-#rel-head .kinart>span.s{width:38px;height:38px}
-#rel-head .kinart>span.b{width:56px;height:56px;position:relative;z-index:2}
-#rel-head .kinart>span.s:first-child{margin-left:-12px}
-#rel-head .kinart>span.s:last-child{margin-right:-12px}
+#rel-head .kinart>span.s{width:42px;height:42px}
+#rel-head .kinart>span.b{width:64px;height:64px;position:relative;z-index:2}
+#rel-head .kinart>span.s:first-child{margin-left:-14px}
+#rel-head .kinart>span.s:last-child{margin-right:-14px}
 #rel-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
 /* אוויר בין הכותרת המאוירת לתווית הרשימה שמתחתיה. `#rel-head` נותן
    12 מלמטה ו-`.eyebrow` אינו נותן כלום מלמעלה, ולכן התווית נצמדה
@@ -1658,7 +1653,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    **אלון ראה את זה כשתי שפות בשני טאבים שכנים**, והצורה יושרה.
    ‏`#act-empty` לא נגע: שם `.bigfav` נשאר 70 בריבוע מעוגל, כי הוא
    כוון מול שלושת המצבים הריקים האחרים ולא מול הטאב השכן. */
-#act-head .art{height:71px;display:grid;place-items:center;color:var(--leaf);margin-bottom:8px}
+#act-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:8px}
 /* ואותו ראש ב"העתיד שלנו". כאן האיור הוא קו ולא פרצוף, ולכן הגוש
    הוא גובה האייקון עצמו ולא 81. */
 /* 22 ולא 12 כמו בשני הראשים האחרים: מרגע שהאייקון ירד, הכותרת
@@ -1721,21 +1716,23 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ממקם כל i באותה פינה, ולכן שלושתם היו יושבים זה על זה; ממוקד
    ל-#act-head, כי בכל שאר המקומות יש תג אחד בדיוק.
 
-   הם יושבים על קשת ולא בשלוש פינות: מרכז כל תג נמצא ברדיוס 32
-   ממרכז הפרצוף (28), בזוויות 135, 180 ו-225 מעלות. זה מה שמרחיק
-   ביניהם 24.5 פיקסלים בין מרכז למרכז — יותר מ-22, ולכן הם נוגעים
-   ואינם חופפים. בגרסה הראשונה הם הועתקו מדגם שהפרצוף בו היה 64,
-   וב-56 הם כיסו חצי ממנו.
+   הם יושבים על קשת ולא בשלוש פינות: מרכז כל תג נמצא ברדיוס 37
+   ממרכז הפרצוף (32), בזוויות 135, 180 ו-225 מעלות. זה מה שמרחיק
+   ביניהם 26.2 פיקסלים בין מרכז למרכז — יותר מ-25, ולכן הם נוגעים
+   ואינם חופפים. **הקשת נגזרת מהפרצוף ואינה קבועה:** ברדיוס 32 על
+   פרצוף של 64 התגים היו יושבים על שפתו, וברדיוס 37 על פרצוף של 56
+   הם היו מרחפים. בגרסה הראשונה הם הועתקו מדגם אחר וכיסו חצי ממנו.
 
    ‏bottom:auto מפורש בשניים העליונים, אחרת הוא נשאר מהכלל הגלובלי
    ושתי ההצהרות נלחמות. */
-#act-head .esfaces.kids>span>i:nth-of-type(1){top:40px;left:-6px;bottom:auto}
-#act-head .esfaces.kids>span>i:nth-of-type(2){top:17px;left:-15px;bottom:auto}
-#act-head .esfaces.kids>span>i:nth-of-type(3){top:-6px;left:-6px;bottom:auto}
-/* הדיו חורג 15 פיקסלים שמאלה מהפרצוף, והריפוד מחזיר אותו למרכז:
+#act-head .esfaces.kids>span>i:nth-of-type(1){top:46px;left:-7px;bottom:auto}
+#act-head .esfaces.kids>span>i:nth-of-type(2){top:20px;left:-18px;bottom:auto}
+#act-head .esfaces.kids>span>i:nth-of-type(3){top:-7px;left:-7px;bottom:auto}
+/* הדיו חורג 18 פיקסלים שמאלה מהפרצוף, והריפוד מחזיר אותו למרכז:
    ‏justify-content:center ממרכז את תיבת התוכן, ולכן ריפוד שמאלי של
-   15 מזיז את הפרצוף 7.5 ימינה ומרכז את הקבוצה כולה. */
-#act-head .esfaces{padding-left:15px}
+   18 מזיז את הפרצוף 9 ימינה ומרכז את הקבוצה כולה. הערך נגזר מהתג
+   השמאלי ביותר (left:-18) ולא נבחר. */
+#act-head .esfaces{padding-left:18px}
 #act-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
 /* גוש האיור נעול לגובה אחד בארבעת המסכים הריקים של הסרגל, כדי שהכותרת,
    הפסקה והכפתור ינחתו באותה שורה בכל טאב. בלי הנעילה כל איור קבע את
@@ -2020,7 +2017,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '479990c';
+window.NETA_BUILD = 'c3d0bc6';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
