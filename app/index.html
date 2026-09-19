@@ -1869,7 +1869,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '538ab9a';
+window.NETA_BUILD = '6e4bb54';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2359,7 +2359,7 @@ window.NETA_CONFIG = {
            סגורה, ולא באמצעה. -->
       <button type="button" data-w="other" onclick="pickWho(this,'other')">
         <span class="fc plus">+</span>
-        <span class="nm"><b>מישהו אחר</b><span>נבקש את השם והמייל שלו</span></span></button>
+        <span class="nm"><b>מישהו אחר</b><span id="cw-other-s">נבקש את השם והמייל שלו</span></span></button>
     </div>
   </div>
   <div class="field" id="c-codefield">
@@ -5606,6 +5606,28 @@ function whoCopy(){
   txt('cw-me-b','אני, '+bs('עבורו','עבורה'));
   txt('cw-parent-b','ההורה של '+nm);
   txt('cw-parent-s','כש'+nm+bs(' אינו הילד שלך',' אינה הילדה שלך'));
+  /* והתא הזה יורד כשבשלב 1 נבחר "בן" או "בת". שני מסכים באותו אשף
+     אמרו דברים סותרים ואף אחד מהם לא בדק את השני: שלב 1 "בת", ושלב
+     4 "ההורה של פיסטוקית", שהכיתוב שלו אומר במפורש "כשפיסטוקית אינה
+     הילדה שלך". התשובה השנייה גוברת, כי WHO_MAP.parent הוא
+     famMode='kin', ומשם familyMine יוצא false ו-family_of נשמר null.
+     התוצאה: הרגע נעלם מ"העתיד שלנו" בעוד הילדה נשארה בבורר עם 0 ₪
+     וכפתור שמציע לפתוח לה רגע שכבר קיים.
+
+     מי שרוצה שההורה השני יאשר מקבל את זה ב"מישהו אחר": אותם שם
+     ומייל בדיוק, אותה בקשת אישור במייל, בלי להוציא את הרגע
+     מהמשפחה. ולכן גם שורת ההסבר שלו נוקבת במקרה הזה. */
+  const mineKid=KIN_MINE.indexOf(cRel)>=0;
+  const pb=document.querySelector('#c-who button[data-w="parent"]');
+  if(pb){
+    pb.style.display=mineKid?'none':'';
+    if(mineKid&&whoMode==='parent'){
+      const meb=document.querySelector('#c-who button[data-w="me"]');
+      if(meb)pickWho(meb,'me');
+    }
+  }
+  txt('cw-other-s',mineKid?'למשל ההורה השני. נבקש שם ומייל'
+                          :'נבקש את השם והמייל שלו');
   txt('c-benelbl','לאן יישלח הקוד '+bs('אליו','אליה')+' במועד');
   /* "הנהנה" הוא מונח מהמסד. המסך הזה מדבר בשמות, ולכן גם השדה. */
   const bf=document.getElementById('c-bene');
@@ -8222,11 +8244,24 @@ function paintKidSection(){
     /* הכפתור נוקב ביעד ולא בתוכן: הוא פותח את "העתיד שלנו" על הילד
        הזה, ולכן הוא נושא את שם הטאב. "הרגעים" תיאר את מה שיש שם
        ולא לאן הוא מוביל, ואיש לא ניחש. */
+    /* ושלושה מצבים ולא שניים. ‏n סופר את מה שהכפתור באמת יפתח,
+       כלומר את הרגעים של המשפחה שלי, ולכן ילדה שהרגע שלה נשמר
+       כמשפחה אחרת קיבלה כאן "עוד לא נפתח רגע" ו"פתח רגע" על רגע
+       שקיים. הרגע הזה כן נספר ב"ההשקעות שלי", ששם השאלה היא כמה
+       נתתי ולא למי מחכה, ולכן המצב השלישי אומר שהוא קיים ומוביל
+       לשם במקום להציע לפתוח אותו שוב. */
+    const nAll=kidMomentsAll(b).length;
     const act=n
       ? '<button class="rx" onclick="event.stopPropagation();kidMomentsGo(\''+attrText(key)+'\')">'+
           (b.sex==='f'?'העתיד שלה':'העתיד שלו')+'</button>'
+      : nAll
+      ? '<button class="rx" onclick="event.stopPropagation();openInvestments()">ההשקעות שלי</button>'
       : '<button class="rx" onclick="event.stopPropagation();kidOpenMoment(\''+attrText(key)+'\')">פתח רגע</button>';
-    const sub=[kinMe(b.relation),n?(n===1?'רגע אחד':countWord(n)+' רגעים'):'עוד לא נפתח רגע']
+    const sub=[kinMe(b.relation),
+               n ? (n===1?'רגע אחד':countWord(n)+' רגעים')
+                 : nAll ? (nAll===1?'רגע אחד, במשפחה אחרת'
+                                   :countWord(nAll)+' רגעים, במשפחה אחרת')
+                        : 'עוד לא נפתח רגע']
       .filter(Boolean).join(' · ');
     return '<div class="rel" onclick="editKid(\''+attrText(key)+'\')">'+
       '<div class="ra">'+kidFaceHTML(b.avatar||kidAvatar(b.name,b.sex),34)+'</div>'+
@@ -8245,6 +8280,20 @@ function kidMoments(b){
            String(kidOf(p)||'').trim()===String(b.name||'').trim();
   });
 }
+/* כל הרגעים של הילד, גם אלה שנשמרו כמשפחה אחרת. kidMoments שואלת
+   "מה המסך שלי יציג", וזו שואלת "האם יש בכלל", ושתי השאלות נחוצות:
+   ילד שיש לו רגע במשפחה אחרת אינו ילד חדש, גם כשאף מסך של המשפחה
+   שלי אינו מראה אותו. */
+function kidMomentsAll(b,all){
+  const rows=all||((lastModel&&lastModel.plantings)||[]);
+  const nm=String((b&&b.name)||'').trim();
+  return (rows||[]).filter(function(p){
+    if(!p||p.designated===false)return false;
+    return (b&&b.id&&p.kidId===b.id)||
+           (!!nm&&String(kidOf(p)||'').trim()===nm);
+  });
+}
+function beneHasPlanting(b,all){return kidMomentsAll(b,all).length>0}
 function kidOf_(key){
   return (benes||[]).filter(function(b){return String(b.id||b.name)===String(key)})[0];
 }
@@ -8876,6 +8925,10 @@ const KIN={
 const KIN_WITH=['mother','father','mother_law','father_law','sister','brother',
                 'friend_f','friend_m'];
 const KIN_FOR=['son','daughter','grandson','granddaughter','nephew','niece'];
+/* מתוכן, אלה שבהן הילד הוא שלי. נכד, נכדה, אחיין ואחיינית אינם כאן:
+   ההורה שלהם הוא הילד שלי או האח שלי, כלומר משפחה אחרת, ושם "ההורה
+   של X" היא בדיוק התשובה הנכונה. */
+const KIN_MINE=['son','daughter'];
 /* אותה רשימה ועוד "עבורי", באשף בלבד. שבע קרבות ועוד "אחר" הן שמונה
    תאים, כלומר 4+4 מלאות: אין חור בשורה האחרונה ואין תא שנמתח על
    שתיים כדי לסתום אותו.
@@ -11550,7 +11603,7 @@ function buildHomeSummary(){
     /* המסך מציג נהנה אחד בכל פעם, והבורר הוא הדרך לעבור. הקיבוץ הוא
        לפי מי שהכסף מחכה לו ולא לפי רגע: בר מצווה וגיוס של אותו ילד
        הם פריט אחד, כי השאלה כאן היא כמה יש לו ולא כמה רגעים פתוחים. */
-    const fuAll=fuWithBenes(fuItems(own));
+    const fuAll=fuWithBenes(fuItems(own),model.plantings);
     /* הקישורים החתומים מגיעים אחרי הציור הראשון, ולכן הציור נקרא
        שוב כשהם כאן. התנאי הוא "מה שעוד לא היה במטמון והגיע", ולא
        "יש קישור": השני נכון גם בציור השני, וזו לולאה אינסופית. */
@@ -12225,7 +12278,18 @@ function facePaths(plants){
    ליד המודל, ומי שנוסף מקומית נדחף אליה מיד כדי שהמסך יראה אותו
    בלי סבב נוסף לשרת. */
 let benes=[],lastFuSel=null;
-function fuWithBenes(items){
+/* ‏all הוא כל הנטיעות ולא רק אלה של המשפחה שלי, וזה העיקר כאן:
+   ‏items נגזרת מ-own, ולכן נהנה שכל הרגעים שלו נשמרו כמשפחה אחרת
+   אינו מופיע בה, והרשימה הזאת הייתה מחזירה אותו כ"עוד אין לו רגע".
+   התוצאה הייתה שלוש הצהרות שקריות על מסך אחד: 0 ₪ למי שיש לו 360,
+   כפתור שמציע לפתוח רגע שכבר קיים, וקישור הסרה שמבטיח "אין מה
+   לאבד" בזמן שה-FK במסד חוסם את המחיקה ממילא.
+
+   וההכרעה היא שהילד יורד ולא שהרגע עולה: רגע של משפחה אחרת אינו
+   שייך למסך ששואל מה מחכה לילדים שלי (ראו ההערה מעל garden-empty),
+   הוא נספר במלואו ב"ההשקעות שלי", ובורר שמציע נהנה שהמסך החליט לא
+   להראות את התוכן שלו הוא בדיוק איך נולדות ההצהרות האלה. */
+function fuWithBenes(items,all){
   const byId={},byName={};
   items.forEach(function(it){
     if(it.kidId)byId[it.kidId]=1;
@@ -12234,7 +12298,8 @@ function fuWithBenes(items){
   /* גם לפי שם ולא רק לפי מזהה: נטיעה שנוצרה לפני 0061 אין לה kidId,
      ובלי ההשוואה הזאת אותו ילד היה מופיע פעמיים בבורר. */
   const extra=(benes||[]).filter(function(b){
-    return b&&b.name&&!(b.id&&byId[b.id])&&!byName[String(b.name).trim()];
+    return b&&b.name&&!(b.id&&byId[b.id])&&!byName[String(b.name).trim()]
+           &&!beneHasPlanting(b,all);
   }).map(function(b){
     return {id:'k:'+(b.id||b.name),name:b.name,kidId:b.id||null,sex:b.sex||null,
             rel:b.relation||'',
@@ -12418,8 +12483,14 @@ function editKid(id){
       attrText(nm)+'. את השם אי אפשר לשנות כאן: זו זהות הנהנה בחשבון נעול, '+
       'והיא משתנה מול הגוף הפיננסי המנהל בלבד.</p>'+
     /* ההסרה מוצעת רק למי שעוד אין לו רגע. מרגע שיש, זו זהות נהנה
-       בחשבון ולא פריט ברשימה, וגם ה-FK במסד חוסם. */
-    ((bn&&bn.id&&!(it&&it.rows&&it.rows.length))
+       בחשבון ולא פריט ברשימה, וגם ה-FK במסד חוסם.
+
+       והשאלה היא על כל הרגעים ולא על אלה של המשפחה שלי: it נגזרת
+       מ-own, ולכן ילד שהרגע שלו נשמר כמשפחה אחרת קיבל כאן rows ריק,
+       כלומר קישור הסרה וגיליון שמבטיח "עוד לא נפתח לו רגע, ולכן אין
+       מה לאבד" על ילד שיש לו רגע. המחיקה עצמה נחסמת ב-FK, כלומר מה
+       שהוצע היה גם שקר וגם בלתי אפשרי. */
+    ((bn&&bn.id&&!(it&&it.rows&&it.rows.length)&&!beneHasPlanting(bn))
       ? '<button type="button" class="link danger" onclick="confirmRemoveKid(\''+
           attrText(bn.id)+'\',\''+attrText(nm)+'\')">הסר את '+attrText(nm)+'</button>'
       : ''),
