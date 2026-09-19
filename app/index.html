@@ -474,7 +474,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    והתמונה כבר נחתכה לריבוע בהעלאה, וזה מה שמונע פסים. */
 .avimg{width:100%;height:100%;object-fit:cover;display:block}
 /* משבצת ההעלאה, באותה שפה של הבורר בשני האשפים. */
-.avpick button.up{border-style:dashed;color:var(--leaf);font-size:20px;
+.avpick button.up{border-style:dashed;color:var(--leaf);font-size:26px;
   display:grid;place-items:center}
 .hdr{display:flex;align-items:center;gap:11px;margin-bottom:12px}
 .hdr .htxt{flex:1;min-width:0}
@@ -1016,8 +1016,18 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .rel .rn i{display:block;font-style:normal;font-size:10.5px;color:var(--tx-2);margin-top:2px}
 .rel .rx{font-family:inherit;font-size:10.5px;padding:5px 11px;border-radius:999px;cursor:pointer;
   flex-shrink:0;background:var(--leaf-bg);border:1px solid var(--leaf-line);color:var(--leaf)}
-.avpick{display:flex;gap:9px;margin:4px 0 2px;flex-wrap:wrap}
-.avpick button{width:40px;height:40px;border-radius:13px;overflow:hidden;padding:0;cursor:pointer;
+/* רשת של חמש ולא שורה שגולשת. עשר משבצות (תשע דמויות ועוד ההעלאה)
+   בשורה גולשת נותנות 6+4 ב-390, וברשת הן 5+5 מלאות בכל רוחב מכשיר.
+   **והעמודה נזילה ולא 56 קבוע:** ‏5×56 ועוד ארבעה רווחים הם 320, והבמה
+   ב-320 נותנת 284, כלומר שתי דמויות היו נחתכות מחוץ למסך בלי שום
+   שגיאה. עכשיו 1fr עם תקרה של 64, כלומר 49 ב-320, ‏57 ב-360, ‏63 ב-390
+   ו-64 מ-412 ומעלה — גדול מ-56 שהיה כאן במכשיר הנפוץ.
+   הרדיוס באחוזים ולא בפיקסלים, מאותה סיבה: 32 אחוז הם אותה פרופורציה
+   שהייתה (18 מתוך 56) בכל אחד מהגדלים האלה. */
+.avpick{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
+  justify-content:stretch;margin:6px 0 2px}
+.avpick button{width:100%;max-width:64px;height:auto;aspect-ratio:1;justify-self:center;
+  border-radius:32%;overflow:hidden;padding:0;cursor:pointer;
   background:var(--s2);border:2px solid transparent;transition:border-color .15s}
 .avpick button.on{border-color:var(--leaf)}
 .avpick svg{display:block;width:100%;height:100%}
@@ -2019,7 +2029,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f86efb7';
+window.NETA_BUILD = '7fa0449';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3644,7 +3654,9 @@ window.NETA_CONFIG = {
   <!-- שדה תעודת הזהות הוסר. אימות זהות מלא נדרש רק במועד הפדיון, ומתבצע
      דרך ה-KYC של הגוף הפיננסי המנהל — נטע לא מאחסנת ולא מעבדת מסמכי זיהוי.
      כשיהיה גוף מנהל בפועל, השדה יחזור במקום ובצורה שהוא ידרוש. -->
-  <div class="verified gap-s"><div class="vi">✓</div><div><b id="id-verified">המספר אומת</b><p>לשם אנחנו שולחים אישורי הפקדה, והתראות על כל שינוי בנטיעה.</p></div></div>
+  <!-- שורת "המספר אומת" וההערה שלה ירדו, לבקשת אלון. היא חזרה על מה
+       שהמסך שלפניה כבר עשה (הקוד הרגע הוקלד), והמשפט שמתחתיה הבטיח
+       התראות על מסך שכל תפקידו לשאול שם ותמונה. -->
   <!-- אין "חזרה": המסך הזה מגיע מיד אחרי אימות, ואין לאן לחזור ממנו.
        (הכפתור הקודם הוביל למסך ההקמה — יעד שנשאר מהזרימה הישנה.) -->
   <button class="btn" id="id-cta" onclick="idNext()">אשר והמשך</button>
@@ -4925,8 +4937,12 @@ function idNext(){
   /* נקרא מה-DOM ולא מ-pickedAv הגלובלי: אותו משתנה משמש כל בוררי התמונה
      באפליקציה, ובורר הזה יושב על מסך קבוע ולא בגיליון חד-פעמי — ניווט
      דרך מסך אחר שפותח בורר תמונה משלו היה עלול לדרוס את מה שנבחר כאן. */
-  const avBtn=document.querySelector('#id-avpick button.on');
+  /* ‏[data-av] מפורש: משבצת התמונה גם היא .on, ובלעדיו dataset.av היה
+     undefined והדמות לא הייתה נשמרת כלל. היא גם הנפילה האחורית הנכונה,
+     כי updateAvatar מחזירה אותה כשההעלאה נכשלת. */
+  const avBtn=document.querySelector('#id-avpick button[data-av].on');
   const av=avBtn?avBtn.dataset.av:'av-parent';
+  const pic=!!(myPhoto&&myPhoto.blob);
   const sexBtn=document.querySelector('#id-sex button.on');
   const sex=sexBtn?sexBtn.dataset.x:null;
 
@@ -4942,7 +4958,12 @@ function idNext(){
   }
   const b=document.getElementById('id-cta');
   if(b){b.disabled=true;b.style.opacity='.55'}
+  /* התמונה בהעלאה נפרדת ואחרי הפרופיל: ensureProfile היא upsert עם
+     הרשאת עדכון על עמודות ספורות, ו-updateAvatar היא זו שמעלה ל-bucket
+     ומחזירה נתיב. כישלון בהעלאה משאיר את הדמות ואינו מפיל את ההרשמה. */
   netaServer.ensureProfile(n.trim(),av,sex).then(function(){
+    return pic?netaServer.updateAvatar(av,myPhoto.blob):null;
+  }).then(function(){
     if(b){b.disabled=false;b.style.opacity=''}
     applyIdentity();
     idDone=true;toast('החשבון נפתח על שמך');
@@ -6712,21 +6733,37 @@ function introduceThen(plantingId,next){
   if(!netaServer)return next();
   netaServer.loadProfile().then(function(prof){
     if(prof&&prof.name){applyIdentity();return next()}
-    pickedAv='av-parent';
+    pickedAv='av-parent';myPhoto=null;
     sheetForm('נעים להכיר',
       'איך שייקרא לך אצל מי שהזמין אותך, ואיך זה יופיע לילד ביום שהנטיעה נפתחת.'+
       /* ‏value ולא placeholder: מה שהמזמין הקליד הוא תשובה ולא רמז,
          וזה מה שמסך ההצטרפות מילא מראש לפני שהשדה ירד ממנו. */
       '<label>שם</label><input type="text" id="jn-name" value="'+
         attrText(inviteKnows.name||'')+'" placeholder="למשל: סבתא רחל">'+
-      '<label>תמונה</label>'+avpickHTML('av-parent')+
+      /* השאלה הזאת נשאלה עד כה במסלול אחד מתוך שניים: היא ישבה ב"מי
+         אתה?" ולא כאן, ולכן מי שהגיע מהזמנה לא נשאל מעולם ונשאר על
+         הצורה הכפולה. זה מסביר בדיוק את מה שנמדד במסד — ארבעה מתוך
+         חמישה פרופילים בלי מין — כי רוב האנשים מגיעים כמוזמנים.
+         ובלי ברירת מחדל, כמו בכל מקום אחר. */
+      '<label>איך לפנות אליך</label>'+
+      '<div class="chips" id="jn-sex">'+
+        '<button type="button" data-x="m" onclick="pickEditSex(this)">בלשון זכר</button>'+
+        '<button type="button" data-x="f" onclick="pickEditSex(this)">בלשון נקבה</button>'+
+      '</div>'+
+      '<label>תמונה</label><div id="jn-avpick">'+
+        avpickHTML('av-parent',null,"myPickPhoto('jn-avpick')")+'</div>'+
       (plantingId?'<label>מה את/ה לילד</label><input type="text" id="jn-rel" placeholder="למשל: סבתא">':''),
       'המשך',
       function(){
         const n=((document.getElementById('jn-name')||{}).value||'').trim();
         if(!n){toast('צריך שם');return false}
         const av=pickedAv;
-        netaServer.ensureProfile(n,av).then(function(){
+        const pic=!!(myPhoto&&myPhoto.blob);
+        const sexBtn=document.querySelector('#jn-sex button.on');
+        const sex=sexBtn?sexBtn.dataset.x:null;
+        netaServer.ensureProfile(n,av,sex).then(function(){
+          return pic?netaServer.updateAvatar(av,myPhoto.blob):null;
+        }).then(function(){
           applyIdentity();
           const rel=plantingId?((document.getElementById('jn-rel')||{}).value||'').trim():'';
           if(plantingId&&rel){netaServer.setMyRelation(plantingId,rel).catch(function(){}).then(next)}
@@ -8096,7 +8133,18 @@ function populateRedeem(p){
 /* the people tab aggregates across all plantings, so it can never drift from them */
 function stripHe(t){return t.charAt(0)==='ה'?t.slice(1):t}
 /* one address book, shared by every planting's invite */
-const AVATARS=['av-parent','av-granny','av-uncle','av-granny2','av-friend'];
+/* תשע, כלומר כל המבוגרים שבספרייט. קודם היו כאן חמש ואז שבע, ובשני
+   המקרים מה שקבע היה כמה תאים ממלאים שורה ולא מי קיים: av-sister,
+   av-mate ו-av-grandpa נשארו בחוץ בלי סיבה, והאחרון הוא היחיד שהוא
+   גבר מבוגר. סבא שמקבל הזמנה מהנכד שלו פותח חשבון ואין לו פרצוף שהוא
+   הוא, וזה בדיוק קהל המוזמנים.
+   שבע הדמויות הנותרות בספרייט הן ילדים, והן שייכות לרשת של "עבור מי".
+   מבוגר שבוחר פרצוף של ילד הוא אותה מלכודת שבגללה KID_AV הופרדה.
+   av-someone היא הנייטרלית ונשארת אחרונה, בשביל מי ששום פרצוף כאן
+   אינו הוא. av-parent נשארת ראשונה כי היא ברירת המחדל הדלוקה, וב-RTL
+   ראשון הוא הימני. תשע ועוד משבצת ההעלאה הן עשר, כלומר 5+2 מלאות. */
+const AVATARS=['av-parent','av-granny','av-grandpa','av-uncle','av-granny2',
+               'av-friend','av-sister','av-mate','av-someone'];
 const relatives=[
   {av:'av-granny',name:'סבתא רחל',rel:'mother',g:'f',status:'in',chan:'wa',contact:'050-2214408'},
   {av:'av-uncle',name:'דוד יוסי',rel:'brother',g:'m',status:'in',chan:'wa',contact:'052-7719063'},
@@ -9250,14 +9298,19 @@ function chooseAv(el,a){
 /* תמונה שנבחרה לפרופיל שלי. blob קיים רק אחרי בחירה חדשה, והוא מה
    שמבדיל בשמירה בין "החלף תמונה" ל"השאר כפי שהיא". */
 let myPhoto=null;
-function myPaintAv(sel){
-  const box=document.getElementById('me-avpick');
-  if(box)box.innerHTML=avpickHTML(sel,myPhoto,'myPickPhoto()');
+/* שלושה מקומות שואלים את אותה שאלה: הגיליון בפרופיל, מסך "מי אתה?"
+   והגיליון של מי שהוזמן. הקופסה נמסרת בשם ולא מחופשת, כי מסך 22 אינו
+   נמחק מה-DOM כשגיליון נפתח מעליו, ו"הקופסה הראשונה שקיימת" הייתה
+   מציירת מחדש את המסך שמאחור. */
+function myPaintAv(sel,box){
+  const id=box||'me-avpick';
+  const el=document.getElementById(id);
+  if(el)el.innerHTML=avpickHTML(sel,myPhoto,"myPickPhoto('"+id+"')");
 }
-function myPickPhoto(){
+function myPickPhoto(box){
   pickPhotoInto(function(ph){
     if(myPhoto&&myPhoto.blob&&myPhoto.url)URL.revokeObjectURL(myPhoto.url);
-    myPhoto=ph;myPaintAv(pickedAv);
+    myPhoto=ph;myPaintAv(pickedAv,box);
     const n=document.getElementById('me-upnote');
     if(n){n.style.display='block';n.textContent='התמונה תישמר כשתלחץ "שמור".'}
   });
@@ -10513,7 +10566,7 @@ function editMyIdentity(){
         'onclick="pickEditSex(this)">בלשון נקבה</button>'+
     '</div>'+
     '<label>בחר דמות, או העלה תמונה</label>'+
-      '<div id="me-avpick">'+avpickHTML(nowAv,myPhoto,'myPickPhoto()')+'</div>'+
+      '<div id="me-avpick">'+avpickHTML(nowAv,myPhoto,"myPickPhoto('me-avpick')")+'</div>'+
       '<p class="fine" id="me-upnote" style="margin-top:8px;display:none"></p>',
     'שמור',
     function(){
@@ -13933,7 +13986,10 @@ function setEmpty(on){
 }
 document.getElementById('empty-btn').onclick=function(){setEmpty(!isEmpty)};
 
-document.getElementById('id-avpick').innerHTML=avpickHTML('av-parent');
+/* דרך myPaintAv ולא avpickHTML ישירות, כדי שתהיה כאן גם משבצת
+   ההעלאה: הרגע שבו אדם מוכן לשים תמונה של עצמו הוא הרגע שבו הוא פותח
+   חשבון, ולא שלושה קליקים אחרי במסך שרוב האנשים לא יפתחו. */
+pickedAv='av-parent';myPhoto=null;myPaintAv('av-parent','id-avpick');
 otpClean(document.getElementById('lg-otp'));otpClean(document.getElementById('jo-otp'));otpSay();
 loginPrep();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();applyTabSources();buildGhosts();
 /* סשן שמור מהכניסה הקודמת — טוענים את הפרופיל לפני שהמסך נצבע. */
