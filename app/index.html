@@ -989,6 +989,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .kgrid button.on .f svg{color:var(--bg)}
 /* התג יושב על התא ולא על השורה: הוא אומר "התמונה הזאת מוצגת כאן",
    וזו העובדה היחידה שאי אפשר לראות מהשורה שמתחת. */
+/* "מישהו חדש" ברשת הנהנים: ＋ במקום פרצוף, כי הוא אינו אדם וכל
+   דמות שתשב שם נקראת כילד מסוים. */
+.kgrid .f i.plus{font-style:normal;display:grid;place-items:center;width:100%;height:100%;
+  font-size:20px;color:var(--tx-3);line-height:1}
+.kgrid button.on .f i.plus{color:var(--leaf)}
 .kgrid .cam{position:absolute;inset-inline-end:-3px;bottom:-3px;width:20px;height:20px;
   border-radius:50%;background:var(--leaf);color:var(--on-leaf);display:grid;place-items:center;
   font-size:10px;border:2px solid var(--s1);line-height:1}
@@ -1662,6 +1667,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   background:var(--s1);border:1px dashed var(--line-2);border-radius:10px;
   padding:11px 12px;font-size:13.5px;color:var(--tx-2)}
 .fixedval i{font-style:normal;color:var(--leaf)}
+/* תווית ולצידה קישור. הקישור מרחף ואינו בזרימה, כי התווית נושאת
+   מרווח תחתון משלה ובשורת flex הקישור היה מוסיף שבעה פיקסלים
+   מתחתיה. נמדד, והמסך הזה כבר על גבול הקיפול. */
+.lblrow{position:relative}
+.lblrow>.link{position:absolute;inset-inline-end:0;top:0}
 [data-name="הצטרפות"] .codebox{font-size:22px;letter-spacing:.34em;text-align:center}
 [data-name="הצטרפות"] .avpick{margin-top:10px}
 /* מצב ריק של סקשן, לא של מסך: מי שהוזמן לרגע של מישהו אחר ואין לו
@@ -1888,7 +1898,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'dbac7ef';
+window.NETA_BUILD = '82f9416';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2279,15 +2289,52 @@ window.NETA_CONFIG = {
   <div id="cp-0">
   <h2 class="gap-x">עבור מי הנטיעה?</h2>
   <p class="sub gap">בעוד כמה שנים מישהו ייהנה ממה שנטעת היום</p>
+  <!-- מי שכבר יש לו נהנים בוחר מהם, ולא מקליד שם מחדש. עד כה
+       הכפתור המרכזי בסרגל תמיד פתח שדה ריק, אף ש-prefillKid כבר
+       עשתה בדיוק את זה משלוש כניסות אחרות ("פתח רגע" בשורת הילד,
+       המצב הריק ב"העתיד שלנו", וסוף "+ הוסף קרוב · עבורו"). כלומר
+       היכולת הייתה, ורק הדרך הטבעית ליצור לא הגיעה אליה.
+
+       והמחיר לא היה רק הקלדה: beneficiaryId מחפשת את הילד לפי
+       התאמת מחרוזת מדויקת לשם שהוקלד, ולכן איות שונה במקצת יצר ילד
+       שני עם אותו פרצוף, שתי רשומות באותו בורר, והכסף מפוצל בין שתי
+       "ילדות" שהן אותה אחת. בחירה מהרשת לוקחת את השם מהישות עצמה,
+       ולכן ההתאמה מובטחת.
+
+       הרשת מוצגת רק כשיש ממה לבחור. בנטיעה הראשונה בחיים היא אינה
+       קיימת והמסך זהה בדיוק למה שהיה, וזה נמדד: המסך הזה כבר על
+       גבול הקיפול ("המשך" נגמר ב-684 מתוך 706 ב-390x844), ולכן
+       שורה שנוספת מעל השדה הייתה דוחפת אותו מתחתיו. כאן היא אינה
+       מתווספת אלא מחליפה: מי שבוחר ילד קיים מקבל את השם כערך מוצג
+       ואת רשת הקרבות סגורה, כי שתי השאלות כבר נענו, ו"המשך" עולה. -->
+  <div class="field" id="c-kidfield" style="display:none">
+    <label>עבור מי?</label>
+    <div class="kgrid" id="c-kidpick"></div>
+    <!-- ומרגע שנבחר משהו הרשת מתקפלת לשורה אחת. נמדד: הרשת היא 83
+         פיקסלים, ובלי הקיפול "המשך" היה יורד ל-767 מתוך במה של 706
+         למי שבחר "מישהו חדש", כלומר מתחת לקיפול במסך שכבר היה על
+         גבולו. עם הקיפול המקרה החדש נשאר בדיוק איפה שהיה, והמקרה
+         החוזר קצר בהרבה ממנו. -->
+    <div class="fixedval" id="c-kidpicked" style="display:none">
+      <span id="c-kidpicked-v"></span>
+      <button type="button" class="link" style="padding:0;font-size:12px"
+        onclick="pickCKid(null,'')">החלף</button></div></div>
   <!-- השם לבדו בשורה. בן/בת ישבו כאן וירדו עם בורר הדמויות: הקרבה
        שבשאלה הבאה כבר נושאת מגדר, והצ'יפים חוזרים רק אחרי "אחר". -->
-  <div class="field" id="c-namefield"><label id="c-namelbl">איך קוראים לו?</label>
+  <!-- והדרך חזרה לרשת יושבת על שורת התווית ולא בשורה משלה: המסך
+       הזה כבר על גבול הקיפול ("המשך" נגמר ב-684 מתוך 706 ב-390),
+       וכל שורה שנוספת דוחפת אותו מתחתיו. כאן היא עולה אפס. -->
+  <div class="field" id="c-namefield"><div class="lblrow">
+    <label id="c-namelbl">איך קוראים לו?</label>
+    <button type="button" class="link" id="c-kidback" style="display:none;padding:0;font-size:12px"
+      onclick="pickCKid(null,'')">בחר מהרשימה</button></div>
     <input type="text" id="c-name" placeholder="למשל: דניאל">
     <!-- "עבורי" עונה על השאלה הזאת מראש. הערך מוצג ואינו נשאל, וזו
          כבר המוסכמת באשף (.fixedval), ולא שדה מושבת שנראה כמו משהו
          שאפשר להקליד בו. -->
     <div class="fixedval" id="c-selfname" style="display:none">
-      <span id="c-selfname-v"></span><span style="font-size:11.5px">מהפרופיל שלך</span></div></div>
+      <span id="c-selfname-v"></span><span style="font-size:11.5px">מהפרופיל שלך</span></div>
+</div>
   <!-- הקרבה, ואיתה הפרצוף. השם קודם לה, כי הוא מה שמזהה את הרגע
        בכל שאר האפליקציה והיא רק הפרצוף שלו.
 
@@ -2312,7 +2359,7 @@ window.NETA_CONFIG = {
     </div></div>
   <label class="chk" id="c-undecidedbox"><input type="checkbox" id="c-undecided" onchange="toggleDesig(this)">
     <span>עוד לא החלטתי עבור מי, כרגע אני רק רוצה לשים כסף ליום עתידי</span></label>
-  <button class="btn gap" style="margin-top:16px" onclick="toOccasion()">המשך</button>
+  <button class="btn gap" id="c-cta" style="margin-top:16px" onclick="toOccasion()">המשך</button>
   </div><!-- /cp-0 -->
 
   <!-- ── שלב 2: לאיזה רגע ──────────────────────────────────────
@@ -4056,6 +4103,9 @@ let cAvTouched=false;
    ‏cRelTouched הוא אותו דגל כמו cAvTouched, ומאותה סיבה: 'son' היא
    ברירת מחדל שאיש לא בחר, ורשומת ילד קיים לא תידרס בה. */
 let cRel='son',cRelTouched=false;
+/* מי נבחר ברשת שבראש שלב 1: ריק עד שנבחר משהו, 'new' למי שאינו
+   ברשימה, ואחרת המפתח של הישות (id, ובהיעדרו השם). */
+let cKidPick='';
 function markSexChip(x){
   document.querySelectorAll('#c-sex button').forEach(function(b,i){
     b.classList.toggle('on',(i===0)===(x==='m'))});
@@ -4643,6 +4693,14 @@ function afterVerifiedNewUser(){
 function onboDone(){onboEnd()}
 function onboEnd(){onbo=false;setEmpty(false);document.getElementById('resume-card').style.display='none';goHome()}
 let mySex=null;
+/* אותה פעולה של pickMySex, בגיליון העריכה. לחיצה שנייה על מה
+   שכבר דלוק מכבה, כי "לא נבחר" הוא מצב תקף ואין דרך אחרת לחזור
+   אליו. */
+function pickEditSex(el){
+  const on=el.classList.contains('on');
+  [].slice.call(el.parentNode.children).forEach(function(b){b.classList.remove('on')});
+  if(!on)el.classList.add('on');
+}
 function pickMySex(el,x){
   const on=el.classList.contains('on');
   el.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('on')});
@@ -5375,6 +5433,14 @@ function startCreate(){
      בלי ששום צ'יפ נדלק, כלומר ברירת מחדל שאיש לא ראה ולכן איש לא
      תיקן. */
   cRel='son';cRelTouched=false;
+  /* הרשת נפתחת בלי בחירה, ולא על "מישהו חדש": ילד שנבחר מראש הוא
+     נטיעה שמשויכת למישהו בלי שאיש אמר את זה. */
+  cKidPick='';
+  /* ואיתם הזיכרון של "עבורי". cSelfName מחזירה את הערך שהיה בשדה
+     לפני שהוחלף בשם מהפרופיל, ובלי איפוס כאן אשף שנגמר על "עבורי"
+     היה משחזר את השם שלו לתוך האשף הבא: מי שפתח נטיעה לעצמו ואז
+     פתח אחת לילד ראה את השם שלו חוזר לשדה במקום שם הילד. */
+  cSelfOn=false;cSelfPrev='';
   cAvatar=kinAv('son','av-kid7');cAvTouched=false;
   if(cPhoto&&cPhoto.blob&&cPhoto.url)URL.revokeObjectURL(cPhoto.url);
   cPhoto=null;cPhotoOn=false;
@@ -5392,6 +5458,7 @@ function startCreate(){
   });
   markSexChip('m');
   beneCopy();
+  paintCKid();applyCKid();
   cDate.value='';
   document.querySelectorAll('#c-terms button').forEach(function(x){x.classList.remove('on')});
   document.getElementById('c-datefield').style.display='none';
@@ -5418,6 +5485,12 @@ function toAmount(){
    מגיעה אליה. */
 function toOccasion(){
   if(designated && !((document.getElementById('c-name')||{}).value||'').trim()){
+    /* כשהרשת על המסך ואיש לא נבחר, אין שדה להפנות אליו והבקשה
+       להקליד שם אינה אומרת דבר. */
+    const kf=document.getElementById('c-kidfield');
+    if(kf&&kf.style.display!=='none'&&!cKidPick){
+      toast('בחר עבור מי הנטיעה');return;
+    }
     toast('צריך שם, כדי שנדע עבור מי');
     const f=document.getElementById('c-name'); if(f)f.focus();
     return;
@@ -5630,6 +5703,8 @@ function toggleDesig(cb){
      הוא הזמנה לבחור משהו שלא יישמר. */
   const avf=document.getElementById('c-avfield');
   if(avf)avf.style.display=designated?'':'none';
+  /* והרשת שמעל, מאותה סיבה: מי שאינו יודע עבור מי אינו נשאל מי. */
+  paintCKid();applyCKid();
   /* הצ'יפים יושבים בתוך c-avfield ויורדים איתו. אין להם שורה משלהם
      כאן: pickCRel הוא מי שמחליט אם הם מוצגים, ולכן שורה שמדליקה
      אותם לפי designated הייתה מחזירה אותם למי שלא בחר "אחר". */
@@ -9545,14 +9620,19 @@ function apSaveKid(){
 let apKidSaved=null,apKidId=null;
 /* פותח הקמה על ילד ידוע. שני מקומות מגיעים לכאן: סוף "+ הוסף קרוב ·
    עבורו", והכפתור של המצב הריק כשנבחר בבורר ילד שעוד אין לו רגע. */
-function prefillKid(name,av,sex,rel){
-  startCreate();
+/* מילוי שלב 1 מתוך ישות קיימת. הופרד מ-prefillKid כי הרשת שבראש
+   השלב קוראת לו כשהאשף כבר פתוח, ו-startCreate שם היה מאפס את מה
+   שהרגע נבחר. */
+function fillKid(name,av,sex,rel){
   const f=document.getElementById('c-name');
   if(f){f.value=name||'';f.dispatchEvent(new Event('input'))}
   /* הקרבה קודמת לדמות, כי היא מה שגוזר אותה. כשהיא ידועה התא שלה
      נבחר, וכשאינה ידועה מחפשים את הקרבה שהדמות השמורה שייכת לה:
      כל דמות ילד ברשת היא קרבה אחת בדיוק. */
-  if(rel&&KIN_FOR.indexOf(rel)>=0)cRel=rel;
+  /* ‏KIN_SELF ולא KIN_FOR: נהנה שהקרבה שלו היא "עבורי" הוא ישות ככל
+     אחרת, ובלי זה "פתח רגע" על השורה שלי היה יוצר נטיעה שנשמרת
+     כאילו היא עבור מישהו אחר. */
+  if(rel&&KIN_SELF.indexOf(rel)>=0)cRel=rel;
   else if(!rel&&av&&av.indexOf('av-')===0){
     if(av==='av-kid7')cRel='other';
     else KIN_FOR.forEach(function(k){if(kinAv(k)===av)cRel=k});
@@ -9577,6 +9657,138 @@ function prefillKid(name,av,sex,rel){
   if(sx)sx.style.display=other?'flex':'none';
   if(sex==='m'||sex==='f'){markSexChip(sex);beneSex=sex}
   paintCAv();
+  /* נהנה שהקרבה שלו היא "עבורי" גורר את כל מה ש-pickCRel גוררת שם:
+     השאלה "מי יקבל את הכסף" יורדת, הסרגל מתקצר לחמישה שלבים,
+     והשם מוצג מהפרופיל. בלי זה "פתח רגע" על השורה שלי היה יוצר
+     נטיעה שנשמרת כאילו היא עבור מישהו אחר. */
+  if(cRel==='self'){whoMode='me';famMode=WHO_MAP.me[0];beneMode=WHO_MAP.me[1];}
+  cSelfName();
+  if(creating)flowBar(stepNo('who'),C_LABELS[0]);
+}
+/* הרשת שבראש שלב 1. אותו רכיב בדיוק של רשת הקרבות שמתחתיה
+   (`.kgrid`), כי זו אותה מחווה: פרצוף ושם בתא. היא אינה רשימה
+   של קרבות אלא של אנשים, ולכן היא רשת נפרדת ולא תאים שנוספו
+   לקיימת — "מי" ו"מה הוא עבורך" הן שתי שאלות, וערבוב שלהן הוא
+   בדיוק מה שתוקן כאן כשבורר הדמויות ירד.
+
+   התא הרחב נגזר מהמניין כמו ב-kinGridHTML: כשתא "מישהו חדש" נשאר
+   לבדו בשורה האחרונה הוא שוכב על הצד במקום לפתוח שורה כמעט ריקה. */
+function kidPickHTML(){
+  const rows=(benes||[]).filter(function(b){return b&&b.name});
+  if(!rows.length)return '';
+  const cell=function(k,label,inner,wide){
+    const on=(cKidPick===k);
+    const cls=(wide?'wide':'')+(on?(wide?' on':'on'):'');
+    return '<button type="button"'+(cls?' class="'+cls.trim()+'"':'')+
+      ' data-k="'+attrText(k)+'"'+
+      ' onclick="pickCKid(this,\''+attrText(k).replace(/'/g,"\\'")+'\')">'+
+      '<span class="f">'+inner+'</span><span>'+attrText(label)+'</span></button>';
+  };
+  const html=rows.map(function(b){
+    return cell(String(b.id||b.name),firstName(b.name),
+                kidFaceHTML(b.avatar||kidAvatar(b.name,b.sex),46));
+  });
+  /* בלי פרצוף: "מישהו חדש" אינו אדם, וכל דמות שתשב שם נקראת כילד
+     מסוים. אותו ＋ של הצביר במצב הריק. */
+  html.push(cell('new','מישהו חדש','<i class="plus">＋</i>',
+                 (rows.length+1)%3===1));
+  return html.join('');
+}
+function paintCKid(){
+  const box=document.getElementById('c-kidpick');
+  const fld=document.getElementById('c-kidfield');
+  if(!box||!fld)return;
+  const html=kidPickHTML();
+  box.innerHTML=html;
+  /* מי שמחליט אם הגוש על המסך הוא applyCKid, כי זה תלוי גם במה
+     שנבחר. כאן רק התוכן. */
+  if(!html)fld.style.display='none';
+  /* תמונה אמיתית של ילד מגיעה כנתיב, והקישור החתום אולי עוד לא
+     כאן. אותו דפוס של שאר המסכים: חותמים, ומציירים שוב רק אם
+     באמת הגיע משהו חדש. */
+  const need=(benes||[]).map(function(b){return b&&b.avatar})
+    .filter(function(a){return a&&a.indexOf('av-')!==0&&!photoUrl(a)});
+  if(need.length)signPhotos(need).then(function(){
+    if(need.some(function(a){return photoUrl(a)}))paintCKid();
+  });
+}
+/* מה מוצג מתחת לרשת. בחירה של ילד קיים עונה גם על השם וגם על
+   הקרבה, ולכן שניהם יורדים: השם הופך לערך מוצג והרשת נסגרת.
+   "מישהו חדש" מחזיר בדיוק את המסך שהיה. ובלי רשת בכלל, כלומר
+   בנטיעה הראשונה בחיים, שום דבר לא משתנה. */
+function applyCKid(){
+  const has=!!(benes||[]).filter(function(b){return b&&b.name}).length;
+  const fresh=(cKidPick==='new');
+  const known=!!(has&&cKidPick&&!fresh);
+  const grid=document.getElementById('c-kidpick');
+  const row=document.getElementById('c-kidpicked');
+  const nf=document.getElementById('c-namefield');
+  const af=document.getElementById('c-avfield');
+  const nm=document.getElementById('c-name');
+  const cta=document.getElementById('c-cta');
+  const kf=document.getElementById('c-kidfield');
+  const back=document.getElementById('c-kidback');
+  /* שלושה מצבים, ובכל אחד יש בדיוק שורה אחת שאומרת "עבור מי":
+     הרשת עד שבוחרים, שורה מקופלת עם השם לילד קיים, ולמי שבחר
+     "מישהו חדש" הגוש יורד כולו והדרך חזרה יושבת על שורת התווית
+     של שדה השם. */
+  if(kf)kf.style.display=(has&&designated&&!fresh)?'':'none';
+  if(grid)grid.style.display=(has&&!cKidPick)?'':'none';
+  if(row){
+    row.style.display=known?'':'none';
+    txt('c-kidpicked-v',known?((nm&&nm.value)||''):'');
+  }
+  if(back)back.style.display=(has&&fresh)?'':'none';
+  /* בילד קיים השורה המקופלת כבר אומרת את השם, ולכן שדה השם יורד
+     כולו: שתי שורות שאומרות את אותו שם הן אותה עובדה פעמיים.
+     והוא נעול ממילא מרגע שנטיעה מיועדת מצביעה על הישות (0061),
+     כלומר שדה שאפשר להקליד בו היה מבטיח עריכה שהמסד יחסום. */
+  if(nf)nf.style.display=(!has||fresh)?'':'none';
+  if(af)af.style.display=(designated&&(!has||fresh))?'':'none';
+  /* "המשך" יורד עד שנבחר משהו: אין מה להמשיך אליו, והודעת שגיאה על
+     שדה שאינו על המסך אינה אומרת דבר. */
+  if(cta)cta.style.display=(has&&!cKidPick&&designated)?'none':'';
+}
+/* ‏el הוא התא שנלחץ, ו-null כשהקריאה באה מ"החלף" שבשורה המקופלת. */
+function pickCKid(el,k){
+  cKidPick=k;
+  if(el)[].slice.call(el.parentNode.children).forEach(function(b){
+    b.classList.toggle('on',b===el)});
+  else paintCKid();
+  /* "מישהו חדש" ו"החלף" מחזירים שניהם לערכי הפתיחה: מי שבחר ילד ואז
+     התחרט אינו אמור לרשת את הקרבה, הפרצוף והמין שלו. */
+  if(k==='new'||!k){
+    /* חזרה בדיוק לערכי הפתיחה של startCreate, כי מי שבחר ילד ואז
+       התחרט אינו אמור לרשת את הקרבה והפרצוף שלו. */
+    const f=document.getElementById('c-name');
+    if(f)f.value='';
+    cRel='son';cRelTouched=false;
+    cAvatar=kinAv('son','av-kid7');cAvTouched=false;
+    if(cPhoto&&cPhoto.blob&&cPhoto.url)URL.revokeObjectURL(cPhoto.url);
+    cPhoto=null;cPhotoOn=false;
+    whoMode='me';beneMode=WHO_MAP.me[1];famMode=WHO_MAP.me[0];
+    beneSex='m';sexTouched=false;markSexChip('m');
+    const fr=document.getElementById('c-relfree');
+    if(fr){fr.value='';fr.style.display='none'}
+    const sx=document.getElementById('c-sex'); if(sx)sx.style.display='none';
+    cSelfName();paintCAv();
+  }else{
+    const b=(benes||[]).filter(function(x){return String(x.id||x.name)===String(k)})[0];
+    if(b)fillKid(b.name,b.avatar||kidAvatar(b.name,b.sex),b.sex,b.relation);
+  }
+  applyCKid();
+  if(creating)flowBar(stepNo('who'),C_LABELS[0]);
+  prev();checkBene();
+}
+function prefillKid(name,av,sex,rel){
+  startCreate();
+  fillKid(name,av,sex,rel);
+  /* הרשת שבראש השלב מסמנת את מי שמילא אותו, כדי שהמסך לא יציג
+     שם קבוע לצד רשת בלי סימון. מי שאינו ברשימה הוא "מישהו חדש". */
+  const b=(benes||[]).filter(function(x){
+    return String(x.name||'').trim()===String(name||'').trim()})[0];
+  cKidPick=b?String(b.id||b.name):'new';
+  paintCKid();applyCKid();
 }
 function apOpenMoment(){
   if(apKidSaved)prefillKid(apKidSaved.name,apKidSaved.av,apKidSexV,apKidSaved.rel);
@@ -9997,9 +10209,27 @@ function editMyIdentity(){
     if(!photoUrl(nowAv))return;
     myPhoto={url:photoUrl(nowAv)};myPaintAv(nowAv);
   });
+  /* הפנייה אליך. השאלה נשאלת בהרשמה ("איך לפנות אליך"), היא
+     אופציונלית, ואיש לא ענה עליה: ארבעה מתוך חמישה פרופילים
+     במסד ריקים, כולל זה של אלון. עד כה לא הייתה שום דרך לענות
+     עליה אחר כך, ולכן היא הייתה שאלה חד-פעמית שאי אפשר לתקן —
+     בזמן שחמישה מיילים ועשרות שורות במסכים מוטים לפיה ונופלים
+     ל"פתח/ה" ו"מפקיד/ה" בלעדיה.
+
+     ואין ברירת מחדל: ניחוש מגדר לפי שם נפסל בכל שאר המוצר, ולכן
+     גם כאן "לא נבחר" הוא מצב תקף, והצורה הכפולה נשארת. */
+  const nowSex=(liveAccount()&&netaServer.profile&&netaServer.profile.sex)||'';
   sheetForm('השם והתמונה שלי',
     'כך אתה מופיע לקרובים שהזמנת, לצד ההשקעות שלך. כתובת הכניסה שלך לא משתנה.'+
     '<label>שם מלא</label><input type="text" id="nm-val" value="'+attrText(nowName)+'">'+
+    '<label>איך לפנות אליך</label>'+
+    '<div class="chips" id="me-sex">'+
+      '<button type="button" class="'+(nowSex==='m'?'on':'')+'" data-x="m" '+
+        'onclick="pickEditSex(this)">בלשון זכר</button>'+
+      '<button type="button" class="'+(nowSex==='f'?'on':'')+'" data-x="f" '+
+        'onclick="pickEditSex(this)">בלשון נקבה</button>'+
+    '</div>'+
+    '<p class="fine" style="margin-top:7px">בלי זה נכתוב "פתח/ה" ו"הפקיד/ה" בכל מקום שמדבר עליך, וגם במיילים שנשלחים לקרובים.</p>'+
     '<label>בחר דמות, או העלה תמונה</label>'+
       '<div id="me-avpick">'+avpickHTML(nowAv,myPhoto,'myPickPhoto()')+'</div>'+
       '<p class="fine" id="me-upnote" style="margin-top:8px;display:none"></p>',
@@ -10008,15 +10238,21 @@ function editMyIdentity(){
       const name=((document.getElementById('nm-val')||{}).value||'').trim();
       if(!name){toast('השם לא יכול להישאר ריק');return false}
       if(name.length>80){toast('השם ארוך מדי');return false}
+      const sexBtn=document.querySelector('#me-sex button.on');
+      const sex=sexBtn?sexBtn.dataset.x:'';
+      const sexChanged=sex!==nowSex;
       const av=pickedAv;
       /* תמונה חדשה היא תמיד שינוי, גם כשהדמות שמתחתיה לא זזה. */
       const newPic=!!(myPhoto&&myPhoto.blob);
       const nameChanged=name!==nowName, avChanged=newPic||av!==nowAv;
-      if(!nameChanged&&!avChanged)return;
-      const said=nameChanged&&avChanged?'השם והתמונה עודכנו'
-               :nameChanged?'השם עודכן':'התמונה עודכנה';
+      if(!nameChanged&&!avChanged&&!sexChanged)return;
+      const said=(nameChanged&&avChanged)?'השם והתמונה עודכנו'
+               :nameChanged?'השם עודכן'
+               :avChanged?'התמונה עודכנה':'הפנייה אליך עודכנה';
       if(!liveAccount()){
         if(nameChanged)setMyName(name);
+        /* בהדגמה אין לאן לשמור, ולכן המגדר אינו נשמר ואינו מבטיח
+           שנשמר. */
         /* בהדגמה אין לאן להעלות, ולכן התמונה מוצגת מה-blob המקומי
            ואינה נשמרת. הכיתוב אינו מבטיח שמירה במצב הזה. */
         if(avChanged)applyMyAvatar(newPic?myPhoto.url:av);
@@ -10024,7 +10260,8 @@ function editMyIdentity(){
       }
       Promise.all([
         nameChanged?netaServer.updateName(name):Promise.resolve(),
-        avChanged?netaServer.updateAvatar(av,newPic?myPhoto.blob:null):Promise.resolve()
+        avChanged?netaServer.updateAvatar(av,newPic?myPhoto.blob:null):Promise.resolve(),
+        sexChanged?netaServer.updateSex(sex):Promise.resolve()
       ]).then(function(res){
         if(nameChanged)setMyName(name);
         /* מה שחזר מהשרת ולא מה שנשלח: כשהועלתה תמונה הערך הוא
@@ -10319,6 +10556,20 @@ function netaBackend(cfg){
     /* רק השם. הכתובת חיה ב-auth.users ואינה משוכפלת ל-profiles, ולכן אין
        כאן מה לגעת בה — וגם במסד עצמו נותרה הרשאת עדכון על השם והתמונה
        בלבד (0012). */
+    /* ‏0047 נותנת הרשאת עדכון על sex, ולכן זה PATCH ככל אחר. עד כה
+       הערך נכתב רק ב-ensureProfile, כלומר פעם אחת בהרשמה ולעולם
+       לא שוב: מי שדילג, ומי שנרשם לפני שהשאלה נוספה, נשאר בלי
+       דרך לענות עליה. */
+    updateSex:function(x){
+      const self=this;
+      return call('/rest/v1/profiles?id=eq.'+uid(),{method:'PATCH',
+        headers:{Prefer:'return=representation'},
+        body:JSON.stringify({sex:x||null})})
+        .then(function(rows){
+          if(rows&&rows[0])self.profile=rows[0];
+          return self.profile;
+        }).catch(remember);
+    },
     updateName:function(name){
       const self=this;
       return call('/rest/v1/profiles?id=eq.'+uid(),{method:'PATCH',
