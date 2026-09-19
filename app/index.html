@@ -2052,7 +2052,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'e24cff5';
+window.NETA_BUILD = '6068517';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -12411,7 +12411,21 @@ function buildHomeSummary(){
     const sumBox=document.getElementById('home-sum');
     if(sumBox)sumBox.style.display=(selEmpty&&!kidZero)?'none':'';
     const gEmpty=document.getElementById('garden-empty');
-    if(gEmpty)gEmpty.style.display=(selEmpty&&!kidZero)?'':'none';
+    const sectEmpty=(selEmpty&&!kidZero);
+    if(gEmpty)gEmpty.style.display=sectEmpty?'':'none';
+    /* והראש המאויר יורד איתו. ‏garden-empty הוא מצב ריק שלם, עם איור
+       משלו וכותרת משלו, ומעליו ישב fut-head עם איור וכותרת משלו:
+       שני איורים ושתי כותרות על מסך אחד, אצל מי שרק הוזמן לרגע של
+       קרוב. זו אותה מלכודת של act-head, שם הראש יושב **בתוך**
+       act-full כדי ליפול איתו; כאן הוא באמת בתוך home-full, אבל
+       home-full נשאר גלוי ומה שמתרוקן הוא הסקשן שבתוכו.
+
+       והראש הוא שיורד ולא האיור שמתחת: "מה מחכה להם" מבטיח רשימה
+       שאינה קיימת, בעוד שההערה מעל garden-empty קובעת שהמסך הראשון
+       שאדם רואה במוצר לא ייפתח בהודעה על מה שאין. ‏kidZero נשאר עם
+       הראש, כי שם יש ילד נבחר והשאלה עליו נכונה. */
+    const futHead=document.getElementById('fut-head');
+    if(futHead)futHead.style.display=sectEmpty?'none':'';
     const kz=document.getElementById('kid-zero');
     if(kz)kz.style.display=kidZero?'':'none';
     /* הכפתור המקווקו הוא הפעולה כשיש רשימה. במצב הריק הפעולה כבר
@@ -12760,7 +12774,16 @@ function paintInvestments(){
   /* הצפי האישי חוזר מהשרת לכל רגע. כשהוא חסר — נטיעה ישנה, או מסלול
      בלי ריבית — מוותרים על השורה ולא ממציאים מספר. */
   const proj=rows.reduce(function(a,p){return a+Number(p.myProjection||0)},0);
-  txt('mi-num',shekel(total));
+  /* ‏"·" ולא "0 ₪". מי שהוזמן לרגע ועוד לא הפקיד רואה את המספר הזה
+     ככותרת המסך, ומספר שקיומו מודיע על היעדרו אינו מידע. זו כבר
+     המוסכמת של המוצר לערך שעוד אין לו (ראו kid-zero, ומציין "אין
+     ערך עדיין" בפרק הכתיבה), ולכן הצורה נשמרת והשקר יורד.
+
+     והשורה שמתחת מחליפה זמן: "זה מה שכבר השקעת" על אפס היא הצהרה
+     על מה שלא עשית, ומה שנכון כאן הוא מה שכן קרה, כלומר שצירפו
+     אותך. הכרטיס שמתחת כבר אומר "הוזמנת, עוד לא נטעת". */
+  const nothingYet=!(total>0);
+  txt('mi-num',nothingYet?'·':shekel(total));
   /* בלי הוראת קבע השורה כולה יורדת, ולא מודיעה על היעדרה. הכיתוב
      "בכל חודש" יושב במבנה ולא בטקסט, ולכן כתיבת "אין הוראת קבע פעילה"
      לתוך המספר הרכיבה "אין הוראת קבע פעילה בכל חודש". */
@@ -12810,6 +12833,11 @@ function paintInvestments(){
      שהשורה החזירה אותו ("בוקר טוב · אלון בר דוד") שניהם על אותו
      מסך במרחק 144 פיקסלים. */
   txt('mi-meta',
+    nothingYet     ? (who.length===1
+                        ? ('צירפו אותך לרגע של '+
+                           (isSelfName(who[0])?'עצמך':who[0])+
+                           '. ההפקדה הראשונה שלך תופיע כאן')
+                        : 'צירפו אותך לרגע. ההפקדה הראשונה שלך תופיע כאן') :
     who.length===1 ? ('זה מה שכבר השקעת בעתיד '+
                       (isSelfName(who[0])?'שלך':('של '+who[0]))) :
     who.length>1   ? 'זה מה שכבר השקעת בעתיד של היקרים שלך'
