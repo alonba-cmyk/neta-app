@@ -440,13 +440,25 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .nhdr .nm{font-size:14px;font-weight:600;color:var(--tx);line-height:1.3;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nhdr .acts{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.nhdr .ab{width:34px;height:34px;border-radius:50%;background:var(--s2);
+/* קו בלבד, בלי מילוי. המילוי היה `--s2`, קרם על לבן, כלומר 1.21:1
+   מול הדף — עיגול שכמעט אינו שם. בלעדיו האייקון עולה מ-8.0 ל-9.7,
+   כי הוא יושב על לבן ולא על קרם, והעיגול נשאר תחום מגע של 34.
+
+   ‏background:none ולא `--bg`: מילוי שזהה לרקע הוא הצהרה שאין לה
+   ביטוי בערכה הבהירה ויהיה לה בכהה, שבה `--bg` ו-`--s1` שונים. */
+.nhdr .ab{width:34px;height:34px;border-radius:50%;background:none;
   border:1px solid var(--line);display:grid;place-items:center;color:var(--tx-2);
   position:relative;cursor:pointer;padding:0;font-family:inherit;transition:.15s}
 .nhdr .ab:hover{border-color:var(--line-2)}
-/* הכפתור של המסך שפתוח. בלעדיו יש בראש כפתור שנראה זהה בין אם אתה
-   שם ובין אם לא, בזמן שהסרגל התחתון כן מסמן איפה אתה. */
-.nhdr .ab.on{background:var(--leaf-bg);border-color:var(--leaf-line);color:var(--leaf)}
+/* הכפתור של המסך שפתוח, וזה תיקון ולא קישוט. הסימון היה
+   `--leaf-bg` עם `--leaf-line`, ובפלטה "עתיד ירוק" שניהם קרם וחול:
+   **המשטח השתנה ב-1.07:1 והאייקון ב-1.01:1**, כלומר הכפתור של המסך
+   שאתה בתוכו נראה זהה לשני. אותה מלכודת של "ערוגה בתוך ערוגה".
+
+   עכשיו אותו עיגול בדיוק עובר ממתאר למלא, 9.63 בין שני המצבים. זו
+   כבר השפה של הצ'יפים ("מה שנבחר צבוע מלא"), ולכן זו צורה אחת עם
+   שני מצבים ולא שתי צורות. */
+.nhdr .ab.on{background:var(--leaf);border-color:var(--leaf);color:var(--on-leaf)}
 .nhdr .ab svg{display:block;width:18px;height:18px}
 /* בפינה החיצונית של הכפתור, בדיוק כמו הנקודה שעל הטאב. */
 .nhdr .ab i{position:absolute;top:-1px;left:-1px;width:9px;height:9px;border-radius:50%;
@@ -481,8 +493,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    קודם ישב כאן ריפוד של 4 פיקסלים שכוונן ידנית לגובה אחד בלבד. */
 .s-row{display:flex;align-items:flex-start;gap:16px}
 .s-body{flex:1;min-width:0}
-.s-art{flex-shrink:0;width:68px;display:grid;place-items:center;position:relative}
-.s-art::before{content:"";position:absolute;width:78px;height:78px;border-radius:50%;
+/* ‏60 ולא 68, ו-69 ולא 78: אלון ביקש להקטין "טיפה" את האיור בראש
+   כל המסכים, והמקדם אחד לכולם — 0.875. ראו "האיורים בראש קטנו
+   ב-12.5 אחוז". */
+.s-art{flex-shrink:0;width:60px;display:grid;place-items:center;position:relative}
+.s-art::before{content:"";position:absolute;width:69px;height:69px;border-radius:50%;
   background:radial-gradient(circle,rgba(var(--leaf-rgb),.14),transparent 68%)}
 .s-art svg{position:relative}
 /* צביר הפנים במצב הריק של הקרובים. אותה שפה של .ppav שמעל המספר,
@@ -566,6 +581,18 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ה-＋ ירוק בתוך אותו עיגול לבן: הוא פעולה ולא עובדה. עיגול ירוק
    מלא היה משלש את המסה הירוקה מעל כפתור ירוק ברוחב מלא. */
 .esfaces.plus>span>i{color:var(--leaf);font-size:14px}
+/* ─── ההקטנה שבשני הראשים, ובהם בלבד ──────────────────────────────
+   ‏0.875 מהגודל: 64 הופך ל-56, התג מ-25 ל-22, וגוש האיור מ-81 ל-71.
+   **ממוקד ל-#rel-head ול-#act-head ולא ל-.esfaces הגלובלי**, כי אותו
+   רכיב בדיוק משרת את ארבעת המצבים הריקים, ושם אלון ביקש שלא ייגעו.
+   המחיר: הצביר בראש הוא 56 והצביר במצב הריק של אותו טאב הוא 64.
+   שני המצבים לעולם אינם מוצגים יחד, ולכן זו אינה שתי מידות על מסך
+   אחד אלא מידה אחת לכל מצב. */
+#rel-head .esfaces,#act-head .esfaces{height:71px}
+#rel-head .esfaces>span,#act-head .esfaces>span{width:56px;height:56px}
+#rel-head .esfaces>span>i,#act-head .esfaces>span>i{width:22px;height:22px;font-size:11px}
+#rel-head .esfaces.plus>span>i,#act-head .esfaces.plus>span>i{font-size:12px}
+#rel-head .esfaces.occ.plus>span>i,#act-head .esfaces.occ.plus>span>i{width:25px;height:25px}
 /* ותג אחד לצביר, על הפרצוף השמאלי בלבד. שלושה תגים אמרו את אותה
    מילה שלוש פעמים, וזו גם המילה שהפעולה שמתחת כבר אומרת: מה שהם
    צריכים לומר הוא "אפשר להוסיף עוד אחד", וזה נאמר פעם אחת.
@@ -1591,8 +1618,17 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    פיקסלים גבוה יותר מזו של המצב הריק באותו טאב; האיור עצמו נשאר
    ב-101 בשניהם. */
 #rel-head{text-align:center;padding:26px 4px 0;margin-bottom:12px}
-#rel-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:8px}
+#rel-head .art{height:71px;display:grid;place-items:center;color:var(--leaf);margin-bottom:8px}
 #rel-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
+/* אוויר בין הכותרת המאוירת לתווית הרשימה שמתחתיה. `#rel-head` נותן
+   12 מלמטה ו-`.eyebrow` אינו נותן כלום מלמעלה, ולכן התווית נצמדה
+   לשורה השנייה של הכותרת ונקראה כהמשך שלה ולא כשם של הרשימה.
+
+   **‏24 ולא 12, כי כאן המרווחים כן מתמוטטים.** שניהם אחים בזרימת
+   בלוק רגילה (`.screen`), ולכן מה שנקבע הוא המקסימום ולא הסכום:
+   ‏12 מול 12 נתן 12 בדיוק כמו קודם. זה ההפך מהמקרה של `#rel-ghost`,
+   שיושב בעמודת flex ושם 8+20 אכן היו 28. */
+#rel-eyebrow{margin-top:24px}
 /* הפרצוף בראש הוא הרכיב של הצביר ב"הקרובים שלי" (.esfaces.kids)
    בפרצוף אחד, ולכן אין כאן שום כלל גודל: 64 והתג של 25 מגיעים משם.
    קודם ישב כאן .bigfav מוקטן ל-64 עם רדיוס 20, כלומר ריבוע מעוגל,
@@ -1600,7 +1636,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    **אלון ראה את זה כשתי שפות בשני טאבים שכנים**, והצורה יושרה.
    ‏`#act-empty` לא נגע: שם `.bigfav` נשאר 70 בריבוע מעוגל, כי הוא
    כוון מול שלושת המצבים הריקים האחרים ולא מול הטאב השכן. */
-#act-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:8px}
+#act-head .art{height:71px;display:grid;place-items:center;color:var(--leaf);margin-bottom:8px}
 /* ואותו ראש ב"העתיד שלנו". כאן האיור הוא קו ולא פרצוף, ולכן הגוש
    הוא גובה האייקון עצמו ולא 81. */
 /* 22 ולא 12 כמו בשני הראשים האחרים: מרגע שהאייקון ירד, הכותרת
@@ -1625,8 +1661,8 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הרוחב אינו שווה ואינו יכול להיות: יחס הדיו של האייקון הוא 17:18
    ושל הנבט 40:62, ולכן בגובה זהה האייקון יוצא 57 והנבט 39. מה
    שהעין משווה במעבר בין טאבים הוא הקו העליון והתחתון. */
-#fut-head .art{height:68px;display:grid;place-items:start center;color:var(--leaf);margin-bottom:8px}
-#fut-head .art svg{display:block;margin-top:7px}
+#fut-head .art{height:60px;display:grid;place-items:start center;color:var(--leaf);margin-bottom:8px}
+#fut-head .art svg{display:block;margin-top:6px}
 #fut-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance;
   margin:0 auto;max-width:300px}
 /* ── "ההשקעות שלי": אותו מבנה ראש, במספר במקום בכותרת ─────────────
@@ -1943,7 +1979,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'e9809fa';
+window.NETA_BUILD = '9befd52';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2212,7 +2248,7 @@ window.NETA_CONFIG = {
          מעליו ו-3.5 מתחתיו, והרווח הנראה עד הכותרת אינו מה שה-CSS
          אומר. הגובה 60 והרוחב 57 נגזרים מהדיו של הנבט בטאב השכן,
          ראו ההערה ב-CSS. -->
-    <div class="art"><svg width="57" height="60" viewBox="3.5 2.5 17 18"
+    <div class="art"><svg width="50" height="53" viewBox="3.5 2.5 17 18"
       aria-hidden="true"><use href="#ic-path"/></svg></div>
     <!-- שתי שורות בכותרת ובלי משפט שקט מתחתיהן: השאלה ומה שעונה
          עליה הן אמירה אחת, ושורה אפורה שחוזרת על אותה עובדה במשקל
@@ -3115,7 +3151,7 @@ window.NETA_CONFIG = {
       <!-- הנבט נשאר כאן ויורד ממסך הבית: שם יש מעכשיו שני מספרים
            שצריכים את כל הרוחב, וכאן נשאר מספר אחד. -->
       <div class="s-art">
-        <svg width="58" height="68" viewBox="0 0 60 70" aria-hidden="true"><use href="#sprout-pot"/></svg>
+        <svg width="51" height="60" viewBox="0 0 60 70" aria-hidden="true"><use href="#sprout-pot"/></svg>
       </div>
     </div>
     <!-- אותה שורת עובדות כמו במסך הבית, ובאותו מבנה: ההפקדה החודשית,
