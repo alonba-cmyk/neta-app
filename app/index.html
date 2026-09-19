@@ -1552,7 +1552,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    משלו: בלעדיו התווית "מי שאני נוטע עבורו" נוחתת שישה פיקסלים אחרי
    הזנב הדוהה של הדגם ונקראת כחלק ממנו. ממוקד למזהה ולא ל-.eyebrow,
    שמשרת תוויות שיושבות אחרי כרטיס ואינן צריכות אותו. */
-#kid-head{margin-top:20px}
+#kid-head{margin-top:24px}
 #rel-ghost .rel{cursor:default}
 /* פרצוף מלא צבע ב-.34 ובסטורציה של 45 אחוז יוצא כתם אפור, ולא פנים.
    שאר הדגמים מחזיקים טקסט ואמוג'י ושורדים את זה; כאן צריך קצת יותר. */
@@ -1979,7 +1979,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '9befd52';
+window.NETA_BUILD = '803fc9b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3288,6 +3288,21 @@ window.NETA_CONFIG = {
        יחד עם הראש, כלומר רק כשיש רשימה: במצב הריק היא ריחפה בראש המסך
        26 פיקסלים מעל האיור ונקראה כשורה יתומה, ושם ממילא הכותרת
        המאוירת אומרת את מה שהיא אומרת. -->
+  <!-- הילדים ראשונים, לבקשת אלון. הפעולה על שורה של ילד אינה "הזמן"
+       אלא הרגעים שלו, וזה מה שהצדיק רשימה נפרדת ולא ערבוב; במצב
+       הזמנה הסקשן יורד, כי שם הרשימה היא בחירה מרובה של נמענים.
+
+       **ומה שההחלפה עולה:** הראש המאויר שמעליו הוא של הקרובים
+       ("מי כבר נוטע איתך? הזמן את סבתא, אח או דוד קרוב"), והוא
+       יושב עכשיו מעל רשימת הילדים. הוא נשאר בראש המסך כי שם הוא
+       מיושר עם שלושת הטאבים האחרים (align.js), ולכן ההוראה שבו
+       מצביעה על הרשימה השנייה ולא על הראשונה. נאמר ונבחר.
+
+       **וכשאין קרובים הסקשן חוזר למקומו הישן**, אחרי המצב הריק:
+       ראו placeKidSection. המיקום כאן הוא זה שיש בו רשימה. -->
+  <p class="eyebrow" id="kid-head" style="display:none">מי שאני נוטע עבורו</p>
+  <div class="card" id="kid-list" style="display:none"></div>
+
   <p class="eyebrow" id="rel-eyebrow" style="display:none">מי שנוטע איתי</p>
   <div class="card" id="rel-list"></div>
   <button class="btn gap-s" id="rel-send" style="display:none"
@@ -3313,19 +3328,6 @@ window.NETA_CONFIG = {
             onclick="copyInviteLink(this)">או העתק קישור והעבר לקרובים</button>
   </div>
   <div class="gsample" id="rel-ghost" style="display:none" aria-hidden="true"></div>
-  <!-- הקבוצה השנייה של האשף, והיא יושבת אחרי הכפתור ולא לפניו.
-       "+ הוסף אדם" הוא הפעולה של הרשימה שמעליו, וכשהוא ישב מתחת
-       לילדים המצב הריק של הקרובים נגמר בהוראה ("הזמן את סבתא") בלי
-       שום דבר ללחוץ עליו: שלושה ילדים הפרידו בין הבקשה לכפתור.
-       המחיר: האשף מוסיף גם ילד, ולכן הכפתור עומד מעל רשימה שהוא
-       משרת גם אותה.
-
-       השאר כפי שהיה: הפעולה על שורה של ילד אינה "הזמן" אלא הרגעים
-       שלו, וזה מה שהצדיק רשימה נפרדת ולא ערבוב. במצב הזמנה הסקשן
-       יורד, כי שם הרשימה היא בחירה מרובה של נמענים. -->
-  <p class="eyebrow" id="kid-head" style="display:none">מי שאני נוטע עבורו</p>
-  <div class="card" id="kid-list" style="display:none"></div>
-
   <!-- "רגעים שהזמינו אותך אליהם" ירדה מכאן. המסך הזה הוא על אנשים,
        ומאז שמסך הבית מחזיק סקשן "נטיעות עבור אחרים" אותו רגע בדיוק
        הופיע פעמיים, בשני טאבים.
@@ -3337,7 +3339,7 @@ window.NETA_CONFIG = {
        והיא גם תוקנה. "ורק התקדמות, בלי סכומים" לא היה נכון: הסכום
        שנצבר לרגע גלוי לכל מי שהצטרף, וכך גם הסכום של מי שפתח אותו.
        ‏planting_detail מסתירה רק את הסכומים של שאר הקרובים. -->
-  <p class="fine gap">קרוב שהצטרף רואה רק את הנטיעות שצירפת אותו אליהן: כמה נצבר בהן, מי עוד נוטע, וכמה אתה השקעת.</p>
+  <p class="fine gap" id="rel-fine">קרוב שהצטרף רואה רק את הנטיעות שצירפת אותו אליהן: כמה נצבר בהן, מי עוד נוטע, וכמה אתה השקעת.</p>
 
   <button class="btn ghost" id="rel-back" onclick="backFromRelatives()">חזרה לפרופיל</button>
 </section>
@@ -8478,9 +8480,29 @@ function buildRelatives(){
 /* הילדים שלי, מהישות ולא מהנטיעות: מי שעוד אין לו רגע קיים רק שם.
    ‏benes היא אותה רשימה שממנה נבנה הבורר ב"העתיד שלנו", ולכן שני
    המסכים אינם יכולים לחלוק. */
+/* הילדים ראשונים כשיש קרובים, ואחרי המצב הריק כשאין.
+
+   ההחלפה עצמה היא בקשה של אלון, אבל היא שברה את המקרה הריק: המצב
+   הריק של הקרובים הוא מסך שלם עם איור, כותרת וכפתור, והוא מיושר
+   לפיקסל עם שלושת הטאבים האחרים (`btnpos.js`, `align.js`). כשסקשן
+   הילדים עלה מעליו הוא ירד ב-97 פיקסלים, כלומר הטאב הזה לבדו נחת
+   במקום אחר — וזה נמדד ולא נראה בעין, כי בהדגמה יש קרובים.
+
+   ולכן המיקום נגזר מהנתונים: יש רשימה, הילדים מעליה; אין, והמצב
+   הריק חוזר לפתוח את המסך. ‏insertBefore מזיז צומת קיים, ולכן
+   הקריאה אידמפוטנטית. */
+function placeKidSection(){
+  const head=document.getElementById('kid-head'),box=document.getElementById('kid-list');
+  const eb=document.getElementById('rel-eyebrow'),fine=document.getElementById('rel-fine');
+  if(!head||!box||!eb||!fine)return;
+  const at=relatives.length?eb:fine;
+  at.parentNode.insertBefore(head,at);
+  at.parentNode.insertBefore(box,at);
+}
 function paintKidSection(){
   const head=document.getElementById('kid-head'),box=document.getElementById('kid-list');
   if(!head||!box)return;
+  placeKidSection();
   /* במצב הזמנה הרשימה שמעל היא בחירה מרובה של נמענים, וילד אינו
      נמען. סקשן שלישי שם היה רעש על מסך שיש בו משימה אחת. */
   const rows=relInviteKey?[]:(benes||[]).filter(function(b){return b&&b.name});
