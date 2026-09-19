@@ -1745,6 +1745,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   text-align:center;gap:6px}
 [data-name="הבית"] .summary .s-art{order:-1}
 [data-name="הבית"] .s-meta{justify-content:center}
+/* ‏"עוד לא הפקדת" יושב במקום המספר, ולכן הוא אינו בגודל שלו: מספר
+   גדול שאין בו ספרה מתחזה למספר, וזה מה ש-"·" עשתה כאן לפניו. */
+[data-name="הבית"] #mi-num.word{font-size:19px;color:var(--tx);letter-spacing:-.01em}
+[data-name="הבית"] #mi-potgrp b{color:var(--leaf)}
 [data-name="הבית"] #mi-meta{font-size:17px;font-weight:600;color:var(--tx);
   line-height:1.35;margin-top:10px;max-width:290px;margin-inline:auto;text-wrap:balance}
 /* שלושת התגים מתפרסים סביב הראש. הכלל הגלובלי של .esfaces.kids
@@ -2052,7 +2056,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'de7e1d0';
+window.NETA_BUILD = '293f9c9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3246,6 +3250,11 @@ window.NETA_CONFIG = {
          כרטיס בן שתי שורות, שהחזיק את אותן שתי עובדות במשקל של טבלה
          ודחף את הרשימה למטה. -->
     <div class="s-meta">
+      <!-- שתי העובדות של מי שצורף לרגע של מישהו אחר. הן ראשונות כי
+           בדיוק במצב הזה שלוש האחרות יורדות (אין הוראת קבע ואין צפי
+           אישי), ואז אלה מה שנשאר. -->
+      <span id="mi-potgrp" style="display:none"><b id="mi-pot">·</b> <span id="mi-potk">כבר נצבר ברגע</span></span>
+      <span class="grp" id="mi-whogrp" style="display:none"><i></i><span id="mi-who">·</span></span>
       <span id="mi-mongrp"><b id="mi-mon">·</b> בכל חודש</span>
       <span class="grp" id="mi-cntgrp"><i></i><span id="mi-cnt">בשני רגעים</span></span>
       <span class="grp" id="mi-projgrp"><i></i><span>יגדל ל<b class="fut" id="mi-proj">·</b></span></span>
@@ -8561,12 +8570,70 @@ function apSentSheet(r,keys,emailed){
     (emailed||!all)?'':afterInviteLabel(keys[0]),
     function(){afterInviteGo(keys[0])});
 }
+/* מי שפתח רגע וצירף אותי אליו. הוא אינו ב-relatives, כי הפנקס נכתב
+   ביד ומי שהוזמן לא כתב בו איש — ולכן מוזמנת חדשה פתחה את המסך שכל
+   עניינו אנשים וראתה "מי עוד נוטע איתך?" בזמן שמישהו כבר נוטע איתה.
+   אלון תפס את זה בבדיקה חיה: "מי שהזמין אותי לא אמור להופיע?"
+
+   המקור הוא plantings_im_in ולא planting_access: זו טבלת הרשאות, ומי
+   שפתח רגע אינו בה בכלל (אין לו צורך בהרשאה לעצמו). הרשימה מקובצת
+   לפי אדם ולא לפי רגע, כי זה מסך של אנשים. */
+function relInviters(){
+  const rows=(lastModel&&lastModel.plantings)||[];
+  const out=[],seen={};
+  rows.forEach(function(p){
+    if(!p||!p.joined||!p.by)return;
+    const k=String(p.by).trim();
+    if(!k)return;
+    if(!seen[k]){seen[k]={name:k,av:p.byAv||null,items:[]};out.push(seen[k])}
+    if(!seen[k].av&&p.byAv)seen[k].av=p.byAv;
+    seen[k].items.push(p);
+  });
+  /* מי שכבר בפנקס שלי אינו מופיע פעמיים. ההשוואה היא לפי שם, כי
+     ל-relatives אין מזהה משתמש — הוא פנקס ידני שאינו מצביע על חשבון.
+     הכישלון האפשרי הוא שורה אחת במקום שתיים לשני אנשים בעלי אותו שם,
+     והוא עדיף על אותו אדם פעמיים באותה רשימה. */
+  const mine={};
+  relatives.forEach(function(r){if(r&&r.name)mine[String(r.name).trim()]=1});
+  return out.filter(function(x){return !mine[x.name]});
+}
+/* כמה שורות תהיינה ברשימה, משני המקורות. שלוש פונקציות שואלות את
+   השאלה הזאת — הרשימה עצמה, מיקום סקשן הילדים, והכפתור הירוק —
+   ושתיים מהן שאלו רק על relatives. ‏placeKidSection לבדה הייתה
+   משאירה את הילדים מתחת למצב ריק שכבר אינו מוצג. */
+function relListCount(){
+  return relatives.length+(relInviteKey?0:relInviters().length);
+}
+/* שורה של מי שהזמין אותי. היא אינה נפתחת לעריכה, כי הוא אינו שלי
+   לערוך, והכיתוב אינו נוקב בקרבה: קרבה אינה סימטרית, ומי שהוספתי
+   כחמות איננו "החמות שלי" מצידו. מה שנכון לשניים הוא הרגע עצמו.
+   והוא גם אינו נוקב בפועל ("הזמין"), כי sex של מי שפתח יכול להיות
+   ריק והמוצר אינו מנחש מגדר. התווית שמעל הרשימה אומרת את היחס פעם
+   אחת, והשורה אומרת במה הוא מתבטא. */
+function invRowHTML(x){
+  const n=x.items.length;
+  const one=n===1?x.items[0]:null;
+  const sub=one?one.name:(countWord(n)+' רגעים יחד');
+  /* כפתור מוביל לדבר עצמו: רגע אחד נפתח, וכמה מהם מובילים למסך
+     שמחזיק אותם. אותה הכרעה בדיוק כמו בשורה של ילד. */
+  const act=one
+    ? '<button class="rx" onclick="openDetail(\''+attrText(one.key)+'\')">הרגע</button>'
+    : '<button class="rx" onclick="openInvestments()">ההשקעות שלי</button>';
+  return '<div class="rel">'+
+    '<div class="ra">'+faceHTML(x.av,'av-someone')+'</div>'+
+    '<span class="rn"><b>'+attrText(x.name)+'</b><i>'+attrText(sub)+'</i></span>'+
+    act+'</div>';
+}
 function buildRelatives(){
   const box=document.getElementById('rel-list');
   /* הראש חי הפוך למצב הריק: הוא מוצג כשיש קרובים, ויורד כשאין,
      ולכן ההחלטה יושבת כאן ולא במקום נוסף. */
   const head=document.getElementById('rel-head'),eb=document.getElementById('rel-eyebrow');
-  const withRel=!!(relatives.length&&!relInviteKey);
+  /* שני מקורות לרשימה אחת: הפנקס שלי ומי שהזמין אותי. מי שיש לו
+     מזמין ואין לו פנקס אינו במצב ריק — וזה כל התיקון. */
+  const invs=relInviteKey?[]:relInviters();
+  const anyRel=!!(relatives.length||invs.length);
+  const withRel=!!(anyRel&&!relInviteKey);
   if(head)head.style.display=withRel?'':'none';
   if(eb)eb.style.display=withRel?'':'none';
   /* בראש ולא בכל ענף: לפונקציה שלושה מסלולי יציאה, ומי שנשכח בהם
@@ -8574,7 +8641,7 @@ function buildRelatives(){
   paintInvSend();
   /* בראש ולא בכל ענף, מאותה סיבה שמעל: לפונקציה שלושה מסלולי יציאה. */
   paintKidSection();
-  if(!relatives.length){
+  if(!anyRel){
     box.style.border='none';box.style.background='none';box.style.padding='0';
     /* הכפתור "הוסף קרוב" יושב אחרי הקופסה ולא בתוך המצב הריק, ולכן
        המרווח שמעליו הוא הריפוד התחתון של ה-.es ועוד ה-margin של הכרטיס:
@@ -8623,7 +8690,11 @@ function buildRelatives(){
     '<div class="reladd" onclick="openAddPerson(&quot;with&quot;)">+ הזמן מישהו שאינו ברשימה</div>';
     relMeta();return;
   }
-  box.innerHTML=relatives.map(function(r,i){
+  /* המזמינים ראשונים, ואחריהם הפנקס שלי. שורת "+ הוסף קרוב" שבסוף
+     נוגעת בפנקס בלבד, ולכן היא יושבת מיד אחריו ולא אחרי שורות שאי
+     אפשר לערוך. */
+  box.innerHTML=invs.map(invRowHTML).join('')+
+    relatives.map(function(r,i){
     let right;
     /* "באפליקציה" ירד. הוא היה תג ולא פעולה, ישב במקום שבו שאר השורות
        מציעות כפתור, ותיאר את נטע ולא את הקשר איתך: יש לו חשבון אינו
@@ -8671,7 +8742,7 @@ function placeKidSection(){
   const head=document.getElementById('kid-head'),box=document.getElementById('kid-list');
   const eb=document.getElementById('rel-eyebrow'),fine=document.getElementById('rel-fine');
   if(!head||!box||!eb||!fine)return;
-  const at=relatives.length?eb:fine;
+  const at=relListCount()?eb:fine;
   at.parentNode.insertBefore(head,at);
   at.parentNode.insertBefore(box,at);
 }
@@ -8986,7 +9057,7 @@ function paintInvSend(){
   if(add){
     /* הכפתור הירוק הוא של המצב הריק בלבד. ברשימה מלאה ההוספה יושבת
        בסוף הרשימה, ובמצב הזמנה הפעולה היא "המשך" ולא הוספה. */
-    add.style.display=(relInviteKey||relatives.length)?'none':'';
+    add.style.display=(relInviteKey||relListCount())?'none':'';
     add.className='btn gap-s';
     /* "קרוב" ולא "אדם", לבקשת אלון. הנימוק שנשמע לפני השינוי: הפאנל
        הראשון שואל "את מי תרצה להוסיף" ומציע שתי דרכים, וילד אינו
@@ -10967,7 +11038,7 @@ function netaBackend(cfg){
                           rpc('plantings_im_in')]).catch(remember)
         .then(function(r){
         const s=(r[0]&&r[0][0])||{},rows=r[1]||[],joined=r[2]||[];
-        const shape=function(p,by,bySex){
+        const shape=function(p,by,bySex,byAv){
           const d=new Date(p.target_date+'T00:00:00');
           return {key:p.id,name:p.name,icon:p.icon,designated:p.designated,
                   targetYear:d.getFullYear(),targetMonth:d.getMonth(),
@@ -10980,6 +11051,10 @@ function netaBackend(cfg){
                   projection:Number(p.projection_agorot||0),
                   hasStandingOrder:p.has_standing_order,
                   joined:!!by, by:by||null, bySex:bySex||null,
+                  /* הפרצוף של מי שפתח, ל"מי שהזמין אותי" שב"הקרובים
+                     שלי". 0074. נחתם דרך facePaths כמו שאר פרצופי
+                     הפרופיל, כי הוא יכול להיות נתיב ולא דמות. */
+                  byAv:byAv||null,
                   /* הגבול בין שני הסקשנים. is not distinct from במסד,
                      ולכן רגע בלי family_of נופל לצד של "אחרים" — וזה
                      נכון: עד שההורה מאשר, הרגע אינו של המשפחה שלי. */
@@ -10999,7 +11074,8 @@ function netaBackend(cfg){
         };
         const all=rows.map(function(p){return shape(p,null)})
           .concat(joined.map(function(p){
-            return shape(p,p.initiator_name||'קרוב',p.initiator_sex||null)}))
+            return shape(p,p.initiator_name||'קרוב',p.initiator_sex||null,
+                         p.initiator_avatar||null)}))
           /* מה שנפתח לאחרונה למעלה, בלי קשר למי פתח אותו */
           .sort(function(a,b){return String(b.since||'').localeCompare(String(a.since||''))});
         return {
@@ -11656,7 +11732,14 @@ function demoPlanting(k){
           sex:p.sex||null,
           targetYear:p.yr,targetMonth:monthOf(p.date),accrued:p.now*100,
           mine:mineAg,since:p.planted||null,
-          joined:!p.mine, by:p.mine?null:(p.co||'קרוב'),
+          /* מי פתח את הרגע, ומה הפרצוף שלו. עד כאן זה היה
+             p.co||'קרוב', ושתי הנטיעות שאינן שלי בהדגמה אינן
+             מחזיקות co בכלל — כלומר ההדגמה אמרה "קרוב נוטע איתך"
+             בזמן שהשם יושב בשורה הראשונה של who. זה בדיוק אותו
+             נתיב־שונה־בשקט שמתואר ב-CLAUDE.md: מסך שנראה תקין
+             בהדגמה ומציג משהו אחר בחשבון אמיתי. */
+          joined:!p.mine, by:p.mine?null:(p.co||(p.who&&p.who[0]&&p.who[0][1])||'קרוב'),
+          byAv:p.mine?null:((p.who&&p.who[0]&&p.who[0][0])||null),
           /* ארבעת הרגעים בהדגמה הם של דניאל, של נועה ושל הקופה —
              כולם המשפחה של אלון, כולל זה שדוד יוסי פתח. בלי השורה
              הזאת familyMine היה undefined והכול היה נופל ל"אחרים". */
@@ -12790,7 +12873,35 @@ function paintInvestments(){
      על מה שלא עשית, ומה שנכון כאן הוא מה שכן קרה, כלומר שצירפו
      אותך. הכרטיס שמתחת כבר אומר "הוזמנת, עוד לא נטעת". */
   const nothingYet=!(total>0);
-  txt('mi-num',nothingYet?'·':shekel(total));
+  /* ‏"עוד לא הפקדת" ולא "·" ולא "0 ₪". הנקודה היא המוסכמת שלנו לערך
+     שאין לו עדיין, אבל בכל מקום אחר היא יושבת בתוך שורת עובדה עם
+     תווית לידה; ככותרת בגודל של המספר הגדול היא **מתחזה למספר**,
+     ואלון קרא אותה כתקלה ברינדור. משפט אינו מתחזה לכלום. */
+  const numEl=document.getElementById('mi-num');
+  if(numEl)numEl.classList.toggle('word',nothingYet);
+  txt('mi-num',nothingYet?'עוד לא הפקדת':shekel(total));
+
+  /* ומה שכן נצבר ברגע יורד שורה אחת, אל שורת העובדות. זה הסכום של מי
+     שפתח, ולכן הוא **אינו** יכול לשבת בכותרת: המסך הזה שואל כמה אני
+     השקעתי, וכותרת שמראה את הכסף של אדם אחר הייתה יורדת מ-370 ל-50
+     ברגע שאני מפקיד חמישים. המספר הגדול קטן בדיוק כשנותנים כסף.
+
+     ולכן הוא כאן, בשורה שכבר קיימת ושבמצב הזה ריקה לגמרי, והוא נשאר
+     בה גם אחרי ההפקדה הראשונה. מוגבל לרגעים שמישהו אחר פתח (`joined`),
+     כי ברגע שפתחתי בעצמי הכותרת כבר מספרת את הסיפור. */
+  const inv=rows.filter(function(p){return p.joined});
+  const pot=inv.reduce(function(a,p){return a+Number(p.accrued||0)},0);
+  const by=[];
+  inv.forEach(function(p){if(p.by&&by.indexOf(p.by)<0)by.push(p.by)});
+  const potG=document.getElementById('mi-potgrp');
+  if(potG)potG.style.display=pot>0?'':'none';
+  txt('mi-pot',shekel(pot));
+  txt('mi-potk',inv.length>1?'כבר נצבר ברגעים':'כבר נצבר ברגע');
+  const whoG=document.getElementById('mi-whogrp');
+  if(whoG)whoG.style.display=by.length?'':'none';
+  txt('mi-who',by.length===1?(by[0]+' נוטע איתך')
+             :by.length===2?(by[0]+' ו'+by[1]+' נוטעים איתך')
+             :(by[0]+' ועוד '+(by.length-1)+' נוטעים איתך'));
   /* בלי הוראת קבע השורה כולה יורדת, ולא מודיעה על היעדרה. הכיתוב
      "בכל חודש" יושב במבנה ולא בטקסט, ולכן כתיבת "אין הוראת קבע פעילה"
      לתוך המספר הרכיבה "אין הוראת קבע פעילה בכל חודש". */
@@ -13056,6 +13167,10 @@ function facePaths(plants){
        ו-participants הוא מה שצמד הפנים שעל הכרטיס מצייר. */
     (p.who||[]).forEach(function(w){if(w&&w[0])out[w[0]]=1});
     (p.participants||[]).forEach(function(f){if(f&&f.avatar)out[f.avatar]=1});
+    /* מי שפתח את הרגע. הוא כמעט תמיד גם משתתף, אבל לא תמיד: מי
+       שפתח ועוד לא הפקיד אינו ב-participants, ואז הפרצוף שלו
+       ב"מי שהזמין אותי" היה נשאר נתיב לא חתום. */
+    if(p.byAv)out[p.byAv]=1;
   });
   return Object.keys(out).filter(function(a){
     return a.indexOf('av-')!==0&&!photoUrl(a)});
