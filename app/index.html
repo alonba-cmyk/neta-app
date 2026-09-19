@@ -2052,7 +2052,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '588b49d';
+window.NETA_BUILD = 'e24cff5';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4904,7 +4904,17 @@ function landSignedIn(){
   const bail=setTimeout(function(){goHome();show()},4000);
   const done=function(){clearTimeout(bail);show()};
   netaServer.loadProfile().then(function(prof){
-    if(prof&&prof.name){goHome();applyIdentity();done();checkGuardianRequests();return null}
+    if(introduced(prof)){goHome();applyIdentity();done();checkGuardianRequests();return null}
+    /* מי שיש לו שם אבל אין לו דמות הוא מי שצורף בעבר בלי שנשאל דבר,
+       כלומר שורת `app.ensure_profile` שלא נדרסה. הוא נשאל כאן, אבל
+       **בגיליון ולא במסך 22**: `ONBO.identity` מדליק `onbo` ומוביל
+       אל `onboStart`, כלומר גורר קרוב שהוזמן אל תוך אשף פתיחת נטיעה
+       משלו. הגיליון שואל את אותם שלושה דברים ונגמר בבית. */
+    if(prof&&prof.name){
+      goHome();done();checkGuardianRequests();
+      introduceThen(null,function(){setEmpty(false);buildHomeSummary();goHome()});
+      return null;
+    }
     return netaServer.providerName().then(function(n){
       const f=document.getElementById('id-name');
       if(f&&n&&!f.value)f.value=n;
@@ -6725,7 +6735,7 @@ function joNext(){
          לקרות במסלול הזה; גם אז מי שאין לו שם נשאל לפני שהוא נוחת. */
       if(finishJoin())return;
       const land=function(){setEmpty(false);buildHomeSummary();goHome()};
-      if(prof&&prof.name)land(); else introduceThen(null,land);
+      if(introduced(prof))land(); else introduceThen(null,land);
     })
     .catch(function(e){
       btn.disabled=false;txt('jo-cta','הצטרף לנטיעה');
@@ -6767,10 +6777,25 @@ function finishJoin(){
 /* "מי אתה", פעם אחת. הכתובת כבר אומתה בכניסה, ואין כאן טופס הרשמה שני —
    זה אותו רכיב משותף עם פתיחת חשבון בהרשמה ישירה (שם+תמונה), ובתוספת
    שדה קרבה שקיים רק כאן: יש כבר נטיעה קונקרטית להתייחס אליה. */
+/* האם האדם הזה אי פעם אמר לנו מי הוא, או שרק יש לו שורה.
+   ‏`redeem_invite` קוראת ל-`app.ensure_profile` (0033) לפני שהיא כותבת
+   ‏`planting_access`, כי ה-FK מצביע על `profiles` ו-`profiles.name` הוא
+   ‏NOT NULL. השם שהיא שותלת הוא **החלק שלפני ה-@ בכתובת**, והתגובה של
+   המיגרציה עצמה אומרת "השם זמני ונדרס על ידי ensureProfile ברגע
+   שהמשתמש בוחר שם אמיתי". הוא מעולם לא נדרס, כי השער כאן היה
+   `prof.name` בלבד ומילוי טכני הוא שם לכל דבר: אלון הצטרף כמוזמן,
+   לא נשאל שם, לא תמונה ולא פנייה, ונשמר כ-"alontestsrc" עם `sex` ריק.
+
+   **‏`avatar_key` הוא מה שמבדיל**, כי שני המקומות שבהם אדם מציג את
+   עצמו (`idNext` ו-`introduceThen`) שולחים דמות תמיד, ולו ברירת המחדל,
+   ו-`app.ensure_profile` כותבת `name` בלבד. מי שמוסיף מסלול שכותב שם
+   בלי דמות שובר את השער הזה, ולכן `introduced()` היא פונקציה ולא תנאי
+   מפוזר, ו-`joinask.js` בודק אותה. */
+function introduced(prof){return !!(prof&&prof.name&&prof.avatar_key)}
 function introduceThen(plantingId,next){
   if(!netaServer)return next();
   netaServer.loadProfile().then(function(prof){
-    if(prof&&prof.name){applyIdentity();return next()}
+    if(introduced(prof)){applyIdentity();return next()}
     pickedAv='av-parent';myPhoto=null;
     sheetForm('נעים להכיר',
       'איך שייקרא לך אצל מי שהזמין אותך, ואיך זה יופיע לילד ביום שהנטיעה נפתחת.'+
