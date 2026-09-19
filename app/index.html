@@ -19,6 +19,15 @@
   if(localStorage.getItem('neta-theme')!=='dark')
     document.documentElement.setAttribute('data-theme','light');
 }catch(e){document.documentElement.setAttribute('data-theme','light')}})();
+/* והבמה מתגלה רק כשידוע מה להראות. היא מסומנת visibility:hidden
+   ב-HTML עצמו, בדיוק כמו הסרגל העליון שלידה, ו-releaseStage מסיר
+   את זה ב-go(). זו רשת הביטחון: אם הסקריפט הראשי נופל לפני שנבחר
+   מסך, עדיף מסך בית עם התוכן הקשיח מאשר אפליקציה שנשארת ריקה
+   לנצח. אותו ארבע שניות של holdStage, ומאותה סיבה. */
+setTimeout(function(){
+  const s=document.getElementById('stage');
+  if(s)s.style.visibility='';
+},4000);
 </script>
 <style>
 :root{
@@ -1869,7 +1878,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6e4bb54';
+window.NETA_BUILD = '1852f9a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2072,7 +2081,19 @@ window.NETA_CONFIG = {
   <div class="steps" id="steps-top"></div>
   <p class="steplbl" id="flowlbl"></p>
 </div>
-<div class="stage" id="stage">
+<!-- ‏visibility:hidden מהפיקסל הראשון, כמו בסרגל שמעל. מסך 0 מסומן
+     on כבר כאן, כלומר הדפדפן מצייר אותו לפני ששורה אחת של האפליקציה
+     רצה, והמספרים שנראים הם הערכים הקשיחים של ה-HTML: אלון ראה
+     "13,300 ₪" מהבהב בכל רענון לפני המסך שהוא ביקש.
+
+     ‏holdStage כבר עשה בדיוק את זה, אבל הוא יושב בסוף הקובץ, אחרי
+     כ-9,400 שורות של סקריפט, והדפדפן מצייר לפניו. נמדד עם CPU
+     מואט: בלי זה יש חלון שבו הבמה גלויה, מסך 0 הוא ה-on, ו-s-you
+     מראה 13,300. עם זה אין אף דגימה כזאת.
+
+     ‏releaseStage מסיר את זה ב-go(), ובראש הקובץ יושב טיימר של
+     ארבע שניות למקרה ששום go() לא יקרה. -->
+<div class="stage" id="stage" style="visibility:hidden">
 
 <!-- 0 HOME -->
 <section class="screen on" data-name="העתיד שלנו">
@@ -3942,6 +3963,10 @@ function holdStage(ms){
   stageHold=function(){clearTimeout(t);stage.style.visibility=''};
 }
 function releaseStage(){
+  /* גם כשאין hold פעיל, כי הבמה מסומנת hidden כבר ב-HTML ו-go()
+     הוא הרגע שבו ידוע מה להראות. */
+  const stage=document.querySelector('.stage');
+  if(stage)stage.style.visibility='';
   if(!stageHold)return;
   const f=stageHold;stageHold=null;f();
 }
