@@ -2052,7 +2052,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'dca9a22';
+window.NETA_BUILD = '588b49d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7362,11 +7362,24 @@ function celebrate(){
     const v=freq==='m'?+amtM.value:+amtL.value;
     const total=mode==='keep'?fvCalc(v,0):fvCalc(v,rate);
     const rec=freq==='m';
-    txt('ob-sub',(goal.desig===false?goal.type:(goal.type+' של '+goal.name))+' · '+goal.dateLabel);
+    /* ‏goal.type היא תווית הצ'יפ, כלומר שאלה שמוצגת למשתמש ("בר/בת
+       מצווה"), ולא שם. כשם היא נקראת כשגיאה, ובדיוק לשם כך קיימת
+       plantingName: היא פותרת את הלוכסן לפי המין שכבר נבחר במסע,
+       והיא זו שבונה את השם שנשמר במסד. השורה הזאת עקפה אותה, ולכן
+       המסך אמר "בר/בת מצווה של אביב" בזמן שהמסד והמסכים האחרים
+       אמרו "בת המצווה של אביב" על אותה נטיעה בדיוק. */
+    txt('ob-sub',plantingName(goal.type,goal.name,goal.desig!==false)+
+                 ' · '+goal.dateLabel);
     txt('ob-k',rec?'מופקד כל חודש':'הפקדה חד פעמית');
     txt('ob-amt',v.toLocaleString('he-IL')+' ₪');
     txt('ob-whenk',rec?'ההפקדה הראשונה':'ההפקדה בוצעה');
-    txt('ob-when',rec?'1 בספטמבר':'היום');
+    /* "1 בספטמבר" היה מחרוזת קשיחה, כלומר אותו תאריך בכל חודש ולכל
+       חשבון. ומעבר לכך הוא תיאר עתיד שאינו קיים: createPlanting כותבת
+       שורת contributions מיד, בתוך אותה קריאה שיוצרת את הנטיעה, ורק
+       הקצב ממשיך ב-standing_orders. כלומר ההפקדה הראשונה כבר יצאה,
+       וזה גם מה ש"נצבר עד כה" סופר שנייה אחר כך. אם תיכנס סליקה
+       אמיתית שדוחה את החיוב, השורה הזאת הולכת אחרי החיוב. */
+    txt('ob-when','היום');
     txt('ob-endk',rec?'בקצב הזה ייצבר':'ימשיך לגדול ל');
     txt('ob-end','כ-'+Math.round(total).toLocaleString('he-IL')+' ₪');
     txt('ob-okt',rec?'הוראת הקבע פעילה':'ההפקדה נקלטה');
