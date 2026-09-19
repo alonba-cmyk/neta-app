@@ -1549,7 +1549,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #rel-head{text-align:center;padding:10px 4px 0;margin-bottom:12px}
 #rel-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:8px}
 #rel-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
-#rel-head p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin:8px auto 0;max-width:290px}
 /* הפרצוף בראש הוא הרכיב של הצביר ב"הקרובים שלי" (.esfaces.kids)
    בפרצוף אחד, ולכן אין כאן שום כלל גודל: 64 והתג של 25 מגיעים משם.
    קודם ישב כאן .bigfav מוקטן ל-64 עם רדיוס 20, כלומר ריבוע מעוגל,
@@ -1606,7 +1605,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="הבית"] #mi-meta{font-size:17px;font-weight:600;color:var(--tx);
   line-height:1.35;margin-top:10px;max-width:290px;margin-inline:auto;text-wrap:balance}
 #act-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
-#act-head p{font-size:12.5px;color:var(--tx-2);line-height:1.65;margin:8px auto 0;max-width:290px}
 /* גוש האיור נעול לגובה אחד בארבעת המסכים הריקים של הסרגל, כדי שהכותרת,
    הפסקה והכפתור ינחתו באותה שורה בכל טאב. בלי הנעילה כל איור קבע את
    הגובה של עצמו — 85 בבית, 81 בנטיעות שלי, 61 בפעילות — והמעבר בין
@@ -1890,7 +1888,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'a90d760';
+window.NETA_BUILD = 'dbac7ef';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2745,11 +2743,15 @@ window.NETA_CONFIG = {
     <div class="art"><span class="esfaces kids" aria-hidden="true">
       <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></span><i>🎂</i></span>
     </span></div>
-    <!-- שתי שורות בכותרת ושתיים במשפט, כמו ב"הקרובים שלי": שאלה
-         ואחריה מה שהיא עונה. השורה השנייה אומרת למה זה חשוב ולא מה
-         יש ברשימה, כי המשפט האפור שמתחתיה כבר מונה את מה שיש. -->
+    <!-- שתי שורות, ובלי המשפט האפור שהיה מתחתיהן. הוא מנה את מה
+         שיש בפיד ("קרוב שהפקיד, אבן דרך שנחצתה, מכתב שנוסף"), כלומר
+         אמר משהו שהכותרת אינה אומרת, ואלון בחר להוריד אותו יחד עם
+         זה של "הקרובים שלי" כדי ששלושה מארבעת הראשים יהיו כותרת
+         בלבד. המחיר נאמר ונבחר: הראש מפסיק להגיד מה יש ברשימה,
+         והשורה השנייה כאן נכתבה במפורש כ"למה זה חשוב" ולא כ"מה יש",
+         בהסתמך על המשפט שירד. אם זה יעלה שוב, שם זה יושב.
+         בתמורה הפיד עולה ב-49 פיקסלים, מ-297 ל-248. -->
     <h3>מה קרה מאז שנטעת?<br>כל צעד שקירב את הרגע</h3>
-    <p>קרוב שהפקיד, אבן דרך שנחצתה,<br>מכתב שנוסף.</p>
   </div>
   <!-- בלי כרטיס עוטף: הוא הקיף רשימה שלמה ולא הוסיף לה גבול שיש לו
        משמעות. בלי הערת ההסבר שהייתה כאן — היא הסבירה למשתמש מה הוא
@@ -3105,8 +3107,12 @@ window.NETA_CONFIG = {
       <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></span><i>＋</i></span>
       <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-friend"/></svg></span><i>＋</i></span>
     </span></div>
+    <!-- ובלי המשפט האפור שהיה כאן. הוא אמר "מזמינים את הקרובים
+         להשקיע בעתיד של היקרים לך מכל", כלומר חזר על הפעולה ועל
+         האנשים שהשורה השנייה של הכותרת כבר נוקבת בהם, ומה שהיה
+         ייחודי בו הוא אמירת המותג ולא מידע על המסך. הרשימה עולה
+         ב-49 פיקסלים. המצב הריק שמתחת לא נגע, ושם המשפט נשאר. -->
     <h3>מי כבר נוטע איתך?<br>הזמן את סבתא, אח או דוד קרוב</h3>
-    <p>מזמינים את הקרובים להשקיע<br>בעתיד של היקרים לך מכל</p>
   </div>
   <!-- תווית לרשימה, כמו זו של הילדים מתחתיה: שתי רשימות במסך אחד,
        ואחת מהן בלי שם היא רשימה שצריך להסיק מה יש בה. היא עולה ויורדת
