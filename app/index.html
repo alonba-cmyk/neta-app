@@ -989,11 +989,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .kgrid button.on .f svg{color:var(--bg)}
 /* התג יושב על התא ולא על השורה: הוא אומר "התמונה הזאת מוצגת כאן",
    וזו העובדה היחידה שאי אפשר לראות מהשורה שמתחת. */
-/* "מישהו חדש" ברשת הנהנים: ＋ במקום פרצוף, כי הוא אינו אדם וכל
-   דמות שתשב שם נקראת כילד מסוים. */
-.kgrid .f i.plus{font-style:normal;display:grid;place-items:center;width:100%;height:100%;
-  font-size:20px;color:var(--tx-3);line-height:1}
-.kgrid button.on .f i.plus{color:var(--leaf)}
 .kgrid .cam{position:absolute;inset-inline-end:-3px;bottom:-3px;width:20px;height:20px;
   border-radius:50%;background:var(--leaf);color:var(--on-leaf);display:grid;place-items:center;
   font-size:10px;border:2px solid var(--s1);line-height:1}
@@ -1898,7 +1893,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '82f9416';
+window.NETA_BUILD = '110848a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2307,18 +2302,19 @@ window.NETA_CONFIG = {
        שורה שנוספת מעל השדה הייתה דוחפת אותו מתחתיו. כאן היא אינה
        מתווספת אלא מחליפה: מי שבוחר ילד קיים מקבל את השם כערך מוצג
        ואת רשת הקרבות סגורה, כי שתי השאלות כבר נענו, ו"המשך" עולה. -->
+  <!-- רשימת שורות ולא רשת, לבקשת אלון, ובאותו רכיב בדיוק של הבורר
+       "מי יקבל את הכסף" (.pick): פרצוף, שם, והקרבה בשורה שקטה
+       מתחתיו. שם מקבל שורה שלמה, והקרבה היא מה שמבדיל בין שני
+       ילדים שהפרצוף שלהם דומה.
+
+       ובלי תווית משלה: הכותרת של המסך כבר שואלת "עבור מי הנטיעה?",
+       ו"עבור מי?" מתחתיה היא אותה שאלה פעמיים.
+
+       ו"+ מישהו חדש" הוא שורה מקווקוות ולא תא ברשימה, בדיוק כמו
+       "+ הוסף קרוב" ב"הקרובים שלי": אנשים ברשימה, פעולה בשורה. -->
   <div class="field" id="c-kidfield" style="display:none">
-    <label>עבור מי?</label>
-    <div class="kgrid" id="c-kidpick"></div>
-    <!-- ומרגע שנבחר משהו הרשת מתקפלת לשורה אחת. נמדד: הרשת היא 83
-         פיקסלים, ובלי הקיפול "המשך" היה יורד ל-767 מתוך במה של 706
-         למי שבחר "מישהו חדש", כלומר מתחת לקיפול במסך שכבר היה על
-         גבולו. עם הקיפול המקרה החדש נשאר בדיוק איפה שהיה, והמקרה
-         החוזר קצר בהרבה ממנו. -->
-    <div class="fixedval" id="c-kidpicked" style="display:none">
-      <span id="c-kidpicked-v"></span>
-      <button type="button" class="link" style="padding:0;font-size:12px"
-        onclick="pickCKid(null,'')">החלף</button></div></div>
+    <div class="pick" id="c-kidpick"></div>
+    <div class="reladd" id="c-kidnew" onclick="pickCKid(null,'new')">+ מישהו חדש</div></div>
   <!-- השם לבדו בשורה. בן/בת ישבו כאן וירדו עם בורר הדמויות: הקרבה
        שבשאלה הבאה כבר נושאת מגדר, והצ'יפים חוזרים רק אחרי "אחר". -->
   <!-- והדרך חזרה לרשת יושבת על שורת התווית ולא בשורה משלה: המסך
@@ -9676,23 +9672,19 @@ function fillKid(name,av,sex,rel){
 function kidPickHTML(){
   const rows=(benes||[]).filter(function(b){return b&&b.name});
   if(!rows.length)return '';
-  const cell=function(k,label,inner,wide){
-    const on=(cKidPick===k);
-    const cls=(wide?'wide':'')+(on?(wide?' on':'on'):'');
-    return '<button type="button"'+(cls?' class="'+cls.trim()+'"':'')+
-      ' data-k="'+attrText(k)+'"'+
+  return rows.map(function(b){
+    const k=String(b.id||b.name);
+    /* הקרבה מתחת לשם: היא מה שמבדיל בין שני ילדים שהפרצוף שלהם
+       דומה, והיא כבר כתובה בישות. ‏kinMe נופלת לטקסט החופשי כמו
+       שהוא, ול"עבורי" היא מחזירה "אני". */
+    const sub=kinMe(b.relation)||'';
+    return '<button type="button" data-k="'+attrText(k)+'"'+
+      (cKidPick===k?' class="on"':'')+
       ' onclick="pickCKid(this,\''+attrText(k).replace(/'/g,"\\'")+'\')">'+
-      '<span class="f">'+inner+'</span><span>'+attrText(label)+'</span></button>';
-  };
-  const html=rows.map(function(b){
-    return cell(String(b.id||b.name),firstName(b.name),
-                kidFaceHTML(b.avatar||kidAvatar(b.name,b.sex),46));
-  });
-  /* בלי פרצוף: "מישהו חדש" אינו אדם, וכל דמות שתשב שם נקראת כילד
-     מסוים. אותו ＋ של הצביר במצב הריק. */
-  html.push(cell('new','מישהו חדש','<i class="plus">＋</i>',
-                 (rows.length+1)%3===1));
-  return html.join('');
+      '<span class="fc">'+kidFaceHTML(b.avatar||kidAvatar(b.name,b.sex),38)+'</span>'+
+      '<span class="nm"><b>'+attrText(b.name)+'</b>'+
+      (sub?'<span>'+attrText(sub)+'</span>':'')+'</span></button>';
+  }).join('');
 }
 function paintCKid(){
   const box=document.getElementById('c-kidpick');
@@ -9716,40 +9708,32 @@ function paintCKid(){
    הקרבה, ולכן שניהם יורדים: השם הופך לערך מוצג והרשת נסגרת.
    "מישהו חדש" מחזיר בדיוק את המסך שהיה. ובלי רשת בכלל, כלומר
    בנטיעה הראשונה בחיים, שום דבר לא משתנה. */
+/* שני מצבים בלבד, ולא שלושה. בחירה באדם קיים עונה על כל מה שהפאנל
+   שואל, ולכן אין מסך "אחרי הבחירה": pickCKid ממשיכה מיד לשלב הבא.
+   מה שנשאר כאן הוא איך הפאנל נראה כשנכנסים אליו, כולל חזרה אליו
+   מהשלב הבא — ואז השורה שנבחרה מסומנת ו"המשך" על המסך. */
 function applyCKid(){
   const has=!!(benes||[]).filter(function(b){return b&&b.name}).length;
   const fresh=(cKidPick==='new');
-  const known=!!(has&&cKidPick&&!fresh);
-  const grid=document.getElementById('c-kidpick');
-  const row=document.getElementById('c-kidpicked');
   const nf=document.getElementById('c-namefield');
   const af=document.getElementById('c-avfield');
-  const nm=document.getElementById('c-name');
   const cta=document.getElementById('c-cta');
   const kf=document.getElementById('c-kidfield');
   const back=document.getElementById('c-kidback');
-  /* שלושה מצבים, ובכל אחד יש בדיוק שורה אחת שאומרת "עבור מי":
-     הרשת עד שבוחרים, שורה מקופלת עם השם לילד קיים, ולמי שבחר
-     "מישהו חדש" הגוש יורד כולו והדרך חזרה יושבת על שורת התווית
-     של שדה השם. */
+  /* "מישהו חדש" מוריד את הרשימה כולה ומחזיר את המסך שהיה, והדרך
+     חזרה אליה היא קישור על שורת התווית של שדה השם. */
   if(kf)kf.style.display=(has&&designated&&!fresh)?'':'none';
-  if(grid)grid.style.display=(has&&!cKidPick)?'':'none';
-  if(row){
-    row.style.display=known?'':'none';
-    txt('c-kidpicked-v',known?((nm&&nm.value)||''):'');
-  }
   if(back)back.style.display=(has&&fresh)?'':'none';
-  /* בילד קיים השורה המקופלת כבר אומרת את השם, ולכן שדה השם יורד
-     כולו: שתי שורות שאומרות את אותו שם הן אותה עובדה פעמיים.
-     והוא נעול ממילא מרגע שנטיעה מיועדת מצביעה על הישות (0061),
-     כלומר שדה שאפשר להקליד בו היה מבטיח עריכה שהמסד יחסום. */
+  /* בילד קיים השם והקרבה ידועים, ולכן שני השדות יורדים. השם גם
+     נעול ממילא מרגע שנטיעה מיועדת מצביעה על הישות (0061). */
   if(nf)nf.style.display=(!has||fresh)?'':'none';
   if(af)af.style.display=(designated&&(!has||fresh))?'':'none';
   /* "המשך" יורד עד שנבחר משהו: אין מה להמשיך אליו, והודעת שגיאה על
      שדה שאינו על המסך אינה אומרת דבר. */
   if(cta)cta.style.display=(has&&!cKidPick&&designated)?'none':'';
 }
-/* ‏el הוא התא שנלחץ, ו-null כשהקריאה באה מ"החלף" שבשורה המקופלת. */
+/* ‏el היא השורה שנלחצה, ו-null כשהקריאה באה מ"+ מישהו חדש" או
+   מ"בחר מהרשימה". */
 function pickCKid(el,k){
   cKidPick=k;
   if(el)[].slice.call(el.parentNode.children).forEach(function(b){
@@ -9779,6 +9763,15 @@ function pickCKid(el,k){
   applyCKid();
   if(creating)flowBar(stepNo('who'),C_LABELS[0]);
   prev();checkBene();
+  /* ובחירה באדם קיים ממשיכה מיד לשלב הבא. אלון שאל למה צריך בכלל
+     מסך אחרי הבחירה, והתשובה היא שלא צריך: השורה עונה גם על השם
+     וגם על הקרבה, כלומר לא נשאר בפאנל שום דבר לענות עליו, ו"המשך"
+     הוא קליק על כלום. זה אותו כלל של "כפתור מוביל לדבר עצמו".
+
+     "מישהו חדש" אינו ממשיך, כי שם השם והקרבה עדיין פתוחים, וזה
+     מה שמבדיל: הפאנל נשאר בדיוק כשיש בו עוד מה לענות.
+     דרך toOccasion ולא cStepGo, כדי שהבדיקה תישאר במקום אחד. */
+  if(el&&k&&k!=='new')toOccasion();
 }
 function prefillKid(name,av,sex,rel){
   startCreate();
