@@ -1998,7 +1998,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6bb5d95';
+window.NETA_BUILD = 'ce66bf8';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -8560,11 +8560,12 @@ function paintKidSection(){
        הזה, ולכן הוא נושא את שם הטאב. "הרגעים" תיאר את מה שיש שם
        ולא לאן הוא מוביל, ואיש לא ניחש. */
     /* ושלושה מצבים ולא שניים. ‏n סופר את מה שהכפתור באמת יפתח,
-       כלומר את הרגעים של המשפחה שלי, ולכן ילדה שהרגע שלה נשמר
-       כמשפחה אחרת קיבלה כאן "עוד לא נפתח רגע" ו"פתח רגע" על רגע
-       שקיים. הרגע הזה כן נספר ב"ההשקעות שלי", ששם השאלה היא כמה
-       נתתי ולא למי מחכה, ולכן המצב השלישי אומר שהוא קיים ומוביל
-       לשם במקום להציע לפתוח אותו שוב. */
+       כלומר את מה ש"העתיד שלנו" מציג, ולכן ילדה שאין לה שם רגע
+       קיבלה כאן "עוד לא נפתח רגע" ו"פתח רגע" על רגע שקיים. הרגע
+       הזה כן נספר ב"ההשקעות שלי", ששם השאלה היא כמה נתתי ולא למי
+       מחכה, ולכן המצב השלישי אומר שהוא קיים ומוביל לשם במקום
+       להציע לפתוח אותו שוב. מאז myKidPlantings זה נשאר רק לרגע
+       שמישהו אחר פתח לילד שלי. */
     const nAll=kidMomentsAll(b).length;
     const act=n
       ? '<button class="rx" onclick="event.stopPropagation();kidMomentsGo(\''+attrText(key)+'\')">'+
@@ -8585,8 +8586,25 @@ function paintKidSection(){
   }).join('')+
     '<div class="reladd" onclick="openAddPerson(&quot;for&quot;)">+ הוסף קרוב</div>';
 }
+/* הרגעים שהמסכים של הילדים שלי מציגים. עד כאן זה היה familyMine
+   לבדו, כלומר תוצאה של שלב "מי יקבל את הכסף": מי שבחר שם "ההורה
+   של X" שומר family_of ריק, ולכן נטיעה שהוא עצמו פתח נעלמה מ"העתיד
+   שלנו". הכלל נכון כשמישהו אחר פתח את הרגע — רגע של משפחה אחרת
+   אינו שייך למסך ששואל מה מחכה לילדים שלי — ושקרי כשפתחתי אותו
+   בעצמי: סבתא שנוטעת רק לנכדים, או דוד שנוטע רק לאחיינים, פתחו את
+   המסך ומצאו אותו ריק לגמרי בזמן שיש להם נטיעות פעילות. לכן שני
+   תנאים ולא אחד, והמשמעות עוברת מ"הילדים של המשפחה שלי" ל"הילדים
+   שאני פתחתי להם רגע".
+
+   הכסף לא זז: buildHomeSummary ממשיכה לחשב את המספר הגדול ואת
+   הפילוח על familyMine בלבד, כי שם השאלה היא לאיזו משפחה הכסף
+   שייך ולא מי פתח את הרגע. */
+function myKidPlantings(rows){
+  return (rows||(lastModel&&lastModel.plantings)||[])
+    .filter(function(p){return p.familyMine||!p.joined});
+}
 function kidMoments(b){
-  const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
+  const own=myKidPlantings();
   return own.filter(function(p){
     /* kidId הוא השם בלקוח ל-beneficiary_id שעל הנטיעה, ו-kidOf הוא
        הנפילה אחורה לשם עבור שורות שנוצרו לפני 0061. אותו זיווג בדיוק
@@ -12142,8 +12160,13 @@ function buildHomeSummary(){
     const noneMine=!own.length;
     /* המסך מציג נהנה אחד בכל פעם, והבורר הוא הדרך לעבור. הקיבוץ הוא
        לפי מי שהכסף מחכה לו ולא לפי רגע: בר מצווה וגיוס של אותו ילד
-       הם פריט אחד, כי השאלה כאן היא כמה יש לו ולא כמה רגעים פתוחים. */
-    const fuAll=fuWithBenes(fuItems(own),model.plantings);
+       הם פריט אחד, כי השאלה כאן היא כמה יש לו ולא כמה רגעים פתוחים.
+
+       והקבוצה כאן אינה own: הבורר מראה את הילדים שפתחתי להם רגע,
+       גם כשהרגע נשמר למשפחה אחרת, בעוד שהמספרים שמעל נשארים על
+       המשפחה שלי. ראו myKidPlantings. */
+    const fuAll=fuWithBenes(fuItems(myKidPlantings(model.plantings)),
+                            model.plantings);
     /* הקישורים החתומים מגיעים אחרי הציור הראשון, ולכן הציור נקרא
        שוב כשהם כאן. התנאי הוא "מה שעוד לא היה במטמון והגיע", ולא
        "יש קישור": השני נכון גם בציור השני, וזו לולאה אינסופית. */
@@ -12973,7 +12996,7 @@ function fuTaperOn(row){
    fuItems בלבד, שנגזרת מהנטיעות, ולכן ילד בלי רגע לא היה ניתן
    לעריכה כלל. */
 function editKid(id){
-  const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
+  const own=myKidPlantings();
   const bn=(benes||[]).filter(function(x){return String(x.id||x.name)===String(id)})[0]
         ||(benes||[]).filter(function(x){return x.id===id})[0];
   const it=(fuItems(own)||[]).filter(function(x){
@@ -13214,7 +13237,7 @@ function goHome(){ openInvestments(); }
 /* ההזמנה שיוצאת מ"העתיד שלנו" נכנסת לאותו מסלול של כל שאר ההזמנות,
    ופותחת את רשימת הקרובים עם הרגע הקרוב של הילד שאין לו עוד נוטע. */
 function inviteFromFuture(){
-  const own=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
+  const own=myKidPlantings();
   const solo=kidGroups(own).groups.filter(function(g){return (g.people||[]).length<=1})[0];
   const near=solo&&nearestOf(solo.rows);
   const key=near?near.p.key:(solo&&solo.rows[0]&&solo.rows[0].key)||'';
