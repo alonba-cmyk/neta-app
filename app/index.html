@@ -1136,8 +1136,20 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    כטעות. צורת הסיכה עצמה כבר אומרת "אפשר לגרור", ולכן היא יורדת. */
 .dm-medal.idle::after{display:none}
 /* המחוון פרוש על כל שטח התרשים ושקוף: מה שנגרר בעין הוא הנטע שעל הקו. */
+/* ‏touch-action:pan-y, וזה אינו פרט. הקלט שקוף ופרוש על כל הגרף,
+   ‏354 על 140 פיקסלים, כלומר כשישית מהמסך, ו-touch-action אינו מוריש:
+   ה-pan-y שעל .dm-chart לא הגיע אליו. התוצאה היא שגלילה אנכית שמתחילה
+   על הגרף, ומשיכה לרענון בכלל זה, נבלעת במחוון: הדף אינו נגלל, הנעץ
+   קופץ לאמצע, והמספר הראשי מתחלף מ"נצבר לרגע הזה · 360 ₪" ל"צפי
+   לנקודה זו · כ-29,200 ₪" בלי שאיש ביקש. אלון ראה בדיוק את זה, ואת
+   החזרה שאחריה: loadMyLetter מחזיר תשובה כשנייה אחר כך, refreshDetail
+   מצייר מחדש, ו-detail(0) מאפס.
+
+   עם pan-y הדפדפן לוקח את המחווה האנכית לעצמו, וגרירה אופקית ממשיכה
+   לגלגל את הזמן בדיוק כפי שהייתה. chartouch.js מודד את שניהם. */
 .dm-chart input[type=range]{position:absolute;inset:0;width:100%;height:100%;margin:0;
-  -webkit-appearance:none;appearance:none;background:none;cursor:ew-resize;opacity:0}
+  -webkit-appearance:none;appearance:none;background:none;cursor:ew-resize;opacity:0;
+  touch-action:pan-y}
 .dm-chart input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px}
 .dm-chart input[type=range]::-moz-range-thumb{width:34px;height:34px;border:none}
 .dm-ax{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:9px;
@@ -1878,7 +1890,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1852f9a';
+window.NETA_BUILD = 'a90d760';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -13197,7 +13209,43 @@ function detail(y){
   const left=YL-y;
   txt('d-when',left===0?'הרגע המיוחל':'עוד '+left+yrWord(left));
 }
-dTime.oninput=()=>{document.getElementById('d-medal').classList.remove('idle');detail(+dTime.value)};
+/* המחוון מגיב לגרירה ולא לנגיעה.
+
+   הקלט שקוף ופרוש על כל הגרף (354 על 140 פיקסלים במכשיר של 390,
+   כלומר כשישית מהמסך), ואין שום סימן שאומר שהוא שם. לכן כל מגע
+   אקראי שנוחת עליו הזיז את הנעץ והחליף את המספר הראשי מ"נצבר לרגע
+   הזה · 360 ₪" ל"צפי לנקודה זו · כ-29,200 ₪". הגרוע מכולם הוא
+   מחווה אנכית: גלילה או משיכה לרענון שמתחילות על הגרף נבלעו במחוון,
+   הדף לא נגלל, וכשנייה אחר כך loadMyLetter חזר, refreshDetail צייר
+   מחדש, ו-detail(0) החזיר הכול. אלון ראה בדיוק את הרצף הזה.
+
+   ‏`touch-action:pan-y` על הקלט (ראו ב-CSS) מחזיר את המחווה האנכית
+   לדפדפן, אבל הוא אינו מכסה נגיעה בודדת, ולכן הכלל כאן: מגע נחשב
+   גרירה רק אחרי תנועה אופקית של יותר משישה פיקסלים שגדולה מהאנכית.
+   עד אז הערך מוחזר למה שהיה בנגיעה, כלומר הנעץ אינו זז.
+   ‏`cursor:ew-resize` כבר הבטיח בדיוק את זה.
+
+   ומקלדת אינה נוגעת: חצים מייצרים input בלי pointerdown, ושם
+   ‏dragAt הוא null והכול עובר כרגיל. */
+let dragAt=null,dragOn=false;
+dTime.addEventListener('pointerdown',function(e){
+  dragAt={x:e.clientX,y:e.clientY,v:dTime.value};dragOn=false;
+});
+dTime.addEventListener('pointermove',function(e){
+  if(!dragAt||dragOn)return;
+  const dx=Math.abs(e.clientX-dragAt.x),dy=Math.abs(e.clientY-dragAt.y);
+  if(dx>6&&dx>dy)dragOn=true;
+});
+['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+  dTime.addEventListener(ev,function(){dragAt=null;dragOn=false});
+});
+dTime.oninput=()=>{
+  /* נגיעה שעוד לא הוכיחה שהיא גרירה: הערך חוזר ושום דבר על המסך
+     אינו זז. הצבה אינה מייצרת input נוסף, ולכן אין כאן לולאה. */
+  if(dragAt&&!dragOn){dTime.value=dragAt.v;return}
+  document.getElementById('d-medal').classList.remove('idle');
+  detail(+dTime.value);
+};
 detail(0);
 
 /* run once everything above is declared — these touch consts defined further down */
