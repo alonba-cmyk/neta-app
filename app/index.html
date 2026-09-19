@@ -2052,7 +2052,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ed54b87';
+window.NETA_BUILD = '4c819ab';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4020,29 +4020,6 @@ window.NETA_CONFIG = {
   <button class="link backlink" onclick="joBack()">חזרה</button>
 </section>
 
-<!-- 30 NAME FIX · השם שההזמנה יודעת ─────────────────────────────────
-     למי שכבר יש חשבון אין מה לאמת, אבל השם שהוא בחר לעצמו מופיע לכל
-     מי שנוטע איתו, ובעוד שנים גם לילד. כשההזמנה נושאת שם אחר, שווה
-     לשאול פעם אחת. -->
-<section class="screen center-v" data-name="השם שלך">
-  <div class="center gap">
-    <div class="brandmark"><svg width="40" height="47" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
-    <h2 style="margin:11px 0 5px">רגע לפני שתצטרף</h2>
-    <p class="sub" id="nf-sub">·</p>
-  </div>
-  <div class="field" style="margin-top:16px">
-    <label>איך תיראה לכל מי שנוטע איתך</label>
-    <div class="fixedval"><span id="nf-cur">·</span></div>
-  </div>
-  <!-- הראשי הוא "להשאיר" ולא "לשנות". הפעולה שמנגד דורסת את השם
-       שהמשתמש בחר לעצמו במה שמישהו אחר הקליד עליו, והיא חלה על כל מקום
-       שבו השם מופיע. הקופסה שמעל מציגה את השם הנוכחי, ולכן הראשי
-       מאשר את מה שרואים במקום להחליף אותו במשהו שאינו על המסך. -->
-  <button class="btn" onclick="nameFixNo()">להשאיר את שלי</button>
-  <button class="btn ghost" style="margin-top:9px" id="nf-yes" onclick="nameFixYes()">·</button>
-</section>
-
-
 <!-- ── הוספת אדם ────────────────────────────────────────────────
      מסך אחד עם שישה פאנלים, ולא שישה מסכים: כל go(N) בקובץ נשען על
      המספר, וזה הדפוס שכבר שימש את אשף ההקמה (cp-0..cp-2).
@@ -4249,9 +4226,11 @@ function paintHeader(i){
 /* מסכים שאין בהם סרגל תחתון. 22 ו-26 נוספו אחרי שגל, שהגיעה דרך קישור
    ולא הייתה רשומה בכלל, ראתה את הסרגל, לחצה עליו והגיעה לנתוני ההדגמה
    של מישהו אחר. מסך שנפתח לפני שיש חשבון לא מציג ניווט לחשבון. */
-/* ‏29 ו-30 הם "הצטרפות" ו"השם שלך", שנוספו בסוף ה-stage. שניהם
-   מסכי דרך פנימה, ולסרגל אין מה לעשות בהם. */
-const NOCHROME=[19,20,21,22,23,25,26,27,29,30];
+/* ‏29 הוא "הצטרפות", מסך דרך פנימה שלסרגל אין מה לעשות בו.
+   ‏30 היה "השם שלך" וירד איתו, ו**זה היה חייב לרדת כאן**: מחיקת
+   מסך מזיזה את כל מה שאחריו באחד, ו"הוספת אדם" עברה מ-31 ל-30. היא
+   כן מציגה סרגל (נמדד), ולו ה-30 היה נשאר הוא היה נועל אותה בשקט. */
+const NOCHROME=[19,20,21,22,23,25,26,27,29];
 const REVIEW=24;
 /* מסך הבית מסומן on כבר ב-HTML, ולכן הוא נצבע כל עוד לא ידוע מה
    להראות. ‏openShared ו-landSignedIn כבר מסתירים את הבמה בדיוק מהסיבה
@@ -6632,9 +6611,6 @@ function loginBackOut(){
 const JOIN_SCREEN=function(){
   return screens.findIndex(function(x){return x.dataset.name==='הצטרפות'});
 };
-const NAMEFIX_SCREEN=function(){
-  return screens.findIndex(function(x){return x.dataset.name==='השם שלך'});
-};
 /* כתובת מוצגת ואינה נמסרת: g•••••n@gmail.com. שתי אותיות בקצוות
    מספיקות למי שזו כתובתו לזהות אותה, ולא מספיקות לאיש אחר. */
 function maskMail(v){
@@ -6719,8 +6695,9 @@ function joNext(){
       txt('jo-codelbl','הקוד נשלח ל'+maskMail(joMail));
       txt('jo-cta','הצטרף לנטיעה');
       /* השם שנשמר הוא זה שההזמנה נושאת ולא כזה שהוקלד כאן, כי כאן
-         כבר אין מה להקליד. הוא מה ש-offerInviteName משווה מולו אחרי
-         שהסבב מתחדש. */
+         כבר אין מה להקליד. הוא מה שממלא מראש את שדה השם ב-introduceThen
+         אחרי שהסבב מתחדש, ושם הוא הצעה על המסך שאפשר לערוך ולא ערך
+         שנכתב לפרופיל של מי שכבר בחר אחד. */
       keepCodeSent({where:'join',mail:joMail,name:inviteKnows.name||'',
                     by:inviteKnows.by,bySex:inviteKnows.bySex});
       const o=document.getElementById('jo-otp');if(o)o.focus();
@@ -6768,16 +6745,14 @@ function finishJoin(){
     dropInvite();dropLater();
     history.replaceState(null,'',location.pathname);
     /* חשבון חדש עדיין בלי שם — בלעדיו הוא מופיע לבעל הנטיעה כשורה ריקה. */
+    /* ומי שכבר יש לו חשבון נוחת ישר, בשם שבחר לעצמו. קדם כאן
+       מסך שהציע להחליף אותו בשם שהמזמין הקליד עליו; ראו את הנימוק
+       ב-CLAUDE.md תחת "הנחיתה מהזמנה". */
     introduceThen(r.planting_id,function(){
-      /* ולמי שכבר היה לו חשבון: השם שבחר לעצמו מופיע לכל מי שנוטע
-         איתו, ובעוד שנים גם לילד. כשההזמנה נושאת שם אחר, שווה לשאול
-         פעם אחת, לפני הנחיתה. */
-      offerInviteName(function(){
-        setEmpty(false);
-        buildHomeSummary();
-        openDetail(r.planting_id);
-        toast('הצטרפת לנטיעה');
-      });
+      setEmpty(false);
+      buildHomeSummary();
+      openDetail(r.planting_id);
+      toast('הצטרפת לנטיעה');
     });
   }).catch(function(e){
     /* גיליון אינו מעבר מסך, ולכן go() לא ישחרר את הבמה כאן. */
@@ -6834,35 +6809,6 @@ function introduceThen(plantingId,next){
 
 /* השם שההזמנה יודעת מול השם שבפרופיל. מוצג רק כששניהם קיימים ושונים
    זה מזה — ולא כשההבדל הוא רווח או אות גדולה בלבד. */
-let nameFixNext=null;
-function offerInviteName(next){
-  const want=(inviteKnows.name||'').trim();
-  const norm=function(v){return String(v||'').trim().toLowerCase().replace(/\s+/g,' ')};
-  if(!want||!netaServer){next();return}
-  netaServer.loadProfile().then(function(prof){
-    const have=(prof&&prof.name||'').trim();
-    if(!have||norm(have)===norm(want)){next();return}
-    nameFixNext=next;
-    const by=firstName(inviteKnows.by);
-    txt('nf-sub',(by?(by+' רשם אותך כ'+want):('רשמו אותך כ'+want))+
-        '. ככה שמור אצלנו היום:');
-    txt('nf-cur',have);
-    txt('nf-yes','שנה ל'+want);
-    go(NAMEFIX_SCREEN());
-  },function(){next()});
-}
-function nameFixDone(){
-  const n=nameFixNext;nameFixNext=null;
-  if(n)n(); else {setEmpty(false);buildHomeSummary();goHome()}
-}
-function nameFixYes(){
-  const want=(inviteKnows.name||'').trim();
-  if(!want||!netaServer){nameFixDone();return}
-  netaServer.ensureProfile(want).then(function(){
-    applyIdentity();nameFixDone();
-  },function(e){toast((e&&e.message)||'השם לא נשמר');nameFixDone()});
-}
-function nameFixNo(){nameFixDone()}
 
 /* יציאה מהקישור כדי להיכנס בכתובת אחרת. הטוקן נשמר, ולכן הכניסה השנייה
    ממשיכה בדיוק מאותה נקודה. */
@@ -14100,12 +14046,14 @@ const sharedToken=sharedTokenInUrl();
    ההזמנה או למסך הפתיחה. */
 if(resumeCodeSent()){}
 else if(sharedToken&&liveAccount()){
-  /* מחובר שפתח קישור — אין טעם להראות לו כרטיס אנונימי ולבקש שיתחבר.
-     אבל הוא כן צריך את מה שהכרטיס יודע: inviteKnows נכתב ב-
-     paintSharedCard בלבד, והמסלול הזה מדלג עליו, ולכן offerInviteName
-     קיבל שם ריק ויצא מיד. התוצאה הייתה שאותה הזמנה בדיוק, עם אותו
-     פער שמות, שאלה את מי שהיה מנותק ושתקה למי שהיה מחובר — ומי
-     שמחובר הופיע למזמין בשם שבחר לעצמו בלי שאיש ידע שהיה פער.
+  /* מחובר שפתח קישור, אין טעם להראות לו כרטיס אנונימי ולבקש שיתחבר.
+
+     ‏inviteKnows נכתב ב-paintSharedCard בלבד, והמסלול הזה מדלג עליו,
+     ולכן השם שההזמנה נושאת לא היה ביד. **מה שזה עולה היום צר ממה שהיה**:
+     קודם הוא הזין את המסך שהציע להחליף שם, והמסך הזה ירד. מה שנשאר הוא
+     מי שמחובר ועדיין אין לו שם בפרופיל, כלומר מי שנרשם ולא סיים: הוא
+     נוחת על introduceThen, ובלי הקריאה הזאת שדה השם נפתח ריק במקום עם
+     מה שהמזמין כתב.
 
      ‏sharedSummary היא אותה קריאה שמזינה את הכרטיס, ולכן אין כאן
      מקור נתונים שני. היא אינה חוסמת: אם היא נכשלת, הצירוף ממשיך
