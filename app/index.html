@@ -583,16 +583,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .esfaces.plus>span>i{color:var(--leaf);font-size:14px}
 /* ─── ההקטנה שבשני הראשים, ובהם בלבד ──────────────────────────────
    ‏0.875 מהגודל: 64 הופך ל-56, התג מ-25 ל-22, וגוש האיור מ-81 ל-71.
-   **ממוקד ל-#rel-head ול-#act-head ולא ל-.esfaces הגלובלי**, כי אותו
+   **ממוקד ל-#act-head ולא ל-.esfaces הגלובלי**, כי אותו
    רכיב בדיוק משרת את ארבעת המצבים הריקים, ושם אלון ביקש שלא ייגעו.
    המחיר: הצביר בראש הוא 56 והצביר במצב הריק של אותו טאב הוא 64.
    שני המצבים לעולם אינם מוצגים יחד, ולכן זו אינה שתי מידות על מסך
    אחד אלא מידה אחת לכל מצב. */
-#rel-head .esfaces,#act-head .esfaces{height:71px}
-#rel-head .esfaces>span,#act-head .esfaces>span{width:56px;height:56px}
-#rel-head .esfaces>span>i,#act-head .esfaces>span>i{width:22px;height:22px;font-size:11px}
-#rel-head .esfaces.plus>span>i,#act-head .esfaces.plus>span>i{font-size:12px}
-#rel-head .esfaces.occ.plus>span>i,#act-head .esfaces.occ.plus>span>i{width:25px;height:25px}
+#act-head .esfaces{height:71px}
+#act-head .esfaces>span{width:56px;height:56px}
+#act-head .esfaces>span>i{width:22px;height:22px;font-size:11px}
+#act-head .esfaces.plus>span>i{font-size:12px}
+#act-head .esfaces.occ.plus>span>i{width:25px;height:25px}
 /* ותג אחד לצביר, על הפרצוף השמאלי בלבד. שלושה תגים אמרו את אותה
    מילה שלוש פעמים, וזו גם המילה שהפעולה שמתחת כבר אומרת: מה שהם
    צריכים לומר הוא "אפשר להוסיף עוד אחד", וזה נאמר פעם אחת.
@@ -1622,6 +1622,25 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ב-101 בשניהם. */
 #rel-head{text-align:center;padding:26px 4px 0;margin-bottom:12px}
 #rel-head .art{height:71px;display:grid;place-items:center;color:var(--leaf);margin-bottom:8px}
+/* ─── האיור: ילד במרכז, מבוגרים סביבו ─────────────────────────────
+   ‏56 ו-38, ולא 64 ו-42 שנמדדו בדף ההשוואה. 64 הוא גודל הצביר במצב
+   הריק של אותו טאב, והראש של "פעילות" הוא 56: שני המסכים שכנים
+   בסרגל והעין עוברת ביניהם בלחיצה אחת, וזו בדיוק הקפיצה שתוקנה
+   כשהראשים ירדו ל-0.875. ‏38 הוא אותו מקדם על 42 בדיוק.
+
+   ‏align-items:flex-end ולא center, כי מה שמיישר את השלושה הוא קו
+   הכתפיים ולא מרכז העיגול: במרכוז הראשים הקטנים מרחפים.
+
+   ‏:first-child הוא הימני ב-RTL, ולכן המרווח השלילי שלו הוא שמאלה —
+   שני הקטנים נמשכים אל הגדול ולא ממנו. */
+#rel-head .kinart{display:flex;align-items:flex-end;justify-content:center}
+#rel-head .kinart>span{border-radius:50%;overflow:hidden;border:3px solid var(--bg);
+  background:var(--s2);flex:0 0 auto;display:block}
+#rel-head .kinart>span>.avsvg{display:block;width:100%;height:100%}
+#rel-head .kinart>span.s{width:38px;height:38px}
+#rel-head .kinart>span.b{width:56px;height:56px;position:relative;z-index:2}
+#rel-head .kinart>span.s:first-child{margin-left:-12px}
+#rel-head .kinart>span.s:last-child{margin-right:-12px}
 #rel-head h3{font-size:17px;font-weight:600;line-height:1.35;text-wrap:balance}
 /* אוויר בין הכותרת המאוירת לתווית הרשימה שמתחתיה. `#rel-head` נותן
    12 מלמטה ו-`.eyebrow` אינו נותן כלום מלמעלה, ולכן התווית נצמדה
@@ -2001,7 +2020,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '66e3696';
+window.NETA_BUILD = '479990c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3301,10 +3320,15 @@ window.NETA_CONFIG = {
        ואת המשפט של המצב הריק. מה שנשאר מזה: שני המצבים אומרים את
        אותו דבר בשתי מילים שונות, וההבדל ביניהם הוא הרשימה שמתחת. -->
   <div id="rel-head" style="display:none">
-    <div class="art"><span class="esfaces plus" aria-hidden="true">
-      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></span><i>＋</i></span>
-      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></span><i>＋</i></span>
-      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-friend"/></svg></span><i>＋</i></span>
+    <!-- ילד במרכז ומבוגרים סביבו, ולא שלושה מבוגרים עם תג ＋. המסך
+         מחזיק שתי רשימות, ומאז שהסדר התהפך הראש יושב מעל רשימת
+         הילדים: צביר של מבוגרים שם הוא הצהרה על הרשימה השנייה בלבד.
+         זה האיור היחיד מבין השמונה שנבדקו שנכון לשתיהן, והיחיד שיש
+         בו היררכיה ולא רק ריבוי — מי שבמרכז הוא מי שהכסף מחכה לו. -->
+    <div class="art"><span class="kinart" aria-hidden="true">
+      <span class="s"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></span>
+      <span class="b"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-kid4"/></svg></span>
+      <span class="s"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></span>
     </span></div>
     <!-- ובלי המשפט האפור שהיה כאן. הוא אמר "מזמינים את הקרובים
          להשקיע בעתיד של היקרים לך מכל", כלומר חזר על הפעולה ועל
