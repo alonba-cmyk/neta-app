@@ -22,8 +22,23 @@
    רץ ב-head, לפני שהדף נצבע, כדי שלא יהיה הבזק של דף הבית. */
 (function(){try{
   var h=location.hash||"",q=location.search||"";
-  if(/[#&]n=|access_token=|error_code=|[?&]code=/.test(h+q))
-    location.replace("app/"+q+h);
+  /* ‏learn=1 מגיע מהכפתור "מה זו נטע?" שבמייל ההזמנה. שם הטוקן נוסע עם
+     הכתובת בכוונה, ולכן אסור להעביר הלאה: כל מה שהכפתור הזה מבקש הוא
+     להראות את הדף. ובלי הטוקן הוא גם לא היה פותר כלום, כי ארבעת
+     הכפתורים כאן מצביעים על app/ בלי טוקן, ומי שקרא ואז לחץ היה פותח
+     חשבון משלו במקום להצטרף לנטיעה שהוזמן אליה. */
+  var learn=/[?&]learn=1/.test(q);
+  if(!learn&&/[#&]n=|access_token=|error_code=|[?&]code=/.test(h+q))
+    return location.replace("app/"+q+h);
+  if(learn&&/^#n=/.test(h)){
+    var go=function(){
+      var a=document.querySelectorAll('a[href="app/"]');
+      for(var i=0;i<a.length;i++)a[i].href="app/"+h;
+    };
+    if(document.readyState==="loading")
+      document.addEventListener("DOMContentLoaded",go);
+    else go();
+  }
 }catch(e){}})();
 </script>
 <style>
@@ -252,7 +267,7 @@ foot .fl span,foot .fl a{color:#E3DCCF;text-decoration:none}
 foot .cr{font-size:11.5px;margin:22px 0 0;line-height:1.7;color:#A09889}
 foot .brand{color:#F5F1E8}foot .brand .lf{color:#8FBC8F}
 </style>
-<!-- Neta@2f25e19 -->
+<!-- Neta@dca388b -->
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><g id="sprout">
