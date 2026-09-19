@@ -1241,6 +1241,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   border:1px dashed var(--leaf);border-radius:9px;padding:11px 0;margin-top:9px;
   color:var(--tx-3);font-size:12.5px;cursor:pointer;transition:.15s}
 .reladd:hover{background:var(--leaf-bg);color:var(--tx-2)}
+/* השורה כשהיא המצב הנבחר: קו מלא וערוגה, כמו כל בחירה אחרת. היא
+   מפסיקה להיות הזמנה לפעולה ומתחילה לדווח איפה אתה. */
+.reladd.on{border-style:solid;background:var(--leaf-bg);color:var(--leaf)}
+/* וכשהגוש עולה לראש הפאנל הוא נצמד לשורת השלב שמעליו ומוותר על
+   המרווח שנועד להפריד אותו מהכותרת. */
+#c-kidfield.attop{margin:8px 0 0}
+#c-kidfield.attop .reladd{margin-top:0}
 .relbox{width:19px;height:19px;border-radius:6px;border:1.5px solid var(--line-2);
   flex-shrink:0;display:grid;place-items:center}
 .relbox.on{background:var(--leaf);border-color:var(--leaf);color:var(--on-leaf)}
@@ -1893,7 +1900,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '110848a';
+window.NETA_BUILD = '206ad2e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2314,7 +2321,11 @@ window.NETA_CONFIG = {
        "+ הוסף קרוב" ב"הקרובים שלי": אנשים ברשימה, פעולה בשורה. -->
   <div class="field" id="c-kidfield" style="display:none">
     <div class="pick" id="c-kidpick"></div>
-    <div class="reladd" id="c-kidnew" onclick="pickCKid(null,'new')">+ מישהו חדש</div></div>
+    <!-- שורה אחת בשני מצבים: פותחת את מסלול "מישהו חדש", ובתוכו היא
+         מסומנת ומחזירה את הרשימה. שני אלמנטים היו מזיזים את מה
+         שמתחת ברגע המעבר. -->
+    <div class="reladd" id="c-kidnew"
+      onclick="pickCKid(null,cKidPick==='new'?'':'new')">+ מישהו חדש</div></div>
   <!-- השם לבדו בשורה. בן/בת ישבו כאן וירדו עם בורר הדמויות: הקרבה
        שבשאלה הבאה כבר נושאת מגדר, והצ'יפים חוזרים רק אחרי "אחר". -->
   <!-- והדרך חזרה לרשת יושבת על שורת התווית ולא בשורה משלה: המסך
@@ -5577,6 +5588,9 @@ function beneContinue(){
 function cStepGo(n){
   cStep=n;
   [0,1,2].forEach(function(i){document.getElementById('cp-'+i).style.display=i===n?'block':'none'});
+  /* גוש הנהנים יושב בתוך סרגל השלבים במצב "מישהו חדש", והסרגל אינו
+     שייך לשלב אחד. בלי זה הוא היה נשאר שם גם ב"לאיזה רגע". */
+  applyCKid();
   flowBar(stepNo(C_KEYS[n]),C_LABELS[n]);
   if(n===1)occHead();
   if(n===2)checkBene();
@@ -9720,10 +9734,44 @@ function applyCKid(){
   const cta=document.getElementById('c-cta');
   const kf=document.getElementById('c-kidfield');
   const back=document.getElementById('c-kidback');
+  const grid=document.getElementById('c-kidpick');
+  const nr=document.getElementById('c-kidnew');
+  const cp=document.getElementById('cp-0');
   /* "מישהו חדש" מוריד את הרשימה כולה ומחזיר את המסך שהיה, והדרך
      חזרה אליה היא קישור על שורת התווית של שדה השם. */
-  if(kf)kf.style.display=(has&&designated&&!fresh)?'':'none';
-  if(back)back.style.display=(has&&fresh)?'':'none';
+  /* הגוש נשאר על המסך גם אחרי "מישהו חדש", ומה שיורד ממנו הוא
+     הפרצופים בלבד. אלון בחר בזה מתוך שש אפשרויות: חמש האחרות פתרו
+     בעיה שנוצרה כשהרשימה נעלמה, וכאן היא פשוט לא נעלמת, ולכן אין
+     צורך בקישור חזרה חדש. */
+  if(kf)kf.style.display=(has&&designated)?'':'none';
+  if(grid)grid.style.display=fresh?'none':'';
+  if(nr){
+    nr.textContent=fresh?'מישהו חדש · הצג את הרשימה':'+ מישהו חדש';
+    nr.classList.toggle('on',fresh);
+  }
+  /* ובמצב "מישהו חדש" הוא עולה אל תוך סרגל השלבים, ממש מתחת ל"שלב
+     1 מתוך 6 · עבור מי", לבקשת אלון. שם הוא הקשר ולא תוכן: הוא
+     אומר באיזה ענף אתה, בדיוק כמו שורת השלב שמעליו.
+
+     ודווקא בתוך #flowbar ולא בראש הפאנל, כי מסך "הקמה" הוא
+     .center-v: כל ילדי הפאנל ממורכזים כגוש, ולכן אלמנט ראשון בפאנל
+     עדיין מרחף כתשעים פיקסלים מתחת לשורת השלב. הסרגל יושב מחוץ
+     לבמה, ולכן שם "צמוד" הוא באמת צמוד. אותו ריפוד צדדי (18),
+     ולכן הרוחב מתיישר.
+
+     כל עוד לא נבחר דבר הוא חוזר אל הפאנל מתחת לכותרת, כי אז הרשימה
+     היא התשובה לשאלה ומקומה תחתיה. */
+  const fb=document.getElementById('flowbar');
+  if(kf&&cp&&nf&&fb){
+    const top=!!(fresh&&cStep===0);
+    const inBar=(kf.parentNode===fb);
+    if(top&&!inBar)fb.appendChild(kf);
+    else if(!top&&inBar)cp.insertBefore(kf,nf);
+    kf.classList.toggle('attop',top);
+  }
+  /* והקישור שהיה על שורת התווית יורד: הוא נולד כדי להחזיר רשימה
+     שנעלמה, ועכשיו היא לא נעלמת. */
+  if(back)back.style.display='none';
   /* בילד קיים השם והקרבה ידועים, ולכן שני השדות יורדים. השם גם
      נעול ממילא מרגע שנטיעה מיועדת מצביעה על הישות (0061). */
   if(nf)nf.style.display=(!has||fresh)?'':'none';
