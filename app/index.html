@@ -974,6 +974,9 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .fa{font-size:13.5px;font-weight:600;color:var(--leaf);font-variant-numeric:tabular-nums;flex-shrink:0;white-space:nowrap}
 .fa.oth{color:var(--leaf-soft)}
 .fa.let{font-size:11px;font-weight:500;color:var(--sun-soft)}
+/* דחייה היא הדבר היחיד בפיד שדורש תשובה ממך, והיא נושאת את הוורוד
+   של בקשות האישור שבראש המסך ולא את החול של תווית שקטה. */
+.fa.let.no{color:var(--rose)}
 /* שורה בלי "מי" נמוכה יותר, כי אין בה שורה שנייה — ולא רק בגלל שהיא
    ריקה: הריווח מתהדק איתה כדי שהפיד ייראה רשימה ולא טבלה מרווחת. */
 .fr.one{padding:7px 0}
@@ -1998,7 +2001,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ce66bf8';
+window.NETA_BUILD = '66e3696';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -10876,7 +10879,8 @@ function netaBackend(cfg){
         return (rows||[]).map(function(r){
           return {kind:r.kind,actor:r.actor_name,avatar:r.actor_avatar,
                   key:r.planting_id,name:r.planting_name,
-                  /* מי הוזמן. null בכל שורה שאינה הזמנה (0063). */
+                  /* מי הוזמן, או שם המורשה בשלוש שורות בקשת האישור
+                     (0063, 0073). null בכל שאר הסוגים. */
                   subject:r.subject_name||null,
                   icon:r.planting_icon,isMe:r.is_me,years:r.years,
                   amount:r.amount_agorot==null?null:Number(r.amount_agorot),
@@ -11597,7 +11601,17 @@ demoSource.feed=function(){
      name:'הדירה של נועה',
      amount:null, isMe:false, at:daysAgo(14)},
     {kind:'anniversary',    actor:null,       name:'בר המצווה של דניאל',
-     amount:null, isMe:false, at:daysAgo(32), years:6, icon:'🎂'}
+     amount:null, isMe:false, at:daysAgo(32), years:6, icon:'🎂'},
+    /* שלושת מצבי בקשת האישור (0073). בהדגמה הם יושבים על שלוש נטיעות
+       שונות, כי על נטיעה אחת רק אחד מהם יכול להיות נכון בכל רגע:
+       השרת מוריד את שורת הבקשה ברגע שהיא נענית. */
+    {kind:'guardian_requested', actor:'אתה',  icon:'🎂', name:'בר המצווה של דניאל',
+     subject:'רון קידון', amount:null, isMe:true,  at:daysAgo(1)},
+    {kind:'guardian_confirmed', actor:'סבתא רחל', avatar:'av-granny', icon:'🏠',
+     name:'הדירה של נועה',
+     subject:'סבתא רחל', amount:null, isMe:false, at:daysAgo(9)},
+    {kind:'guardian_declined',  actor:null,   icon:'🎓', name:'הלימודים של נועה',
+     subject:'גל סליימן', amount:null, isMe:false, at:daysAgo(11)}
   ].concat(demoRecurring(0,4)).concat(demoRecurring(1,4)));
 };
 
@@ -12007,6 +12021,23 @@ function feedRowHTML(e){
        כל המידע בשורה הזאת, ובלעדיו היא אומרת רק שהזמנת מישהו. */
     sub=mine?('הזמנת את '+(e.subject||'קרוב'))
             :(who(e.actor)+' הזמין את '+(e.subject||'קרוב'));
+  }else if(e.kind==='guardian_requested'){
+    /* בקשת האישור מההורה. אותו דפוס בדיוק של שורת ההזמנה: שם המורשה
+       הוא כל המידע, ולכן גם כאן שורת המשנה נכתבת בשורה שלי. השורה
+       נעלמת מהשרת ברגע שהבקשה נענית, וזה מה שהופך אותה למצב ולא
+       להיסטוריה: "עוד לא ענה" ולא "ביקשתי פעם". */
+    amount='<div class="fa let">אישור</div>';
+    sub='ביקשת אישור '+withPrep('מ',e.subject||'המורשה');
+  }else if(e.kind==='guardian_confirmed'){
+    /* "האישור של X" ולא "X אישר": המגדר של המורשה אינו ידוע כאן, וזו
+       אותה הכרעה של VERB למעלה — צורה שאינה מנחשת, ובלי לוכסן. */
+    amount='<div class="fa let">אושר</div>';
+    sub='האישור של '+(e.subject||'המורשה')+' התקבל';
+  }else if(e.kind==='guardian_declined'){
+    /* עד 0073 דחייה הייתה שקטה לגמרי: המייל יצא, מישהו לחץ "לא", ושום
+       דבר באפליקציה לא אמר את זה. זו השורה החשובה מבין השלוש. */
+    amount='<div class="fa let no">נדחה</div>';
+    sub='האישור של '+(e.subject||'המורשה')+' לא התקבל';
   }else{
     amount='<div class="fa let">'+yearsWord(e.years)+'</div>';
     sub='אבן דרך';
@@ -12017,7 +12048,10 @@ function feedRowHTML(e){
      בשורת ההזמנה האדם אינו המזמין אלא המוזמן, וזה גם מה שכתוב בשורה
      שמתחתיה ("הזמנת את חיים"). לכן היא היחידה שנושאת פרצוף גם כשהיא
      שלך. */
-  const face=e.kind==='invitation_sent'
+  /* ‏guardian_confirmed אינו כאן בכוונה: שם יש פרופיל אמיתי, כי הוא
+     נכנס לחשבון כדי לאשר, ולכן e.avatar עדיף על ניחוש מהפנקס. */
+  const face=(e.kind==='invitation_sent'||e.kind==='guardian_requested'
+              ||e.kind==='guardian_declined')
     ? relAvatar(e.subject)
     : ((!mine&&e.avatar&&e.kind!=='anniversary')?e.avatar:null);
   const badge=face
