@@ -1200,8 +1200,9 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   display:flex;align-items:center;justify-content:center}
 #s-mine .sg.m{flex:0 1 auto;background:var(--leaf)}
 #s-mine .sg.o{flex:1 1 auto;background:var(--leaf-mid)}
-/* ‏0 ₪ אינו מקטע ירוק ברוחב 15 אחוז, שנקרא כאילו הפקדת: מסגרת
-   מקווקוות אומרת "כאן יהיה שלך". הרוחב הוא החלטה ולא נתון. */
+/* ‏0 ₪ אינו מקטע ירוק שנקרא כאילו הפקדת: מסגרת מקווקוות אומרת
+   "כאן יהיה שלך". הרוחב (20 אחוז) נגזר מהכיתוב שמתחתיו, ראו
+   buildHomeSummary. */
 #s-mine .sg.zero{background:none;border:1.5px dashed var(--leaf)}
 #s-mine .sgf{display:block;width:24px;height:24px;border-radius:50%;
   overflow:hidden;background:var(--face-fill);flex-shrink:0}
@@ -2119,7 +2120,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4c7d681';
+window.NETA_BUILD = '6b1671a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -12698,9 +12699,12 @@ function buildHomeSummary(){
            יחד, ולכן מי שהפקיד לילד אחד וכלום לילד השני ראה אצל השני
            פס מלא בגוון של "מהקרובים" מעל המילים "ממך 0 ₪". */
         const zero=!(selMine>0);
-        /* ‏15 אחוז כשאין ממך כלום: זו מסגרת מקווקוות שאומרת "כאן
-           יהיה שלך", ולכן הרוחב הוא החלטה ולא נתון. */
-        const pct=zero?15:(selAcc>0?Math.round(selMine/selAcc*1000)/10:0);
+        /* כשאין ממך כלום זו מסגרת מקווקוות שאומרת "כאן יהיה שלך",
+           ולכן הרוחב הוא החלטה ולא נתון — והוא נגזר ממה שיושב
+           מתחתיו: "ממך 0 ₪" הוא 46 פיקסלים, וב-15 אחוז המקטע היה
+           42 במכשיר של 320, כלומר הכיתוב רחב מהמקטע שהוא מתאר.
+           ‏20 אחוז נותנים 56 שם, עשרה של אוויר, ובכל רוחב אחר יותר. */
+        const pct=zero?20:(selAcc>0?Math.round(selMine/selAcc*1000)/10:0);
         const bm=document.getElementById('s-barmine'),bo=document.getElementById('s-barother');
         if(bm){bm.style.width=pct+'%';bm.classList.toggle('zero',zero)}
         if(bo)bo.style.width=(100-pct)+'%';
