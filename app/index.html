@@ -880,6 +880,9 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 @media (max-width:340px){.pc-solo>.chev{display:none}}
 /* שורת מצב במקום סכום. ירוק אומר כסף שקיים, וכאן עוד אין. */
 .pc-amt.q{color:var(--tx-2);font-weight:500}
+/* הסכום שכבר נצבר ברגע שהוזמנת אליו: ירוק, כי זה כסף שקיים,
+   בתוך משפט אפור שמסביר מה הוא. */
+.pc-amt.q .pcsum{color:var(--leaf);font-weight:600;font-variant-numeric:tabular-nums}
 .pc-dt{font-size:10.5px;color:var(--tx-3);margin-top:4px}
 /* inline-start ב-RTL הוא הצד הימני — הצד של העמודה שפונה אל הטקסט. */
 /* רוחב קבוע ולא לפי תוכן: מאז שהכיתוב הוא שם, אורכו משתנה מכרטיס
@@ -1832,7 +1835,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="הבית"] .s-meta{justify-content:center}
 /* ‏"עוד לא הפקדת" יושב במקום המספר, ולכן הוא אינו בגודל שלו: מספר
    גדול שאין בו ספרה מתחזה למספר, וזה מה ש-"·" עשתה כאן לפניו. */
-[data-name="הבית"] #mi-potgrp b{color:var(--leaf)}
 [data-name="הבית"] #mi-meta{font-size:17px;font-weight:600;color:var(--tx);
   line-height:1.35;margin-top:10px;max-width:290px;margin-inline:auto;text-wrap:balance}
 /* שלושת התגים מתפרסים סביב הראש. הכלל הגלובלי של .esfaces.kids
@@ -2140,7 +2142,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '862954e';
+window.NETA_BUILD = 'b90ebe9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3322,18 +3324,26 @@ window.NETA_CONFIG = {
          כרטיס בן שתי שורות, שהחזיק את אותן שתי עובדות במשקל של טבלה
          ודחף את הרשימה למטה. -->
     <div class="s-meta">
-      <!-- שתי העובדות של מי שצורף לרגע של מישהו אחר. הן ראשונות כי
-           בדיוק במצב הזה שלוש האחרות יורדות (אין הוראת קבע ואין צפי
-           אישי), ואז אלה מה שנשאר. -->
-      <span id="mi-potgrp" style="display:none"><b id="mi-pot">·</b> <span id="mi-potk">כבר נצבר ברגע</span></span>
-      <span class="grp" id="mi-whogrp" style="display:none"><i></i><span id="mi-who">·</span></span>
+      <!-- שתי עובדות בלבד, ושתיהן על המספר שמעליהן: הקצב החודשי שלי
+           והצפי שלי. השורה החזיקה חמש, ומהן שתיים תיארו את הכסף של
+           מי שפתח את הרגע ("9,700 ₪ כבר נצבר ברגעים", "דוד יוסי
+           וסבתא רחל נוטעים איתך") ואחת ספרה את הרשימה שמתחת.
+
+           מה שהכריע הוא מדידה: בחמש עובדות בשורה גולשת החלוקה בין
+           השורות נקבעת מרוחב המכשיר. ב-360 וב-390 היא יצאה במקרה
+           לפי נושא, ב-430 "390 ₪ בכל חודש" עלה לשורה של הכסף של
+           האחרים, וב-320 יצאו שלוש שורות בגובה 74. כלומר הקיבוץ
+           שהעין קוראת הוא תאונה.
+
+           הפירוט עבר למקומו: הכסף שנצבר ברגע ומי נוטע בו יושבים על
+           הכרטיס של אותו רגע, והספירה בתווית שמעל הרשימה שהיא
+           סופרת — בדיוק כמו שכבר נעשה בכותרות הסקשנים. -->
       <span id="mi-mongrp"><b id="mi-mon">·</b> בכל חודש</span>
-      <span class="grp" id="mi-cntgrp"><i></i><span id="mi-cnt">בשני רגעים</span></span>
       <span class="grp" id="mi-projgrp"><i></i><span>יגדל ל<b class="fut" id="mi-proj">·</b></span></span>
     </div>
   </div>
 
-  <p class="eyebrow big">בעתיד של מי</p>
+  <p class="eyebrow big" id="mi-head">בעתיד של מי</p>
   <div id="mi-list"></div>
   <!-- שורה מקווקוות ולא כפתור ירוק: מי שהוזמנה לרגע של קרוב מקבלת
        כפתור מלא על הרגע ההוא, ושני כפתורים ירוקים על מסך אחד הם שתי
@@ -12972,14 +12982,30 @@ function ivCardHTML(p){
      שקרובים נוטעים בה גם הם, הצפי של הרגע גדול משלך. */
   const pj=Number(p.myProjection||0);
   /* "נטעת 0 ₪" הוא מספר שקיומו מודיע על היעדרו. במקומו נאמר מה כן
-     קרה: הוזמנת, והרגע מחכה להפקדה הראשונה שלך. */
+     קרה. בכרטיס של רגע שהוזמנת אליו זה כבר לא "הוזמנת, עוד לא
+     נטעת" אלא **כמה כבר נצבר בו**: הסטטוס נאמר ממילא בכפתור
+     שצמוד לכרטיס ("להפקיד לרגע של X"), והסכום הוא מה שהופך את
+     הרגע למשהו אמיתי. הוא עבר לכאן משורת העובדות שמתחת למספר
+     הגדול, ששם הוא היה כסף של מישהו אחר מתחת למספר שמודד אותי. */
+  const acc=Number(p.accrued||0);
+  const waiting=p.joined&&!(mine>0);
   return plantCard({key:p.key,icon:p.icon,name:plantTitle(p),verb:'נטעת',
                     amount:mine,
-                    amountText:mine>0?'':'הוזמנת, עוד לא נטעת',
+                    amountText:mine>0?''
+                      :(waiting&&acc>0
+                          ? 'כבר נצבר כאן <b class="pcsum">'+shekel(acc)+'</b>'
+                          : 'הוזמנת, עוד לא נטעת'),
                     capTop:mine>0&&pj>mine?shekel(pj):'',
                     cap:mine<=0?(targetLine(p)||'')
                        :pj>mine?'הצפי שלך':(mo>0?(shekel(mo)+' בחודש'):'ללא קבע'),
-                    note:p.familyMine?'עבור המשפחה שלי'
+                    /* מי פתח, ולא "עבור משפחה של קרוב": השאלה שהכרטיס
+                       מעורר היא למה הוא אצלי, והתשובה היא מי צירף אותי.
+                       ‏"נפתח על ידי" סביל ולכן אינו מנחש מגדר, וזו כבר
+                       השפה של plantCard. זה גם מה שהחליף את "X נוטע
+                       איתך" שישב בשורת העובדות בלשון זכר קשיחה. */
+                    by:waiting?(p.by||''):'',
+                    note:waiting&&p.by?''
+                        :p.familyMine?'עבור המשפחה שלי'
                         :(p.familyName?('עבור המשפחה של '+p.familyName):'עבור משפחה של קרוב'),
                     /* בלי תאריך: השורה כבר נושאת את מי שהרגע שייך לו,
                        ושניהם יחד נשברו לשתי שורות. ובלי פנים — במסך
@@ -13038,27 +13064,9 @@ function paintInvestments(){
      מידע. ‏.word ירד איתו, ולכן גם הכלל שב-CSS. */
   txt('mi-num',shekel(total));
 
-  /* ומה שכן נצבר ברגע יורד שורה אחת, אל שורת העובדות. זה הסכום של מי
-     שפתח, ולכן הוא **אינו** יכול לשבת בכותרת: המסך הזה שואל כמה אני
-     השקעתי, וכותרת שמראה את הכסף של אדם אחר הייתה יורדת מ-370 ל-50
-     ברגע שאני מפקיד חמישים. המספר הגדול קטן בדיוק כשנותנים כסף.
-
-     ולכן הוא כאן, בשורה שכבר קיימת ושבמצב הזה ריקה לגמרי, והוא נשאר
-     בה גם אחרי ההפקדה הראשונה. מוגבל לרגעים שמישהו אחר פתח (`joined`),
-     כי ברגע שפתחתי בעצמי הכותרת כבר מספרת את הסיפור. */
-  const inv=rows.filter(function(p){return p.joined});
-  const pot=inv.reduce(function(a,p){return a+Number(p.accrued||0)},0);
-  const by=[];
-  inv.forEach(function(p){if(p.by&&by.indexOf(p.by)<0)by.push(p.by)});
-  const potG=document.getElementById('mi-potgrp');
-  if(potG)potG.style.display=pot>0?'':'none';
-  txt('mi-pot',shekel(pot));
-  txt('mi-potk',inv.length>1?'כבר נצבר ברגעים':'כבר נצבר ברגע');
-  const whoG=document.getElementById('mi-whogrp');
-  if(whoG)whoG.style.display=by.length?'':'none';
-  txt('mi-who',by.length===1?(by[0]+' נוטע איתך')
-             :by.length===2?(by[0]+' ו'+by[1]+' נוטעים איתך')
-             :(by[0]+' ועוד '+(by.length-1)+' נוטעים איתך'));
+  /* מי פתח את הרגע וכמה כבר נצבר בו עברו אל הכרטיס של אותו רגע:
+     שם הם מתארים משהו, ובשורה הזאת הם היו הכסף של מישהו אחר מתחת
+     למספר שמודד אותי. ראו ivCardHTML. */
   /* בלי הוראת קבע השורה כולה יורדת, ולא מודיעה על היעדרה. הכיתוב
      "בכל חודש" יושב במבנה ולא בטקסט, ולכן כתיבת "אין הוראת קבע פעילה"
      לתוך המספר הרכיבה "אין הוראת קבע פעילה בכל חודש". */
@@ -13068,28 +13076,35 @@ function paintInvestments(){
   const pr=document.getElementById('mi-projgrp');
   if(pr)pr.style.display=proj>total?'':'none';
   txt('mi-proj','כ-'+shekel(proj));
-  const cg=document.getElementById('mi-cntgrp');
-  if(cg){
-    cg.style.display=rows.length>1?'':'none';
-    /* ספרה ולא מילה, כאן בלבד: השורה הזאת היא רצף עובדות שכולן
-       מספרים ("1,260 ₪", "כ-182,512 ₪"), והמילה היא הפריט הארוך
-       היחיד בה. "בחמישה" נשברת לשורה שנייה מ-12.5px ומעלה, כלומר
-       בכל מכשיר עם הגדלת טקסט; "ב-5" מחזיקה עד 13.5. ‏hebCount
-       נשארת במילים בכותרת של "העתיד שלנו", ששם זו פרוזה. */
-    txt('mi-cnt','ב-'+rows.length+' רגעים');
-  }
   /* הנקודה המפרידה שייכת למי שאינו ראשון בשורה. כשהראשון יורד, זו
      שאחריו הייתה פותחת את השורה בנקודה תלויה. ‏.nodot כבר קיים
      בגיליון בשביל אותו מקרה בהגדלת טקסט. */
   const meta=document.querySelector('#kin-full .s-meta');
+  let shown=0;
   if(meta){
     let first=true;
     [].slice.call(meta.children).forEach(function(el){
       if(getComputedStyle(el).display==='none')return;
+      shown++;
       el.classList.toggle('nodot',first);
       first=false;
     });
+    /* וכשלא נשארה בה אף עובדה השורה כולה יורדת, ואיתה הקו שמעליה:
+       הקו הוא border-top שלה, ולכן בלי זה הוא היה נשאר מרחף מתחת
+       לכותרת בלי שום דבר מתחתיו. זה בדיוק המצב של מי שהוזמנה ולא
+       הפקידה, שאין לה קצב ואין לה צפי. */
+    meta.style.display=shown?'':'none';
   }
+  /* הספירה בתווית שמעל הרשימה שהיא סופרת, ולא בשורת העובדות: שם
+     היא נקראה כמו עוד מספר על הכסף שלי. זה בדיוק מה שכבר נעשה
+     בכותרות הסקשנים של "העתיד שלנו".
+
+     ספרה ולא מילה: "בחמישה רגעים" נשבר לשתי שורות בהגדלת טקסט
+     ו"ב-5" מחזיק. ‏hebCount נשארת במילים שם, ששם זו פרוזה. */
+  const hd=document.getElementById('mi-head');
+  if(hd)hd.textContent=rows.length>1
+    ? ('בעתיד של מי · '+rows.length+' רגעים')
+    : 'בעתיד של מי';
   /* הכיתוב אומר עבור מי, וזו כל ההבדלה בין שני המסכים: במסך הבית
      המספר הוא של הילד, וכאן הוא שלי. "הסכום שעד כה השקעת" ולא
      "נטעת": זה סכום מצטבר ולא פעולה, והמילה "הסכום" אומרת את זה
