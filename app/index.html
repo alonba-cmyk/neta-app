@@ -829,7 +829,21 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    מקצה לקצה. הקו שמעליה הוא אותו קו שהפריד בין השורות לשורת "מי
    נוטע" שישבה כאן. */
 .fu-act{margin:4px 0 2px;padding-top:11px;border-top:1px solid var(--rule)}
-.fu-act .btn{font-size:13px;padding:11px}
+/* מתאר ולא מילוי. שני ירוקים מלאים ישבו על המסך הזה, המקטע של
+   "מהקרובים" בפס הפילוח והכפתור הזה, והם התחרו: המדידה הראתה
+   שאי אפשר להפריד ביניהם בגוון, כי ירוק שני חייב להיפרד גם
+   מהראשון וגם מהדף הלבן ושני התנאים יחד נועלים תקרה של 3.10.
+   זו אותה תקרה שהפילה את --leaf-mid. מילוי מול מתאר אינו נמדד
+   בניגודיות בין שני צבעים, ולכן הוא משוחרר ממנה: 9.63 בין השניים,
+   והמסה הירוקה יורדת מ-5,600 ל-1,750 פיקסל רבוע.
+   ומה שמשתנה הוא המילוי והטקסט בלבד: ה-border כבר קיים ב-.btn,
+   ‏1px של --leaf, והוא בדיוק מה שצריך. **‏1.5px נוסה וירד, כי
+   הוא אינו קיים:** כרומיום מעגל border-width כלפי מטה למספר שלם
+   של פיקסלים, בכל DPR — נמדד ב-1, ‏2 ו-3, וכולם החזירו 1px.
+   חמש ההצהרות `1.5px solid` שכבר בקובץ מצוירות אף הן ב-1, כלומר
+   הן כתובות ולא עושות דבר. **משקל קו הוא מספר שלם.** */
+.fu-act .btn{font-size:13px;padding:11px;
+  background:none;color:var(--leaf)}
 .fu-who{display:flex;align-items:center;gap:9px;margin-top:4px;padding:11px 0 4px;
   border-top:1px solid var(--rule)}
 .fu-who .fu-t{font-size:10.5px;color:var(--tx-3);line-height:1.5;flex:1;min-width:0}
@@ -2195,7 +2209,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '67b7e7d';
+window.NETA_BUILD = '6a27847';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
