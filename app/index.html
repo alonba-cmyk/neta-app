@@ -1268,15 +1268,27 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    "ממך" מימין. עם ltr המקטע של המשתמש יצא משמאל והכיתוב מימין — הפס
    והכיתוב סיפרו הפוך זה מזה. */
 
+.split-bar{display:flex;height:8px;border-radius:5px;overflow:hidden;background:var(--s2);
+  margin-top:14px}
+.split-bar i{background:var(--leaf);display:block}
+.split-bar u{background:var(--leaf-2);opacity:.55;display:block}
+.mine-split{display:flex;gap:14px;flex-wrap:nowrap;margin-top:10px;
+  font-size:11px;color:var(--tx-2)}
+.mine-split span{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.mine-split b{color:var(--leaf);font-weight:600;font-variant-numeric:tabular-nums;font-size:12.5px}
+.mine-split .dsw.o{background:var(--leaf-2);opacity:.6}
+.mine-split span:last-child b{color:var(--leaf-2)}
 /* פס הפילוח ב"העתיד שלנו": הפרצוף בתוך המקטע, והסכום מתחתיו וממורכז
    עליו. הצורה הקודמת הייתה פס בגובה 8 ומתחתיו מקרא של שני ריבועים
    וכיתוב, ואלון אמר שקשה לחבר את הגרף למקרא. פרצוף שיושב בתוך המקטע
    אינו צריך התאמה: הוא במקטע, ולכן אין מה לחבר.
 
-   ‏#s-mine ו-#d-mine חולקים את הכללים האלה: אותו פילוח בדיוק מצויר
-   בשני המסכים, ועד כאן היו לו שתי צורות — פס דק עם מקרא של ריבועים
-   במסך הרגע, ופס עם פנים כאן. ‏.split-bar ו-.mine-split נמחקו איתן. */
-#s-mine .sbar, #d-mine .sbar{display:flex;height:32px;margin-top:14px}
+   ממוקד ל-#s-mine: אותו פילוח בדיוק מצויר גם במסך הרגע
+   (#d-barmine) על .split-bar ו-.mine-split הגלובליים.
+   **הפס עם הפרצופים נוסה שם וירד, לבקשת אלון.** כלומר שתי הצורות
+   הן החלטה ולא חוב: כאן הפילוח הוא הנושא של הגוש, ובמסך הרגע הוא
+   פרט אחד מתוך מסך שנושא גם גרף, רשימת נוטעים ופעולות. */
+#s-mine .sbar{display:flex;height:32px;margin-top:14px}
 /* ‏min-width הוא גודל הפרצוף ועוד הריפוד, ואינו נבחר: מתחת לזה
    הפרצוף חורג מהמקטע שלו. המקטע שלי מתכווץ (flex-shrink) ולא השני,
    כי כששני המינימומים לא נכנסים יחד עדיף שיזוז הצד שממילא קטן. */
@@ -1284,37 +1296,37 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ולא שני גופים. העיגול הוא בקצוות החיצוניים בלבד, ובתכונות
    לוגיות: ב-RTL ‏start הוא הימני, ולכן המקטע שלי מעגל את הימניים
    והשני את השמאליים בלי להתהפך ידנית. */
-#s-mine .sg, #d-mine .sg{box-sizing:border-box;min-width:30px;
+#s-mine .sg{box-sizing:border-box;min-width:30px;
   display:flex;align-items:center;justify-content:center}
-#s-mine .sg.m, #d-mine .sg.m{flex:0 1 auto;background:var(--leaf);
+#s-mine .sg.m{flex:0 1 auto;background:var(--leaf);
   border-start-start-radius:10px;border-end-start-radius:10px}
 /* מלא הוא החלק שלי, מקווקו הוא של הקרובים. שני ירוקים מלאים היו
    נעולים על 3.10 בבהירה ו-2.91 בכהה, כי כל אחד מהם חייב להיפרד גם
    מהשני וגם מהדף; מילוי מול מתאר אינו נמדד בניגודיות בין שני
    צבעים ולכן אינו כפוף לתקרה הזאת. ‏--leaf-mid ירד עם זה. */
-#s-mine .sg.o, #d-mine .sg.o{flex:1 1 auto;background:none;
+#s-mine .sg.o{flex:1 1 auto;background:none;
   border:1.5px dashed var(--leaf);
   border-start-end-radius:10px;border-end-end-radius:10px}
 /* ‏0 ₪ אינו מקטע ירוק שנקרא כאילו הפקדת: מסגרת מקווקוות אומרת
    "כאן יהיה שלך". הרוחב (50 אחוז) הוא החלטה, ראו buildHomeSummary. */
-#s-mine .sg.zero, #d-mine .sg.zero{background:none;border:1.5px dashed var(--leaf)}
+#s-mine .sg.zero{background:none;border:1.5px dashed var(--leaf)}
 /* וכשהמקטע שלי מקווקו, השני מתמלא: שם הוא הכסף היחיד שקיים, ופס
    שכולו מקווקו אינו מציג דבר. כלומר במצב הריק המקווקו אומר "עוד
    אין ממך" ובמלא הוא אומר "לא ממך", **וזו אותה צורה בשתי
    משמעויות** — המחיר נאמר ואלון בחר בו. */
-#s-mine .sg.o.solo, #d-mine .sg.o.solo{background:var(--leaf);border:0}
+#s-mine .sg.o.solo{background:var(--leaf);border:0}
 /* פרצוף בתוך מקטע שקוף יושב על --s2 ולא על --face-fill, שהוא לבן
    בבהירה ולכן נעלם על הדף. */
-#s-mine .sg.o:not(.solo) .sgf, #d-mine .sg.o:not(.solo) .sgf{background:var(--s2)}
-#s-mine .sg.o:not(.solo) .sgf .avsvg, #d-mine .sg.o:not(.solo) .sgf .avsvg{color:var(--s2)}
-#s-mine .sgf, #d-mine .sgf{display:block;width:24px;height:24px;border-radius:50%;
+#s-mine .sg.o:not(.solo) .sgf{background:var(--s2)}
+#s-mine .sg.o:not(.solo) .sgf .avsvg{color:var(--s2)}
+#s-mine .sgf{display:block;width:24px;height:24px;border-radius:50%;
   overflow:hidden;background:var(--face-fill);flex-shrink:0}
 /* גם על ה-svg עצמו: ה-rect בספרייט הוא currentColor והכלל הגלובלי
    שבשורה 919 צובע אותו --s2, ובלי הצהרה ממוקדת נשאר ריבוע כהה
    בתוך העיגול הבהיר. אותה מלכודת של "ערוגה בתוך ערוגה". */
-#s-mine .sgf svg, #d-mine .sgf svg, #s-mine .sgf img, #d-mine .sgf img{display:block;width:100%;height:100%}
-#s-mine .sgf .avsvg, #d-mine .sgf .avsvg{color:var(--face-fill)}
-#s-mine .sg.zero .sgf, #d-mine .sg.zero .sgf{opacity:.55}
+#s-mine .sgf svg,#s-mine .sgf img{display:block;width:100%;height:100%}
+#s-mine .sgf .avsvg{color:var(--face-fill)}
+#s-mine .sg.zero .sgf{opacity:.55}
 /* כל כיתוב מתחת למקטע שלו וממורכז עליו: אותם כללי flex בדיוק כמו
    בפס, ולכן המרכזים מתלכדים בלי חישוב אחוזים. מיקום מוחלט לפי אחוז
    נמדד ונפסל, כי min-width גורם לרוחב בפועל להיות שונה מהאחוז.
@@ -1323,7 +1335,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    מעל שום דבר), וכיתוב שממורכז בחצי שלו. */
 /* בלי gap, בדיוק כמו בפס: השורה מקבלת את אותם כללים, ומרווח
    שקיים באחד ולא בשני היה מזיז את המרכזים. */
-#s-mine .sunder, #d-mine .sunder{display:flex;margin-top:8px;
+#s-mine .sunder{display:flex;margin-top:8px;
   font-size:11px;color:var(--tx-2)}
 /* ‏min-width:max-content הוא מה שמחזיק את זה: "מהקרובים 370 ₪" רחב
    מ-88 פיקסלים, וכשהמקטע שלו צר ממנו כיתוב ממורכז היה חורג מהפס
@@ -1331,15 +1343,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    מהטקסט שבו, והשני מתכווץ. המחיר: במקרה הקיצון המרכז סוטה
    מהמקטע, במקום שהטקסט ייצא מהמסך. סכום שני הטקסטים הוא כ-136
    מול 284 שיש אפילו ב-320, ולכן השורה עצמה לעולם אינה גולשת. */
-#s-mine .sunder span, #d-mine .sunder span{display:flex;align-items:baseline;justify-content:center;
+#s-mine .sunder span{display:flex;align-items:baseline;justify-content:center;
   gap:5px;white-space:nowrap;min-width:max-content}
-#s-mine .sunder span.m, #d-mine .sunder span.m{flex:0 1 auto}
-#s-mine .sunder span.o, #d-mine .sunder span.o{flex:1 1 auto}
+#s-mine .sunder span.m{flex:0 1 auto}
+#s-mine .sunder span.o{flex:1 1 auto}
 /* שניהם --leaf: שני הצדדים הם כסף שקיים, ומה שמבדיל ביניהם הוא
    המילוי שמעליהם ולא צבע הטקסט. */
-#s-mine .sunder b, #d-mine .sunder b{font-size:12.5px;font-weight:600;color:var(--leaf);
+#s-mine .sunder b{font-size:12.5px;font-weight:600;color:var(--leaf);
   font-variant-numeric:tabular-nums}
-#s-mine .sunder span.m.zero b, #d-mine .sunder span.m.zero b{color:var(--tx-3)}
+#s-mine .sunder span.m.zero b{color:var(--tx-3)}
 .dm-split em{font-style:normal;color:var(--leaf-soft)}
 .dm-split b{color:var(--sun-soft);font-weight:500}
 .dm-chart{position:relative;margin-top:14px;touch-action:pan-y}
@@ -2233,7 +2245,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b77bbba';
+window.NETA_BUILD = 'c1f527c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3013,18 +3025,15 @@ window.NETA_CONFIG = {
     <div class="dm-top">
       <div><span class="dm-k" id="d-totk" data-rest="נצבר לרגע הזה">נצבר לרגע הזה</span><span class="dm-v" id="d-total">·</span></div>
     </div>
-    <!-- אותו פילוח בדיוק כמו ב"מה מחכה להם": הפרצוף בתוך המקטע
-         והסכום מתחתיו וממורכז עליו. עד כאן היו כאן שתי צורות לאותה
-         עובדה, פס דק עם מקרא של ריבועים מול פס עם פנים, וזו ההחלטה
-         הפתוחה שנסגרה. כללי ה-CSS מורחבים ל-#d-mine ואינם משוכפלים. -->
+    <!-- הפס הדק עם המקרא, ולא זה שעם הפרצופים שב"מה מחכה להם".
+         הצורה ההיא נוסתה כאן וירדה, לבקשת אלון. כלומר שתי הצורות
+         הן החלטה ולא חוב: שם הפילוח הוא הנושא של הגוש כולו, וכאן
+         הוא פרט אחד מתוך מסך שנושא גם גרף, רשימת נוטעים ופעולות. -->
     <div id="d-mine" style="display:none">
-      <div class="sbar">
-        <div class="sg m" id="d-barmine"><span class="sgf" id="d-facem"></span></div>
-        <div class="sg o" id="d-barother"><span class="sgf" id="d-faceo"></span></div>
-      </div>
-      <div class="sunder">
-        <span class="m" id="d-minew">ממך<b id="d-minev">·</b></span>
-        <span class="o" id="d-othw">מאחרים<b id="d-othv">·</b></span>
+      <div class="split-bar"><i id="d-barmine"></i><u id="d-barother"></u></div>
+      <div class="mine-split">
+        <span><i class="dsw m"></i>ממך<b id="d-minev">·</b></span>
+        <span><i class="dsw o"></i>מאחרים<b id="d-othv">·</b></span>
       </div>
     </div>
   </div>
@@ -8312,29 +8321,8 @@ function paintDetail(key,p){
       txt('d-minev',shekel(mineAg));txt('d-othv',shekel(others));
       const pct=tot>0?Math.round(mineAg/tot*1000)/10:0;
       const bm=document.getElementById('d-barmine'),bo=document.getElementById('d-barother');
-      /* ‏0 מהצד שלי אינו מקטע שנעלם אלא מסגרת מקווקוות: "כאן יהיה
-         שלך". וכשזה קורה הצד השני הוא היחיד שמלא, ולכן .solo —
-         פס שכולו מקווקו אינו מציג דבר. אותה הכרעה של #s-mine. */
-      const zero=!(mineAg>0);
-      if(bm){
-        bm.style.width=zero?'50%':(pct+'%');
-        bm.classList.toggle('zero',zero);
-      }
-      if(bo){
-        bo.style.width=zero?'50%':((100-pct)+'%');
-        bo.classList.toggle('solo',zero);
-      }
-      /* הפרצוף שלי עובר ב-faceHTML כדי שתמונה אמיתית תיחתם ותצויר
-         שוב, בדיוק כמו בהאדר; מי שמצייר פנים לא דרכה מקבל use ריק. */
-      const fm=document.getElementById('d-facem');
-      if(fm)fm.innerHTML=faceHTML(myAvatarKey(),'av-parent');
-      /* הצד השני: הראשון ברשימת הנוטעים שאינו אני. ‏w[7] מסמן "זה
-         אני" (ראו normWho), ולכן אין כאן התאמת שם. */
-      const fo=document.getElementById('d-faceo');
-      if(fo){
-        const them=(p.who||[]).filter(function(w){return !(w[7]||w[1]==='אתה')});
-        fo.innerHTML=faceHTML((them[0]&&them[0][0])||'av-someone','av-someone');
-      }
+      if(bm)bm.style.width=pct+'%';
+      if(bo)bo.style.width=(100-pct)+'%';
     }
   }
   txt('d-planted','נשתל '+p.planted);
@@ -10901,7 +10889,7 @@ function applyMyAvatar(av){
   const html=faceHTML(av,'av-parent');
   /* ‏#s-facem הוא הפרצוף שלי בתוך פס הפילוח, והוא ברשימה הזאת כדי
      שהחתימה החוזרת של תמונה אמיתית תצייר גם אותו. */
-  document.querySelectorAll('.topbar .me, .hdr .me, .nhdr .me, #s-facem, #d-facem').forEach(function(box){
+  document.querySelectorAll('.topbar .me, .hdr .me, .nhdr .me, #s-facem').forEach(function(box){
     box.innerHTML=html;
   });
   if(av&&av.indexOf('av-')!==0&&!photoUrl(av))
@@ -12439,7 +12427,7 @@ function buildGhosts(){
        נשאר על מה שהאיור אינו מראה: הרגעים עצמם ומי נוטע להם. */
     home.innerHTML=
       '<div class="card" style="padding:6px 12px;margin:0">'+
-        g.rows.map(function(p){return fuMomentHTML(p,g.rows.length>1)}).join('')+
+        g.rows.map(function(p){return fuMomentHTML(p)}).join('')+
         '<div class="fu-who">'+faceStack(g.people)+
           '<span class="fu-t">'+(names.join(', ')+' ו'+last).replace('אתה','<b>אתה</b>')+
           ' נוטעים ל'+firstName(g.name)+'</span></div>'+
@@ -13042,7 +13030,6 @@ function buildHomeSummary(){
       fuCard.style.display=(selEmpty||!sel)?'none':'';
       fuFine.style.display='none';
       if(!selEmpty&&sel){
-        const many=sel.rows.length>1;
         const ppl=sel.people||[];
         /* האם אני אחד מהנוטעים, ולא כמה נוטעים יש. השורה נגזרה
            מ-ppl.length<=1 והניחה שהיחיד ברשימה הוא אני, ולכן מרים,
@@ -13128,7 +13115,7 @@ function buildHomeSummary(){
            הכותרת שמעל הכרטיסייה כבר אומרת "שני הרגעים של אביב",
            ולכן גם "רגע" וגם "של מי" כבר נאמרו. */
         fuCard.innerHTML=
-          sel.rows.map(function(p){return fuMomentHTML(p,many)}).join('')+
+          sel.rows.map(function(p){return fuMomentHTML(p)}).join('')+
           '<div class="fu-act"><button class="btn">'+
             (iOpened?'+ הוסף רגע':iPlant?'לפרטי ההשקעה':join)+'</button></div>';
         /* המאזין נקשר ואינו נכתב לתוך onclick: מפתח נטיעה הוא מחרוזת
@@ -14059,15 +14046,23 @@ function saveKid(id){
     .then(function(){toast('נשמר')},
           function(e){ask('לא נשמר',(e&&e.message)||'לא הצלחנו להגיע לשרת.','הבנתי')});
 }
-function fuMomentHTML(p,many){
+function fuMomentHTML(p){
   const yrs=p.targetYear?Math.max(0,p.targetYear-new Date().getFullYear()):0;
   const when=(targetLine(p)||'').replace(/^עד /,'')+(p.targetYear?(' · בעוד '+yrs+yrWord(yrs)):'');
   return '<div class="fu-mrow" onclick="openDetail(\''+p.key+'\')">'+
     '<div class="fu-mic">'+(p.icon||'🌱')+'</div>'+
     '<div style="flex:1;min-width:0"><div class="fu-nm">'+momentNoun(p)+'</div>'+
       (when?'<div class="fu-dt">'+when+'</div>':'')+'</div>'+
-    (many?'<span class="fu-amt">'+shekel(Number(p.accrued||0))+'</span>'
-        :'<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>')+
+    /* הסכום **וגם** החץ, תמיד. עד כאן זה היה אחד מהשניים לפי
+       ‏many: ברגע בודד הופיע חץ בלי סכום, וברשימה סכום בלי חץ.
+       שתי התוצאות היו שגויות — שורה שהיא ניווט צריכה חץ, ו**סכומי
+       השורות הם מה שמרכיב את המספר הגדול שמעליהן**. ברגע אחד
+       המספר הגדול והשורה נשאו את אותו ערך בלי שנאמר שזה אותו ערך,
+       וברשימה החץ נעלם דווקא כשיש יותר לאן להיכנס.
+       ‏accrued ולא mine: זה מה שהכותרת סוכמת, וזו גם הסיבה שמרים
+       רואה 370 למעלה על רגע שהפקידה בו 0. */
+    '<span class="fu-amt">'+shekel(Number(p.accrued||0))+'</span>'+
+    '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>'+
   '</div>';
 }
 /* "הלימודים של נטע" מיותר ברשימה שכולה שלו. השם נשאר כשאין " של ". */
