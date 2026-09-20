@@ -255,15 +255,6 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
   display:grid;place-items:center;font-size:14px;line-height:1;
   pointer-events:none;z-index:3}
 .dm-endic:empty{display:none}
-/* נקודה על כפתור המכתבים כשיש מכתב. הכפתור עצמו מוצג בדיוק באותם
-   תנאים שבהם הכרטיס הוצג, כלומר גם כשאין עדיין מכתב וההזמנה לכתוב
-   עדיין צריכה להיות נגישה. */
-#d-lbtn{position:relative}
-#d-lbtn.has{color:var(--sun);border-color:var(--sun-line)}
-#d-lbtn.has::after{content:'';position:absolute;top:-2px;left:-2px;width:8px;height:8px;
-  border-radius:50%;background:var(--sun);border:1.5px solid var(--s1)}
-#d-lbtn.done{color:var(--leaf);border-color:var(--leaf-line)}
-#d-lbtn.done::after{background:var(--leaf)}
 /* ההזמנה שנדחתה ב"בפעם אחרת". אותו אובייקט בשני מקומות: במסך הבית
    מתחת לפעולה של המשתמש עצמו, ובראש הפיד כשורה נעוצה. בפיד היא ירוקה,
    כי שם היא עומדת בראש רשימה של דברים שכבר קרו וצריכה להיקרא כפתוחה;
@@ -1220,9 +1211,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .lt .lb2 i{display:block;font-style:normal;font-size:10.5px;color:var(--tx-2);margin-top:3px;line-height:1.5}
 .lt .lact{font-family:inherit;font-size:10.5px;padding:5px 11px;border-radius:999px;cursor:pointer;flex-shrink:0;
   align-self:center;background:var(--leaf-bg);border:1px solid var(--leaf-line);color:var(--leaf)}
-.editbtn{background:none;border:1px solid var(--line);border-radius:9px;width:32px;height:32px;
-  display:grid;place-items:center;font-size:14px;color:var(--tx-2);cursor:pointer;transition:.15s;flex-shrink:0}
-.editbtn:hover{border-color:var(--line-2);color:var(--tx)}
 .warn{background:var(--sun-bg);border:1px solid var(--sun-line);border-radius:10px;padding:11px 12px;
   font-size:11px;line-height:1.55;color:var(--sun-txt);margin-top:8px}
 
@@ -1265,6 +1253,26 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   padding:0 15px;height:44px;cursor:pointer;flex-shrink:0;transition:.15s;margin-bottom:1px}
 .dm-act:hover{border-color:var(--leaf);background:var(--leaf-bg-2)}
 .dm-split{font-size:11.5px;color:var(--tx-3);margin:7px 0 0}
+/* שורת הזהות של מסך הרגע: תמונה, שם ומועד מימין, והסכום משמאל.
+   ממוקד ל-[data-name] ולא ל-.dm-top הגלובלי, כי אותו גוש כסף משרת
+   גם את מסך "ההשקעה של" ושם המספר עומד לבדו ונשאר 34.
+   align-items:center ולא flex-end: ל-#d-owners יש שורה שלישית
+   שמופיעה רק בשותפות, ויישור לתחתית היה מזיז את הסכום לפי זה. */
+[data-name="פרטי נטיעה"] .dm-head{display:flex;align-items:center;gap:11px}
+[data-name="פרטי נטיעה"] #d-icon{width:40px;height:40px;font-size:17px}
+[data-name="פרטי נטיעה"] .dm-id{flex:1;min-width:0}
+[data-name="פרטי נטיעה"] .dm-id .title{font-size:14.5px}
+[data-name="פרטי נטיעה"] .dm-id .meta{margin-top:3px}
+[data-name="פרטי נטיעה"] #d-owners{color:var(--leaf)}
+/* text-align:left הוא הקצה השמאלי ב-RTL, כלומר הקצה החיצוני. */
+[data-name="פרטי נטיעה"] .dm-sum{flex:0 0 auto;text-align:left}
+/* 10.5 ובלי ריווח אותיות: הכיתוב הזה יושב עכשיו לצד טקסט ולא מעל
+   מספר בן 34, וריווח של .09em מרחיב אותו אל תוך השם. */
+[data-name="פרטי נטיעה"] .dm-sum .dm-k{font-size:10.5px;letter-spacing:0;line-height:1.2}
+/* אותו גודל של .duo .n ושל .s-num, כי זה מספר שחולק שורה ולא
+   מספר שהוא כל המסך. */
+[data-name="פרטי נטיעה"] .dm-sum .dm-v{font-size:clamp(19px,6.4vw,26px);
+  letter-spacing:-.02em;line-height:1;margin-top:3px}
 /* הפילוח מתחת למספר של הרגע. אותו דפוס כמו במסך הבית: שני צבעים,
    שניהם ירוקים — כי שניהם כסף שקיים. */
 /* הפס היחסי מעל הפילוח: אותו דפוס שבאפיון. שני ירוקים, כי שניהם
@@ -2252,7 +2260,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'e377b23';
+window.NETA_BUILD = '72923ed';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3010,27 +3018,30 @@ window.NETA_CONFIG = {
 
 <!-- 5 DETAIL -->
 <section class="screen" data-name="פרטי נטיעה">
-  <div class="row gap" style="align-items:flex-start">
-    <div class="dot g" style="width:40px;height:40px;font-size:17px" id="d-icon">🎂</div>
-    <div style="flex:1"><div class="title" style="font-size:14.5px" id="d-title">בר המצווה של דניאל</div><div class="meta" id="d-date" style="margin-top:3px">המועד המיוחל: אוגוסט 2032</div><div class="meta" id="d-owners" style="margin-top:3px;color:var(--leaf);display:none"></div></div>
-    <!-- המכתבים היו סקשן שלם באמצע המסך, ואלון ביקש להעביר אותם
-         לאייקון בראש. **המחיר נאמר:** הכרטיס ההוא היה מה שהחליף את
-         הקבורה של כתיבת המכתב מאחורי ✎ במסך העריכה, "ששם אף אחד לא
-         חיפש אותה", והוא גם סיפר מה יש (כמה מכתבים, מתי ייפתחו, וציטוט
-         ממה שנכתב). אייקון אילם מחזיר חצי מזה. מה שמחזיק את זה: הכפתור
-         מוצג בדיוק באותם תנאים שבהם הכרטיס הוצג, כלומר גם כשאין עדיין
-         מכתב, ויש עליו נקודה כשיש. -->
-    <button class="editbtn" id="d-lbtn" onclick="openLetterSheet()"
-            aria-label="המכתבים">✉</button>
-    <button class="editbtn" onclick="openEdit()" aria-label="עריכת הנטיעה">✎</button>
-  </div>
-  <!-- מסך הרגע עונה על שאלה אחת: כמה נצבר כאן, ואיך הוא מתחלק. הגרף,
-       הצפי, המסלול והפעולות מתארים מסלול של אדם אחד לאורך זמן, ולכן הם
-       עברו למסך שלו — ואיתם גם "השקע עוד", שבמסך של רגע משותף תמיד גרר
-       את השאלה "לאן". -->
+  <!-- הזהות של הרגע ומה שנצבר בו הם שורה אחת, לא ראש ומתחתיו מספר.
+       המסך שואל כמה נצבר **כאן**, ולכן מה שעונה יושב באותה שורה עם מה
+       ששואל: התמונה, שם הרגע והמועד מימין, והסכום משמאל. אלון בחר את
+       זה מתוך שבע צורות, אחרי סבב שבו הראש והמספר היו שני גושים
+       נפרדים והמספר נקרא בלי נושא.
+
+       **ושני כפתורי הראש ירדו, ואיתם שתי היכולות.** ✉ היה הכניסה
+       היחידה ל-openLetterSheet, ו-✎ הכניסה היחידה ל-openEdit מלבד
+       תקלת פדיון אחת; זה נאמר לפני הבחירה ואלון בחר "כרגע" בכל זאת.
+       כלומר אין היום באפליקציה דרך לכתוב מכתב ואין דרך לערוך נטיעה,
+       וזה חוב פתוח ולא צורה שהוכרעה. הפונקציות נשארו בקובץ בדיוק
+       מהסיבה הזאת. -->
   <div class="d-money">
-    <div class="dm-top">
-      <div><span class="dm-k" id="d-totk" data-rest="נצבר לרגע הזה">נצבר לרגע הזה</span><span class="dm-v" id="d-total">·</span></div>
+    <div class="dm-head">
+      <div class="dot g" id="d-icon">🎂</div>
+      <div class="dm-id">
+        <div class="title" id="d-title">בר המצווה של דניאל</div>
+        <div class="meta" id="d-date">המועד המיוחל: אוגוסט 2032</div>
+        <div class="meta" id="d-owners" style="display:none"></div>
+      </div>
+      <div class="dm-sum">
+        <span class="dm-k" id="d-totk" data-rest="נצבר לרגע הזה">נצבר לרגע הזה</span>
+        <span class="dm-v" id="d-total">·</span>
+      </div>
     </div>
     <!-- הפס הדק עם המקרא, ולא זה שעם הפרצופים שב"מה מחכה להם".
          הצורה ההיא נוסתה כאן וירדה, לבקשת אלון. כלומר שתי הצורות
@@ -8233,6 +8244,10 @@ function myLetterOf(key){return myLetters[key]||null}
    נשמר, וזו בדיוק המשפחה של הבאג ששכן כאן פעם. */
 /* המפתח נמסר ואינו נגזר מ-p: נטיעות ההדגמה הן ערכים ב-plants{} ואין
    להן שדה key, ולכן myLetterOf(p.key) חיפש תמיד את undefined. */
+/* **ומאז שהכפתור ירד היא יוצאת מיד.** ‏#d-lbtn אינו קיים,
+   ולכן כל מה שמתחת הוא קוד שממתין להחזרת הכפתור ולא קוד מת
+   שנשכח: אלון ביקש "כרגע" להוריד את הכניסה, לא את היכולת.
+   השמירה עצמה (openLetterSheet, signLetter) חיה ונבדקת. */
 function paintLetterCard(p,key){
   const lt=document.getElementById('d-lbtn');
   if(!lt)return;
@@ -14250,10 +14265,11 @@ function declinePartner(){goHome()}
 function buildLiveActions(p){
   const acts=document.getElementById('d-acts'),note=document.getElementById('d-actnote');
   note.style.display='block';
-  /* נטיעה שקרוב פתח אינה שלך להזמין אליה ואינה שלך לערוך. זה כלל
-     שהאפיון קובע במפורש, והוא ההבדל בין קרוב לבעלים על המסך עצמו. */
-  const pencil=document.querySelector('.editbtn');
-  if(pencil)pencil.style.display=p.mine?'':'none';
+  /* **הכלל "נטיעה שקרוב פתח אינה שלך לערוך" חי כאן בשורת ההערה
+     בלבד, כי אין יותר עיפרון להסתיר.** הוא היה
+     `pencil.style.display=p.mine?'':'none'`, ומי שמחזיר את הכפתור
+     מחזיר גם אותו. מה שכן נשאר אוכף את הצד השני של אותו כלל:
+     ההזמנות, שיורדות ב-!p.mine מיד מתחת. */
   if(!p.mine){
     acts.className='';
     acts.innerHTML=actionsFor(p);
