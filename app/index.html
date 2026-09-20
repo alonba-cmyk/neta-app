@@ -722,8 +722,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #s-duo>div{min-width:0;padding-inline:clamp(1px,calc((100vw - 320px)*.06),8px)}
 #s-duo>div+div{margin-inline-start:0}
 #s-duo>div+div>*{padding-inline-start:0}
-/* השורה השנייה מימין קיימת כדי ששני הצדדים יהיו באותו גובה: הכיתוב
-   הזהוב נושא מועד ונשבר לשתי שורות, והירוק היה שורה אחת. */
+/* ‏.l2 הוא היום שורת המועד של הצד הזהוב בלבד. הוא נכתב כדי ששני
+   הצדדים יהיו באותו גובה — הזהוב נושא מועד ונשבר לשתי שורות והירוק
+   היה שורה אחת — ומרגע שהירוק עומד לבדו במרכז אין שני צדדים להשוות,
+   ושורת "מאז ספט׳ 2026" ירדה. */
 #s-duo .l2{margin-top:2px}
 /* ‏solo: מסלול אחד במקום שניים. עד כה הוא נשאר בלי כלל, כלומר מספר
    בודד ישב בחצי מסך בזמן שהחצי השני ריק; מרגע שהצפי ירד מהראש זהו
@@ -735,11 +737,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שני כיתובים זה לצד זה, ו-17 אינו נכנס בחצי מסך.
    ‏max-width ו-text-wrap:balance משם גם הם: בלעדיהם שורה ארוכה נשברת
    לשתי שורות לא שוות מתחת למספר ממורכז. */
+/* ‏4 ולא 10 של #mi-meta: שם הכיתוב יושב מתחת למספר שגובה השורה שלו
+   נדיב, וכאן ל-.n יש line-height:1 — הקופסה חובקת את הספרות. לכן
+   הרווח הנראה גדול ממה שה-CSS אומר, בגובה השורה של הכיתוב עצמו
+   (‏17 כפול 0.35, כלומר כשלושה פיקסלים מעל הדיו). */
 #s-duo.solo .l{font-size:17px;font-weight:600;color:var(--leaf);
-  line-height:1.35;margin-top:10px;max-width:290px;margin-inline:auto;text-wrap:balance}
-/* והתאריך נשאר שקט. שתי שורות ירוקות זו מתחת לזו הופכות את השנייה
-   לכותרת שנייה, והוא תאריך ולא כותרת. */
-#s-duo.solo .l2{font-size:11.5px;font-weight:400;color:var(--tx-2);margin-top:4px}
+  line-height:1.35;margin-top:4px;max-width:290px;margin-inline:auto;text-wrap:balance}
+
 .summary+.card{margin-top:15px}
 .s-meta{display:flex;flex-wrap:wrap;gap:8px;row-gap:5px;align-items:center;font-size:11px;
   color:var(--tx-3);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
@@ -893,6 +897,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    אחת, וב-320 השם נשבר. שם החץ יורד — זה המכשיר שבו הרוחב הכי יקר,
    והכרטיס כולו לחיץ בלעדיו בדיוק כמו איתו. */
 @media (max-width:340px){.pc-solo>.chev{display:none}}
+/* שלוש השורות מתהדקות. ‏4 פיקסלים בין קופסאות שכל אחת מהן נושאת
+   גם גובה שורה הם רווח נראה של כשמונה, ושלוש שורות של אותו רגע
+   נקראו כשלושה פריטים. ממוקד ל-.pc-solo, כלומר לכרטיס בלי עמודת
+   הפרצופים: בגרסת הפרצופים גובה הטקסט הוא מה שמאזן את הצביר שלצידו. */
+.pc-solo .pc-amt,.pc-solo .pc-dt{margin-top:1px}
 /* שורת מצב במקום סכום. ירוק אומר כסף שקיים, וכאן עוד אין. */
 .pc-amt.q{color:var(--tx-2);font-weight:500}
 /* הסכום שכבר נצבר ברגע שהוזמנת אליו: ירוק, כי זה כסף שקיים,
@@ -2163,7 +2172,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '114d6e0';
+window.NETA_BUILD = '01e24c0';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2442,7 +2451,6 @@ window.NETA_CONFIG = {
           <div>
             <div class="n" id="s-you">13,300 ₪</div>
             <div class="l" id="s-label">נצבר עד כה</div>
-            <div class="l l2" id="s-since"></div>
           </div>
           <div id="s-futbox">
             <div class="n fut" id="s-fut">·</div>
@@ -10653,7 +10661,7 @@ function blankBeforeFirstLoad(){
   if(!netaServer)return;
   const bar=document.getElementById('topbar');
   if(bar)bar.style.visibility='hidden';
-  ['s-you','s-label','s-since','s-fut','s-futk','s-futwhen'].forEach(function(id){txt(id,'')});
+  ['s-you','s-label','s-fut','s-futk','s-futwhen'].forEach(function(id){txt(id,'')});
   const g=document.getElementById('garden');
   if(g)g.innerHTML='';
   /* גם הפנקסים האישיים. הם מאותחלים בקובץ עם משפחת ההדגמה, וניקוי שלהם
@@ -12762,7 +12770,6 @@ function buildHomeSummary(){
     txt('s-label',accrued>0?'נצבר עד כה'
                            :(coming?'ההפקדה הראשונה בדרך':'עוד לא נצבר'));
     /* רק כשיש מה למדוד: "מאז" ליד "עוד לא נצבר" הוא סתירה. */
-    txt('s-since',accrued>0?fuSinceLine(sel&&sel.rows):'');
     /* "הושקעו" סבילה וחסרת נושא, ולכן היא נקראת כמו "זה מה שאני
        הפקדתי" — בדיוק ההפך מהמספר, שהוא מה שנצבר לרגעים האלה כולם,
        כולל כסף של קרובים. "נצבר" אומרת את זה בלי נושא כי אין לה נושא
@@ -13401,25 +13408,6 @@ function fuItems(own){
    עבורו הוא מי שאתה חושב עליו כשאתה נכנס. בחירה ידנית אינה נדרסת,
    כי fuDefault רצה רק כש-fuPick אינו קיים ברשימה. */
 function fuDefault(items){return (items[0]&&items[0].id)||''}
-/* "מאז" מול "עד": הצד הירוק מודד כמה נצבר, ולכן המועד שלו הוא
-   ההתחלה. המקור הוא since שברשימה, והוא חוזר בשתי צורות — תאריך
-   מלא מהשרת ושנה בלבד בנתוני ההדגמה — ולכן שתיהן מטופלות. */
-function fuSinceLine(rows){
-  const vals=(rows||[]).map(function(r){return r&&r.since}).filter(Boolean);
-  if(!vals.length)return '';
-  let best=null,bestKey=null;
-  vals.forEach(function(v){
-    const str=String(v);
-    const key=/^\d{4}-\d{2}/.test(str)?str:(str+'-01-01');
-    if(bestKey===null||key<bestKey){bestKey=key;best=str}
-  });
-  if(/^\d{4}-\d{2}/.test(best)){
-    const d=new Date(best.slice(0,10)+'T00:00:00');
-    if(!isNaN(d.getTime()))return 'מאז '+monthsShort[d.getMonth()]+' '+d.getFullYear();
-  }
-  const y=parseInt(best,10);
-  return y>1900?('מאז '+y):'';
-}
 let fuPick='';
 function pickFuture(id){fuPick=id;buildHomeSummary();}
 /* נתיבי התמונות שברשימה. הם נחתמים לפני הציור ולא בתוכו, ולכן
