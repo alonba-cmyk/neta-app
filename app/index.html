@@ -239,6 +239,12 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 #d-icon.kidhd>i{position:absolute;bottom:-3px;left:-5px;width:22px;height:22px;
   border-radius:7px;background:var(--bg);border:1px solid var(--line);
   display:grid;place-items:center;font-size:11px;font-style:normal;line-height:1}
+/* הצפי במילים, כשאין גרף. אותו משקל של .dm-disc שלידו, והמספר
+   בחול כי הוא ערך מוצג וצפוי. */
+.dm-noplot{font-size:12.5px;line-height:1.55;color:var(--tx-2);
+  margin-top:12px;text-align:center}
+.dm-noplot b{color:var(--sun-soft);font-weight:600;
+  font-variant-numeric:tabular-nums}
 .dm-endic{position:absolute;width:28px;height:28px;border-radius:50%;
   background:var(--s1);box-shadow:0 0 0 2px var(--s1),0 0 0 3px var(--sun);
   display:grid;place-items:center;font-size:14px;line-height:1;
@@ -1261,25 +1267,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* בלי direction:ltr: הפס נקרא באותו כיוון כמו הכיתובים שמתחתיו, כלומר
    "ממך" מימין. עם ltr המקטע של המשתמש יצא משמאל והכיתוב מימין — הפס
    והכיתוב סיפרו הפוך זה מזה. */
-.split-bar{display:flex;height:8px;border-radius:5px;overflow:hidden;background:var(--s2);
-  margin-top:14px}
-.split-bar i{background:var(--leaf);display:block}
-.split-bar u{background:var(--leaf-2);opacity:.55;display:block}
-.mine-split{display:flex;gap:14px;flex-wrap:nowrap;margin-top:10px;
-  font-size:11px;color:var(--tx-2)}
-.mine-split span{display:flex;align-items:center;gap:6px;white-space:nowrap}
-.mine-split b{color:var(--leaf);font-weight:600;font-variant-numeric:tabular-nums;font-size:12.5px}
-.mine-split .dsw.o{background:var(--leaf-2);opacity:.6}
-.mine-split span:last-child b{color:var(--leaf-2)}
 
 /* פס הפילוח ב"העתיד שלנו": הפרצוף בתוך המקטע, והסכום מתחתיו וממורכז
    עליו. הצורה הקודמת הייתה פס בגובה 8 ומתחתיו מקרא של שני ריבועים
    וכיתוב, ואלון אמר שקשה לחבר את הגרף למקרא. פרצוף שיושב בתוך המקטע
    אינו צריך התאמה: הוא במקטע, ולכן אין מה לחבר.
 
-   ממוקד ל-#s-mine: אותו פילוח בדיוק מצויר גם במסך הרגע
-   (#d-barmine) על .split-bar ו-.mine-split הגלובליים, ושם זה לא נגע. */
-#s-mine .sbar{display:flex;height:32px;margin-top:14px}
+   ‏#s-mine ו-#d-mine חולקים את הכללים האלה: אותו פילוח בדיוק מצויר
+   בשני המסכים, ועד כאן היו לו שתי צורות — פס דק עם מקרא של ריבועים
+   במסך הרגע, ופס עם פנים כאן. ‏.split-bar ו-.mine-split נמחקו איתן. */
+#s-mine .sbar, #d-mine .sbar{display:flex;height:32px;margin-top:14px}
 /* ‏min-width הוא גודל הפרצוף ועוד הריפוד, ואינו נבחר: מתחת לזה
    הפרצוף חורג מהמקטע שלו. המקטע שלי מתכווץ (flex-shrink) ולא השני,
    כי כששני המינימומים לא נכנסים יחד עדיף שיזוז הצד שממילא קטן. */
@@ -1287,37 +1284,37 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ולא שני גופים. העיגול הוא בקצוות החיצוניים בלבד, ובתכונות
    לוגיות: ב-RTL ‏start הוא הימני, ולכן המקטע שלי מעגל את הימניים
    והשני את השמאליים בלי להתהפך ידנית. */
-#s-mine .sg{box-sizing:border-box;min-width:30px;
+#s-mine .sg, #d-mine .sg{box-sizing:border-box;min-width:30px;
   display:flex;align-items:center;justify-content:center}
-#s-mine .sg.m{flex:0 1 auto;background:var(--leaf);
+#s-mine .sg.m, #d-mine .sg.m{flex:0 1 auto;background:var(--leaf);
   border-start-start-radius:10px;border-end-start-radius:10px}
 /* מלא הוא החלק שלי, מקווקו הוא של הקרובים. שני ירוקים מלאים היו
    נעולים על 3.10 בבהירה ו-2.91 בכהה, כי כל אחד מהם חייב להיפרד גם
    מהשני וגם מהדף; מילוי מול מתאר אינו נמדד בניגודיות בין שני
    צבעים ולכן אינו כפוף לתקרה הזאת. ‏--leaf-mid ירד עם זה. */
-#s-mine .sg.o{flex:1 1 auto;background:none;
+#s-mine .sg.o, #d-mine .sg.o{flex:1 1 auto;background:none;
   border:1.5px dashed var(--leaf);
   border-start-end-radius:10px;border-end-end-radius:10px}
 /* ‏0 ₪ אינו מקטע ירוק שנקרא כאילו הפקדת: מסגרת מקווקוות אומרת
    "כאן יהיה שלך". הרוחב (50 אחוז) הוא החלטה, ראו buildHomeSummary. */
-#s-mine .sg.zero{background:none;border:1.5px dashed var(--leaf)}
+#s-mine .sg.zero, #d-mine .sg.zero{background:none;border:1.5px dashed var(--leaf)}
 /* וכשהמקטע שלי מקווקו, השני מתמלא: שם הוא הכסף היחיד שקיים, ופס
    שכולו מקווקו אינו מציג דבר. כלומר במצב הריק המקווקו אומר "עוד
    אין ממך" ובמלא הוא אומר "לא ממך", **וזו אותה צורה בשתי
    משמעויות** — המחיר נאמר ואלון בחר בו. */
-#s-mine .sg.o.solo{background:var(--leaf);border:0}
+#s-mine .sg.o.solo, #d-mine .sg.o.solo{background:var(--leaf);border:0}
 /* פרצוף בתוך מקטע שקוף יושב על --s2 ולא על --face-fill, שהוא לבן
    בבהירה ולכן נעלם על הדף. */
-#s-mine .sg.o:not(.solo) .sgf{background:var(--s2)}
-#s-mine .sg.o:not(.solo) .sgf .avsvg{color:var(--s2)}
-#s-mine .sgf{display:block;width:24px;height:24px;border-radius:50%;
+#s-mine .sg.o:not(.solo) .sgf, #d-mine .sg.o:not(.solo) .sgf{background:var(--s2)}
+#s-mine .sg.o:not(.solo) .sgf .avsvg, #d-mine .sg.o:not(.solo) .sgf .avsvg{color:var(--s2)}
+#s-mine .sgf, #d-mine .sgf{display:block;width:24px;height:24px;border-radius:50%;
   overflow:hidden;background:var(--face-fill);flex-shrink:0}
 /* גם על ה-svg עצמו: ה-rect בספרייט הוא currentColor והכלל הגלובלי
    שבשורה 919 צובע אותו --s2, ובלי הצהרה ממוקדת נשאר ריבוע כהה
    בתוך העיגול הבהיר. אותה מלכודת של "ערוגה בתוך ערוגה". */
-#s-mine .sgf svg,#s-mine .sgf img{display:block;width:100%;height:100%}
-#s-mine .sgf .avsvg{color:var(--face-fill)}
-#s-mine .sg.zero .sgf{opacity:.55}
+#s-mine .sgf svg, #d-mine .sgf svg, #s-mine .sgf img, #d-mine .sgf img{display:block;width:100%;height:100%}
+#s-mine .sgf .avsvg, #d-mine .sgf .avsvg{color:var(--face-fill)}
+#s-mine .sg.zero .sgf, #d-mine .sg.zero .sgf{opacity:.55}
 /* כל כיתוב מתחת למקטע שלו וממורכז עליו: אותם כללי flex בדיוק כמו
    בפס, ולכן המרכזים מתלכדים בלי חישוב אחוזים. מיקום מוחלט לפי אחוז
    נמדד ונפסל, כי min-width גורם לרוחב בפועל להיות שונה מהאחוז.
@@ -1326,7 +1323,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    מעל שום דבר), וכיתוב שממורכז בחצי שלו. */
 /* בלי gap, בדיוק כמו בפס: השורה מקבלת את אותם כללים, ומרווח
    שקיים באחד ולא בשני היה מזיז את המרכזים. */
-#s-mine .sunder{display:flex;margin-top:8px;
+#s-mine .sunder, #d-mine .sunder{display:flex;margin-top:8px;
   font-size:11px;color:var(--tx-2)}
 /* ‏min-width:max-content הוא מה שמחזיק את זה: "מהקרובים 370 ₪" רחב
    מ-88 פיקסלים, וכשהמקטע שלו צר ממנו כיתוב ממורכז היה חורג מהפס
@@ -1334,15 +1331,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    מהטקסט שבו, והשני מתכווץ. המחיר: במקרה הקיצון המרכז סוטה
    מהמקטע, במקום שהטקסט ייצא מהמסך. סכום שני הטקסטים הוא כ-136
    מול 284 שיש אפילו ב-320, ולכן השורה עצמה לעולם אינה גולשת. */
-#s-mine .sunder span{display:flex;align-items:baseline;justify-content:center;
+#s-mine .sunder span, #d-mine .sunder span{display:flex;align-items:baseline;justify-content:center;
   gap:5px;white-space:nowrap;min-width:max-content}
-#s-mine .sunder span.m{flex:0 1 auto}
-#s-mine .sunder span.o{flex:1 1 auto}
+#s-mine .sunder span.m, #d-mine .sunder span.m{flex:0 1 auto}
+#s-mine .sunder span.o, #d-mine .sunder span.o{flex:1 1 auto}
 /* שניהם --leaf: שני הצדדים הם כסף שקיים, ומה שמבדיל ביניהם הוא
    המילוי שמעליהם ולא צבע הטקסט. */
-#s-mine .sunder b{font-size:12.5px;font-weight:600;color:var(--leaf);
+#s-mine .sunder b, #d-mine .sunder b{font-size:12.5px;font-weight:600;color:var(--leaf);
   font-variant-numeric:tabular-nums}
-#s-mine .sunder span.m.zero b{color:var(--tx-3)}
+#s-mine .sunder span.m.zero b, #d-mine .sunder span.m.zero b{color:var(--tx-3)}
 .dm-split em{font-style:normal;color:var(--leaf-soft)}
 .dm-split b{color:var(--sun-soft);font-weight:500}
 .dm-chart{position:relative;margin-top:14px;touch-action:pan-y}
@@ -2236,7 +2233,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '24305fb';
+window.NETA_BUILD = 'b77bbba';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3016,11 +3013,18 @@ window.NETA_CONFIG = {
     <div class="dm-top">
       <div><span class="dm-k" id="d-totk" data-rest="נצבר לרגע הזה">נצבר לרגע הזה</span><span class="dm-v" id="d-total">·</span></div>
     </div>
+    <!-- אותו פילוח בדיוק כמו ב"מה מחכה להם": הפרצוף בתוך המקטע
+         והסכום מתחתיו וממורכז עליו. עד כאן היו כאן שתי צורות לאותה
+         עובדה, פס דק עם מקרא של ריבועים מול פס עם פנים, וזו ההחלטה
+         הפתוחה שנסגרה. כללי ה-CSS מורחבים ל-#d-mine ואינם משוכפלים. -->
     <div id="d-mine" style="display:none">
-      <div class="split-bar"><i id="d-barmine"></i><u id="d-barother"></u></div>
-      <div class="mine-split">
-        <span><i class="dsw m"></i>ממך<b id="d-minev">·</b></span>
-        <span><i class="dsw o"></i>מאחרים<b id="d-othv">·</b></span>
+      <div class="sbar">
+        <div class="sg m" id="d-barmine"><span class="sgf" id="d-facem"></span></div>
+        <div class="sg o" id="d-barother"><span class="sgf" id="d-faceo"></span></div>
+      </div>
+      <div class="sunder">
+        <span class="m" id="d-minew">ממך<b id="d-minev">·</b></span>
+        <span class="o" id="d-othw">מאחרים<b id="d-othv">·</b></span>
       </div>
     </div>
   </div>
@@ -3043,7 +3047,6 @@ window.NETA_CONFIG = {
     <div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-granny"/></svg></div><span class="cbn">סבתא רחל</span><span class="cbv">4,300 ₪</span></div>
     <div class="cbr"><div class="cba"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-uncle"/></svg></div><span class="cbn">דוד יוסי</span><span class="cbv">2,200 ₪</span></div>
   </div>
-  <p class="fine gap" id="d-whofine">רק אתה רואה את הפילוח הזה, כבעל הנטיעה.</p>
 
 
   <!-- ההפקדה החודשית אינה כאן. היא של אדם אחד, ומסך הרגע הוא של הרגע;
@@ -4154,6 +4157,9 @@ window.NETA_CONFIG = {
       <span><i class="dsw g"></i>הצמיחה <em id="d-kgrow"></em></span>
     </div>
     <p class="dm-disc" id="d-disc"></p>
+    <!-- מה שבא במקום הגרף כשאין קצב ידוע. שתי העובדות שהגרף היה
+         אמור לומר, במילים: כמה צפוי, ועד מתי. -->
+    <p class="dm-noplot" id="d-noplot" style="display:none"></p>
     </div><!-- /pv-move -->
 
   </div>
@@ -7992,7 +7998,19 @@ function moneyHome(){
 /* אותו צומת גרף מתאר פעם רגע ופעם אדם, ולכן מה שהוא מתאר עכשיו הוא
    מצב ולא תכונה של מסך. המחוון נגזר מזה: גרירה קדימה בזמן היא שאלה
    על מסלול של אדם אחד. */
+/* ‏chartHonest מסתיר את הגרף, ולכן כל מי שמחזיר אותו למסלול של אדם
+   חייב גם להחזיר אותו לעצמו: שם הקצב ידוע ואין מה להסתיר. */
 function chartMode(kind){
+  if(kind==='person'){
+    const b=document.getElementById('d-chart'),
+          ax=document.querySelector('#pv-move .dm-ax'),
+          ds=document.getElementById('d-disc'),
+          np=document.getElementById('d-noplot');
+    if(b)b.style.display='';
+    if(ax)ax.style.display='';
+    if(ds)ds.style.display='';
+    if(np)np.style.display='none';
+  }
   const ch=document.getElementById('d-chart');
   if(ch)ch.classList.toggle('still',kind==='moment');
   const sl=document.getElementById('d-time');
@@ -8017,6 +8035,33 @@ function momentChart(p){
   /* ‏openPerson כותב לתווית הזאת את שם האדם, והצומת נשאר. בלי השורה
      הזאת מקרא של גרף שמתאר רגע היה אומר "ההפקדות של אלון". */
   txt('d-kdepw','ההפקדות כאן');
+  /* ההחלטה אם יש מה לצייר יושבת אחרי buildChart, ראו paintDetail. */
+}
+/* הגרף, הציר והמקרא יורדים יחד, ובמקומם שורה אחת. הם שלושה צמתים
+   ולא אחד, ולכן זו פונקציה: מי שיסתיר רק את ה-svg יישאר עם ציר
+   שמתאר גרף שאינו שם. */
+function chartHonest(p){
+  const ok=!CH||CH.honest!==false;
+  const box=document.getElementById('d-chart'),
+        ax=document.querySelector('#pv-move .dm-ax'),
+        key=document.getElementById('d-key'),
+        disc=document.getElementById('d-disc'),
+        line=document.getElementById('d-noplot');
+  if(box)box.style.display=ok?'':'none';
+  if(ax)ax.style.display=ok?'':'none';
+  if(key&&!ok)key.style.display='none';
+  if(disc)disc.style.display=ok?'':'none';
+  if(line){
+    line.style.display=ok?'none':'';
+    if(!ok){
+      const end=Math.round((CH&&CH.end)||0);
+      line.innerHTML=end>0
+        ? ('צפוי להיצבר כאן <b>כ-'+end.toLocaleString('he-IL')+' ₪</b> עד '+
+           (p&&p.date?p.date:'מועד הרגע'))
+        : '';
+      line.style.display=end>0?'':'none';
+    }
+  }
 }
 function moneyToDetail(){
   const mv=document.getElementById('pv-move'),
@@ -8267,8 +8312,29 @@ function paintDetail(key,p){
       txt('d-minev',shekel(mineAg));txt('d-othv',shekel(others));
       const pct=tot>0?Math.round(mineAg/tot*1000)/10:0;
       const bm=document.getElementById('d-barmine'),bo=document.getElementById('d-barother');
-      if(bm)bm.style.width=pct+'%';
-      if(bo)bo.style.width=(100-pct)+'%';
+      /* ‏0 מהצד שלי אינו מקטע שנעלם אלא מסגרת מקווקוות: "כאן יהיה
+         שלך". וכשזה קורה הצד השני הוא היחיד שמלא, ולכן .solo —
+         פס שכולו מקווקו אינו מציג דבר. אותה הכרעה של #s-mine. */
+      const zero=!(mineAg>0);
+      if(bm){
+        bm.style.width=zero?'50%':(pct+'%');
+        bm.classList.toggle('zero',zero);
+      }
+      if(bo){
+        bo.style.width=zero?'50%':((100-pct)+'%');
+        bo.classList.toggle('solo',zero);
+      }
+      /* הפרצוף שלי עובר ב-faceHTML כדי שתמונה אמיתית תיחתם ותצויר
+         שוב, בדיוק כמו בהאדר; מי שמצייר פנים לא דרכה מקבל use ריק. */
+      const fm=document.getElementById('d-facem');
+      if(fm)fm.innerHTML=faceHTML(myAvatarKey(),'av-parent');
+      /* הצד השני: הראשון ברשימת הנוטעים שאינו אני. ‏w[7] מסמן "זה
+         אני" (ראו normWho), ולכן אין כאן התאמת שם. */
+      const fo=document.getElementById('d-faceo');
+      if(fo){
+        const them=(p.who||[]).filter(function(w){return !(w[7]||w[1]==='אתה')});
+        fo.innerHTML=faceHTML((them[0]&&them[0][0])||'av-someone','av-someone');
+      }
     }
   }
   txt('d-planted','נשתל '+p.planted);
@@ -8300,13 +8366,11 @@ function paintDetail(key,p){
       '<use href="#chev"/></svg></span>')+'</div>';
   }).join('')+
     (p.mine&&p.shared ? invitedHereRows(p) : '');
-  /* מי שאינו בעל הנטיעה רואה עכשיו גם את הסכום של מי שפתח אותה (0034),
-     ולכן המשפט "הקרובים רואים זה את זה בלי סכומים" נעשה אצלו לא מדויק. */
-  /* בנתוני ההדגמה אין is_owner, ושם mine הוא המקור היחיד. */
-  const iOwn=(p.owner===undefined)?!!p.mine:p.owner;
-  txt('d-whofine', iOwn
-    ? 'רק אתה רואה את הפילוח הזה, כבעל הנטיעה.'
-    : 'אתה רואה את הסכום שלך ואת של מי שפתח את הנטיעה. סכום של קרוב אחר מוצג רק אם בחר לחשוף אותו.');
+  /* השורה השקטה שמתחת לרשימה ירדה, לבקשת אלון. היא הסבירה מי רואה
+     מה ("אתה רואה את הסכום שלך ואת של מי שפתח את הנטיעה"), וזה
+     הסבר על מנגנון ולא עובדה על הרגע. מה שהיא כיסתה נשאר נכון
+     במסד: ‏planting_detail מחזירה סכום של קרוב אחר רק כש-
+     visible_to_others דלוק (‏0060), והמסך פשוט מפסיק להתנצל על זה. */
   /* גם ברגע פרטי הרשימה מוצגת, עם שורה אחת — אתה. קודם היא נעלמה, וכך
      המסך של רגע פרטי היה מבנה אחר לגמרי מזה של רגע משותף: המספר, ואז
      כלום. שורה אחת אומרת מה שהיא אומרת — כאן נוטע אדם אחד — ומסבירה
@@ -8322,20 +8386,19 @@ function paintDetail(key,p){
   const noone=!p.who.length;
   document.getElementById('d-cbh').style.display=noone?'none':'';
   document.getElementById('d-who').style.display=noone?'none':'';
-  document.getElementById('d-whofine').style.display=noone?'none':'';
   /* והשורה הקטנה מתחת לרשימה מדברת על "הקרובים רואים זה את זה" — משפט
      שאין לו על מה לחול כשאין קרובים. ברגע פרטי היא אומרת את מה שנכון בו. */
   /* ובבעלות משותפת "רק אתה" סותר את הכותרת "נוטעים יחד · אתה ומיכל":
      בעלות אינה הפקדה, אבל המשפט צריך להישמע נכון לשניהם. */
-  if(solo&&iOwn)txt('d-whofine', p.co
-    ? ('רק אתה הפקדת כאן עד עכשיו. מי שתפתחו לו את הרגע יופיע ברשימה הזאת, בלי לראות את הסכומים שלכם.')
-    : 'רק אתה נוטע כאן. מי שתפתח לו את הרגע יופיע ברשימה הזאת, בלי לראות את הסכומים שלך.');
   buildActions(p);
   /* בנוטע יחיד הגרף כבר נבנה ב-paintSoloMoney, מהמספרים ומהקצב של
      אותו אדם. קריאה שנייה כאן ציירה אותו מחדש מהנטיעה, כלומר דרסה
      את הקצב האישי — ושורת ההסתייגות שמתחת לגרף חזרה לומר את הקצב
      של הנטיעה בזמן ששורת המסלול שלידה אמרה את של האדם. */
   if(!alone)buildChart(p);
+  /* אחרי buildChart ולא לפניו: ‏CH נכתב שם, ו-momentChart רץ קודם.
+     בקריאה מוקדמת ההחלטה נשענה על CH של הציור הקודם. */
+  if(!alone)chartHonest(p);
   dTime.max=Math.max(1,p.yl);dTime.value=0;
   /* בכניסה הנטע נוחת ישר במקומו — המעברים שמורים לגרירה בציר הזמן. */
   const md=document.getElementById('d-medal');
@@ -10838,7 +10901,7 @@ function applyMyAvatar(av){
   const html=faceHTML(av,'av-parent');
   /* ‏#s-facem הוא הפרצוף שלי בתוך פס הפילוח, והוא ברשימה הזאת כדי
      שהחתימה החוזרת של תמונה אמיתית תצייר גם אותו. */
-  document.querySelectorAll('.topbar .me, .hdr .me, .nhdr .me, #s-facem').forEach(function(box){
+  document.querySelectorAll('.topbar .me, .hdr .me, .nhdr .me, #s-facem, #d-facem').forEach(function(box){
     box.innerHTML=html;
   });
   if(av&&av.indexOf('av-')!==0&&!photoUrl(av))
@@ -13039,6 +13102,15 @@ function buildHomeSummary(){
            **ובכמה רגעים הכפתור מכוון לאחד:** הרשימה ממוינת לפי מועד
            היעד, ולכן "להצטרף" מוביל לקרוב ביותר; מי שכבר הפקידה
            מגיעה לרגע שהפקידה בו, שהוא מה ש"פרטי ההשקעה" מתאר. */
+        /* שלושה מצבים ולא שניים. אלון ראה את "לפרטי ההשקעה" בחשבון
+           שלו על ילדה עם שני רגעים ואמר שזו טעות, ובצדק: הכרטיס הזה
+           הוא הדף של אביב, שתי השורות שמעל כבר מובילות לכל רגע בנפרד,
+           ו"פרטי ההשקעה" אינו יודע לאיזה משניהם. מה שחסר שם אינו
+           ניווט אלא **רגע נוסף**.
+           לכן מה שמבדיל אינו "הפקדתי" אלא **מי פתח את הרגע**: מי
+           שפתח רואה את הדף של הילד שלו ומוסיף לו רגע, ומי שהוזמנה
+           רואה את הרגע של מישהו אחר ומצטרפת אליו או נכנסת לפרטים. */
+        const iOpened=sel.rows.some(function(p){return !p.joined});
         const near=sel.rows[0];
         const goRow=iPlant
           ? (sel.rows.filter(function(p){return Number(p.mine||0)>0})[0]||near)
@@ -13052,14 +13124,25 @@ function buildHomeSummary(){
         const join=mySex==='f'?'הצטרפי להשקעה'
                   :mySex==='m'?'הצטרף להשקעה'
                   :'להצטרף להשקעה';
+        /* "+ הוסף רגע" ולא "הוסף רגע משמעותי שתרצה להשקיע בו":
+           הכותרת שמעל הכרטיסייה כבר אומרת "שני הרגעים של אביב",
+           ולכן גם "רגע" וגם "של מי" כבר נאמרו. */
         fuCard.innerHTML=
           sel.rows.map(function(p){return fuMomentHTML(p,many)}).join('')+
           '<div class="fu-act"><button class="btn">'+
-            (iPlant?'לפרטי ההשקעה':join)+'</button></div>';
+            (iOpened?'+ הוסף רגע':iPlant?'לפרטי ההשקעה':join)+'</button></div>';
         /* המאזין נקשר ואינו נכתב לתוך onclick: מפתח נטיעה הוא מחרוזת
            מהשרת, והשחלה שלה לתוך תכונה דורשת בריחה שאין לה סיבה. */
         const fuBtn=fuCard.querySelector('.fu-act .btn');
-        if(fuBtn&&goRow)fuBtn.onclick=function(){openDetail(goRow.key)};
+        if(fuBtn)fuBtn.onclick=iOpened
+          /* אותה כניסה בדיוק של gardenEmptyCta: האשף נפתח עם הילד
+             שכבר נבחר, ולא בשדה ריק שדורש להקליד את שמו מחדש —
+             וזה גם מה שמונע ילד שני עם אותו פרצוף (ראו beneficiaryId). */
+          ? function(){
+              if(sel.kidId||sel.name)prefillKid(sel.name,sel.av,sel.sex,sel.rel);
+              else startCreate();
+            }
+          : function(){if(goRow)openDetail(goRow.key)};
         const mo=sel.rows.reduce(function(a,p){return a+Number(p.myMonthly||0)},0);
         if(alone){
           fuFine.style.display='';
@@ -14155,8 +14238,11 @@ function buildLiveActions(p){
   }
   acts.className='';
   acts.innerHTML=actionsFor(p);
-  note.innerHTML=p.co?('פרטית, רק אתה ו'+p.co+' רואים אותה')
-    :'הנטיעה הזאת פרטית, רק אתה רואה אותה';
+  /* "הנטיעה הזאת פרטית, רק אתה רואה אותה" ירדה, לבקשת אלון: היא
+     מתארת מצב שכל המסך כבר מראה (רשימת נוטעים עם שורה אחת). גרסת
+     השותפות נשארה, כי שם היא אומרת דבר שאינו נראה — שיש עוד בעלים. */
+  note.innerHTML=p.co?('פרטית, רק אתה ו'+p.co+' רואים אותה'):'';
+  note.style.display=p.co?'':'none';
 }
 /* חזרה מצטרפת לכל שורת פעולות באחת משתי דרכים: זוג עם כפתור בודד
    (מקבלת מקום נקי, ghost, אותו כלל שהוא ‎.two>.btn.ghost:last-child‎
@@ -14238,9 +14324,8 @@ function buildActions(p){
     note.style.display='block';
     if(p.mine){
       /* הקישור "פתח אותה לקרובים" ירד מכאן והפך לכפתור הראשי. */
-      note.innerHTML=(p.co?'פרטית, רק אתה ו'+p.co+' רואים אותה'
-                          :'הנטיעה הזאת פרטית, רק אתה רואה אותה')+
-        (p.co?'':' · '+addPartnerLink);
+      /* בלי המשפט שירד נשאר רק הקישור, ובלי " · " שהפריד ביניהם. */
+      note.innerHTML=p.co?('פרטית, רק אתה ו'+p.co+' רואים אותה'):addPartnerLink;
     }else{
       const o=p.who[0],f=o[3]==='f';
       note.innerHTML='את הנטיעה הזו פתח'+(f?'ה':'')+' '+o[1]+'. ההזמנות אליה נשלחות '+(f?'ממנה':'ממנו')+', לא ממך. '+
@@ -14430,8 +14515,20 @@ function buildChart(p){
                                  :(passed>0?now*(n/passed):now);
     return fvFrom(now,monthly,n-passed,rFut);
   };
+  /* **גרף שאין לו קצב אינו גרף אלא ניחוש.** ‏solveRate מחפש שיעור
+     תשואה שמביא את מה שיש היום אל הצפי, ובלי הוראת קבע ידועה כל
+     הפער נופל על הריבית: ‏370 ₪ שצריכים להגיע ל-53,595 ב-עשר שנים
+     הם 64.5 אחוז בשנה. הפתרון תחום ב-35 אחוז, ולכן הקו נעצר ב-11,003
+     בעוד שהתווית ונקודת הסיום יושבות על 53,595 — **הקו אינו מגיע אל
+     הקצה של עצמו**, וזה מה שאלון ראה כ"שבור".
+
+     זה קורה בדיוק אצל מי שהוזמנה ולא הפקידה: ‏monthly_agorot הוא
+     "של כולם לבעלים, של הקורא לתורם" (‏0011), ולכן אצלה הוא 0 בעוד
+     שהצפי הוא של הרגע כולו. ‏`honest` הוא מה שמפריד, והמסך מחליט
+     בעצמו מה לעשות עם זה. */
+  const honest=monthly>0||end<=now;
   CH={total:total,passed:passed,monthly:monthly,now:now,end:end,max:max,
-      hasSplit:hasSplit,val:val,depEnd:depEnd};
+      hasSplit:hasSplit,val:val,depEnd:depEnd,honest:honest};
 
   const step=Math.max(1,Math.round(total/44)),pts=[];
   for(let n=0;n<=total;n+=step)pts.push(n);
