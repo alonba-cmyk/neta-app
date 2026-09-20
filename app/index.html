@@ -1397,24 +1397,24 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   background:none;font-family:inherit;
   color:var(--tx-3);font-size:12.5px;cursor:pointer;transition:.15s}
 .reladd:hover{background:var(--leaf-bg);color:var(--tx-2)}
-/* הפעולה של רגע שהוזמנת אליו ועוד לא הפקדת בו: היא התחתית של
-   הכרטיס ולא כפתור נפרד מתחתיו. אותה פינה, בלי רווח, כלומר עצם אחד.
-   זה מה שמחזיק את הכלל "פעולה יושבת ליד הדבר שהיא משנה" ועדיין
-   משאיר אותה מעל הקיפול: 449 מתוך 502 במכשיר בן 640, בעוד שאותו
-   כפתור בסוף הרשימה נוחת שם ב-459. */
-.ivjoin{margin-bottom:9px}
-.ivjoin .ncard{margin-bottom:0;border-end-start-radius:0;border-end-end-radius:0}
-.ivjoin .btn{border-start-start-radius:0;border-start-end-radius:0;
-  font-size:13px;padding:11px}
+/* הפעולה של רגע שהוזמנת אליו ועוד לא הפקדת בו יושבת **בתוך**
+   הכרטיס ולא כתחתית שלו. הגרסה הראשונה איחדה את שניהם לצורה אחת
+   (הכרטיס בלי פינות תחתונות, הכפתור צמוד אליו מקצה לקצה), ואלון
+   ביקש עקביות עם שאר המסכים: באפליקציה פעולה שבתוך כרטיס יושבת
+   בתוך הריפוד שלו, כמו "+ הוסף קרוב" ברשימת הקרובים.
+
+   ‏.ivjoin הוא עכשיו הכרטיס עצמו — מסגרת, פינות וריפוד — והשורה
+   שבפנים מאבדת את שלה. */
+.ivjoin{background:var(--s1);border:1px solid var(--line);border-radius:13px;
+  padding:12px;margin-bottom:9px;transition:border-color .16s}
+.ivjoin:hover{border-color:var(--line-2)}
+.ivjoin .ncard{background:none;border:0;border-radius:0;padding:0;margin:0}
+.ivjoin .btn{margin-top:10px;font-size:13px;padding:11px}
 /* ומשתי הזמנות ומעלה רק הקרובה מקבלת כפתור מלא, והשאר שורה ירוקה
-   שממשיכה את הכרטיס: שני כפתורים ירוקים על מסך אחד הם שתי פעולות
-   ראשיות. השורה נושאת את המסגרת של הכרטיס כדי שהשניים ייראו כעצם
-   אחד, והקו שביניהם הוא --rule, המפריד שבתוך כרטיס. */
-.ivjoin.quiet .ncard{border-bottom:0}
-.ivjoin .ivrow{background:var(--s1);border:1px solid var(--line);border-top:1px solid var(--rule);
-  border-end-start-radius:13px;border-end-end-radius:13px;padding:10px 0;
+   מעל קו מפריד: שני כפתורים ירוקים על מסך אחד הם שתי פעולות
+   ראשיות. הקו הוא --rule, המפריד שבתוך כרטיס. */
+.ivjoin .ivrow{margin-top:10px;padding-top:10px;border-top:1px solid var(--rule);
   color:var(--leaf);font-weight:600;font-size:13px;text-align:center;cursor:pointer}
-.ivjoin .ivrow:hover{background:var(--leaf-bg)}
 /* שורת החזרה לרשימה: בראש הפאנל, שקטה, ובלי קו תחתון. היא ניווט
    ולא קישור בתוך משפט. */
 #c-kidback{display:block;padding:0;margin:0 0 10px;font-size:12.5px;
@@ -2144,7 +2144,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '597d884';
+window.NETA_BUILD = '12e1575';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
