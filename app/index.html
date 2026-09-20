@@ -2056,7 +2056,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '293f9c9';
+window.NETA_BUILD = '52530e1';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -8771,7 +8771,7 @@ function paintKidSection(){
   }
   box.style.border='';box.style.background='';box.style.padding='';
   box.innerHTML=rows.map(function(b){
-    const n=kidMoments(b).length;
+    const n=kidMomentsAll(b).length;
     const key=b.id||b.name;
     /* הפעולה מובילה לדבר עצמו: מי שאין לו רגע נפתח לו אחד, ומי שיש
        לו נכנסים אליהם. לחיצה על השורה עורכת, בדיוק כמו בשורה של
@@ -8779,25 +8779,17 @@ function paintKidSection(){
     /* הכפתור נוקב ביעד ולא בתוכן: הוא פותח את "העתיד שלנו" על הילד
        הזה, ולכן הוא נושא את שם הטאב. "הרגעים" תיאר את מה שיש שם
        ולא לאן הוא מוביל, ואיש לא ניחש. */
-    /* ושלושה מצבים ולא שניים. ‏n סופר את מה שהכפתור באמת יפתח,
-       כלומר את מה ש"העתיד שלנו" מציג, ולכן ילדה שאין לה שם רגע
-       קיבלה כאן "עוד לא נפתח רגע" ו"פתח רגע" על רגע שקיים. הרגע
-       הזה כן נספר ב"ההשקעות שלי", ששם השאלה היא כמה נתתי ולא למי
-       מחכה, ולכן המצב השלישי אומר שהוא קיים ומוביל לשם במקום
-       להציע לפתוח אותו שוב. מאז myKidPlantings זה נשאר רק לרגע
-       שמישהו אחר פתח לילד שלי. */
-    const nAll=kidMomentsAll(b).length;
+    /* שני מצבים ולא שלושה. היה כאן מצב שלישי, "רגע אחד, במשפחה
+       אחרת", שנועד לרגע שקיים אבל אינו מוצג ב"העתיד שלנו" — ומרגע
+       שהמסך מציג כל רגע שאני נוטע בו, אין רגע כזה. שתי הספירות
+       התלכדו, ולכן kidMoments ירדה ו-kidMomentsAll נשארה אחת. */
     const act=n
       ? '<button class="rx" onclick="event.stopPropagation();kidMomentsGo(\''+attrText(key)+'\')">'+
           (b.sex==='f'?'העתיד שלה':'העתיד שלו')+'</button>'
-      : nAll
-      ? '<button class="rx" onclick="event.stopPropagation();openInvestments()">ההשקעות שלי</button>'
       : '<button class="rx" onclick="event.stopPropagation();kidOpenMoment(\''+attrText(key)+'\')">פתח רגע</button>';
     const sub=[kinMe(b.relation),
                n ? (n===1?'רגע אחד':countWord(n)+' רגעים')
-                 : nAll ? (nAll===1?'רגע אחד, במשפחה אחרת'
-                                   :countWord(nAll)+' רגעים, במשפחה אחרת')
-                        : 'עוד לא נפתח רגע']
+                 : 'עוד לא נפתח רגע']
       .filter(Boolean).join(' · ');
     return '<div class="rel" onclick="editKid(\''+attrText(key)+'\')">'+
       '<div class="ra">'+kidFaceHTML(b.avatar||kidAvatar(b.name,b.sex),34)+'</div>'+
@@ -8806,37 +8798,39 @@ function paintKidSection(){
   }).join('')+
     '<div class="reladd" onclick="openAddPerson(&quot;for&quot;)">+ הוסף קרוב</div>';
 }
-/* הרגעים שהמסכים של הילדים שלי מציגים. עד כאן זה היה familyMine
-   לבדו, כלומר תוצאה של שלב "מי יקבל את הכסף": מי שבחר שם "ההורה
-   של X" שומר family_of ריק, ולכן נטיעה שהוא עצמו פתח נעלמה מ"העתיד
-   שלנו". הכלל נכון כשמישהו אחר פתח את הרגע — רגע של משפחה אחרת
-   אינו שייך למסך ששואל מה מחכה לילדים שלי — ושקרי כשפתחתי אותו
-   בעצמי: סבתא שנוטעת רק לנכדים, או דוד שנוטע רק לאחיינים, פתחו את
-   המסך ומצאו אותו ריק לגמרי בזמן שיש להם נטיעות פעילות. לכן שני
-   תנאים ולא אחד, והמשמעות עוברת מ"הילדים של המשפחה שלי" ל"הילדים
-   שאני פתחתי להם רגע".
+/* הרגעים שהמסכים של הילדים שלי מציגים, וזו הרשימה כולה.
+
+   שני סבבים הובילו לכאן. תחילה familyMine לבדו, כלומר תוצאה של שלב
+   "מי יקבל את הכסף": מי שבחר שם "ההורה של X" שומר family_of ריק,
+   ולכן סבתא שנוטעת רק לנכדים ודוד שנוטע רק לאחיינים פתחו את המסך
+   ומצאו אותו ריק בזמן שיש להם נטיעות פעילות. אז נוסף !joined,
+   והמשמעות עברה ל"הילדים שאני פתחתי להם רגע".
+
+   וגם זה לא החזיק, וזה נמדד: מרים הוזמנה לטיול הגדול של ניצקה,
+   שאלון פתח והפקיד בו, ופתחה מסך שנקרא "העתיד שלנו" שמודיע לה
+   שהיא לבד. מי שהוזמן לעולם לא פתח את הרגע, ולכן joined מוציא
+   בדיוק את קהל המוזמנים — שהוא רוב האנשים.
+
+   ואין כאן סתירה מול "ההשקעות שלי", כי שני המסכים שואלים שתי
+   שאלות: שם כמה אני נתתי, וכאן כמה מחכה לילד. 370 ₪ באמת מחכים
+   לניצקה בלי קשר למי שם אותם, ולכן הם נכונים כאן ואסורים שם.
+   זו בדיוק התקלה של גל, שראתה בראש המסך שמודד אותה את מה שנצבר
+   לילד של משפחה אחרת.
+
+   המחיר שנאמר ונבחר: המסך מפסיק להיות "הילדים של המשפחה שלי"
+   והופך ל"הילדים שאני נוטע להם", כולל ילדים של אחרים. לקהל של
+   נטע זה בדיוק נכון, והחלופה גרועה יותר — כסף בעתיד של ילדה ואף
+   מסך שמראה אותו.
 
    הכסף לא זז: buildHomeSummary ממשיכה לחשב את המספר הגדול ואת
    הפילוח על familyMine בלבד, כי שם השאלה היא לאיזו משפחה הכסף
    שייך ולא מי פתח את הרגע. */
 function myKidPlantings(rows){
-  return (rows||(lastModel&&lastModel.plantings)||[])
-    .filter(function(p){return p.familyMine||!p.joined});
+  return (rows||(lastModel&&lastModel.plantings)||[]);
 }
-function kidMoments(b){
-  const own=myKidPlantings();
-  return own.filter(function(p){
-    /* kidId הוא השם בלקוח ל-beneficiary_id שעל הנטיעה, ו-kidOf הוא
-       הנפילה אחורה לשם עבור שורות שנוצרו לפני 0061. אותו זיווג בדיוק
-       כמו ב-kidKey ו-fuWithBenes. */
-    return (b.id&&p.kidId===b.id)||
-           String(kidOf(p)||'').trim()===String(b.name||'').trim();
-  });
-}
-/* כל הרגעים של הילד, גם אלה שנשמרו כמשפחה אחרת. kidMoments שואלת
-   "מה המסך שלי יציג", וזו שואלת "האם יש בכלל", ושתי השאלות נחוצות:
-   ילד שיש לו רגע במשפחה אחרת אינו ילד חדש, גם כשאף מסך של המשפחה
-   שלי אינו מראה אותו. */
+/* כל הרגעים של הילד. היו כאן שתיים, kidMoments ("מה המסך שלי
+   יציג") ו-kidMomentsAll ("האם יש בכלל"), ומרגע ש-myKidPlantings
+   מחזירה את הכול שתי השאלות הן אותה שאלה. הראשונה ירדה. */
 function kidMomentsAll(b,all){
   const rows=all||((lastModel&&lastModel.plantings)||[]);
   const nm=String((b&&b.name)||'').trim();
@@ -8858,7 +8852,7 @@ function kidOf_(key){
    לילד בלי רגעים אין קבוצה, ושם המזהה של הישות הוא הנכון. */
 function fuKeyOf(b){
   if(!b)return '';
-  const rows=kidMoments(b);
+  const rows=kidMomentsAll(b);
   return 'k:'+(rows.length?kidKey(rows[0]):(b.id||b.name));
 }
 function kidMomentsGo(key){
@@ -12672,8 +12666,33 @@ function buildHomeSummary(){
       if(!selEmpty&&sel){
         const many=sel.rows.length>1;
         const ppl=sel.people||[];
-        const alone=ppl.length<=1;
-        const who=alone
+        /* האם אני אחד מהנוטעים, ולא כמה נוטעים יש. השורה נגזרה
+           מ-ppl.length<=1 והניחה שהיחיד ברשימה הוא אני, ולכן מרים,
+           שהוזמנה לרגע שאלון הפקיד בו ועוד לא הפקידה, קיבלה "אתה
+           נוטע כאן לבד" על רגע שמישהו אחר נוטע בו. ‏mine הוא הסימן
+           האמין: השמות ב-participants הם שמות פרופיל אמיתיים
+           ("מרים"), ולא "אתה" כמו בהדגמה. */
+        const iPlant=Number(sel.mine||0)>0;
+        /* מי שפתח, כנפילה אחורה: אפשר להצטרף לרגע שעוד אין בו ולו
+           הפקדה אחת, ואז participants ריקה ואין את מי לנקוב. */
+        const opener=(sel.rows[0]&&sel.rows[0].by)||'';
+        const guest=!iPlant;
+        const alone=iPlant&&ppl.length<=1;
+        const who=guest
+          /* תווית ורשימה, ולא משפט: לשמות ב-participants אין מין
+             במסד (contribution_participants מחזירה שם ודמות בלבד),
+             ופועל בזכר היה שקרי לסבתא רחל. "נוטעים כאן" נקרא
+             כתווית, בדיוק כמו "מי שנוטע איתי" שבטאב השכן. */
+          ? (function(){
+              const names=ppl.map(function(x){return firstName((x&&x.name)||String(x||''))})
+                             .filter(Boolean);
+              const list=names.length?names:(opener?[firstName(opener)]:[]);
+              if(!list.length)return 'עוד לא הפקיד כאן איש';
+              const last=list.pop();
+              const line=list.length?(list.join(', ')+' ו'+last):last;
+              return 'נוטעים כאן: <b>'+line+'</b>';
+            })()
+          : alone
           ? '<b>אתה</b> נוטע כאן לבד'
           : (function(){
               const names=ppl.map(function(x){return firstName((x&&x.name)||String(x||''))})
@@ -12690,7 +12709,17 @@ function buildHomeSummary(){
           sel.rows.map(function(p){return fuMomentHTML(p,many)}).join('')+
           '<div class="fu-who">'+faceStack(ppl)+
             '<span class="fu-t">'+who+'</span>'+
-            (alone?'<span class="fu-go" onclick="inviteFromFuture()">הזמן קרוב ›</span>':'')+
+            /* מי שהוזמן ועוד לא הפקיד אינו מזמין, הוא מצטרף:
+               ‏invitations_send דורשת app.is_initiator, כלומר השרת
+               היה דוחה את "הזמן קרוב" שישב כאן. והפעולה מובילה
+               לדבר עצמו, כלומר למסך ההפקדה ולא למסך הרגע.
+               הרגע הקרוב ביותר כשיש כמה, כי plantings_im_in
+               ממוינת לפי target_date והוא זה שקורה ראשון. */
+            (guest
+              ? '<span class="fu-go" onclick="investFromFuture(\''+
+                  attrText(String((sel.rows[0]&&sel.rows[0].key)||''))+
+                  '\')">הצטרף להשקעה ›</span>'
+              : alone?'<span class="fu-go" onclick="inviteFromFuture()">הזמן קרוב ›</span>':'')+
           '</div>';
         const mo=sel.rows.reduce(function(a,p){return a+Number(p.myMonthly||0)},0);
         if(alone){
@@ -13883,6 +13912,20 @@ function showTermStep(on){
   document.getElementById('c-terms').style.display=on?'':'none';
   document.getElementById('eb-term').style.display=on?'':'none';
   if(!on){document.getElementById('c-datefield').style.display='none';txt('c-datehint','');}
+}
+/* הפקדה לרגע שמישהו אחר פתח, מתוך "העתיד שלנו". ‏investIn דורשת
+   נטיעה טעונה במלואה (מסלול, ריבית, תאריך), ולמי שהוזמן היא עוד לא
+   נטענה: הרשימה מגיעה מ-plantings_im_in והפרטים מ-planting_detail.
+   אותה טעינה בדיוק כמו ב-openDetail, ולכן אותו טיפול בכישלון. */
+function investFromFuture(key){
+  if(!key)return;
+  if(plantAt(key)){investIn(key);return}
+  if(!netaServer)return;
+  netaServer.detail(key).then(function(r){
+    if(!r){toast('לא הצלחנו לטעון את הנטיעה');return}
+    livePlants[key]=liveDetail(r);
+    investIn(key);
+  }).catch(function(){toast('לא הצלחנו לטעון את הנטיעה')});
 }
 function investIn(key){
   const p=plantAt(key);cur=key;
