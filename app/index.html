@@ -1506,17 +1506,18 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    המגע הוא 61 על 173.
    ממוקד ל-.sexpick ולא ל-.chips, שמשרת תשעה מקומות אחרים. */
 .sexpick{display:flex;gap:8px;margin:4px 0 2px}
-.sexpick button{flex:1;min-width:0;text-align:right;font-family:inherit;cursor:pointer;
+.sexpick button{flex:1;min-width:0;text-align:center;font-family:inherit;cursor:pointer;
   background:var(--s1);border:1px solid var(--line);border-radius:14px;
-  padding:10px 12px;transition:.15s}
+  padding:13px 12px;transition:.15s}
 .sexpick b{display:block;font-size:12.5px;font-weight:600;color:var(--tx)}
-.sexpick i{display:block;font-style:normal;font-size:11px;color:var(--tx-3);
-  margin-top:4px;line-height:1.45}
-.sexpick button.on{background:var(--leaf);border-color:var(--leaf)}
-.sexpick button.on b{color:var(--on-leaf)}
-/* שקיפות ולא צבע שני, כדי שהשורה תישאר נגזרת מ---on-leaf בשתי הערכות.
-   נמדד מול --leaf: 7.10 בבהירה ו-5.90 בכהה, ושתיהן מעל 4.5. */
-.sexpick button.on i{color:var(--on-leaf);opacity:.82}
+/* ‏**טבעת ולא מילוי.** הנבחרת הייתה צבועה --leaf מלא, והירוק המלא הוא
+   השפה של פעולה ראשית באפליקציה — כלומר שאלה שאפשר לדלג עליה קיבלה
+   את המשקל של כפתור. וזה גם חרג ממה שיושב 40 פיקסלים מתחתיה: בבורר
+   הדמויות הנבחרת מסומנת בטבעת ירוקה, וזו גם השפה של תיבת הסימון
+   ברשימת ההזמנה. אותו מסך דיבר בשתי שפות סימון. */
+.sexpick button.on{background:none;border-color:var(--leaf);
+  box-shadow:inset 0 0 0 1px var(--leaf)}
+.sexpick button.on b{color:var(--leaf)}
 /* עיצוב "כניסה" ו"פתיחת חשבון" בלבד — לא הקלאסים הגלובליים, כדי לא
    להזיז 25 מסכים אחרים ששותפים אותם קלאסים. */
 [data-name="כניסה"] h2,[data-name="כניסה"] .sub,[data-name="כניסה"] #lg-fine,
@@ -2144,7 +2145,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '12e1575';
+window.NETA_BUILD = '2e27ed3';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3340,6 +3341,14 @@ window.NETA_CONFIG = {
            הפירוט עבר למקומו: הכסף שנצבר ברגע ומי נוטע בו יושבים על
            הכרטיס של אותו רגע, והספירה בתווית שמעל הרשימה שהיא
            סופרת — בדיוק כמו שכבר נעשה בכותרות הסקשנים. -->
+      <!-- שתי העובדות של מי שצורף לרגע של מישהו אחר. הן ירדו כשהן
+           עברו אל הכרטיסים, ואלון ביקש שהשורה לא תישאר ריקה אצל מי
+           שעוד לא הפקידה — ולכן הן חוזרות **רק כשאין לה מה לומר
+           בלעדיהן**, כלומר כשאין קצב ואין צפי. המחיר נאמר: אצל מי
+           שהוזמנה לרגע אחד הן חוזרות על מה שהכרטיס שמתחת כבר אומר,
+           במרחק 100 פיקסלים. -->
+      <span id="mi-potgrp" style="display:none"><b id="mi-pot">·</b> <span id="mi-potk">כבר נצבר ברגע</span></span>
+      <span class="grp" id="mi-whogrp" style="display:none"><i></i><span id="mi-who">·</span></span>
       <span id="mi-mongrp"><b id="mi-mon">·</b> בכל חודש</span>
       <span class="grp" id="mi-cntgrp"><i></i><span id="mi-cnt">בשני רגעים</span></span>
       <span class="grp" id="mi-projgrp"><i></i><span>יגדל ל<b class="fut" id="mi-proj">·</b></span></span>
@@ -3764,7 +3773,7 @@ window.NETA_CONFIG = {
   <h2 class="gap-s">מי אתה?</h2>
   <p class="sub gap" id="id-sub">כבר אימתנו אותך. זה השם שיופיע לך ולקרובים שתזמין.</p>
   <div class="field"><label>שם מלא</label><input type="text" id="id-name"
-    placeholder="השם המלא שלך" oninput="sexPickSync('id-sex','id-name')"></div>
+    placeholder="השם המלא שלך"></div>
   <!-- לא בשביל זהות אלא בשביל פועל: בלי זה כל מסך שמדבר עליך כותב
        "פתח/ה" ו"נטע/ה". אפשר לדלג — הצורה הכפולה נשארת, וזה בדיוק מה
        שהדוגמה שבכל כרטיסייה מראה. הגוש נכתב ב-JS כי הדוגמה נגזרת מהשם
@@ -5049,41 +5058,23 @@ function pickMySex(el,x){
   if(on){mySex=null;return}
   el.classList.add('on');mySex=x;
 }
-/* ── הדוגמה שבכרטיסייה ──────────────────────────────────────────────
-   נבנית מהשם האמיתי שבשדה שמעליה ולא ממחרוזת קבועה, בדיוק כמו שהדגמים
-   הדוהים נבנים מהמקור: מי שקורא "אלון פתח נטיעה" רואה את המשפט שלו,
-   ולא הדגמה. בלי שם היא נופלת לפועל לבדו, כי "‏ פתח נטיעה" עם רווח
-   יתום גרוע מדוגמה קצרה. */
-function sexSample(name,x){
-  const f=firstName(name||'');
-  return '"'+(f?f+' ':'')+(x==='f'?'פתחה':'פתח')+' נטיעה"';
-}
-/* ‏**השם נמסר כערך ולא כמזהה שדה.** הגרסה הראשונה קראה
-   ‏getElementById(nameId) מתוך sexPickHTML, ובשני הגיליונות הוא רץ בזמן
-   בניית המחרוזת — כלומר שדה השם שיושב באותה מחרוזת עוד לא היה ב-DOM,
-   ‏getElementById החזיר null, ושתי הכרטיסיות נפתחו בלי שם. בלי שום
-   שגיאה, ורק במסלול של המוזמן ושל הפרופיל. הכלל: פונקציה שבונה HTML
-   אינה קוראת מה-DOM שהיא עצמה עומדת ליצור.
-   call הוא תבנית ולא שם פונקציה, כי מסך 22 קורא ל-pickMySex שמחזיקה
+/* ‏call הוא תבנית ולא שם פונקציה, כי מסך 22 קורא ל-pickMySex שמחזיקה
    גם את mySex הגלובלי ושני הגיליונות קוראים ל-pickEditSex שקוראת
-   מה-DOM בשמירה. %X% מוחלף במפתח של הכרטיסייה. */
-function sexPickHTML(boxId,sel,call,nameNow){
+   מה-DOM בשמירה. %X% מוחלף במפתח של הכרטיסייה.
+
+   הדוגמה שהייתה בכרטיסייה ("אלון פתח נטיעה") ירדה יחד עם
+   ‏sexSample ו-sexPickSync: היא הייתה מה שהפך את השאלה למובנת בלי
+   שורת הסבר, ואלון בחר להוריד אותה כדי שהגוש יהיה 46 במקום 60.
+   ‏**והכלל שנלמד ממנה נשאר נכון ושווה שמירה:** פונקציה שבונה HTML
+   אינה קוראת מה-DOM שהיא עצמה עומדת ליצור. הגרסה הראשונה קראה
+   ‏getElementById(nameId) מתוך sexPickHTML, ובשני הגיליונות הוא רץ
+   בזמן בניית המחרוזת, החזיר null, ושתי הכרטיסיות נפתחו בלי שם. */
+function sexPickHTML(boxId,sel,call){
   return '<div class="sexpick" id="'+boxId+'">'+['m','f'].map(function(x){
     return '<button type="button" class="'+(sel===x?'on':'')+'" data-x="'+x+'" '+
       'onclick="'+call.split('%X%').join(x)+'">'+
-      '<b>בלשון '+(x==='m'?'זכר':'נקבה')+'</b>'+
-      '<i>'+sexSample(nameNow,x)+'</i></button>';
+      '<b>בלשון '+(x==='m'?'זכר':'נקבה')+'</b></button>';
   }).join('')+'</div>';
-}
-/* מרענן את שתי הדוגמאות בלבד ואינו מצייר מחדש את הגוש, כדי שמה שנבחר
-   לא ייעלם בזמן שמקלידים את השם. */
-function sexPickSync(boxId,nameId){
-  const box=document.getElementById(boxId);
-  if(!box)return;
-  box.querySelectorAll('button').forEach(function(b){
-    const i=b.querySelector('i');
-    if(i)i.textContent=sexSample(((document.getElementById(nameId)||{}).value||''),b.dataset.x);
-  });
 }
 function idNext(){
   const n=(document.getElementById('id-name')||{}).value;
@@ -6913,14 +6904,14 @@ function introduceThen(plantingId,next){
          וזה מה שמסך ההצטרפות מילא מראש לפני שהשדה ירד ממנו. */
       '<label>שם</label><input type="text" id="jn-name" value="'+
         attrText(inviteKnows.name||'')+'" placeholder="למשל: סבתא רחל" '+
-        'oninput="sexPickSync(\'jn-sex\',\'jn-name\')">'+
+        '>'+
       /* השאלה הזאת נשאלה עד כה במסלול אחד מתוך שניים: היא ישבה ב"מי
          אתה?" ולא כאן, ולכן מי שהגיע מהזמנה לא נשאל מעולם ונשאר על
          הצורה הכפולה. זה מסביר בדיוק את מה שנמדד במסד — ארבעה מתוך
          חמישה פרופילים בלי מין — כי רוב האנשים מגיעים כמוזמנים.
          ובלי ברירת מחדל, כמו בכל מקום אחר. */
       '<label>איך לפנות אליך</label>'+
-      sexPickHTML('jn-sex','','pickEditSex(this)',inviteKnows.name||'')+
+      sexPickHTML('jn-sex','','pickEditSex(this)')+
       '<label>תמונה</label><div id="jn-avpick">'+
         avpickHTML('av-parent',null,"myPickPhoto('jn-avpick')")+'</div>'+
       (plantingId?'<label>מה את/ה לילד</label><input type="text" id="jn-rel" placeholder="למשל: סבתא">':''),
@@ -10771,9 +10762,9 @@ function editMyIdentity(){
   sheetForm('השם והתמונה שלי',
     'כך אתה מופיע לקרובים שהזמנת, לצד ההשקעות שלך. כתובת הכניסה שלך לא משתנה.'+
     '<label>שם מלא</label><input type="text" id="nm-val" value="'+attrText(nowName)+'" '+
-      'oninput="sexPickSync(\'me-sex\',\'nm-val\')">'+
+      '>'+
     '<label>איך לפנות אליך</label>'+
-    sexPickHTML('me-sex',nowSex,'pickEditSex(this)',nowName)+
+    sexPickHTML('me-sex',nowSex,'pickEditSex(this)')+
     '<label>בחר דמות, או העלה תמונה</label>'+
       '<div id="me-avpick">'+avpickHTML(nowAv,myPhoto,"myPickPhoto('me-avpick')")+'</div>'+
       '<p class="fine" id="me-upnote" style="margin-top:8px;display:none"></p>',
@@ -13085,9 +13076,26 @@ function paintInvestments(){
      מידע. ‏.word ירד איתו, ולכן גם הכלל שב-CSS. */
   txt('mi-num',shekel(total));
 
-  /* מי פתח את הרגע וכמה כבר נצבר בו עברו אל הכרטיס של אותו רגע:
-     שם הם מתארים משהו, ובשורה הזאת הם היו הכסף של מישהו אחר מתחת
-     למספר שמודד אותי. ראו ivCardHTML. */
+  /* מי פתח את הרגע וכמה כבר נצבר בו יושבים על הכרטיס של אותו רגע
+     (ראו ivCardHTML), **וחוזרים לשורה כשאין בה שום עובדה אחרת** —
+     כלומר אצל מי שהוזמנה ועוד לא הפקידה, שאין לה קצב ואין לה צפי.
+     בלי זה נשאר שם קו בלי כלום מתחתיו. */
+  const inv=rows.filter(function(p){return p.joined});
+  const pot=inv.reduce(function(a,p){return a+Number(p.accrued||0)},0);
+  const by=[];
+  inv.forEach(function(p){if(p.by&&by.indexOf(p.by)<0)by.push(p.by)});
+  const lonely=!(monthly>0)&&!(proj>total);
+  const potG=document.getElementById('mi-potgrp');
+  if(potG)potG.style.display=(lonely&&pot>0)?'':'none';
+  txt('mi-pot',shekel(pot));
+  txt('mi-potk',inv.length>1?'כבר הושקעו ברגעים':'כבר הושקעו ברגע');
+  const whoG=document.getElementById('mi-whogrp');
+  if(whoG)whoG.style.display=(lonely&&by.length)?'':'none';
+  /* "נפתח על ידי" ולא "X נוטע איתך": סביל, ולכן בלי ניחוש מגדר,
+     וזו כבר הלשון של הכרטיס. */
+  txt('mi-who',by.length===1?('נפתח על ידי '+by[0])
+             :by.length===2?('נפתח על ידי '+by[0]+' ו'+by[1])
+             :('נפתח על ידי '+by[0]+' ועוד '+(by.length-1)));
   /* בלי הוראת קבע השורה כולה יורדת, ולא מודיעה על היעדרה. הכיתוב
      "בכל חודש" יושב במבנה ולא בטקסט, ולכן כתיבת "אין הוראת קבע פעילה"
      לתוך המספר הרכיבה "אין הוראת קבע פעילה בכל חודש". */
@@ -14424,7 +14432,7 @@ pickedAv='av-parent';myPhoto=null;myPaintAv('av-parent','id-avpick');
 /* הגוש נצבע פעם אחת בטעינה ולא בכל כניסה למסך: השדה שמעליו ריק בשלב
    הזה, ו-oninput הוא מה שמעדכן את הדוגמה בזמן שמקלידים. */
 document.getElementById('id-sexbox').innerHTML=
-  sexPickHTML('id-sex','',"pickMySex(this,'%X%')",'');
+  sexPickHTML('id-sex','',"pickMySex(this,'%X%')");
 otpClean(document.getElementById('lg-otp'));otpClean(document.getElementById('jo-otp'));otpSay();
 loginPrep();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();applyTabSources();buildGhosts();
 /* סשן שמור מהכניסה הקודמת — טוענים את הפרופיל לפני שהמסך נצבע. */
