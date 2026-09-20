@@ -2142,7 +2142,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b90ebe9';
+window.NETA_BUILD = '26fe3c0';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -12991,9 +12991,16 @@ function ivCardHTML(p){
   const waiting=p.joined&&!(mine>0);
   return plantCard({key:p.key,icon:p.icon,name:plantTitle(p),verb:'נטעת',
                     amount:mine,
+                    /* "הושקעו עד כה" ולא "כבר נצבר כאן", לבקשת אלון:
+                       מה שהמסך הזה צריך להגיד למי שהוזמנה ועוד לא
+                       הפקידה הוא שמישהו כבר שם כאן כסף, ו"נצבר"
+                       נקרא כאילו הוא צמח מעצמו. זה ההפך מהנימוק
+                       שבמספר הגדול של "העתיד שלנו", ששם "נצבר"
+                       נבחרה **כי** אין לה נושא אחד; כאן יש, וזו
+                       בדיוק הנקודה. */
                     amountText:mine>0?''
                       :(waiting&&acc>0
-                          ? 'כבר נצבר כאן <b class="pcsum">'+shekel(acc)+'</b>'
+                          ? 'הושקעו עד כה <b class="pcsum">'+shekel(acc)+'</b>'
                           : 'הוזמנת, עוד לא נטעת'),
                     capTop:mine>0&&pj>mine?shekel(pj):'',
                     cap:mine<=0?(targetLine(p)||'')
