@@ -41,15 +41,6 @@ setTimeout(function(){
      עדיין נקרא כשלוש. */
   --tx:#EDEFE9;--tx-2:#9BA396;--tx-3:#808878;
   --leaf:#7FC088;--leaf-2:#5FA36A;--leaf-soft:#A8CBAC;--leaf-bg:#1B2A1D;--leaf-line:#2A4530;
-  /* הירוק השני של פס הפילוח ב"העתיד שלנו". הוא אינו --leaf-2, שהוא
-     גוון של אותו ירוק ונקרא כמעט זהה לו על אותו פס; הוא נבחר כדי
-     להיפרד גם מ---leaf וגם מהדף. בכהה אין צבע שעובר 3:1 מול שניהם,
-     והתקרה היא 2.91, וזה הערך שם.
-     הגוון הוא 128°, זה של --leaf בערכה הכהה, והרוויה 35, שהיא
-     שלו בדיוק (34). הוא היה 159° ברוויה 55 ואלון אמר שהירוק מרגיש
-     זר: הבהירות נעולה על ידי שני הספים, ולכן מה שנשאר חופשי הוא
-     הגוון והרוויה, ושניהם היו מחוץ למשפחה. */
-  --leaf-mid:#446949;
   /* המשטח שמאחורי פרצוף שיושב בתוך מקטע צבוע. ‏--s2 הוא כהה בערכה
      הכהה, ובתוך מקטע של --leaf הבהיר הוא נקרא כחור ולא כפרצוף;
      הדמויות בספרייט ממילא מצוירות מול משבצת קרם, וזה הערך כאן.
@@ -124,11 +115,6 @@ setTimeout(function(){
   --bg:#FFFFFF;--s1:#FFFFFF;--s2:#EEE9DF;--line:#E3DCCF;--line-2:#C9BFAE;
   --tx:#24302B;--tx-2:#3B4741;--tx-3:#4B564F;
   --leaf:#1F4D3A;--leaf-2:#173B2D;--leaf-soft:#4B775C;--leaf-bg:#F5F1E8;--leaf-line:#D9CDB8;
-  /* גוון 143° ורוויה 35, כלומר --leaf-soft בדיוק (143/37) בבהירות
-     שהספים מחייבים. הערך הקודם היה 158° ברוויה 38, כלומר טורקיז
-     דהוי שאינו במשפחה; רוויה 50 נוסתה בדרך ואלון בחר בשקטה.
-     ראו ההערה בערכה הכהה. */
-  --leaf-mid:#679E7C;
   /* לבן, ולא הקרם של הכהה: כאן הדף עצמו לבן, ומשטח שמאחורי פרצוף
      בתוך מקטע ירוק נקרא נקי יותר כשהוא אותו לבן. */
   --face-fill:#FFFFFF;
@@ -1214,15 +1200,25 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   display:flex;align-items:center;justify-content:center}
 #s-mine .sg.m{flex:0 1 auto;background:var(--leaf);
   border-start-start-radius:10px;border-end-start-radius:10px}
-#s-mine .sg.o{flex:1 1 auto;background:var(--leaf-mid);
+/* מלא הוא החלק שלי, מקווקו הוא של הקרובים. שני ירוקים מלאים היו
+   נעולים על 3.10 בבהירה ו-2.91 בכהה, כי כל אחד מהם חייב להיפרד גם
+   מהשני וגם מהדף; מילוי מול מתאר אינו נמדד בניגודיות בין שני
+   צבעים ולכן אינו כפוף לתקרה הזאת. ‏--leaf-mid ירד עם זה. */
+#s-mine .sg.o{flex:1 1 auto;background:none;
+  border:1.5px dashed var(--leaf);
   border-start-end-radius:10px;border-end-end-radius:10px}
 /* ‏0 ₪ אינו מקטע ירוק שנקרא כאילו הפקדת: מסגרת מקווקוות אומרת
    "כאן יהיה שלך". הרוחב (50 אחוז) הוא החלטה, ראו buildHomeSummary. */
 #s-mine .sg.zero{background:none;border:1.5px dashed var(--leaf)}
-/* כשהמקטע שלי מקווקו, השני הוא המקטע המלא היחיד על המסך ואין לו
-   ממה להיבדל, ולכן הוא הירוק של האפליקציה ולא --leaf-mid. הירוק
-   השני מרוויח את מקומו רק כששני מקטעים מלאים יושבים זה לצד זה. */
-#s-mine .sg.o.solo{background:var(--leaf)}
+/* וכשהמקטע שלי מקווקו, השני מתמלא: שם הוא הכסף היחיד שקיים, ופס
+   שכולו מקווקו אינו מציג דבר. כלומר במצב הריק המקווקו אומר "עוד
+   אין ממך" ובמלא הוא אומר "לא ממך", **וזו אותה צורה בשתי
+   משמעויות** — המחיר נאמר ואלון בחר בו. */
+#s-mine .sg.o.solo{background:var(--leaf);border:0}
+/* פרצוף בתוך מקטע שקוף יושב על --s2 ולא על --face-fill, שהוא לבן
+   בבהירה ולכן נעלם על הדף. */
+#s-mine .sg.o:not(.solo) .sgf{background:var(--s2)}
+#s-mine .sg.o:not(.solo) .sgf .avsvg{color:var(--s2)}
 #s-mine .sgf{display:block;width:24px;height:24px;border-radius:50%;
   overflow:hidden;background:var(--face-fill);flex-shrink:0}
 /* גם על ה-svg עצמו: ה-rect בספרייט הוא currentColor והכלל הגלובלי
@@ -1251,9 +1247,8 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   gap:5px;white-space:nowrap;min-width:max-content}
 #s-mine .sunder span.m{flex:0 1 auto}
 #s-mine .sunder span.o{flex:1 1 auto}
-/* ‏--leaf ולא צבע המקטע: --leaf-mid הוא 3.11 על לבן ו-2.91 על הרקע
-   הכהה, כלומר טקסט קטן שאינו עובר 4.5. וזה גם נכון לגופו: שני
-   הצדדים הם כסף שקיים. */
+/* שניהם --leaf: שני הצדדים הם כסף שקיים, ומה שמבדיל ביניהם הוא
+   המילוי שמעליהם ולא צבע הטקסט. */
 #s-mine .sunder b{font-size:12.5px;font-weight:600;color:var(--leaf);
   font-variant-numeric:tabular-nums}
 #s-mine .sunder span.m.zero b{color:var(--tx-3)}
@@ -2141,7 +2136,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'aed3e23';
+window.NETA_BUILD = '8c18598';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
