@@ -811,6 +811,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .fu-dt{font-size:10px;color:var(--tx-3);margin-top:2px}
 .fu-amt{font-size:12.5px;font-weight:600;color:var(--leaf);
   font-variant-numeric:tabular-nums;flex-shrink:0}
+/* הפעולה בתוך הכרטיס ובתוך הריפוד שלו, כמו ב-.ivjoin שב"ההשקעות
+   שלי": באפליקציה פעולה ששייכת לכרטיס יושבת בתוכו ולא נדבקת אליו
+   מקצה לקצה. הקו שמעליה הוא אותו קו שהפריד בין השורות לשורת "מי
+   נוטע" שישבה כאן. */
+.fu-act{margin:4px 0 2px;padding-top:11px;border-top:1px solid var(--rule)}
+.fu-act .btn{font-size:13px;padding:11px}
 .fu-who{display:flex;align-items:center;gap:9px;margin-top:4px;padding:11px 0 4px;
   border-top:1px solid var(--rule)}
 .fu-who .fu-t{font-size:10.5px;color:var(--tx-3);line-height:1.5;flex:1;min-width:0}
@@ -2176,7 +2182,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f63992e';
+window.NETA_BUILD = '552b0b8';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -12847,12 +12853,16 @@ function buildHomeSummary(){
     const ownHead=document.getElementById('own-head');
     ownHead.style.display=selEmpty?'none':'';
     /* הכותרת מתארת את הרשימה שמתחתיה, שהיא הרגעים של מי שנבחר. */
-    if(!selEmpty&&sel)txt('own-head',
-      isSelfRel(sel.rel)
-        ? (sel.rows.length===1 ? 'הרגע שלך'
-                               : (hebCount(sel.rows.length)+' הרגעים שלך'))
-        : (sel.rows.length===1 ? ('הרגע של '+firstName(sel.name))
-                               : (hebCount(sel.rows.length)+' הרגעים של '+firstName(sel.name))));
+    /* תמיד ברבים, לבקשת אלון. "הרגע של לניצקה" תיאר נכון את מה שיש
+       ברשימה היום, והסקשן הוא מכל של הרגעים שלה ולא של רגע מסוים —
+       ומתחתיו יושבת עכשיו פעולה שמזמינה להוסיף עוד. הספירה נשארת
+       כשיש יותר מאחד, כי שם היא אומרת משהו שהרשימה אינה אומרת. */
+    if(!selEmpty&&sel){
+      const n=sel.rows.length, cnt=n>1?(hebCount(n)+' '):'';
+      txt('own-head', isSelfRel(sel.rel)
+        ? (cnt+'הרגעים שלך')
+        : (cnt+'הרגעים של '+firstName(sel.name)));
+    }
 
     /* הכרטיסייה: הרגעים של מי שנבחר, ומתחתיהם מי נוטע לו. כשאין עוד
        איש, אותה שורה נושאת גם את ההזמנה — הפעולה יושבת ליד העובדה
@@ -12908,22 +12918,19 @@ function buildHomeSummary(){
               const line=names.join(', ')+' ו'+last;
               return line.replace('אתה','<b>אתה</b>')+' נוטעים ל'+firstName(sel.name);
             })();
+        /* מי נוטע ירד מכאן, לבקשת אלון: הנוטעים נראים כשנכנסים
+           לרגע עצמו, ששם הרשימה מלאה ונושאת סכומים. במקומם פעולה,
+           כי המסך הזה נגמר עד כה בדיווח על מה שכבר קרה.
+
+           המחיר שנאמר ונבחר: ‏"הצטרף להשקעה" ישבה בשורה הזאת והייתה
+           הדרך הישירה של מי שהוזמן להפקיד לרגע שצירפו אותו אליו.
+           היא נשארת לחיצה אחת פנימה, בכרטיס הרגע עצמו. ואיתה ירדה
+           גם "הזמן קרוב" של מי שנוטע לבד, שקיימת ב"הקרובים שלי"
+           ובמסך הרגע. */
         fuCard.innerHTML=
           sel.rows.map(function(p){return fuMomentHTML(p,many)}).join('')+
-          '<div class="fu-who">'+faceStack(ppl)+
-            '<span class="fu-t">'+who+'</span>'+
-            /* מי שהוזמן ועוד לא הפקיד אינו מזמין, הוא מצטרף:
-               ‏invitations_send דורשת app.is_initiator, כלומר השרת
-               היה דוחה את "הזמן קרוב" שישב כאן. והפעולה מובילה
-               לדבר עצמו, כלומר למסך ההפקדה ולא למסך הרגע.
-               הרגע הקרוב ביותר כשיש כמה, כי plantings_im_in
-               ממוינת לפי target_date והוא זה שקורה ראשון. */
-            (guest
-              ? '<span class="fu-go" onclick="investFromFuture(\''+
-                  attrText(String((sel.rows[0]&&sel.rows[0].key)||''))+
-                  '\')">הצטרף להשקעה ›</span>'
-              : alone?'<span class="fu-go" onclick="inviteFromFuture()">הזמן קרוב ›</span>':'')+
-          '</div>';
+          '<div class="fu-act"><button class="btn" onclick="startCreate()">'+
+            'פתח נטיעה משלך</button></div>';
         const mo=sel.rows.reduce(function(a,p){return a+Number(p.myMonthly||0)},0);
         if(alone){
           fuFine.style.display='';
