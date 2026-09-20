@@ -741,6 +741,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    נדיב, וכאן ל-.n יש line-height:1 — הקופסה חובקת את הספרות. לכן
    הרווח הנראה גדול ממה שה-CSS אומר, בגובה השורה של הכיתוב עצמו
    (‏17 כפול 0.35, כלומר כשלושה פיקסלים מעל הדיו). */
+/* שורת הצפי: משפט תומך ולא מספר שמציגים, ולכן אפורה — בדיוק כמו
+   "בקצב הזה ייצבר" בכרטיס שב"ההשקעות שלי". הסכום שבתוכה כן חול,
+   כי הוא ערך מוצג והוא צפי. */
+/* ‏#s-duo.solo .l.fut ולא #s-duo .l.fut: שניהם מזהה ושתי כיתות,
+   כלומר אותה ספציפיות בדיוק, וכלל ה-solo יושב אחריו בקובץ ומנצח.
+   הכיתה השלישית היא מה שמכריע. */
+#s-duo .l.fut,#s-duo.solo .l.fut{font-size:12.5px;font-weight:400;color:var(--tx-2);
+  margin-top:7px;line-height:1.5;max-width:300px;margin-inline:auto;text-wrap:balance}
+#s-duo .l.fut b{color:var(--sun-soft);font-weight:600;font-variant-numeric:tabular-nums}
+#s-duo .l.fut:empty{display:none}
 #s-duo.solo .l{font-size:17px;font-weight:600;color:var(--leaf);
   line-height:1.35;margin-top:4px;max-width:290px;margin-inline:auto;text-wrap:balance}
 
@@ -2182,7 +2192,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '552b0b8';
+window.NETA_BUILD = '8f472c4';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2461,6 +2471,10 @@ window.NETA_CONFIG = {
           <div>
             <div class="n" id="s-you">13,300 ₪</div>
             <div class="l" id="s-label">נצבר עד כה</div>
+            <!-- הצפי בשורה אחת מתחת לכיתוב, ולא בטור שני. הטור השני
+                 הציב מספר שאין לו פילוח מעל פס מפולח; משפט אינו טור,
+                 ואין לו מה לחרוג אליו. -->
+            <div class="l fut" id="s-rate"></div>
           </div>
           <div id="s-futbox">
             <div class="n fut" id="s-fut">·</div>
@@ -10671,7 +10685,7 @@ function blankBeforeFirstLoad(){
   if(!netaServer)return;
   const bar=document.getElementById('topbar');
   if(bar)bar.style.visibility='hidden';
-  ['s-you','s-label','s-fut','s-futk','s-futwhen'].forEach(function(id){txt(id,'')});
+  ['s-you','s-label','s-rate','s-fut','s-futk','s-futwhen'].forEach(function(id){txt(id,'')});
   const g=document.getElementById('garden');
   if(g)g.innerHTML='';
   /* גם הפנקסים האישיים. הם מאותחלים בקובץ עם משפחת ההדגמה, וניקוי שלהם
@@ -12972,6 +12986,17 @@ function buildHomeSummary(){
          יום נתון. הצגתי את זה, ואלון בחר בקיצור. הפירוט לכל רגע, עם
          התאריך שלו, יושב במסך הרגע עצמו, לחיצה אחת מתחת. */
       txt('s-fut','כ-'+shekel(projectedTotal(proj)));
+      /* וגם לשורה שמתחת לכיתוב, שהיא מה שמוצג כל עוד FUT_IN_HEAD כבוי.
+         ‏"ייצבר" ולא "יצבר": זו הצורה שכבר משמשת בכרטיס ב"ההשקעות
+         שלי", ושם המשפט זהה כמעט מילה במילה. */
+      const rate=document.getElementById('s-rate');
+      if(rate){
+        const nm=sel?firstName(sel.name):'';
+        rate.innerHTML=(proj.length&&projectedTotal(proj)>0)
+          ? ('בקצב הזה ייצבר '+(nm?withPrep('ל',nm):'להם')+': <b>כ-'+
+             shekel(projectedTotal(proj))+'</b>')
+          : '';
+      }
       /* "יחכו לו" צריך מגדר, ורגע אחד גם נותן מועד אמיתי במקום
          "במועדים". שניהם קיימים רק כשיש רגע אחד בדיוק, ובלי מגדר
          שמור נשארת הצורה חסרת הגוף במקום ניחוש לפי השם.
