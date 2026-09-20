@@ -44,8 +44,11 @@ setTimeout(function(){
   /* הירוק השני של פס הפילוח ב"העתיד שלנו". הוא אינו --leaf-2, שהוא
      גוון של אותו ירוק ונקרא כמעט זהה לו על אותו פס; הוא נבחר כדי
      להיפרד גם מ---leaf וגם מהדף. בכהה אין צבע שעובר 3:1 מול שניהם,
-     והתקרה היא 2.91; זה הערך שם, באותה גוון (158°) של הבהיר. */
-  --leaf-mid:#306B56;
+     והתקרה היא 2.91, וזה הערך שם.
+     הגוון הוא 128°, זה של --leaf בערכה הכהה. הוא היה 159° ואלון
+     אמר שהירוק מרגיש זר: הבהירות נעולה על ידי שני הספים, ולכן מה
+     שנשאר חופשי הוא הגוון והרוויה, ושניהם היו מחוץ למשפחה. */
+  --leaf-mid:#3B6B41;
   /* המשטח שמאחורי פרצוף שיושב בתוך מקטע צבוע. ‏--s2 הוא כהה בערכה
      הכהה, ובתוך מקטע של --leaf הבהיר הוא נקרא כחור ולא כפרצוף;
      הדמויות בספרייט ממילא מצוירות מול משבצת קרם. אותו ערך בשתי
@@ -120,7 +123,10 @@ setTimeout(function(){
   --bg:#FFFFFF;--s1:#FFFFFF;--s2:#EEE9DF;--line:#E3DCCF;--line-2:#C9BFAE;
   --tx:#24302B;--tx-2:#3B4741;--tx-3:#4B564F;
   --leaf:#1F4D3A;--leaf-2:#173B2D;--leaf-soft:#4B775C;--leaf-bg:#F5F1E8;--leaf-line:#D9CDB8;
-  --leaf-mid:#629E88;
+  /* גוון 143°, זה של --leaf-soft, ורוויה 50 שהיא אמצע הדרך בין
+     --leaf-soft (37) ל---leaf (60). הערך הקודם היה 158° ברוויה 38,
+     כלומר טורקיז דהוי שאינו במשפחה. ראו ההערה בערכה הכהה. */
+  --leaf-mid:#52A371;
   --face-fill:#EEE9DF;
   --sun:#847455;--sun-2:#6A5A3E;--sun-soft:#847455;--sun-big:#9C865C;--sun-bg:#EFE6DA;--sun-line:#D9CDB8;
   --rose:#A34A3A;--rose-bg:#F0E2DF;
@@ -1230,7 +1236,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   gap:5px;white-space:nowrap;min-width:max-content}
 #s-mine .sunder span.m{flex:0 1 auto}
 #s-mine .sunder span.o{flex:1 1 auto}
-/* ‏--leaf ולא צבע המקטע: --leaf-mid הוא 3.10 על לבן ו-2.91 על הרקע
+/* ‏--leaf ולא צבע המקטע: --leaf-mid הוא 3.07 על לבן ו-2.92 על הרקע
    הכהה, כלומר טקסט קטן שאינו עובר 4.5. וזה גם נכון לגופו: שני
    הצדדים הם כסף שקיים. */
 #s-mine .sunder b{font-size:12.5px;font-weight:600;color:var(--leaf);
@@ -2120,7 +2126,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6b1671a';
+window.NETA_BUILD = 'fd4c35a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
