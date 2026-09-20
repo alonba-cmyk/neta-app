@@ -2144,7 +2144,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4289f2f';
+window.NETA_BUILD = '597d884';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3341,6 +3341,7 @@ window.NETA_CONFIG = {
            הכרטיס של אותו רגע, והספירה בתווית שמעל הרשימה שהיא
            סופרת — בדיוק כמו שכבר נעשה בכותרות הסקשנים. -->
       <span id="mi-mongrp"><b id="mi-mon">·</b> בכל חודש</span>
+      <span class="grp" id="mi-cntgrp"><i></i><span id="mi-cnt">בשני רגעים</span></span>
       <span class="grp" id="mi-projgrp"><i></i><span>יגדל ל<b class="fut" id="mi-proj">·</b></span></span>
     </div>
   </div>
@@ -4359,7 +4360,12 @@ function go(i){
   releaseStage();
   if(i===ONBO.welcome)playSplash();
   document.getElementById('tabbar').style.display=NOCHROME.includes(i)?'none':'';
-  if(i===2){flowBar(stepNo('amount'),'כמה תשקיע');document.getElementById('amt-back').style.display=creating?'':'none';txt('amt-cta',creating?'המשך':'השקע עכשיו');}
+  /* כפתור החזרה מוצג בשני המסלולים. הוא היה מותנה ב-creating, ולכן
+     מי שהפקיד לרגע קיים נחת במסך בלי שום דרך חזרה — לא באשף, ולכן
+     גם בלי סרגל שלבים, וכל המסך הוא כפתור ירוק אחד. */
+  if(i===2){flowBar(stepNo('amount'),'כמה תשקיע');
+    document.getElementById('amt-back').style.display='';
+    txt('amt-cta',creating?'המשך':'השקע עכשיו');}
   else if(i===ONBO.identity)flowBar(stepNo('identity'),'פתיחת חשבון');
   else if(i===3)flowBar(stepNo('pay'),'תשלום');
   else if(i===REVIEW)flowBar(stepNo('review'),'סיכום ואישור');
@@ -5901,7 +5907,13 @@ function toOccasion(){
    השותפות יושבת מיד אחרי "בשביל מי" כי שתיהן אותה שאלה — מי, ועם מי — ולא רוצים שהן יתקררו זו מזו */
 /* וחזרה ממסך הסכום נוחתת על הפאנל שבאמת היה לפניו: בלי נהנה זה
    "עבור מי" ולא "לאיזה רגע", שכלל לא הוצג. */
-function backFromAmount(){cStepGo(designated?1:0);go(1)}
+function backFromAmount(){
+  /* באשף זו חזרה לשלב הקודם; בהפקדה לרגע קיים זו חזרה למסך שממנו
+     נכנסנו, ו-goHome כנפילה אחורה. */
+  if(creating){cStepGo(designated?1:0);go(1);return}
+  if(investFrom!=null){const i=investFrom;investFrom=null;go(i);return}
+  goHome();
+}
 function backFromPay(){
   if(onbo){go(ONBO.identity);return}
   if(creating){
@@ -13085,6 +13097,15 @@ function paintInvestments(){
   const pr=document.getElementById('mi-projgrp');
   if(pr)pr.style.display=proj>total?'':'none';
   txt('mi-proj','כ-'+shekel(proj));
+  const cg=document.getElementById('mi-cntgrp');
+  if(cg){
+    cg.style.display=rows.length>1?'':'none';
+    /* ספרה ולא מילה, כאן בלבד: השורה היא רצף עובדות שכולן מספרים,
+       והמילה היא הפריט הארוך היחיד בה. "בחמישה" נשברת לשורה שנייה
+       בהגדלת טקסט ו"ב-5" מחזיקה. ‏hebCount נשארת במילים בכותרות של
+       "העתיד שלנו", ששם זו פרוזה. */
+    txt('mi-cnt','ב-'+rows.length+' רגעים');
+  }
   /* הנקודה המפרידה שייכת למי שאינו ראשון בשורה. כשהראשון יורד, זו
      שאחריו הייתה פותחת את השורה בנקודה תלויה. ‏.nodot כבר קיים
      בגיליון בשביל אותו מקרה בהגדלת טקסט. */
@@ -13106,16 +13127,13 @@ function paintInvestments(){
        צפי. ‏.bare מאפס את הריפוד והגובה ומשאיר את הקו. */
     meta.classList.toggle('bare',!shown);
   }
-  /* הספירה בתווית שמעל הרשימה שהיא סופרת, ולא בשורת העובדות: שם
-     היא נקראה כמו עוד מספר על הכסף שלי. זה בדיוק מה שכבר נעשה
-     בכותרות הסקשנים של "העתיד שלנו".
-
-     ספרה ולא מילה: "בחמישה רגעים" נשבר לשתי שורות בהגדלת טקסט
-     ו"ב-5" מחזיק. ‏hebCount נשארת במילים שם, ששם זו פרוזה. */
+  /* הספירה נוסתה בתווית שמעל הרשימה שהיא סופרת, ואלון החזיר אותה
+     לשורת העובדות. מה שהיה נכון בהעברה נשאר נכון ולא הכריע: ספירה
+     יושבת יפה מעל הרשימה שהיא סופרת, והיא גם עובדה על המסך הזה
+     כמו שתי האחרות. מה שהעברה כן פתרה, חמש עובדות בשורה גולשת,
+     נפתר ממילא בכך ששתיים מהן עברו לכרטיסים. */
   const hd=document.getElementById('mi-head');
-  if(hd)hd.textContent=rows.length>1
-    ? ('בעתיד של מי · '+rows.length+' רגעים')
-    : 'בעתיד של מי';
+  if(hd)hd.textContent='בעתיד של מי';
   /* הכיתוב אומר עבור מי, וזו כל ההבדלה בין שני המסכים: במסך הבית
      המספר הוא של הילד, וכאן הוא שלי. "הסכום שעד כה השקעת" ולא
      "נטעת": זה סכום מצטבר ולא פעולה, והמילה "הסכום" אומרת את זה
@@ -14096,8 +14114,18 @@ function investFromFuture(key){
     investIn(key);
   }).catch(function(){toast('לא הצלחנו לטעון את הנטיעה')});
 }
+/* מאיזה מסך נפתחה ההפקדה. מסך ההשקעה משרת שני מסלולים: שלב באשף
+   פתיחת נטיעה (`creating`), ששם "חזרה" מובילה לשלב הקודם, והפקדה
+   לרגע שכבר קיים, ששם אין שלב קודם אלא מסך שממנו באנו. עד כאן
+   במסלול השני פשוט לא היה כפתור חזרה, ומי שנכנס נתקע. */
+let investFrom=null;
 function investIn(key){
   const p=plantAt(key);cur=key;
+  if(!creating){
+    const on=document.querySelector('.screen.on');
+    const i=on?screens.indexOf(on):-1;
+    investFrom=(i>=0&&i!==2)?i:null;
+  }
   showTermStep(false);
   shareMode=p.shared?'open':'private';isNewPlant=false;
   /* המסלול נקבע כשהנטיעה נפתחה, ומי שמפקיד בה לא בוחר אותו מחדש —
