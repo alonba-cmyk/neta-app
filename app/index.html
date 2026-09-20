@@ -730,6 +730,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    המצב הרגיל ולא הקצה. ‏#s-duo נושא ממילא text-align:center, ולכן
    מסלול אחד הוא כל מה שצריך כדי שהמספר יתמרכז על המסך. */
 #s-duo.solo{grid-template-columns:1fr}
+/* הכיתוב מתחת למספר במידה של הכותרת ב"ההשקעות שלי" (#mi-meta, ‏17/600)
+   ובירוק, לבקשת אלון. ממוקד ל-solo ולא ל-#s-duo: כשהצפי חוזר לראש יש
+   שני כיתובים זה לצד זה, ו-17 אינו נכנס בחצי מסך.
+   ‏max-width ו-text-wrap:balance משם גם הם: בלעדיהם שורה ארוכה נשברת
+   לשתי שורות לא שוות מתחת למספר ממורכז. */
+#s-duo.solo .l{font-size:17px;font-weight:600;color:var(--leaf);
+  line-height:1.35;margin-top:10px;max-width:290px;margin-inline:auto;text-wrap:balance}
+/* והתאריך נשאר שקט. שתי שורות ירוקות זו מתחת לזו הופכות את השנייה
+   לכותרת שנייה, והוא תאריך ולא כותרת. */
+#s-duo.solo .l2{font-size:11.5px;font-weight:400;color:var(--tx-2);margin-top:4px}
 .summary+.card{margin-top:15px}
 .s-meta{display:flex;flex-wrap:wrap;gap:8px;row-gap:5px;align-items:center;font-size:11px;
   color:var(--tx-3);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
@@ -2153,7 +2163,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '8c9b26c';
+window.NETA_BUILD = '114d6e0';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
