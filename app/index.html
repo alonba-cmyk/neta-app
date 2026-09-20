@@ -1202,14 +1202,20 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 
    ממוקד ל-#s-mine: אותו פילוח בדיוק מצויר גם במסך הרגע
    (#d-barmine) על .split-bar ו-.mine-split הגלובליים, ושם זה לא נגע. */
-#s-mine .sbar{display:flex;gap:3px;height:32px;margin-top:14px}
+#s-mine .sbar{display:flex;height:32px;margin-top:14px}
 /* ‏min-width הוא גודל הפרצוף ועוד הריפוד, ואינו נבחר: מתחת לזה
    הפרצוף חורג מהמקטע שלו. המקטע שלי מתכווץ (flex-shrink) ולא השני,
    כי כששני המינימומים לא נכנסים יחד עדיף שיזוז הצד שממילא קטן. */
-#s-mine .sg{border-radius:10px;box-sizing:border-box;min-width:30px;
+/* שני המקטעים נוגעים, ולכן הפס הוא צורה אחת מעוגלת שמחולקת בתוכה
+   ולא שני גופים. העיגול הוא בקצוות החיצוניים בלבד, ובתכונות
+   לוגיות: ב-RTL ‏start הוא הימני, ולכן המקטע שלי מעגל את הימניים
+   והשני את השמאליים בלי להתהפך ידנית. */
+#s-mine .sg{box-sizing:border-box;min-width:30px;
   display:flex;align-items:center;justify-content:center}
-#s-mine .sg.m{flex:0 1 auto;background:var(--leaf)}
-#s-mine .sg.o{flex:1 1 auto;background:var(--leaf-mid)}
+#s-mine .sg.m{flex:0 1 auto;background:var(--leaf);
+  border-start-start-radius:10px;border-end-start-radius:10px}
+#s-mine .sg.o{flex:1 1 auto;background:var(--leaf-mid);
+  border-start-end-radius:10px;border-end-end-radius:10px}
 /* ‏0 ₪ אינו מקטע ירוק שנקרא כאילו הפקדת: מסגרת מקווקוות אומרת
    "כאן יהיה שלך". הרוחב (50 אחוז) הוא החלטה, ראו buildHomeSummary. */
 #s-mine .sg.zero{background:none;border:1.5px dashed var(--leaf)}
@@ -1231,7 +1237,9 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 
    שתי צורות נמדדו בדרך ונפסלו: זוג אחד ממורכז מתחת לפס (הכיתוב אינו
    מעל שום דבר), וכיתוב שממורכז בחצי שלו. */
-#s-mine .sunder{display:flex;gap:3px;margin-top:8px;
+/* בלי gap, בדיוק כמו בפס: השורה מקבלת את אותם כללים, ומרווח
+   שקיים באחד ולא בשני היה מזיז את המרכזים. */
+#s-mine .sunder{display:flex;margin-top:8px;
   font-size:11px;color:var(--tx-2)}
 /* ‏min-width:max-content הוא מה שמחזיק את זה: "מהקרובים 370 ₪" רחב
    מ-88 פיקסלים, וכשהמקטע שלו צר ממנו כיתוב ממורכז היה חורג מהפס
@@ -2133,7 +2141,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '2d4c60f';
+window.NETA_BUILD = 'aed3e23';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
