@@ -1211,19 +1211,24 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #s-mine .sgf svg,#s-mine .sgf img{display:block;width:100%;height:100%}
 #s-mine .sgf .avsvg{color:var(--face-fill)}
 #s-mine .sg.zero .sgf{opacity:.55}
-/* זוג אחד ממורכז מתחת לפס, ולא שני חצאים שווים. שתי צורות קודמות
-   נמדדו ונפסלו: אחת שבה כל סכום עוקב אחרי רוחב המקטע שלו (שני
-   סכומים במרחקים לא שווים מתחת לגוש שמעליהם הוא שני חצאים שווים
-   עם קו באמצע), ואחת שבה כל כיתוב ממורכז בחצי שלו. השנייה סימטרית
-   מתמטית סביב מרכז הפס, ועדיין נקראת לא ממורכזת: מה שהעין מודדת
-   הוא הגוש שהטקסט מצייר, ושני גושים במרחק 106 פיקסלים זה מזה אינם
-   "מרכז" אלא שני דברים. מה שמקשר סכום לצד שלו נשאר הפרצוף שבתוך
-   המקטע, והתווית אומרת את זה במילים. */
-/* ‏18 בין הזוגות מול 5 בתוך זוג. ב-14 היחס הוא 2.8 והשורה נקראת
-   כרצף אחד, כי אין יותר ריבוע צבע שמפריד ביניהם כמו במקרא שירד. */
-#s-mine .sunder{display:flex;justify-content:center;gap:18px;margin-top:8px;
+/* כל כיתוב מתחת למקטע שלו וממורכז עליו: אותם כללי flex בדיוק כמו
+   בפס, ולכן המרכזים מתלכדים בלי חישוב אחוזים. מיקום מוחלט לפי אחוז
+   נמדד ונפסל, כי min-width גורם לרוחב בפועל להיות שונה מהאחוז.
+
+   שתי צורות נמדדו בדרך ונפסלו: זוג אחד ממורכז מתחת לפס (הכיתוב אינו
+   מעל שום דבר), וכיתוב שממורכז בחצי שלו. */
+#s-mine .sunder{display:flex;gap:3px;margin-top:8px;
   font-size:11px;color:var(--tx-2)}
-#s-mine .sunder span{display:flex;align-items:baseline;gap:5px;white-space:nowrap}
+/* ‏min-width:max-content הוא מה שמחזיק את זה: "מהקרובים 370 ₪" רחב
+   מ-88 פיקסלים, וכשהמקטע שלו צר ממנו כיתוב ממורכז היה חורג מהפס
+   החוצה, עד 29 פיקסלים אל תוך ריפוד של 18. עכשיו התא אינו קטן
+   מהטקסט שבו, והשני מתכווץ. המחיר: במקרה הקיצון המרכז סוטה
+   מהמקטע, במקום שהטקסט ייצא מהמסך. סכום שני הטקסטים הוא כ-136
+   מול 284 שיש אפילו ב-320, ולכן השורה עצמה לעולם אינה גולשת. */
+#s-mine .sunder span{display:flex;align-items:baseline;justify-content:center;
+  gap:5px;white-space:nowrap;min-width:max-content}
+#s-mine .sunder span.m{flex:0 1 auto}
+#s-mine .sunder span.o{flex:1 1 auto}
 /* ‏--leaf ולא צבע המקטע: --leaf-mid הוא 3.10 על לבן ו-2.91 על הרקע
    הכהה, כלומר טקסט קטן שאינו עובר 4.5. וזה גם נכון לגופו: שני
    הצדדים הם כסף שקיים. */
@@ -2114,7 +2119,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b8948a6';
+window.NETA_BUILD = '4c7d681';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -12699,10 +12704,10 @@ function buildHomeSummary(){
         const bm=document.getElementById('s-barmine'),bo=document.getElementById('s-barother');
         if(bm){bm.style.width=pct+'%';bm.classList.toggle('zero',zero)}
         if(bo)bo.style.width=(100-pct)+'%';
-        /* שורת הכיתובים היא שני חצאים שווים ואינה עוקבת אחרי הרוחב;
-           מה שמסומן בה הוא רק המצב הריק. */
-        const um=document.getElementById('s-minew');
-        if(um)um.classList.toggle('zero',zero);
+        /* אותו רוחב בדיוק לכיתוב שמתחת, כדי ששני המרכזים יתלכדו. */
+        const um=document.getElementById('s-minew'),uo=document.getElementById('s-othw');
+        if(um){um.style.width=pct+'%';um.classList.toggle('zero',zero)}
+        if(uo)uo.style.width=(100-pct)+'%';
         /* הפרצוף הוא מה שהחליף את המקרא, ולכן הוא חייב להיות אדם
            אמיתי: שלי מהפרופיל (‏faceHTML כדי שתמונה אמיתית תעבוד
            כמו בהאדר, ו---applyMyAvatar מצייר אותו שוב כשהחתימה
