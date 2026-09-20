@@ -226,22 +226,33 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 .card{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:9px}
 /* מכתב חתום הוא פרט יפה, לא הישג מרכזי — אז הוא לא כרטיס צהוב מלא כמו
    אזהרה. פס זהוב דק בצד מזכיר שהוא שייך למכתבים, בלי לצבוע את כל הרקע. */
-.letter-card{display:flex;align-items:center;gap:11px;background:var(--s1);border:1px solid var(--line);
-  border-radius:10px;padding:10px 12px;margin-top:16px;position:relative;overflow:hidden}
-.letter-card::before{content:'';position:absolute;top:0;right:0;bottom:0;width:3px;background:var(--sun)}
-.letter-card .ic{font-size:14px;color:var(--sun);flex-shrink:0}
-.letter-card b{font-size:12px;font-weight:500;display:block}
-.letter-card span:not(.ic):not(.chev){font-size:10.5px;color:var(--tx-3);display:block;margin-top:1px}
-/* הכרטיס הפך לניווט, ולכן יש בו חץ והטקסט תופס את מה שביניהם. */
-.letter-card>div{flex:1;min-width:0}
-.letter-card .chev{flex-shrink:0;color:var(--tx-3);display:flex;align-items:center}
-/* הציטוט: שתי שורות ממה שנכתב. הכרטיס מראה מה יש, כמו כל שאר המסך. */
-.letter-card .lq{font-size:11px;color:var(--tx-2);font-style:italic;margin-top:3px;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.letter-card.done::before{background:var(--leaf)}
-.letter-card.done .ic{color:var(--leaf)}
-.letter-card.tap{cursor:pointer;transition:border-color .15s}
-.letter-card.tap:hover{border-color:var(--line-2)}
+/* האייקון שבקצה הקו. ‏28 ולא 34: הקו נגמר בפינת הגרף, וכל מה
+   שגדול מזה חורג ממנה גם אחרי ההידוק. הטבעת בחול, כמו נקודת
+   הסיום שהוא מחליף, ולא בירוק — זו הנקודה של הצפי. */
+/* העמודה בראש מסך הרגע כשיש לה אדם. אותם כללים של .pc-ic.kidic
+   שבכרטיסים, בגודל 40 במקום 48 ולכן תג של 22. */
+#d-icon.kidhd{background:none!important;border:0;border-radius:0;
+  position:relative;overflow:visible;display:block;box-shadow:none}
+#d-icon.kidhd .fw{width:100%;height:100%;border-radius:50%;overflow:hidden;
+  background:var(--s2);display:block}
+#d-icon.kidhd .fw svg,#d-icon.kidhd .fw img{display:block;width:100%;height:100%}
+#d-icon.kidhd>i{position:absolute;bottom:-3px;left:-5px;width:22px;height:22px;
+  border-radius:7px;background:var(--bg);border:1px solid var(--line);
+  display:grid;place-items:center;font-size:11px;font-style:normal;line-height:1}
+.dm-endic{position:absolute;width:28px;height:28px;border-radius:50%;
+  background:var(--s1);box-shadow:0 0 0 2px var(--s1),0 0 0 3px var(--sun);
+  display:grid;place-items:center;font-size:14px;line-height:1;
+  pointer-events:none;z-index:3}
+.dm-endic:empty{display:none}
+/* נקודה על כפתור המכתבים כשיש מכתב. הכפתור עצמו מוצג בדיוק באותם
+   תנאים שבהם הכרטיס הוצג, כלומר גם כשאין עדיין מכתב וההזמנה לכתוב
+   עדיין צריכה להיות נגישה. */
+#d-lbtn{position:relative}
+#d-lbtn.has{color:var(--sun);border-color:var(--sun-line)}
+#d-lbtn.has::after{content:'';position:absolute;top:-2px;left:-2px;width:8px;height:8px;
+  border-radius:50%;background:var(--sun);border:1.5px solid var(--s1)}
+#d-lbtn.done{color:var(--leaf);border-color:var(--leaf-line)}
+#d-lbtn.done::after{background:var(--leaf)}
 /* ההזמנה שנדחתה ב"בפעם אחרת". אותו אובייקט בשני מקומות: במסך הבית
    מתחת לפעולה של המשתמש עצמו, ובראש הפיד כשורה נעוצה. בפיד היא ירוקה,
    כי שם היא עומדת בראש רשימה של דברים שכבר קרו וצריכה להיקרא כפתוחה;
@@ -2225,7 +2236,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0e45a9a';
+window.NETA_BUILD = '24305fb';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2986,6 +2997,15 @@ window.NETA_CONFIG = {
   <div class="row gap" style="align-items:flex-start">
     <div class="dot g" style="width:40px;height:40px;font-size:17px" id="d-icon">🎂</div>
     <div style="flex:1"><div class="title" style="font-size:14.5px" id="d-title">בר המצווה של דניאל</div><div class="meta" id="d-date" style="margin-top:3px">המועד המיוחל: אוגוסט 2032</div><div class="meta" id="d-owners" style="margin-top:3px;color:var(--leaf);display:none"></div></div>
+    <!-- המכתבים היו סקשן שלם באמצע המסך, ואלון ביקש להעביר אותם
+         לאייקון בראש. **המחיר נאמר:** הכרטיס ההוא היה מה שהחליף את
+         הקבורה של כתיבת המכתב מאחורי ✎ במסך העריכה, "ששם אף אחד לא
+         חיפש אותה", והוא גם סיפר מה יש (כמה מכתבים, מתי ייפתחו, וציטוט
+         ממה שנכתב). אייקון אילם מחזיר חצי מזה. מה שמחזיק את זה: הכפתור
+         מוצג בדיוק באותם תנאים שבהם הכרטיס הוצג, כלומר גם כשאין עדיין
+         מכתב, ויש עליו נקודה כשיש. -->
+    <button class="editbtn" id="d-lbtn" onclick="openLetterSheet()"
+            aria-label="המכתבים">✉</button>
     <button class="editbtn" onclick="openEdit()" aria-label="עריכת הנטיעה">✎</button>
   </div>
   <!-- מסך הרגע עונה על שאלה אחת: כמה נצבר כאן, ואיך הוא מתחלק. הגרף,
@@ -3025,15 +3045,6 @@ window.NETA_CONFIG = {
   </div>
   <p class="fine gap" id="d-whofine">רק אתה רואה את הפילוח הזה, כבעל הנטיעה.</p>
 
-  <!-- הכרטיס הזה סיפר עד עכשיו על מכתבים קיימים בלבד, ומי שאין לו
-       מכתב לא ראה אותו כלל — כלומר ההזמנה לכתוב לא הייתה בשום מקום
-       שמישהו מגיע אליו. עכשיו הוא גם הכניסה לכתיבה, וזה המקום הנכון
-       לה: כאן ממילא כתוב מתי הרגע נפתח. -->
-  <div class="letter-card" id="d-letters" onclick="openLetterSheet()">
-    <span class="ic">✉</span>
-    <div><b id="d-lcount">ולא רק כסף, 3 מכתבים חתומים: מסבתא, מדוד יוסי וממך</b><span class="lq" id="d-lquote" style="display:none"></span><span id="d-lett">המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.</span></div>
-    <span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>
-  </div>
 
   <!-- ההפקדה החודשית אינה כאן. היא של אדם אחד, ומסך הרגע הוא של הרגע;
        "ההפקדה החודשית שלך" בתוך מסך משותף גררה תמיד את השאלה "של מי".
@@ -4127,6 +4138,9 @@ window.NETA_CONFIG = {
         <circle id="d-endpt" r="3.5" fill="var(--bg)" stroke="var(--sun)" stroke-width="1.8"/>
       </svg>
       <span class="dm-endlbl" id="d-endlbl"></span>
+      <!-- אייקון הרגע בנקודה שבה הקו נגמר, כלומר במועד היעד. הוא
+           הופך את הגרף מ"כמה יהיה" ל"מה מחכה בסוף, וכמה". -->
+      <span class="dm-endic" id="d-endic"></span>
       <span class="dm-medal idle" id="d-medal"><svg width="14" height="15" viewBox="0 0 14 15"><use href="#sprout"/></svg></span>
       <input type="range" id="d-time" min="0" max="6" step="1" value="0" aria-label="גרירה קדימה בזמן">
     </div>
@@ -4340,7 +4354,7 @@ window.NETA_CONFIG = {
        height הגן היה יוצא נמוך בשליש. החיתוך הוא לתיבת הדיו כולל עובי
        הקו, והגובה מכוון לגובה הדיו של הנבט. נמדד בסריקת פיקסלים. -->
   <button class="tab on" id="tab-home" onclick="openHome()"><span class="ic"><svg width="13" height="18.5" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span><span class="lb"><span>ההשקעות</span><span>שלי</span></span></button>
-  <button class="tab" onclick="openFutureTab()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-path"/></svg></span><span class="lb"><span>העתיד</span><span>שלנו</span></span></button>
+  <button class="tab" onclick="openFutureTab()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-path"/></svg></span><span class="lb"><span>מה מחכה</span><span>להם</span></span></button>
   <button class="tab center" onclick="startCreate()"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg></span><span class="lb"><span>נטיעה</span></span></button>
   <button class="tab" onclick="openPeople()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-kin"/></svg></span><span class="lb"><span>הקרובים</span><span>שלי</span></span></button>
   <button class="tab" id="tab-act" onclick="openActivity()"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg></span><span class="lb"><span>פעילות</span></span></button>
@@ -8139,29 +8153,28 @@ function myLetterOf(key){return myLetters[key]||null}
 /* המפתח נמסר ואינו נגזר מ-p: נטיעות ההדגמה הן ערכים ב-plants{} ואין
    להן שדה key, ולכן myLetterOf(p.key) חיפש תמיד את undefined. */
 function paintLetterCard(p,key){
-  const lt=document.getElementById('d-letters');
+  const lt=document.getElementById('d-lbtn');
   if(!lt)return;
   key=key||p.key||cur;
   const mine=myLetterOf(key);
   const body=(mine&&mine.body||'').trim();
   const invite=!p.lCount&&p.mine&&p.designated!==false;
+  /* אותו תנאי בדיוק שהחליט אם הכרטיס מוצג, כדי שההזמנה לכתוב לא
+     תיעלם יחד עם הכרטיס: גם מי שאין לו מכתב רואה את הכפתור. */
   const show=!!(body||p.lCount||invite);
   lt.style.display=show?'':'none';
-  lt.classList.toggle('tap',show);
+  lt.classList.toggle('has',!!(body||p.lCount));
   lt.classList.toggle('done',!!body);
-  const q=document.getElementById('d-lquote');
-  if(q){
-    q.style.display=body?'':'none';
-    q.textContent=body?('"'+body+'"'):'';
-  }
-  if(body){
-    txt('d-lcount','המכתב שלך ל'+(p.kid||'רגע הזה'));
-    txt('d-lett','ייפתח ב'+(p.date||'מועד הרגע')+' · אפשר לערוך עד אז');
-    return;
-  }
-  txt('d-lcount',p.lCount||('רוצה לצרף מכתב ל'+(p.kid||'רגע הזה')+'?'));
-  txt('d-lett',p.lCount?p.lSub
-    :('הוא ייפתח ב'+(p.date||'מועד הרגע')+', יחד עם מה שהשקעת.'));
+  /* מה שהכרטיס אמר במילים עובר ל-title ול-aria-label: זה מה שקורא
+     המסך מקריא, וזה גם מה שמופיע בריחוף. אייקון בלי שם הוא כפתור
+     שאיש אינו יודע לאן הוא מוביל. */
+  const say=body
+    ? ('המכתב שלך ל'+(p.kid||'רגע הזה')+' · ייפתח ב'+(p.date||'מועד הרגע'))
+    : (p.lCount
+        ? (p.lCount+(p.lSub?(' · '+p.lSub):''))
+        : ('רוצה לצרף מכתב ל'+(p.kid||'רגע הזה')+'?'));
+  lt.title=say;
+  lt.setAttribute('aria-label',say);
 }
 function openDetail(key){
   const known=plantAt(key);
@@ -8204,10 +8217,36 @@ function refreshDetail(key,force){
     if(onDetail)paintDetail(key,livePlants[key]);
   }).catch(function(){});
 }
+/* הדמות של מי שנוטעים עבורו, לפי אותו מקור שמצייר אותה בכרטיסים
+   וב"העתיד שלנו". ‏plants{} שבהדגמה אינו נושא av ו-sex והשורות
+   שבמודל כן, ולכן מחפשים קודם את השורה: בלי זה ההדגמה מציגה דמות
+   נייטרלית בזמן שחשבון אמיתי מציג פנים, וזה בדיוק אותו
+   נתיב־שונה־בשקט של NETA_CONFIG בבדיקות. */
+function detailKidAv(p,key){
+  const kid=kidOf(p);
+  if(!kid)return '';
+  const rows=((lastModel&&lastModel.plantings)||[])
+    .filter(function(x){return x.key===key});
+  return kidFace(rows.length?rows:[p],kid);
+}
 function paintDetail(key,p){
   cur=key;
   YL=p.yl;
-  txt('d-icon',p.icon);
+  /* העמודה בראש היא האדם ולא האירוע, ותג הרגע יושב עליה — אותו
+     רכיב בדיוק של הכרטיס שלחצו עליו ברשימה, ולכן מה שנלחץ הוא מה
+     שמקבל את הפנים. **ורגע בלי נהנה נשאר ריבוע מעוגל עם האמוג׳י**,
+     כי עיגול הוא אדם וריבוע מעוגל הוא רגע (ראו .kidav), ולקופה שלא
+     יועדה אין אדם. */
+  const dic=document.getElementById('d-icon'),kav=detailKidAv(p,key);
+  if(dic){
+    dic.classList.toggle('kidhd',!!kav);
+    if(kav)dic.innerHTML='<span class="fw">'+kidFaceHTML(kav,40)+'</span>'+
+      '<i>'+(p.icon||'🌱')+'</i>';
+    else dic.textContent=p.icon||'🌱';
+  }
+  /* אייקון הרגע בקצה הקו. הוא נכתב כאן ומוצב בציור הגרף, כי שם
+     יושבת נקודת הסיום. */
+  txt('d-endic',p.icon||'');
   txt('d-title',p.name);
   txt('d-date','המועד המיוחל: '+p.date);
   const own=document.getElementById('d-owners');
@@ -12990,10 +13029,37 @@ function buildHomeSummary(){
            היא נשארת לחיצה אחת פנימה, בכרטיס הרגע עצמו. ואיתה ירדה
            גם "הזמן קרוב" של מי שנוטע לבד, שקיימת ב"הקרובים שלי"
            ובמסך הרגע. */
+        /* הפעולה נגזרת ממה שכבר עשית ברגע הזה, לבקשת אלון: מי שעוד
+           לא הפקידה מוזמנת להצטרף, ומי שכבר הפקידה מקבלת דרך לפרטים.
+           שתיהן מובילות לאותו מסך — מסך הרגע — ומה שמשתנה הוא מה
+           שהכפתור מבטיח. **המחיר שנאמר:** השורה שמעליו מובילה לאותו
+           מקום בדיוק, כלומר בכרטיס יש שתי דרכים לאותו מסך; מה
+           שמחזיק את זה הוא שחץ בשורה אומר "אפשר להיכנס" וכפתור אומר
+           "כדאי", ולמי שעוד לא הפקידה זו בדיוק ההבחנה.
+           **ובכמה רגעים הכפתור מכוון לאחד:** הרשימה ממוינת לפי מועד
+           היעד, ולכן "להצטרף" מוביל לקרוב ביותר; מי שכבר הפקידה
+           מגיעה לרגע שהפקידה בו, שהוא מה ש"פרטי ההשקעה" מתאר. */
+        const near=sel.rows[0];
+        const goRow=iPlant
+          ? (sel.rows.filter(function(p){return Number(p.mine||0)>0})[0]||near)
+          : near;
+        /* מגדר רק כשהוא ידוע. ‏profiles.sex ריק אצל רוב האנשים (ראו
+           "מיילים"), ולכן ברירת המחדל היא שם פועל — אותה צורה של
+           "להפקיד לרגע של X" שב"ההשקעות שלי", ולא לוכסן ולא ניחוש. */
+        /* בלי תנאי liveAccount: הפרופיל קיים רק בחשבון חי ממילא,
+           והתנאי הנוסף רק הוסיף דרך שנייה לקבל ריק. */
+        const mySex=(netaServer&&netaServer.profile&&netaServer.profile.sex)||'';
+        const join=mySex==='f'?'הצטרפי להשקעה'
+                  :mySex==='m'?'הצטרף להשקעה'
+                  :'להצטרף להשקעה';
         fuCard.innerHTML=
           sel.rows.map(function(p){return fuMomentHTML(p,many)}).join('')+
-          '<div class="fu-act"><button class="btn" onclick="startCreate()">'+
-            'פתח נטיעה משלך</button></div>';
+          '<div class="fu-act"><button class="btn">'+
+            (iPlant?'לפרטי ההשקעה':join)+'</button></div>';
+        /* המאזין נקשר ואינו נכתב לתוך onclick: מפתח נטיעה הוא מחרוזת
+           מהשרת, והשחלה שלה לתוך תכונה דורשת בריחה שאין לה סיבה. */
+        const fuBtn=fuCard.querySelector('.fu-act .btn');
+        if(fuBtn&&goRow)fuBtn.onclick=function(){openDetail(goRow.key)};
         const mo=sel.rows.reduce(function(a,p){return a+Number(p.myMonthly||0)},0);
         if(alone){
           fuFine.style.display='';
@@ -14401,6 +14467,19 @@ function buildChart(p){
     lbl.style.left=((chartX(1)/CH_W)*100)+'%';
     lbl.style.top='calc('+((chartY(end,max)/CH_H)*100)+'% - 24px)';
     lbl.style.display=show?'':'none';
+    /* התווית הוזזה ימינה ומטה כדי לפנות את הפינה לאייקון. בלי זה
+       השניים יושבים זה על זה: נקודת הסיום היא הפינה השמאלית
+       העליונה של הגרף, ושם אין מקום לשניהם. */
+    lbl.style.transform=show?'translate(32px,9px)':'';
+  }
+  /* האייקון על נקודת הסיום עצמה. הוא מהודק פנימה כי עיגול של 28
+     סביב נקודה שיושבת בפינה חורג ממנה, ומוצג רק כשיש צפי — כלומר
+     באותו תנאי של התווית, אחרת הוא מסמן נקודה שאין לה מה לומר. */
+  const eic=document.getElementById('d-endic');
+  if(eic){
+    eic.style.display=show?'':'none';
+    eic.style.left='max(2px,calc('+((chartX(1)/CH_W)*100)+'% - 12px))';
+    eic.style.top='max(2px,calc('+((chartY(end,max)/CH_H)*100)+'% - 12px))';
   }
   const key=document.getElementById('d-key');
   if(key)key.style.display=hasSplit?'':'none';
