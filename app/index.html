@@ -1304,6 +1304,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   touch-action:pan-y}
 .dm-chart input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px}
 .dm-chart input[type=range]::-moz-range-thumb{width:34px;height:34px;border:none}
+/* ‏.still: הגרף מתאר רגע ולא אדם, ואז אין מה לגרור. גרירה קדימה בזמן
+   שואלת "כמה יהיה לי ב-2031", וזו שאלה על מסלול של אדם אחד; על רגע
+   משותף אין לה תשובה אחת. הכלל על הקלאס ולא על display ישיר, כי אותו
+   צומת עובר בין שני המסכים ומצב שנכתב inline היה נוסע איתו. */
+.dm-chart.still input[type=range]{display:none}
 .dm-ax{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:9px;
   font-size:10px;color:var(--tx-3);font-variant-numeric:tabular-nums}
 .dm-ax b{color:var(--leaf-soft);font-weight:500;font-size:10.5px;white-space:nowrap}
@@ -2145,7 +2150,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '2e27ed3';
+window.NETA_BUILD = '36f2249';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7892,6 +7897,35 @@ function moneyHome(){
   const rows=document.getElementById('pv-fut-rows');
   if(rows)rows.style.display='';
 }
+/* אותו צומת גרף מתאר פעם רגע ופעם אדם, ולכן מה שהוא מתאר עכשיו הוא
+   מצב ולא תכונה של מסך. המחוון נגזר מזה: גרירה קדימה בזמן היא שאלה
+   על מסלול של אדם אחד. */
+function chartMode(kind){
+  const ch=document.getElementById('d-chart');
+  if(ch)ch.classList.toggle('still',kind==='moment');
+  const sl=document.getElementById('d-time');
+  if(sl&&kind==='moment')sl.value=0;
+}
+/* הגרף במסך הרגע, על המספרים של הרגע. עד כאן הוא הושאל לכאן רק
+   כשהנוטע היה יחיד, ולכן מרגע שמישהו הצטרף לא היה גרף במסך הזה לאף
+   אחד: לא למי שהוזמן, וגם לא למי שפתח. המספר אומר כמה יש, והגרף הוא
+   הדבר היחיד שאומר לאן זה הולך.
+
+   בלי הכרטיס ובלי המחוון, וזה לא קיצוץ שרירותי: הכרטיס מחזיק עובדות
+   של אדם ("הפקדה חודשית", "מסלול"), ועל מסך משותף אין להן נושא אחד.
+   שתיהן ממשיכות לחיות במסך של האדם, לחיצה אחת פנימה. */
+function momentChart(p){
+  moneyToDetail();
+  chartMode('moment');
+  const cd=document.getElementById('pv-fut-card');
+  if(cd)cd.style.display='none';
+  /* הכרטיס מושאל, ומה שנוסף לו במסך של נוטע יחיד יורד ממנו כאן. */
+  const ca=document.getElementById('pv-card-act');
+  if(ca)ca.innerHTML='';
+  /* ‏openPerson כותב לתווית הזאת את שם האדם, והצומת נשאר. בלי השורה
+     הזאת מקרא של גרף שמתאר רגע היה אומר "ההפקדות של אלון". */
+  txt('d-kdepw','ההפקדות כאן');
+}
 function moneyToDetail(){
   const mv=document.getElementById('pv-move'),
         cd=document.getElementById('pv-fut-card'),
@@ -7904,6 +7938,7 @@ function moneyToDetail(){
 }
 function openPerson(i){
   moneyHome();
+  chartMode('person');
   const p=normWho(plantAt(cur)||{}); if(!p.who)return;
   const w=p.who[i]; if(!w||w[8]==null)return;
   const isMe=w[7]||w[1]==='אתה';
@@ -8165,7 +8200,7 @@ function paintDetail(key,p){
      פנימה על שורה של אדם אחד. שאלת "של מי הגרף", שבגללה הוא הועבר
      למסך נפרד, פשוט אינה קיימת כשיש אדם אחד. */
   const alone=p.who.length===1&&(p.who[0][7]||p.who[0][1]==='אתה');
-  if(alone){moneyToDetail();paintSoloMoney(p)}else{moneyHome()}
+  if(alone){moneyToDetail();paintSoloMoney(p)}else{momentChart(p)}
   const solo=!p.shared&&p.who.length<2;
   const noone=!p.who.length;
   document.getElementById('d-cbh').style.display=noone?'none':'';
@@ -8196,6 +8231,7 @@ function paintDetail(key,p){
 /* אותם מספרים בדיוק שהיו מוצגים בלחיצה על "אתה", רק בלי הלחיצה.
    ‏openPerson מחשב אותם מתוך w; כאן w הוא הראשון והיחיד. */
 function paintSoloMoney(p){
+  chartMode('person');
   const w=p.who[0];
   const accrued=Number(w[8]!=null?w[8]:Math.round(Number(p.now||0)*100));
   const ratio=(p.now>0&&p.end>p.now)?(p.end/p.now):1;
