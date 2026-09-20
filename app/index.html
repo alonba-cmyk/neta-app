@@ -1212,6 +1212,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    "כאן יהיה שלך". הרוחב (20 אחוז) נגזר מהכיתוב שמתחתיו, ראו
    buildHomeSummary. */
 #s-mine .sg.zero{background:none;border:1.5px dashed var(--leaf)}
+/* כשהמקטע שלי מקווקו, השני הוא המקטע המלא היחיד על המסך ואין לו
+   ממה להיבדל, ולכן הוא הירוק של האפליקציה ולא --leaf-mid. הירוק
+   השני מרוויח את מקומו רק כששני מקטעים מלאים יושבים זה לצד זה. */
+#s-mine .sg.o.solo{background:var(--leaf)}
 #s-mine .sgf{display:block;width:24px;height:24px;border-radius:50%;
   overflow:hidden;background:var(--face-fill);flex-shrink:0}
 /* גם על ה-svg עצמו: ה-rect בספרייט הוא currentColor והכלל הגלובלי
@@ -2128,7 +2132,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7be0594';
+window.NETA_BUILD = 'a8b1eeb';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -12715,7 +12719,7 @@ function buildHomeSummary(){
         const pct=zero?20:(selAcc>0?Math.round(selMine/selAcc*1000)/10:0);
         const bm=document.getElementById('s-barmine'),bo=document.getElementById('s-barother');
         if(bm){bm.style.width=pct+'%';bm.classList.toggle('zero',zero)}
-        if(bo)bo.style.width=(100-pct)+'%';
+        if(bo){bo.style.width=(100-pct)+'%';bo.classList.toggle('solo',zero)}
         /* אותו רוחב בדיוק לכיתוב שמתחת, כדי ששני המרכזים יתלכדו. */
         const um=document.getElementById('s-minew'),uo=document.getElementById('s-othw');
         if(um){um.style.width=pct+'%';um.classList.toggle('zero',zero)}
