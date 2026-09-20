@@ -747,8 +747,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ‏#s-duo.solo .l.fut ולא #s-duo .l.fut: שניהם מזהה ושתי כיתות,
    כלומר אותה ספציפיות בדיוק, וכלל ה-solo יושב אחריו בקובץ ומנצח.
    הכיתה השלישית היא מה שמכריע. */
+/* ‏2 ולא 7: המרווח הנראה גדול ממה שה-CSS אומר בשני הקצוות, כי
+   לכיתוב שמעל יש line-height 1.35 על 17px ולשורה הזאת 1.5 על 12.5,
+   כלומר כשישה פיקסלים של עופרת בין שני הדיו לפני שהמרווח מתחיל. */
 #s-duo .l.fut,#s-duo.solo .l.fut{font-size:12.5px;font-weight:400;color:var(--tx-2);
-  margin-top:7px;line-height:1.5;max-width:300px;margin-inline:auto;text-wrap:balance}
+  margin-top:2px;line-height:1.5;max-width:300px;margin-inline:auto;text-wrap:balance}
 #s-duo .l.fut b{color:var(--sun-soft);font-weight:600;font-variant-numeric:tabular-nums}
 #s-duo .l.fut:empty{display:none}
 #s-duo.solo .l{font-size:17px;font-weight:600;color:var(--leaf);
@@ -2192,7 +2195,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '8f472c4';
+window.NETA_BUILD = '67b7e7d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
