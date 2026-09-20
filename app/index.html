@@ -1384,10 +1384,32 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הרשימה, וקו בצבע הקווים של הכרטיס נקרא כמחיצה ולא כפעולה.
    ‏--leaf-line אינו ירוק בערכה הבהירה אלא חול (#D9CDB8), ולכן
    הוא אינו התחליף. */
+/* ‏background:none ו-font-family:inherit כי הקלאס יושב גם על <button>
+   (‏#garden-new) ולא רק על <div>: ברירת המחדל של הדפדפן לכפתור היא
+   משטח אפור וגופן מערכת, והשורה יצאה שם מלבן אפור. */
 .reladd{display:flex;align-items:center;justify-content:center;
   border:1px dashed var(--leaf);border-radius:9px;padding:11px 0;margin-top:9px;
+  background:none;font-family:inherit;
   color:var(--tx-3);font-size:12.5px;cursor:pointer;transition:.15s}
 .reladd:hover{background:var(--leaf-bg);color:var(--tx-2)}
+/* הפעולה של רגע שהוזמנת אליו ועוד לא הפקדת בו: היא התחתית של
+   הכרטיס ולא כפתור נפרד מתחתיו. אותה פינה, בלי רווח, כלומר עצם אחד.
+   זה מה שמחזיק את הכלל "פעולה יושבת ליד הדבר שהיא משנה" ועדיין
+   משאיר אותה מעל הקיפול: 449 מתוך 502 במכשיר בן 640, בעוד שאותו
+   כפתור בסוף הרשימה נוחת שם ב-459. */
+.ivjoin{margin-bottom:9px}
+.ivjoin .ncard{margin-bottom:0;border-end-start-radius:0;border-end-end-radius:0}
+.ivjoin .btn{border-start-start-radius:0;border-start-end-radius:0;
+  font-size:13px;padding:11px}
+/* ומשתי הזמנות ומעלה רק הקרובה מקבלת כפתור מלא, והשאר שורה ירוקה
+   שממשיכה את הכרטיס: שני כפתורים ירוקים על מסך אחד הם שתי פעולות
+   ראשיות. השורה נושאת את המסגרת של הכרטיס כדי שהשניים ייראו כעצם
+   אחד, והקו שביניהם הוא --rule, המפריד שבתוך כרטיס. */
+.ivjoin.quiet .ncard{border-bottom:0}
+.ivjoin .ivrow{background:var(--s1);border:1px solid var(--line);border-top:1px solid var(--rule);
+  border-end-start-radius:13px;border-end-end-radius:13px;padding:10px 0;
+  color:var(--leaf);font-weight:600;font-size:13px;text-align:center;cursor:pointer}
+.ivjoin .ivrow:hover{background:var(--leaf-bg)}
 /* שורת החזרה לרשימה: בראש הפאנל, שקטה, ובלי קו תחתון. היא ניווט
    ולא קישור בתוך משפט. */
 #c-kidback{display:block;padding:0;margin:0 0 10px;font-size:12.5px;
@@ -1810,7 +1832,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="הבית"] .s-meta{justify-content:center}
 /* ‏"עוד לא הפקדת" יושב במקום המספר, ולכן הוא אינו בגודל שלו: מספר
    גדול שאין בו ספרה מתחזה למספר, וזה מה ש-"·" עשתה כאן לפניו. */
-[data-name="הבית"] #mi-num.word{font-size:19px;color:var(--tx);letter-spacing:-.01em}
 [data-name="הבית"] #mi-potgrp b{color:var(--leaf)}
 [data-name="הבית"] #mi-meta{font-size:17px;font-weight:600;color:var(--tx);
   line-height:1.35;margin-top:10px;max-width:290px;margin-inline:auto;text-wrap:balance}
@@ -2119,7 +2140,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '442269b';
+window.NETA_BUILD = 'a15745c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3314,7 +3335,12 @@ window.NETA_CONFIG = {
 
   <p class="eyebrow big">בעתיד של מי</p>
   <div id="mi-list"></div>
-  <button class="btn gap" id="garden-new" style="margin-top:2px" onclick="startCreate()">+ פתח נטיעה חדשה</button>
+  <!-- שורה מקווקוות ולא כפתור ירוק: מי שהוזמנה לרגע של קרוב מקבלת
+       כפתור מלא על הרגע ההוא, ושני כפתורים ירוקים על מסך אחד הם שתי
+       פעולות ראשיות. אותה הכרעה בדיוק כמו "+ הוסף קרוב". וכשאין שום
+       רגע שממתין להפקדה הוא חוזר להיות הכפתור הראשי, כי אז הוא
+       הפעולה היחידה במסך. -->
+  <button class="reladd" id="garden-new" style="width:100%" onclick="startCreate()">+ פתח נטיעה משלך</button>
 
   </div><!-- /kin-full -->
 
@@ -12960,6 +12986,24 @@ function ivCardHTML(p){
                        הזה כל הפרצופים הם שלי, כלומר עמודה שלמה של רעש. */
                     since:null,designated:p.designated,nofaces:true});
 }
+/* הכרטיס של רגע שהוזמנת אליו ועוד לא הפקדת בו, עם הפעולה צמודה לו.
+   ‏kind הוא 'btn' לרגע הקרוב ביותר ו-'row' לשאר; ראו paintInvestments. */
+function ivJoinHTML(p,kind){
+  const card=ivCardHTML(p);
+  if(!kind)return card;
+  const k=attrText(String(p.key||''));
+  /* שם הילד כשיש, ו"הרגע הזה" כשאין (קופה שלא יועדה). */
+  const nm=kidOf(p);
+  const lbl=nm?('להפקיד לרגע של '+nm):'להפקיד לרגע הזה';
+  /* ‏stopPropagation: הכרטיס עצמו פותח את מסך הרגע, והפעולה הזאת
+     מובילה אל ההפקדה. בלעדיו הלחיצה מגיעה לשניהם. */
+  const go='event.stopPropagation();investFromFuture(\''+k+'\')';
+  return kind==='btn'
+    ? '<div class="ivjoin">'+card+
+      '<button class="btn" onclick="'+go+'">'+lbl+'</button></div>'
+    : '<div class="ivjoin quiet">'+card+
+      '<div class="ivrow" onclick="'+go+'">'+lbl+' ›</div></div>';
+}
 function paintInvestments(){
   /* הסינון היה "כסף שלי גדול מאפס", וזה השאיר את מי שהוזמנה לרגע של
      קרוב ועוד לא הפקידה בלי שום מסך שמראה לה אותו: בעתיד שלנו הוא
@@ -12980,22 +13024,19 @@ function paintInvestments(){
   /* הצפי האישי חוזר מהשרת לכל רגע. כשהוא חסר — נטיעה ישנה, או מסלול
      בלי ריבית — מוותרים על השורה ולא ממציאים מספר. */
   const proj=rows.reduce(function(a,p){return a+Number(p.myProjection||0)},0);
-  /* ‏"·" ולא "0 ₪". מי שהוזמן לרגע ועוד לא הפקיד רואה את המספר הזה
-     ככותרת המסך, ומספר שקיומו מודיע על היעדרו אינו מידע. זו כבר
-     המוסכמת של המוצר לערך שעוד אין לו (ראו kid-zero, ומציין "אין
-     ערך עדיין" בפרק הכתיבה), ולכן הצורה נשמרת והשקר יורד.
+  /* ‏"0 ₪", ולא "·" ולא "עוד לא הפקדת" במילים. שתי הצורות ההן נוסו
+     כאן ברצף, ומה שהכריע הוא שאלון הגדיר מחדש מה המסך מודד: כמה
+     השקעתי, והתשובה היא אפס.
 
-     והשורה שמתחת מחליפה זמן: "זה מה שכבר השקעת" על אפס היא הצהרה
-     על מה שלא עשית, ומה שנכון כאן הוא מה שכן קרה, כלומר שצירפו
-     אותך. הכרטיס שמתחת כבר אומר "הוזמנת, עוד לא נטעת". */
-  const nothingYet=!(total>0);
-  /* ‏"עוד לא הפקדת" ולא "·" ולא "0 ₪". הנקודה היא המוסכמת שלנו לערך
-     שאין לו עדיין, אבל בכל מקום אחר היא יושבת בתוך שורת עובדה עם
-     תווית לידה; ככותרת בגודל של המספר הגדול היא **מתחזה למספר**,
-     ואלון קרא אותה כתקלה ברינדור. משפט אינו מתחזה לכלום. */
-  const numEl=document.getElementById('mi-num');
-  if(numEl)numEl.classList.toggle('word',nothingYet);
-  txt('mi-num',nothingYet?'עוד לא הפקדת':shekel(total));
+     ומה שזה קונה מעבר לדיוק: **צורת המסך נשארת זהה** לפני ההפקדה
+     הראשונה ואחריה, ורק הערך משתנה מ-0 ל-50. הגרסה במילים החליפה
+     את צורת המסך בדיוק ברגע שמישהי מפקידה.
+
+     וזה חריג מוצדק ל"מספר שקיומו מודיע על היעדרו אינו מידע": הכלל
+     נכתב על עובדה צדדית בשורת עובדות ("0 ₪ בכל חודש"), וכאן המספר
+     הוא כל נושא המסך. אפס שהוא התשובה לשאלה היחידה שהמסך שואל הוא
+     מידע. ‏.word ירד איתו, ולכן גם הכלל שב-CSS. */
+  txt('mi-num',shekel(total));
 
   /* ומה שכן נצבר ברגע יורד שורה אחת, אל שורת העובדות. זה הסכום של מי
      שפתח, ולכן הוא **אינו** יכול לשבת בכותרת: המסך הזה שואל כמה אני
@@ -13066,17 +13107,37 @@ function paintInvestments(){
   /* בלי השם. הוא ישב כאן בזמן שלא הייתה שורה עליונה, ומרגע
      שהשורה החזירה אותו ("בוקר טוב · אלון בר דוד") שניהם על אותו
      מסך במרחק 144 פיקסלים. */
+  /* אותו משפט לפני ההפקדה הראשונה ואחריה, כמו המספר שמעליו: הוא
+     מתאר מה המספר מודד, וזה אינו משתנה. הניסוח שהיה כאן על אפס
+     ("צירפו אותך לרגע של X") תיאר את מה שלא עשית, ומה שמזמין
+     להפקיד הוא עכשיו כפתור שצמוד לכרטיס ולא משפט בראש. */
   txt('mi-meta',
-    nothingYet     ? (who.length===1
-                        ? ('צירפו אותך לרגע של '+
-                           (isSelfName(who[0])?'עצמך':who[0])+
-                           '. ההפקדה הראשונה שלך תופיע כאן')
-                        : 'צירפו אותך לרגע. ההפקדה הראשונה שלך תופיע כאן') :
     who.length===1 ? ('זה מה שכבר השקעת בעתיד '+
                       (isSelfName(who[0])?'שלך':('של '+who[0]))) :
     who.length>1   ? 'זה מה שכבר השקעת בעתיד של היקרים שלך'
                    : 'זה מה שכבר השקעת, עוד בלי לקבוע למי');
-  document.getElementById('mi-list').innerHTML=rows.map(ivCardHTML).join('');
+  /* רגע שהוזמנת אליו ועוד לא הפקדת בו נושא את הפעולה שלו, צמודה
+     לכרטיס. רק הראשון ברשימה מקבל כפתור מלא והשאר שורה ירוקה, כי
+     שני כפתורים ירוקים על מסך אחד הם שתי פעולות ראשיות. הרשימה
+     ממוינת ממילא לפי מועד היעד, ולכן "הראשון" הוא הרגע הקרוב. */
+  let joinSeen=false;
+  document.getElementById('mi-list').innerHTML=rows.map(function(p){
+    const waiting=p.joined&&!(Number(p.mine==null?p.accrued:p.mine)>0);
+    if(!waiting)return ivCardHTML(p);
+    const kind=joinSeen?'row':'btn';
+    joinSeen=true;
+    return ivJoinHTML(p,kind);
+  }).join('');
+  /* וכשאין שום רגע שממתין להפקדה, "פתח נטיעה" חוזר להיות הכפתור
+     הראשי: אז הוא הפעולה היחידה במסך, ושורה מקווקוות לבדה על מסך
+     בלי כפתור היא בדיוק מה שתוקן במצבים הריקים. */
+  const gn=document.getElementById('garden-new');
+  if(gn){
+    gn.className=joinSeen?'reladd':'btn gap';
+    gn.style.width=joinSeen?'100%':'';
+    gn.style.marginTop=joinSeen?'':'2px';
+    gn.textContent=joinSeen?'+ פתח נטיעה משלך':'+ פתח נטיעה חדשה';
+  }
 }
 /* מי הנהנים ברשימה, בלי כפילויות. שני מסכי הסיכום חייבים להסכים על
    מה זה "אדם אחד", אחרת אחד מהם יאמר שם והשני "קרוביך" על אותה
