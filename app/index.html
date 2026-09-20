@@ -41,6 +41,16 @@ setTimeout(function(){
      עדיין נקרא כשלוש. */
   --tx:#EDEFE9;--tx-2:#9BA396;--tx-3:#808878;
   --leaf:#7FC088;--leaf-2:#5FA36A;--leaf-soft:#A8CBAC;--leaf-bg:#1B2A1D;--leaf-line:#2A4530;
+  /* הירוק השני של פס הפילוח ב"העתיד שלנו". הוא אינו --leaf-2, שהוא
+     גוון של אותו ירוק ונקרא כמעט זהה לו על אותו פס; הוא נבחר כדי
+     להיפרד גם מ---leaf וגם מהדף. בכהה אין צבע שעובר 3:1 מול שניהם,
+     והתקרה היא 2.91; זה הערך שם, באותה גוון (158°) של הבהיר. */
+  --leaf-mid:#306B56;
+  /* המשטח שמאחורי פרצוף שיושב בתוך מקטע צבוע. ‏--s2 הוא כהה בערכה
+     הכהה, ובתוך מקטע של --leaf הבהיר הוא נקרא כחור ולא כפרצוף;
+     הדמויות בספרייט ממילא מצוירות מול משבצת קרם. אותו ערך בשתי
+     הערכות, ולא var(--s2), כי בבהירה זו במקרה אותה משבצת. */
+  --face-fill:#EEE9DF;
   --sun:#D9B25F;--sun-2:#BE9748;--sun-soft:#E5CB96;--sun-big:#E5CB96;--sun-bg:#2A2318;--sun-line:#3D3520;
   --rose:#D99BA6;--rose-bg:#2A1F22;
   /* קו מפריד פנימי, שקט מ---line: הוא מפריד בתוך כרטיס ולא בין כרטיסים.
@@ -110,6 +120,8 @@ setTimeout(function(){
   --bg:#FFFFFF;--s1:#FFFFFF;--s2:#EEE9DF;--line:#E3DCCF;--line-2:#C9BFAE;
   --tx:#24302B;--tx-2:#3B4741;--tx-3:#4B564F;
   --leaf:#1F4D3A;--leaf-2:#173B2D;--leaf-soft:#4B775C;--leaf-bg:#F5F1E8;--leaf-line:#D9CDB8;
+  --leaf-mid:#629E88;
+  --face-fill:#EEE9DF;
   --sun:#847455;--sun-2:#6A5A3E;--sun-soft:#847455;--sun-big:#9C865C;--sun-bg:#EFE6DA;--sun-line:#D9CDB8;
   --rose:#A34A3A;--rose-bg:#F0E2DF;
   --rule:#EEE9DF;
@@ -1172,6 +1184,47 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .mine-split b{color:var(--leaf);font-weight:600;font-variant-numeric:tabular-nums;font-size:12.5px}
 .mine-split .dsw.o{background:var(--leaf-2);opacity:.6}
 .mine-split span:last-child b{color:var(--leaf-2)}
+
+/* פס הפילוח ב"העתיד שלנו": הפרצוף בתוך המקטע, והסכום מתחתיו וממורכז
+   עליו. הצורה הקודמת הייתה פס בגובה 8 ומתחתיו מקרא של שני ריבועים
+   וכיתוב, ואלון אמר שקשה לחבר את הגרף למקרא. פרצוף שיושב בתוך המקטע
+   אינו צריך התאמה: הוא במקטע, ולכן אין מה לחבר.
+
+   ממוקד ל-#s-mine: אותו פילוח בדיוק מצויר גם במסך הרגע
+   (#d-barmine) על .split-bar ו-.mine-split הגלובליים, ושם זה לא נגע. */
+#s-mine .sbar{display:flex;gap:3px;height:32px;margin-top:14px}
+/* ‏min-width הוא גודל הפרצוף ועוד הריפוד, ואינו נבחר: מתחת לזה
+   הפרצוף חורג מהמקטע שלו. המקטע שלי מתכווץ (flex-shrink) ולא השני,
+   כי כששני המינימומים לא נכנסים יחד עדיף שיזוז הצד שממילא קטן. */
+#s-mine .sg{border-radius:10px;box-sizing:border-box;min-width:30px;
+  display:flex;align-items:center;justify-content:center}
+#s-mine .sg.m{flex:0 1 auto;background:var(--leaf)}
+#s-mine .sg.o{flex:1 1 auto;background:var(--leaf-mid)}
+/* ‏0 ₪ אינו מקטע ירוק ברוחב 15 אחוז, שנקרא כאילו הפקדת: מסגרת
+   מקווקוות אומרת "כאן יהיה שלך". הרוחב הוא החלטה ולא נתון. */
+#s-mine .sg.zero{background:none;border:1.5px dashed var(--leaf)}
+#s-mine .sgf{display:block;width:24px;height:24px;border-radius:50%;
+  overflow:hidden;background:var(--face-fill);flex-shrink:0}
+/* גם על ה-svg עצמו: ה-rect בספרייט הוא currentColor והכלל הגלובלי
+   שבשורה 919 צובע אותו --s2, ובלי הצהרה ממוקדת נשאר ריבוע כהה
+   בתוך העיגול הבהיר. אותה מלכודת של "ערוגה בתוך ערוגה". */
+#s-mine .sgf svg,#s-mine .sgf img{display:block;width:100%;height:100%}
+#s-mine .sgf .avsvg{color:var(--face-fill)}
+#s-mine .sg.zero .sgf{opacity:.55}
+/* אותם כללי flex בדיוק כמו בפס, ולכן המרכזים מתיישרים בלי חישוב
+   אחוזים: מיקום מוחלט לפי אחוז היה סוטה ברגע ש-min-width נכנס
+   לפעולה. */
+#s-mine .sunder{display:flex;gap:3px;margin-top:7px}
+#s-mine .sunder span{min-width:30px;display:flex;justify-content:center;
+  white-space:nowrap;font-size:12.5px;font-weight:600;
+  font-variant-numeric:tabular-nums}
+/* שניהם --leaf ולא צבע המקטע שמעליהם: --leaf-mid הוא 3.10 על לבן
+   ו-2.91 על הרקע הכהה, כלומר טקסט קטן שאינו עובר 4.5. וזה גם נכון
+   לגופו: שני הצדדים הם כסף שקיים, והמקום שמתחת למקטע הוא מה שמקשר
+   בין הסכום לצד שלו. */
+#s-mine .sunder span.m{flex:0 1 auto;color:var(--leaf)}
+#s-mine .sunder span.o{flex:1 1 auto;color:var(--leaf)}
+#s-mine .sunder span.m.zero{color:var(--tx-3)}
 .dm-split em{font-style:normal;color:var(--leaf-soft)}
 .dm-split b{color:var(--sun-soft);font-weight:500}
 .dm-chart{position:relative;margin-top:14px;touch-action:pan-y}
@@ -2056,7 +2109,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '52530e1';
+window.NETA_BUILD = '4e0f87e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2361,10 +2414,13 @@ window.NETA_CONFIG = {
       </div>
     </div>
     <div id="s-mine" style="display:none">
-      <div class="split-bar"><i id="s-barmine"></i><u id="s-barother"></u></div>
-      <div class="mine-split">
-        <span><i class="dsw m"></i>ממך<b id="s-minev">·</b></span>
-        <span><i class="dsw o"></i>מהקרובים<b id="s-othv">·</b></span>
+      <div class="sbar">
+        <div class="sg m" id="s-barmine"><span class="sgf" id="s-facem"></span></div>
+        <div class="sg o" id="s-barother"><span class="sgf" id="s-faceo"></span></div>
+      </div>
+      <div class="sunder">
+        <span class="m" id="s-minew"><b id="s-minev">·</b></span>
+        <span class="o" id="s-othw"><b id="s-othv">·</b></span>
       </div>
     </div>
     <!-- כאן ישבה שורת עובדות: ספירת הנטיעות וההפקדה החודשית שלי.
@@ -10591,7 +10647,9 @@ function setMyName(name){
    הגיע, נופלים לדמות וחותמים, והציור השני מגיע מיד אחריו. */
 function applyMyAvatar(av){
   const html=faceHTML(av,'av-parent');
-  document.querySelectorAll('.topbar .me, .hdr .me, .nhdr .me').forEach(function(box){
+  /* ‏#s-facem הוא הפרצוף שלי בתוך פס הפילוח, והוא ברשימה הזאת כדי
+     שהחתימה החוזרת של תמונה אמיתית תצייר גם אותו. */
+  document.querySelectorAll('.topbar .me, .hdr .me, .nhdr .me, #s-facem').forEach(function(box){
     box.innerHTML=html;
   });
   if(av&&av.indexOf('av-')!==0&&!photoUrl(av))
@@ -11914,6 +11972,17 @@ function shekel(agorot){
    "נטעת" ולא "נצבר": הרשימה מערבת רגעים שפתחתי ורגעים שקרוב פתח
    וצירף אותי, ו"נצבר" על כרטיס כזה נקרא כמו הסכום של כולם — ואז
    נכנסים פנימה ורואים מספר אחר. */
+/* מי שנוטע כאן חוץ ממני. ‏contribution_participants מחזירה שם ודמות
+   בלבד ואין בה דגל "זה אתה", ולכן ההשוואה היא לשם: בחשבון חי השם
+   הוא מהפרופיל, ובהדגמה הוא "אתה". זו אותה הנחה שכבר יושבת ב-fu-card
+   (‏names.indexOf('אתה')), ולכן היא במקום אחד. */
+function otherPlanters(list){
+  const me=firstName(myName()||'');
+  return (list||[]).filter(function(x){
+    const n=firstName((x&&x.name)||String(x||''));
+    return n&&n!=='אתה'&&!(me&&n===me);
+  });
+}
 function faceStack(list){
   const arr=(list&&list.length)?list:[{avatar:'av-parent'}];
   const show=arr.slice(0,2), rest=arr.length-2;
@@ -12615,19 +12684,38 @@ function buildHomeSummary(){
       sm.style.display=others>0?'':'none';
       if(others>0){
         txt('s-minev',shekel(selMine));txt('s-othv',shekel(others));
-        const pct=selAcc>0?Math.round(selMine/selAcc*1000)/10:0;
-        const bm=document.getElementById('s-barmine'),bo=document.getElementById('s-barother');
-        if(bm)bm.style.width=pct+'%';
-        if(bo)bo.style.width=(100-pct)+'%';
-        /* כשאחד הצדדים הוא 0, שני הגוונים הירוקים נקראים כפס אחד מלא —
-           כלומר גרפיקה שאומרת "הכל" בדיוק כשהיא אמורה לומר "כלום ממך".
-           במצב הזה נשארות המילים בלבד. */
-        const bar=document.querySelector('#s-mine .split-bar');
         /* ‏selMine ולא mineTot. ‏mineTot הוא הסכום שלי בכל הנטיעות
            יחד, ולכן מי שהפקיד לילד אחד וכלום לילד השני ראה אצל השני
-           פס מלא בגוון של "מהקרובים" מעל המילים "ממך 0 ₪" — בדיוק
-           הגרפיקה שההערה שמעל אוסרת. */
-        if(bar)bar.style.display=(selMine>0&&others>0)?'':'none';
+           פס מלא בגוון של "מהקרובים" מעל המילים "ממך 0 ₪". */
+        const zero=!(selMine>0);
+        /* ‏15 אחוז כשאין ממך כלום: זו מסגרת מקווקוות שאומרת "כאן
+           יהיה שלך", ולכן הרוחב הוא החלטה ולא נתון. */
+        const pct=zero?15:(selAcc>0?Math.round(selMine/selAcc*1000)/10:0);
+        const bm=document.getElementById('s-barmine'),bo=document.getElementById('s-barother');
+        if(bm){bm.style.width=pct+'%';bm.classList.toggle('zero',zero)}
+        if(bo)bo.style.width=(100-pct)+'%';
+        /* אותו רוחב בדיוק לסכום שמתחת, כדי ששני המרכזים יתלכדו. */
+        const um=document.getElementById('s-minew'),uo=document.getElementById('s-othw');
+        if(um){um.style.width=pct+'%';um.classList.toggle('zero',zero)}
+        if(uo)uo.style.width=(100-pct)+'%';
+        /* הפרצוף הוא מה שהחליף את המקרא, ולכן הוא חייב להיות אדם
+           אמיתי: שלי מהפרופיל (‏faceHTML כדי שתמונה אמיתית תעבוד
+           כמו בהאדר, ו---applyMyAvatar מצייר אותו שוב כשהחתימה
+           חוזרת), והשני מרשימת המשתתפים בלי אותי.
+
+           אחד לכל צד ולא צביר: הכרטיס שמיד מתחת כבר מצייר את כל
+           הנוטעים ב---faceStack עם "+N", וצביר שני במרחק 60 פיקסלים
+           הוא אותו מידע פעמיים. כאן הפרצוף הוא תווית של הצד ולא
+           מפקד. */
+        const fm=document.getElementById('s-facem');
+        if(fm)fm.innerHTML=faceHTML(myAvatarKey()||'av-parent','av-parent');
+        const fo=document.getElementById('s-faceo');
+        if(fo){
+          const them=otherPlanters(sel&&sel.people);
+          const av=(them[0]&&them[0].avatar)||
+                   (sel&&sel.rows[0]&&sel.rows[0].byAv)||'av-someone';
+          fo.innerHTML=faceHTML(av,'av-someone');
+        }
       }
     }
     /* כותרת הסקשן יורדת עם הרשימה: ההודעה שבמקומה כבר אומרת את
