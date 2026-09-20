@@ -725,8 +725,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* השורה השנייה מימין קיימת כדי ששני הצדדים יהיו באותו גובה: הכיתוב
    הזהוב נושא מועד ונשבר לשתי שורות, והירוק היה שורה אחת. */
 #s-duo .l2{margin-top:2px}
-/* ‏solo כבר אינו משנה גודל — הוא זהה ל-s-num ממילא — והוא נשאר ככיתה
-   שהמספר הבודד יכול להיתלות בה אם ירצה רוחב מלא בעתיד. */
+/* ‏solo: מסלול אחד במקום שניים. עד כה הוא נשאר בלי כלל, כלומר מספר
+   בודד ישב בחצי מסך בזמן שהחצי השני ריק; מרגע שהצפי ירד מהראש זהו
+   המצב הרגיל ולא הקצה. ‏#s-duo נושא ממילא text-align:center, ולכן
+   מסלול אחד הוא כל מה שצריך כדי שהמספר יתמרכז על המסך. */
+#s-duo.solo{grid-template-columns:1fr}
 .summary+.card{margin-top:15px}
 .s-meta{display:flex;flex-wrap:wrap;gap:8px;row-gap:5px;align-items:center;font-size:11px;
   color:var(--tx-3);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
@@ -2150,7 +2153,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '36f2249';
+window.NETA_BUILD = '8c9b26c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -12519,6 +12522,13 @@ function openActivity(){
   go(9);
 }
 
+/* הצפי בראש "העתיד שלנו" מוחזק בדגל אחד ולא נמחק, כי זה שלב ראשון
+   מתוך כמה: הראש נבדק קודם עם הנצבר לבדו במרכז, והצפי חוזר אחר כך
+   בצורה שתיבחר. דגל ולא מחיקה, כדי שההחזרה תהיה שורה אחת ולא ארכיאולוגיה.
+
+   ומה שהוא עולה כל עוד הוא כבוי: הצפי אינו מוצג בשום מקום במסך הזה.
+   הוא המספר היחיד שמראה לאן ההשקעה הולכת, והוא ממתין להכרעה. */
+const FUT_IN_HEAD=false;
 function buildHomeSummary(){
   const src=netaSource();
   /* במקביל ולא בשרשור: זו קריאה שנייה שאינה תלויה במודל, ושרשור
@@ -12909,13 +12919,13 @@ function buildHomeSummary(){
     const proj=projectablePlantings({plantings:here});
     const futGrp=document.getElementById('s-futbox');
     const duo=document.getElementById('s-duo');
-    if(duo)duo.classList.toggle('solo',!proj.length);
+    if(duo)duo.classList.toggle('solo',!proj.length||!FUT_IN_HEAD);
     if(futGrp){
       /* ילד בלי רגע: שני החצאים נשארים, שניהם "·". זו כל הנקודה
          במבנה הזה — מי שעובר בין הילדים רואה את אותו מסך מתרוקן
          ולא מסך אחר, והכרטיס שמתחת אומר מה ימלא אותו. */
-      futGrp.style.display=(proj.length||kidZero)?'':'none';
-      if(duo)duo.classList.toggle('solo',!proj.length&&!kidZero);
+      futGrp.style.display=(FUT_IN_HEAD&&(proj.length||kidZero))?'':'none';
+      if(duo)duo.classList.toggle('solo',!FUT_IN_HEAD||(!proj.length&&!kidZero));
       /* בלי אופק. "צפוי כ-14,485 ₪ עד ספטמבר 2036" נמדד ב-317 פיקסל
          מול 309 זמינים ב-390, ולכן שבר את השורה לשתיים בכל מכשיר
          שאינו רחב במיוחד. בלעדיו: 231 מול 280 ב-360, כלומר מרווח
