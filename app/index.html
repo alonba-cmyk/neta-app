@@ -925,6 +925,22 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הפרצוף בהאדר 38, התמונה ב"ההשקעה של" 44, טבעת הבורר 60.
    האמוג'י נשאר 26, וב-48 הוא 54 אחוז מהריבוע במקום 46. */
 .pc-solo .pc-ic{width:48px;height:48px;border-radius:14px;font-size:26px}
+/* העמודה כשיש לה אדם: עיגול עם הדמות, ותג הרגע עליו. הגדלים
+   נגזרים מ-.pc-ic ולא נכתבים כאן, ולכן אותו קלאס יעבוד גם על
+   כרטיס שאינו pc-solo אם מישהו יעביר לו face.
+   **התג 24 ולא 22:** אמוג׳י נקרא ב-25 (ראו תג הרגע בצבירים),
+   ומתחת לזה הוא מתחיל להיות כתם.
+   **והוא על left, כלומר בצד שפונה לטקסט**, כמו ב-.bigfav. נמדד:
+   הוא חורג 5 פיקסלים אל תוך מרווח של 9, כלומר נשארים 4 לפני
+   תיבת הטקסט, בשלושה רוחבי מכשיר. */
+.pc-ic.kidic{background:none;border-radius:0;position:relative;
+  overflow:visible;display:block}
+.pc-ic.kidic .fw{width:100%;height:100%;border-radius:50%;overflow:hidden;
+  background:var(--s2);display:block}
+.pc-ic.kidic .fw svg,.pc-ic.kidic .fw img{display:block;width:100%;height:100%}
+.pc-ic.kidic>i{position:absolute;bottom:-3px;left:-5px;width:24px;height:24px;
+  border-radius:8px;background:var(--bg);border:1px solid var(--line);
+  display:grid;place-items:center;font-size:12px;font-style:normal;line-height:1}
 .pc-solo .pc-nm{font-size:15px}
 /* הסכום והצפי יורדים טיפה מ-13, כדי שהשם יקבל את המשקל וכדי לפנות
    את הרוחב שהחץ לוקח. שניהם באותו גודל: זה אותו נושא, ירוק מה
@@ -2209,7 +2225,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '6a27847';
+window.NETA_BUILD = '152bd89';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -12192,7 +12208,23 @@ function plantCard(o){
     : '';
   if(o.nofaces&&!hasNum&&o.cap)dt=dt?(dt+' · '+o.cap):o.cap;
   return '<div class="ncard pc'+(o.nofaces?' pc-solo':'')+'" onclick="openDetail(\''+o.key+'\')">'+
-    '<div class="pc-ic">'+(o.icon||'🌱')+'</div>'+
+    /* הדמות של מי שנוטעים עבורו, והרגע כתג עליה. העמודה הזאת
+       חוזרת בכל שורה, ולכן היא מה שסורקים; עד כה היא נשאה את
+       אייקון הרגע בלבד, כלומר את הדבר היחיד בכרטיס שכבר כתוב
+       במילים בשורה שלידה ("הלימודים של נועה"), ולא את מי.
+       **והתג נשאר דווקא בגלל שהפרצוף חוזר:** המסך מקבץ לפי רגע
+       ולילד אחד יש כמה רגעים, ובחשבון החי שתיים משלוש השורות
+       נושאות את אותו פרצוף. בלי התג העמודה מפסיקה להבדיל בין
+       שורות; איתו היא אומרת גם "של מי" וגם "מה".
+       ‏`.bigfav` הוא אותו רכיב בדיוק בראש הפעילות, ולכן זו שפה
+       שכבר קיימת ולא צורה חדשה.
+       **ורגע בלי נהנה נשאר ריבוע מעוגל עם האמוג׳י**, כי העיגול
+       הוא אדם והריבוע הוא רגע (ראו .kidav), וקופה שלא יועדה אין
+       לה אדם. צללית אנונימית שם הייתה אדם שאינו קיים. */
+    '<div class="pc-ic'+(o.face?' kidic':'')+'">'+
+      (o.face
+        ? '<span class="fw">'+kidFaceHTML(o.face,48)+'</span><i>'+(o.icon||'🌱')+'</i>'
+        : (o.icon||'🌱'))+'</div>'+
     '<div class="pc-x"><div class="pc-nm">'+o.name+'</div>'+
       '<div class="pc-amt'+(o.amountText?' q':'')+(side?' withside':'')+'">'+
         '<span>'+(o.amountText||(o.verb+' '+shekel(o.amount)))+'</span>'+side+'</div>'+
@@ -13118,8 +13150,13 @@ function ivCardHTML(p){
      הגדול, ששם הוא היה כסף של מישהו אחר מתחת למספר שמודד אותי. */
   const acc=Number(p.accrued||0);
   const waiting=p.joined&&!(mine>0);
+  /* ‏kidOf מחזיר '' לקופה שלא יועדה, ולכן היא לבדה נשארת עם
+     ריבוע האייקון. kidFace מעדיף את מה שנשמר בעמודה ונופל לגזירה
+     מהשם, בדיוק כמו ב"העתיד שלנו" — אותה נטיעה מציגה את אותו
+     פרצוף בשני המסכים. */
+  const kid=kidOf(p);
   return plantCard({key:p.key,icon:p.icon,name:plantTitle(p),verb:'נטעת',
-                    amount:mine,
+                    amount:mine,face:kid?kidFace([p],kid):'',
                     /* "הושקעו עד כה" ולא "כבר נצבר כאן", לבקשת אלון:
                        מה שהמסך הזה צריך להגיד למי שהוזמנה ועוד לא
                        הפקידה הוא שמישהו כבר שם כאן כסף, ו"נצבר"
