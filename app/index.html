@@ -52,8 +52,8 @@ setTimeout(function(){
   --leaf-mid:#446949;
   /* המשטח שמאחורי פרצוף שיושב בתוך מקטע צבוע. ‏--s2 הוא כהה בערכה
      הכהה, ובתוך מקטע של --leaf הבהיר הוא נקרא כחור ולא כפרצוף;
-     הדמויות בספרייט ממילא מצוירות מול משבצת קרם. אותו ערך בשתי
-     הערכות, ולא var(--s2), כי בבהירה זו במקרה אותה משבצת. */
+     הדמויות בספרייט ממילא מצוירות מול משבצת קרם, וזה הערך כאן.
+     בבהירה הוא לבן, ראו שם. */
   --face-fill:#EEE9DF;
   --sun:#D9B25F;--sun-2:#BE9748;--sun-soft:#E5CB96;--sun-big:#E5CB96;--sun-bg:#2A2318;--sun-line:#3D3520;
   --rose:#D99BA6;--rose-bg:#2A1F22;
@@ -129,7 +129,9 @@ setTimeout(function(){
      דהוי שאינו במשפחה; רוויה 50 נוסתה בדרך ואלון בחר בשקטה.
      ראו ההערה בערכה הכהה. */
   --leaf-mid:#679E7C;
-  --face-fill:#EEE9DF;
+  /* לבן, ולא הקרם של הכהה: כאן הדף עצמו לבן, ומשטח שמאחורי פרצוף
+     בתוך מקטע ירוק נקרא נקי יותר כשהוא אותו לבן. */
+  --face-fill:#FFFFFF;
   --sun:#847455;--sun-2:#6A5A3E;--sun-soft:#847455;--sun-big:#9C865C;--sun-bg:#EFE6DA;--sun-line:#D9CDB8;
   --rose:#A34A3A;--rose-bg:#F0E2DF;
   --rule:#EEE9DF;
@@ -2131,7 +2133,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'df67323';
+window.NETA_BUILD = '2d4c60f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
