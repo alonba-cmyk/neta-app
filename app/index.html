@@ -890,8 +890,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ‏32 פיקסלים בכל רוחב מכשיר.
    ‏touch-action:pan-y, אחרת החלקה אנכית שמתחילה על הכרטיס נבלעת
    במסילה במקום לגלול — אותה מלכודת של המחוון שעל הגרף. */
+/* ‏12 פיקסלים בין המתג לכרטיס, כמו `.car` שבעיצוב. בלעדיהם הכרטיס
+   נוגע במתג, ושני משטחים שנוגעים זה בזה על רקע ירוק אחד נקראים
+   כרכיב אחד שבור. אלון ראה את זה במכשיר. */
 .fucar{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
-  scroll-padding-inline:18px;margin:0 -18px;padding:0 18px;
+  scroll-padding-inline:18px;margin:0 -18px;padding:12px 18px 2px;
   scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-y}
 .fucar::-webkit-scrollbar{display:none}
 .fucar>.leafcard{flex:0 0 calc(100vw - 78px);scroll-snap-align:start;
@@ -900,13 +903,25 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    נקרא כמו עוד תוכן ולא כמו "יש עוד ילד". */
 .fucar>.leafcard.peekcard{opacity:.55;cursor:pointer}
 /* ילד אחד: אין מה להחליק, והכרטיס ממלא את הרוחב כמו בעיצוב. */
-.fucar.one{overflow:visible;margin:0;padding:0}
+.fucar.one{overflow:visible;margin:0;padding:12px 0 2px}
 .fucar.one>.leafcard{flex:1 1 auto}
 .fuseg::-webkit-scrollbar{display:none}
+/* ‏**השם יושב בכל משבצת ונפתח בסימון, ולא נכתב בזמן הלחיצה.** זה מה
+   שמאפשר ל-`fuMarkOn` להחליף קלאס במקום לצייר את השורה מחדש —
+   והחלפת `innerHTML` הורגת כל אנימציה, מאפסת את הגלילה ומפענחת
+   מחדש את כל הפרצופים. ההערה שמעל הקריאה כבר אמרה את זה, והקוד
+   עשה בדיוק את ההפך.
+   **ו-`max-width` ולא `flex`**: הנבחר הוא `flex:0 0 auto` מכוונה
+   (‏`flex:1` מכווץ אותו ושובר את השם, זה נמדד), ו-`auto` אינו
+   מונפש. הרוחב של הכדור נגזר מהשם שבתוכו, ולכן הנפשת השם מנפישה
+   אותו. ‏`gap:0` כי משבצת בלי שם עדיין הייתה משלמת על הרווח. */
 .fuseg .fupk{height:40px;border-radius:11px;display:flex;align-items:center;
-  justify-content:center;gap:7px;color:var(--on-head);font-size:14px;font-weight:600;
+  justify-content:center;gap:0;color:var(--on-head);font-size:14px;font-weight:600;
   flex:0 0 44px;border:0;background:none;font-family:inherit;cursor:pointer;
   transition:background .25s;overflow:hidden;white-space:nowrap;padding:0}
+.fuseg .fupk .nm3{max-width:0;opacity:0;overflow:hidden;
+  transition:max-width .28s ease,opacity .18s ease,margin-inline-start .28s ease}
+.fuseg .fupk.on .nm3{max-width:150px;opacity:1;margin-inline-start:7px}
 .fuseg .fupk .f{width:26px;height:26px;border-radius:50%;overflow:hidden;display:block;
   flex-shrink:0;opacity:.6;background:var(--face-fill);transition:opacity .25s}
 .fuseg .fupk .f svg,.fuseg .fupk .f img{display:block;width:100%;height:100%;object-fit:cover}
@@ -2672,7 +2687,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '9ba277c';
+window.NETA_BUILD = '4d8b4e6';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -13932,8 +13947,25 @@ function buildHomeSummary(){
        ממני בלבד. זה אינו סותר את "נצבר" שבמסך הרגע: שם אין נושא
        אחד ולכן נבחרה צורה סבילה, וכאן הנושא הוא כולכם.
        ומי שעוד לא הפקידו בו כלום מקבל את מה שכן קרה. */
-    txt('s-label',accrued>0?'נטעתם עד היום'
-                           :(coming?'ההפקדה הראשונה בדרך':'עוד לא נטעתם'));
+    /* **ורבים רק כשבאמת נטעו רבים.** העיצוב כותב "נטעתם" תמיד, והוא
+       מתאר משפחה שיש בה שלושה נוטעים; אצל מי שנוטע לבד זה אומר לו
+       שמישהו נוסף שם כסף. ‏CHANGES §4 עצמו נוקב בשתי הצורות
+       ("נטעת / נטעתם"), כלומר זו הבחנה שהעיצוב מכיר ושלב 3 החמיץ.
+       אלון ראה את זה על "לניצקה", שבה הוא היחיד שנטע.
+       הספירה היא של המשתתפים בפועל ולא של הרגעים: אדם אחד שפתח
+       שני רגעים הוא עדיין נוטע אחד. */
+    const planters=(function(){
+      const seen={};
+      (sel?[sel]:(fuAll||[])).forEach(function(x){
+        ((x&&x.people)||[]).forEach(function(q){
+          const nm=(q&&(q.name||q))||'';if(nm)seen[nm]=1});
+      });
+      return Object.keys(seen).length;
+    })();
+    const manyP=planters>1;
+    txt('s-label',accrued>0?(manyP?'נטעתם עד היום':'נטעת עד היום')
+                           :(coming?'ההפקדה הראשונה בדרך'
+                                   :(manyP?'עוד לא נטעתם':'עוד לא נטעת')));
     /* רק כשיש מה למדוד: "מאז" ליד "עוד לא נצבר" הוא סתירה. */
     /* "הושקעו" סבילה וחסרת נושא, ולכן היא נקראת כמו "זה מה שאני
        הפקדתי" — בדיוק ההפך מהמספר, שהוא מה שנצבר לרגעים האלה כולם,
@@ -14212,13 +14244,20 @@ function buildHomeSummary(){
          שלי".
          **המגדר רק כשהוא ידוע**, ובלעדיו "להם" — אין לוכסן ואין
          ניחוש לפי שם. */
+      /* **ובלי מגדר אין פנייה כלל, ולא השם ולא "להם".** הנפילה
+         האחורית לשם ("בקצב הזה ייצבר לניצקה") חזרה על השם שיושב
+         ‏60 פיקסלים מעליה באות של 34, והיא גם ארוכה מהטור שבו היא
+         יושבת: נמדד 123 פיקסל בתא של 128 ב-390, כלומר שם אחד ארוך
+         יותר שובר אותה לשתי שורות ומעקם את שני הטורים. אלון ראה
+         את זה על "לניצקה" במכשיר שלו.
+         ו"להם" על ילד אחד פשוט אינו נכון. העיצוב עצמו כותב
+         "בקצב הזה ייצבר" בלי פנייה על הקופה שלא יועדה, ולכן זו
+         הצורה שכבר קיימת בו. */
       const futL=(function(){
-        const nm=sel?firstName(sel.name):'';
         if(sel&&isSelfRel(sel.rel))return ['בקצב הזה ייצבר לך',''];
         if(sel&&sel.sex==='f')return ['בקצב הזה ייצבר לה',''];
         if(sel&&sel.sex==='m')return ['בקצב הזה ייצבר לו',''];
-        if(nm)return ['בקצב הזה ייצבר '+withPrep('ל',nm),''];
-        return ['בקצב הזה ייצבר להם',''];
+        return ['בקצב הזה ייצבר',''];
       })();
       txt('s-futk',futL[0]);txt('s-futwhen',futL[1]);
       /* אחרון, כי הבלוק שמעל כותב את הצפי בכל מקרה: בלי רגע
@@ -14735,32 +14774,52 @@ function fuPickHTML(items,sel){
     const face=it.av
       ? '<span class="f">'+kidFaceHTML(it.av,26)+'</span>'
       : '<span class="f sq">'+occIcon(it.occ,15)+'</span>';
+    /* השם בכל משבצת ולא רק בנבחרת, ראו ההערה ב-CSS. */
     return '<button class="fupk'+(on?' on':'')+'" '+
       'data-fu="'+attrText(it.id)+'" '+
       'onclick="pickFuture(\''+it.id.replace(/'/g,"\\'")+'\')">'+
-      face+(on?'<span class="nm3">'+attrText(it.label||firstName(it.name))+'</span>':'')+
-      '</button>';
-  }).join('')+
-  /* ✎ רק על מי שנבחר, ורק כשיש לו ישות במסד. הוא הדבר היחיד במתג
-     שמוביל אל הילד עצמו ולא אל הרגעים שלו, ולכן הוא משבצת משלו
-     ולא אייקון בתוך הכדור הלבן: שם הוא היה הופך את הנבחר לשני
-     דברים שאפשר ללחוץ עליהם. */
-  (function(){
-    const it=items.filter(function(x){return x.id===sel})[0];
-    /* ורק על ילד שאני פתחתי לו רגע. מי שהוזמנה רואה כאן את הילד
-       של מישהו אחר, ו-`editKid` פותח גיליון שכותב ל-`beneficiaries`
-       — טבלה שנעולה ליוצר. הכפתור היה מוביל למסך שאי אפשר לשמור בו. */
-    const mine=it&&(it.rows||[]).some(function(p){return !p.joined});
-    return (it&&it.kidId&&mine)
-      ? '<button class="fupk pen" onclick="editKid(\''+attrText(it.kidId)+'\')" '+
-        'aria-label="עריכת הפרטים">\u270E</button>' : '';
-  })()+add;
+      face+'<span class="nm3">'+attrText(it.label||firstName(it.name))+'</span>'+
+      '</button>'+fuPenHTML(on?it:null);
+  }).join('')+add;
+}
+/* ✎ רק על מי שנבחר, ורק כשיש לו ישות במסד. הוא הדבר היחיד במתג
+   שמוביל אל הילד עצמו ולא אל הרגעים שלו, ולכן הוא משבצת משלו
+   ולא אייקון בתוך הכדור הלבן: שם הוא היה הופך את הנבחר לשני
+   דברים שאפשר ללחוץ עליהם.
+   **ומיד אחרי המשבצת של הנבחר, ולא בסוף השורה.** הוא נבנה בסוף
+   הרשימה, ולכן כשהנבחר היה הראשון הוא ישב שתי משבצות ממנו, צמוד
+   ל-＋ — כלומר נקרא כפעולה על הרשימה ולא על הילד. אלון ראה את זה
+   בחשבון שלו. **משבצת שמתארת פריט חייבת לגעת בפריט.** */
+function fuPenHTML(it){
+  /* ורק על ילד שאני פתחתי לו רגע. מי שהוזמנה רואה כאן את הילד
+     של מישהו אחר, ו-`editKid` פותח גיליון שכותב ל-`beneficiaries`
+     — טבלה שנעולה ליוצר. הכפתור היה מוביל למסך שאי אפשר לשמור בו. */
+  const mine=it&&(it.rows||[]).some(function(p){return !p.joined});
+  return (it&&it.kidId&&mine)
+    ? '<button class="fupk pen" onclick="editKid(\''+attrText(it.kidId)+'\')" '+
+      'aria-label="עריכת הפרטים">\u270E</button>' : '';
 }
 /* מזיז את הסימון בין הפריטים הקיימים בלי לצייר מחדש. הכדור הלבן
-   נסגר ונפתח, ולכן השם נכנס ויוצא איתו. */
+   נסגר ונפתח, ולכן השם נכנס ויוצא איתו.
+   **וזה מה שהיא עושה עכשיו.** היא הייתה כותבת `innerHTML` מלא,
+   כלומר בדיוק מה שההערה מעל הקריאה אוסרת: כל המשבצות נבנו מחדש,
+   האנימציה לא רצה ולו פעם אחת, הגלילה התאפסה וכל הפרצופים פוענחו
+   שוב. **פונקציה שתפקידה להזיז סימון אינה מוחקת את מה שהיא מסמנת.**
+   ‏✎ הוא היחיד שנבנה מחדש, כי הוא נגזר מהנבחר ונוסע איתו. */
 function fuMarkOn(items,sel){
   const row=document.getElementById('fu-pick');if(!row)return;
-  row.innerHTML=fuPickHTML(items,sel);
+  const it=items.filter(function(x){return x.id===sel})[0]||null;
+  const old=row.querySelector('.fupk.pen');
+  if(old)old.remove();
+  let onNode=null;
+  Array.prototype.slice.call(row.querySelectorAll('.fupk[data-fu]'))
+    .forEach(function(n){
+      const on=n.getAttribute('data-fu')===sel;
+      n.classList.toggle('on',on);
+      if(on)onNode=n;
+    });
+  const pen=fuPenHTML(it);
+  if(pen&&onNode)onNode.insertAdjacentHTML('afterend',pen);
   fuScrollPick();
 }
 /* ── הנבחר תמיד נראה ──────────────────────────────────────────────
@@ -14785,14 +14844,24 @@ function fuPeekHTML(it){
   const ev=n?(n===1?('רגע אחד מחכה'+to):(hebCount(n)+' רגעים מחכים'+to))
            :'עוד לא נפתח לו רגע';
   const acc=Number(it.accrued||0);
+  const manyP=(function(){
+    const seen={};((it&&it.people)||[]).forEach(function(q){
+      const nm=(q&&(q.name||q))||'';if(nm)seen[nm]=1});
+    return Object.keys(seen).length>1;
+  })();
   const proj=projectedTotal(projectablePlantings({plantings:it.rows||[]}));
   return '<p class="for">'+((it.rows||[]).some(function(p){return !p.joined})
            ?'נשתל עבור':'הוזמנת לנטוע עבור')+'</p>'+
     '<p class="nm">'+attrText(nm)+'</p>'+
     '<p class="ev">'+attrText(ev)+'</p>'+
-    '<div class="pr"><div><p class="l">'+(acc>0?'נטעתם עד היום':'עוד לא נטעתם')+'</p>'+
+    /* אותן שתי הכרעות של הכרטיס האמיתי: רבים רק כשנטעו רבים, ובלי
+       מגדר אין פנייה. שני הכרטיסים יושבים זה לצד זה במסילה, ולכן
+       ניסוח שונה ביניהם נקרא כמו שני מסכים. */
+    '<div class="pr"><div><p class="l">'+
+      (acc>0?(manyP?'נטעתם עד היום':'נטעת עד היום')
+            :(manyP?'עוד לא נטעתם':'עוד לא נטעת'))+'</p>'+
       '<p class="v now">'+(acc>0?shekel(acc):'·')+'</p></div>'+
-      (proj>0?('<div><p class="l">בקצב הזה ייצבר'+(to||' להם')+'</p>'+
+      (proj>0?('<div><p class="l">בקצב הזה ייצבר'+to+'</p>'+
                '<p class="v fut">כ-'+shekel(proj)+'</p></div>'):'')+
     '</div>';
 }
@@ -14859,8 +14928,8 @@ function fuRailScroll(){
 function fuBlankHead(){
   txt('fk-for','נשתל עבור');txt('fk-nm','·');
   txt('fk-ev','כאן יופיע מי שנטעת עבורו');
-  txt('s-label','עוד לא נטעתם');txt('s-you','·');
-  txt('s-futk','בקצב הזה ייצבר להם');txt('s-fut','·');txt('s-futwhen','');
+  txt('s-label','עוד לא נטעת');txt('s-you','·');
+  txt('s-futk','בקצב הזה ייצבר');txt('s-fut','·');txt('s-futwhen','');
   const d=document.getElementById('s-duo');if(d)d.classList.remove('solo');
   const fb=document.getElementById('s-futbox');if(fb)fb.style.display='';
 }
