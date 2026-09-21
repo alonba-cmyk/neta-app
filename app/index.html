@@ -336,6 +336,18 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 .dot svg{display:block}
 .dot.g svg{color:var(--leaf)}
 .dot.s svg{color:var(--sun)}
+/* ── אייקון הרגע, בכל המשבצות שנושאות אותו ────────────────────────
+   שמונת ה-ic-occ-* מסבב ספטמבר 2026. הם ירשו את מקומו של האמוג'י,
+   שצויר על ידי מערכת ההפעלה ולכן לא היה צריך שום כלל: הוא היה תו
+   טקסט שהתמרכז מעצמו. אייקון הוא svg, ולכן כל משבצת צריכה לומר
+   ‏block (אחרת יש לו baseline ומרווח מתחתיו) ומאיפה מגיע הצבע.
+
+   **הצבע מגיע מהמשבצת ולא מהאייקון**, וזה מה שמאפשר לאותו ציור
+   לשבת על כרטיס לבן, על ערוגה ועל ראש ירוק בלי גרסה שנייה. */
+.fbadge svg,.pc-ic>i svg,#d-icon.kidhd>i svg,.fu-mic svg,
+.esfaces>span>i svg,.bigfav>i svg,.mrow .mi svg,.dm-endic svg,
+.prow .fc.sq svg,.invbox .fc.sq svg,.stk>span.sq svg{display:block}
+.fu-mic svg,.prow .fc.sq svg,.invbox .fc.sq svg,.stk>span.sq svg{color:var(--leaf)}
 .title{font-weight:500;font-size:13.5px}.meta{font-size:11px;color:var(--tx-3);margin-top:1px}
 
 .btn{width:100%;font-family:inherit;font-size:13.5px;font-weight:500;padding:12px;border-radius:10px;
@@ -824,77 +836,184 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .s-meta b.fut{color:var(--sun-soft)}
 .s-meta i{width:3px;height:3px;border-radius:50%;background:var(--line-2);font-style:normal;flex-shrink:0}
 /* ── הבורר של "העתיד שלנו" ───────────────────────────────────────
-   כל השמות כאן בתחילית fu-, כי .pk ו-.who כבר קיימים בקובץ בהקשרים
-   אחרים, ושם קלאס שכבר תפוס הוא באג שקט. */
-/* 28 ולא 18: נמדד ב-390, ומתחת למספרים יש 30 פיקסל עד כותרת הסקשן.
-   ב-18 יצא 24 מול 30, כלומר המספרים נשענו על הבורר ונקראו כתווית שלו;
-   ב-28 זה 34 מול 30. 38 כבר יוצר בור של 44 מול 30 והמספרים מתחילים
-   להיראות שייכים לרשימה שמתחתיהם. התיקון יושב על הבורר ולא על
-   המספרים, כי מה שמשתנה הוא האוויר שאחרי הבורר. */
-/* ‏14 מלמטה ולא 28: המרווח הזה נקבע כשהבורר היה הדבר הראשון במסך
-   וצריך היה להיקרא כשורה נפרדת מהמספרים. מרגע שיש מעליו ראש מאויר
-   הוא כבר לא הפתיחה, וחצי מהאוויר הזה הוא ירושה. */
-/* ‏8 ולא 14 מלמטה: 28 היו כשהבורר היה הדבר הראשון במסך, ‏14 כשהראש
-   המאויר נכנס מעליו, ומרגע שמתחתיו יושב מספר אחד ממורכז במקום שני
-   חצאים עם קו ביניהם הגוש קטן והאוויר נקרא גדול יותר. ‏6 הפיקסלים
-   של הריפוד התחתון נספרים על זה, כלומר הרווח הנראה הוא 14. */
-.fu-pick{display:flex;gap:11px;align-items:flex-start;overflow-x:auto;
-  scrollbar-width:none;margin:0 -18px 8px;padding:7px 18px 6px}
-.fu-pick::-webkit-scrollbar{display:none}
-/* ‏transform-origin עליון: ההקטנה מתרחשת כלפי מטה ולכן ראשי כל
-   הפרצופים נשארים על אותו קו, גם כשהם בגדלים שונים. */
-.fu-item{display:flex;flex-direction:column;align-items:center;gap:7px;flex:0 0 auto;
-  width:60px;background:none;border:none;padding:0;font-family:inherit;cursor:pointer;
-  transform-origin:center top}
-/* הטבעת מצוירת ב-box-shadow ולכן היא יוצאת 4 פיקסלים מחוץ לעיגול.
-   בלי הריפוד העליון ב-fu-pick היא נאכלת על ידי overflow ונראית
-   כאילו התמונה חתוכה בכותרת. */
-.fu-ring{width:60px;height:60px;border-radius:50%;overflow:hidden;background:var(--s2);
-  display:block;position:relative;opacity:.5;transition:opacity .18s,box-shadow .2s}
-.fu-ring svg{display:block;width:100%;height:100%}
-.fu-item span{font-size:10.5px;color:var(--tx-3);white-space:nowrap;max-width:64px;
-  overflow:hidden;text-overflow:ellipsis;text-align:center;transition:color .18s}
-.fu-item.on .fu-ring{opacity:1;box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--leaf)}
-.fu-item.on span{color:var(--leaf);font-weight:500}
-.fu-ring.emoji{display:grid;place-items:center;font-size:24px}
-/* מקווקו ולא מלא: הוא הזמנה ולא אדם, ומשבצת ריקה בשורת פרצופים
-   קוראת נכון כ"כאן אפשר להוסיף". ‏"+ פתח נטיעה חדשה" היה מקווקו כמוהו
-   ועבר לכפתור מלא, ולכן הנימוק כאן עומד בפני עצמו. */
-.fu-item.fu-add .fu-ring{background:none;border:1px dashed var(--line-2);opacity:1;
-  display:grid;place-items:center;color:var(--leaf);font-size:26px}
+   **הגלגל ירד, ובמקומו מתג.** ‏`.fu-pick` היה שורת פרצופים בקוטר 60
+   שהתכווצו ודהו ככל שהתרחקו ממרכז המסך (`fuTaper`), והוא נמחק כאן
+   כולו יחד עם `.fu-item`, `.fu-ring` ו-`.fu-pen`. מה שבא במקומו הוא
+   `.fuseg`, שיושב מיד מתחת.
+
+   **ומה שהגלגל לימד ונשאר נכון:** המרכוז אינו נתון למשא ומתן ("אני
+   רוצה שתמיד מי שאני מסתכל עליו יהיה במרכז"), ולכן גם המתג נגלל
+   ומביא את הנבחר אל תוך המסך. ומה שהתעדכן: הגלגל פתר בעיה של קצה
+   ריק בשורת פרצופים אחידים, ובמתג הנבחר הוא כדור לבן מלא ושאר
+   המשבצות עיגולים קטנים — כלומר ההבדל בין הנבחר לשאר הוא הצורה
+   ולא הגודל, ואין קצה שצריך לומר "כאן זה נגמר".
+
+   **והמרווחים שנמדדו לגלגל ירדו איתו:** ‏28 מלמטה כשהיה הדבר הראשון
+   במסך, ‏14 כשנכנס מעליו ראש מאויר, ‏8 כשמתחתיו נשאר מספר אחד
+   ממורכז. במתג המרווח נגזר מגובה המשבצת ויושב על `.fuseg`.
+
+   **והשמות כאן אינם `.sw` ו-`.pk`, אף שכך הם בעיצוב.** שניהם כבר
+   תפוסים בקובץ: `.sw` הוא מתג ההגדרות (‏38 על 22, עם כפתור עגול
+   ב-`::after`), ו-`.pk` הוא הכיתוב הקטן ב-`.peek`. ‏`.sw` יושב
+   **אחרי** הכלל הזה בקובץ ובאותה ספציפיות, כלומר הוא היה מנצח
+   והמתג היה יוצא כדור של 38 על 22 עם ידית בתוכו. בלי שום שגיאה.
+   זו בדיוק המלכודת שההערה של הבורר הקודם כבר נקבה בה. */
 
 /* שורות הרגעים של מי שנבחר */
-.fu-mrow{display:flex;align-items:center;gap:9px;padding:8px 0;cursor:pointer}
+.fu-mrow{display:flex;align-items:center;gap:13px;padding:12px 0;cursor:pointer}
 .fu-mrow+.fu-mrow{border-top:1px solid var(--rule)}
 /* הרגע גדול מהנוטע שמתחתיו, ולא הפוך. הפרצוף היה 32 ועוד מסגרת 2,
    כלומר 36, מול אייקון רגע של 26 — הפריט הכפוף גדול ב-38 אחוז מזה
    שהוא כפוף לו, ולכן העין קראה שתי שורות שוות. עכשיו 30 מול 22. */
-.fu-mic{width:30px;height:30px;border-radius:10px;background:var(--leaf-bg);display:grid;
-  place-items:center;font-size:15px;flex-shrink:0}
-.fu-nm{font-size:14px;font-weight:500;line-height:1.3}
-.fu-dt{font-size:10px;color:var(--tx-3);margin-top:2px}
-.fu-amt{font-size:12.5px;font-weight:600;color:var(--leaf);
+/* ── המתג של "מה מחכה להם" ────────────────────────────────────────
+   פריט לכל נהנה, ואחריהם קופת ההפתעות וה-＋. הנבחר מתרחב לכדור לבן
+   עם פרצוף ושם, והאחרים נשארים פרצוף בלבד ברוחב קבוע.
+
+   **והוא נגלל, בשונה מהעיצוב.** בעיצוב הוא flex בלי גלילה, ואז
+   הנבחר מתכווץ ככל שיש יותר ילדים: נמדד שהשם שלו נחתך מארבעה ילדים
+   ב-320, מחמישה ב-360 ומשישה ב-390. סבתא עם חמישה נכדים קיבלה בורר
+   שבור. עכשיו לפריט המכווץ יש רוחב קבוע, לנבחר רוחב מינימלי,
+   והשורה גוללת — ו-fuScrollPick מגלגלת את הנבחר אל תוך המסך.
+   **זה גם מה ששומר על הכלל של אלון** מהבורר שקדם לו: מי שאני מסתכל
+   עליו תמיד נראה. מה שכן ירד הוא המרכוז המדויק. */
+/* המשטח עצמו הוא בדיוק .segbar, ולכן הוא מוכרז איתה במקום פעם
+   שנייה; מה שנשאר כאן הוא ההבדל בלבד, שהוא הגלילה. .segbar מחלקת
+   את הרוחב שווה בשווה (flex:1) וזה נכון לשתיים-שלוש אפשרויות,
+   ובמתג הזה מספר הילדים אינו ידוע מראש. */
+.fuseg{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+
+/* ── מסילת הכרטיסים ──────────────────────────────────────────────
+   יוצאת אל שני קצוות הראש ומחזירה את הריפוד בתוכה, כדי שהכרטיס
+   השכן ייחתך בקצה המסך ולא בקצה הריפוד.
+   רוחב הכרטיס נגזר מהמסך ואינו קבוע: ‏312 פיקסלים שבעיצוב הם
+   ‏390 פחות 78, וב-320 הם היו גולשים. מה שנשאר קבוע הוא ההצצה,
+   ‏32 פיקסלים בכל רוחב מכשיר.
+   ‏touch-action:pan-y, אחרת החלקה אנכית שמתחילה על הכרטיס נבלעת
+   במסילה במקום לגלול — אותה מלכודת של המחוון שעל הגרף. */
+.fucar{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
+  scroll-padding-inline:18px;margin:0 -18px;padding:0 18px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.fucar::-webkit-scrollbar{display:none}
+.fucar>.leafcard{flex:0 0 calc(100vw - 78px);scroll-snap-align:start;
+  margin-top:0;transition:opacity .3s}
+/* השכנים דוהים, ולא רק נחתכים: כרטיס שלם בבהירות מלאה בקצה המסך
+   נקרא כמו עוד תוכן ולא כמו "יש עוד ילד". */
+.fucar>.leafcard.peekcard{opacity:.55;cursor:pointer}
+/* ילד אחד: אין מה להחליק, והכרטיס ממלא את הרוחב כמו בעיצוב. */
+.fucar.one{overflow:visible;margin:0;padding:0}
+.fucar.one>.leafcard{flex:1 1 auto}
+.fuseg::-webkit-scrollbar{display:none}
+.fuseg .fupk{height:40px;border-radius:11px;display:flex;align-items:center;
+  justify-content:center;gap:7px;color:var(--on-head);font-size:14px;font-weight:600;
+  flex:0 0 44px;border:0;background:none;font-family:inherit;cursor:pointer;
+  transition:background .25s;overflow:hidden;white-space:nowrap;padding:0}
+.fuseg .fupk .f{width:26px;height:26px;border-radius:50%;overflow:hidden;display:block;
+  flex-shrink:0;opacity:.6;background:var(--face-fill);transition:opacity .25s}
+.fuseg .fupk .f svg,.fuseg .fupk .f img{display:block;width:100%;height:100%;object-fit:cover}
+.fuseg .fupk .f.sq{border-radius:8px;background:var(--leaf-bg);display:grid;place-items:center}
+.fuseg .fupk .f.sq svg{width:15px;height:15px;color:var(--leaf)}
+/* הנבחר: כדור לבן, שם, ופרצוף במלוא הבהירות. ‏min-width ולא flex:1,
+   כי flex:1 מכווץ אותו כשאין מקום — וזו בדיוק השבירה שהמדידה מצאה. */
+.fuseg .fupk.on{background:var(--on-head);color:var(--leaf-head);
+  flex:0 0 auto;min-width:44px;padding:0 12px}
+.fuseg .fupk.on .f{opacity:1}
+.fuseg .fupk.add{flex:0 0 40px;color:var(--on-head);font-size:19px;font-weight:400;opacity:.85}
+/* ילד אחד: ל-＋ יש מקום גם למילים, ואז הוא אומר מה הוא עושה. */
+.fuseg .fupk.add.wide{flex:0 0 auto;padding:0 14px;font-size:14px;font-weight:600;gap:6px}
+.fuseg .fupk.pen{flex:0 0 34px;color:var(--on-head);font-size:14px;opacity:.7}
+/* המשבצת המקווקוות של חשבון ריק: אותו כדור לבן בלי מילוי ובלי שם,
+   ובתוכו עיגול מקווקו במקום פרצוף. ‏--sun-on-leaf ולא לבן, כי
+   מקווקו לבן על ירוק כהה נקרא כמו קו שנשבר. */
+.fuseg .fupk.dash{background:none;box-shadow:inset 0 0 0 1.5px var(--leaf-tile-line);
+  flex:0 0 44px;cursor:default}
+.fuseg .fupk.dash .f{background:none;border:1.5px dashed var(--sun-on-leaf);opacity:.6}
+
+/* ── הכרטיס הכהה של "מה מחכה להם" ─────────────────────────────────
+   אותו .leafcard של שלב 1ב, עם שני מספרים בשורה במקום פרצוף.
+   השם הוא הגיבור כאן, כי כל המסך הוא הדף שלו. */
+[data-name="העתיד שלנו"] .leafcard .nm{font-size:34px;font-weight:800;
+  line-height:1.05;margin-top:2px}
+[data-name="העתיד שלנו"] .leafcard .ev{font-size:15px;color:var(--sun-on-leaf);
+  margin-top:4px}
+/* ‏**שני טורים לפי תוכן, ולא שני חצאים שווים.** נמדד: ב-320 החצי
+   הוא 115 פיקסלים ו-"כ-128,970 ₪" הוא 134, כלומר המספר גולש מהתא
+   שלו — בלי שגיאה, כי nowrap גולש החוצה במקום לשבור. זו בדיוק
+   אותה מדידה שהפילה את `.duo` ב"ההשקעות שלי", שם התיקון היה
+   ‏`flex:1 1 auto` במקום `flex:1`; בגריד המקבילה היא `auto auto`
+   עם `space-between`, כלומר כל טור ברוחב שלו והאוויר ביניהם. */
+[data-name="העתיד שלנו"] .leafcard .pr{display:grid;
+  grid-template-columns:auto auto;justify-content:space-between;
+  gap:12px;margin-top:20px}
+[data-name="העתיד שלנו"] .leafcard .pr .l{font-size:11.5px;color:var(--mist)}
+/* ‏**‏5.9vw ולא 7.2, וזה נגזר ממדידה ולא נבחר.** העיצוב נוקב ב-31
+   קבוע. הכרטיס במסילה הוא `100vw-78`, כלומר ב-320 נשארים 204
+   פיקסלים לשני המספרים ולרווח שביניהם; הזוג הגדול שנמדד
+   ("13,300 ₪" ו-"כ-128,970 ₪") תופס שם 233 ב-23px, ו-`nowrap`
+   גולש מהתא החוצה בלי שום שגיאה — בדיוק אותה מלכודת של `.duo`.
+   ‏192 חלקי 233 הם 0.824, ולכן 7.2vw יורדים ל-5.9.
+   **המחיר שנאמר:** המספר ב-390 הוא 23 ולא 31, כלומר הוא בטווח של
+   ‏`.s-num` ושל `.duo .n` שבשאר האפליקציה ולא גדול מהם. */
+[data-name="העתיד שלנו"] .leafcard .pr .v{font-size:clamp(16px,5.9vw,29px);
+  font-weight:700;line-height:1.1;margin-top:2px;white-space:nowrap}
+[data-name="העתיד שלנו"] .leafcard .pr .now{color:var(--on-head)}
+/* הטור השני נצמד לקצה החיצוני, הכיתוב והמספר יחד. שני המספרים
+   חובקים אז את רוחב הכרטיס ולא מרחפים באמצע שני חצאים, וזו גם
+   אותה חלוקה של .duo במסכים האחרים. ‏end ולא start: בשניהם
+   ‏start הוא ימין ב-RTL, כלומר שני הטורים היו נצמדים לאותו צד. */
+[data-name="העתיד שלנו"] .leafcard .pr>div+div{text-align:end}
+[data-name="העתיד שלנו"] .leafcard .pr .fut{color:var(--sun-on-leaf)}
+[data-name="העתיד שלנו"] .leafhead h2{margin:0 0 14px}
+/* המסך פותח בראש הירוק, ולכן הוא עמודה כמו "ההשקעות שלי". */
+.screen.on[data-name="העתיד שלנו"]{display:flex;flex-direction:column}
+[data-name="העתיד שלנו"] #home-full{display:flex;flex-direction:column;flex:1 1 auto;
+  min-height:0}
+
+/* ‏40 ולא 30, ‏14 של רדיוס ולא 10: הרשימה יושבת עכשיו בגיליון לבן
+   ברוחב מלא ולא בכרטיס צר, והריבוע מודד את השם ואת שורת המשנה
+   שלצידו בדיוק כמו ריבוע האייקון בכרטיס. */
+.fu-mic{width:40px;height:40px;border-radius:14px;background:var(--leaf-bg);display:grid;
+  place-items:center;flex-shrink:0}
+/* ריבוע מקווקו במקום אייקון, באותה משבצת בדיוק: שורת ההוספה נקראת
+   כשורה נוספת ברשימה ולא כפעולה שהודבקה מתחתיה. */
+.fu-mic.plusq{background:none;border:1.5px dashed var(--line-2);color:var(--leaf);
+  font-size:21px;font-weight:400;line-height:1}
+.fu-mrow.addr .fu-nm{color:var(--leaf)}
+.fu-mrow.addr{border-top:1px solid var(--rule)}
+.fu-nm{font-size:15.5px;font-weight:600;line-height:1.3}
+.fu-dt{font-size:12px;color:var(--tx-3);margin-top:2px;line-height:1.35}
+/* חול ולא ירוק: זה הצפי ולא הנצבר. ראו fuMomentHTML. */
+.fu-amt{font-size:17px;font-weight:700;color:var(--sun-soft);
   font-variant-numeric:tabular-nums;flex-shrink:0}
+/* ברשימת הנוטעים הסכום הוא כסף שקיים, ולכן ירוק ובמשקל של שורה
+   ולא של כותרת. ‏17/700 שייכים לצפי, שהוא מה שהשורות שמעליו
+   מרכיבות. */
+.fu-amt.g{color:var(--leaf);font-size:15px;font-weight:600}
+/* עיגול ולא ריבוע מעוגל: כאן זה אדם ולא רגע. ראו ההערה מעל .kidav. */
+.fu-pav{width:40px;height:40px;border-radius:50%;overflow:hidden;display:block;
+  flex-shrink:0;background:var(--s2)}
+.fu-pav svg,.fu-pav img{display:block;width:100%;height:100%;object-fit:cover}
+.fu-mrow.pl{cursor:default}
+.fu-plh{margin:18px 0 0}
+/* מי שקורא את המסך, בשורה האחרונה. הקו שמעליה הוא מה שמפריד בינה
+   לבין מי שכבר נוטע. */
+.fu-mrow.pl.me{border-top:1px solid var(--rule)}
+.fu-mrow.pl.me .pill{font-size:10.5px;padding:4px 10px;border-radius:999px;
+  background:var(--leaf-bg);color:var(--leaf);flex-shrink:0}
 /* הפעולה בתוך הכרטיס ובתוך הריפוד שלו, כמו ב-.ivjoin שב"ההשקעות
    שלי": באפליקציה פעולה ששייכת לכרטיס יושבת בתוכו ולא נדבקת אליו
    מקצה לקצה. הקו שמעליה הוא אותו קו שהפריד בין השורות לשורת "מי
    נוטע" שישבה כאן. */
 .fu-act{margin:4px 0 2px;padding-top:11px;border-top:1px solid var(--rule)}
-/* מתאר ולא מילוי. שני ירוקים מלאים ישבו על המסך הזה, המקטע של
-   "מהקרובים" בפס הפילוח והכפתור הזה, והם התחרו: המדידה הראתה
-   שאי אפשר להפריד ביניהם בגוון, כי ירוק שני חייב להיפרד גם
-   מהראשון וגם מהדף הלבן ושני התנאים יחד נועלים תקרה של 3.10.
-   זו אותה תקרה שהפילה את --leaf-mid. מילוי מול מתאר אינו נמדד
-   בניגודיות בין שני צבעים, ולכן הוא משוחרר ממנה: 9.63 בין השניים,
-   והמסה הירוקה יורדת מ-5,600 ל-1,750 פיקסל רבוע.
-   ומה שמשתנה הוא המילוי והטקסט בלבד: ה-border כבר קיים ב-.btn,
-   ‏1px של --leaf, והוא בדיוק מה שצריך. **‏1.5px נוסה וירד, כי
-   הוא אינו קיים:** כרומיום מעגל border-width כלפי מטה למספר שלם
-   של פיקסלים, בכל DPR — נמדד ב-1, ‏2 ו-3, וכולם החזירו 1px.
-   חמש ההצהרות `1.5px solid` שכבר בקובץ מצוירות אף הן ב-1, כלומר
-   הן כתובות ולא עושות דבר. **משקל קו הוא מספר שלם.** */
-.fu-act .btn{font-size:13px;padding:11px;
-  background:none;color:var(--leaf)}
+/* ‏**הכפתור חזר להיות ירוק מלא, וזה היפוך מנומק.** הוא הפך למתאר
+   כשעל המסך ישבו שני ירוקים מלאים שהתחרו — הוא והמקטע של "מהקרובים"
+   בפס הפילוח — ונמדד שאי אפשר להפריד ביניהם בגוון: ירוק שני חייב
+   להיפרד גם מהראשון וגם מהדף הלבן, ושני התנאים יחד נועלים תקרה של
+   ‏3.10 בבהירה ו-2.91 בכהה (זו אותה תקרה שהפילה את --leaf-mid).
+   **פס הפילוח ירד בסבב ספטמבר 2026, ואיתו הנימוק.**
+   **ומה שמחזיק את זה עכשיו:** הכפתור מוצג רק למי שהוזמנה ולא פתחה
+   את הרגע, ואצלה הוא הפעולה היחידה במסך — מי שפתח מקבל במקומו שורה
+   מקווקוות. כלומר אין מצב שבו שני ירוקים מלאים יושבים כאן יחד. */
+.fu-act .btn{font-size:13px;padding:11px}
 .fu-who{display:flex;align-items:center;gap:9px;margin-top:4px;padding:11px 0 4px;
   border-top:1px solid var(--rule)}
 .fu-who .fu-t{font-size:10.5px;color:var(--tx-3);line-height:1.5;flex:1;min-width:0}
@@ -939,7 +1058,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .pc-ic{width:32px;height:32px;border-radius:11px;background:var(--leaf-bg);
   display:grid;place-items:center;font-size:15px;flex-shrink:0}
 /* הדמות של הילד. עיגול ולא ריבוע מעוגל: ריבוע מעוגל הוא האייקון של
-   הרגע (🎂, 🎓), ועיגול הוא אדם — כך זה בכל מקום אחר בקובץ. */
+   הרגע, ועיגול הוא אדם — כך זה בכל מקום אחר בקובץ. */
 .kidav{width:32px;height:32px;border-radius:50%;overflow:hidden;flex-shrink:0;
   background:var(--s2);display:block}
 .kidav svg{display:block;width:100%;height:100%}
@@ -1334,80 +1453,18 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .mine-split b{color:var(--leaf);font-weight:600;font-variant-numeric:tabular-nums;font-size:12.5px}
 .mine-split .dsw.o{background:var(--leaf-2);opacity:.6}
 .mine-split span:last-child b{color:var(--leaf-2)}
-/* פס הפילוח ב"העתיד שלנו": הפרצוף בתוך המקטע, והסכום מתחתיו וממורכז
-   עליו. הצורה הקודמת הייתה פס בגובה 8 ומתחתיו מקרא של שני ריבועים
-   וכיתוב, ואלון אמר שקשה לחבר את הגרף למקרא. פרצוף שיושב בתוך המקטע
-   אינו צריך התאמה: הוא במקטע, ולכן אין מה לחבר.
+/* ── פס הפילוח "ממך / מהקרובים" ירד ───────────────────────────────
+   שמונה עשר כללי #s-mine ישבו כאן, והם ירדו יחד עם הפס בסבב ספטמבר
+   2026: הוא אינו בעיצוב של "מה מחכה להם", ואלון אישר את ההורדה.
+   מה שנשאר ממנו בקובץ הוא .split-bar ו-.mine-split הגלובליים, שמסך
+   הרגע מצייר איתם את אותו פילוח (#d-barmine).
 
-   ממוקד ל-#s-mine: אותו פילוח בדיוק מצויר גם במסך הרגע
-   (#d-barmine) על .split-bar ו-.mine-split הגלובליים.
-   **הפס עם הפרצופים נוסה שם וירד, לבקשת אלון.** כלומר שתי הצורות
-   הן החלטה ולא חוב: כאן הפילוח הוא הנושא של הגוש, ובמסך הרגע הוא
-   פרט אחד מתוך מסך שנושא גם גרף, רשימת נוטעים ופעולות. */
-#s-mine .sbar{display:flex;height:32px;margin-top:14px}
-/* ‏min-width הוא גודל הפרצוף ועוד הריפוד, ואינו נבחר: מתחת לזה
-   הפרצוף חורג מהמקטע שלו. המקטע שלי מתכווץ (flex-shrink) ולא השני,
-   כי כששני המינימומים לא נכנסים יחד עדיף שיזוז הצד שממילא קטן. */
-/* שני המקטעים נוגעים, ולכן הפס הוא צורה אחת מעוגלת שמחולקת בתוכה
-   ולא שני גופים. העיגול הוא בקצוות החיצוניים בלבד, ובתכונות
-   לוגיות: ב-RTL ‏start הוא הימני, ולכן המקטע שלי מעגל את הימניים
-   והשני את השמאליים בלי להתהפך ידנית. */
-#s-mine .sg{box-sizing:border-box;min-width:30px;
-  display:flex;align-items:center;justify-content:center}
-#s-mine .sg.m{flex:0 1 auto;background:var(--leaf);
-  border-start-start-radius:10px;border-end-start-radius:10px}
-/* מלא הוא החלק שלי, מקווקו הוא של הקרובים. שני ירוקים מלאים היו
-   נעולים על 3.10 בבהירה ו-2.91 בכהה, כי כל אחד מהם חייב להיפרד גם
-   מהשני וגם מהדף; מילוי מול מתאר אינו נמדד בניגודיות בין שני
-   צבעים ולכן אינו כפוף לתקרה הזאת. ‏--leaf-mid ירד עם זה. */
-#s-mine .sg.o{flex:1 1 auto;background:none;
-  border:1.5px dashed var(--leaf);
-  border-start-end-radius:10px;border-end-end-radius:10px}
-/* ‏0 ₪ אינו מקטע ירוק שנקרא כאילו הפקדת: מסגרת מקווקוות אומרת
-   "כאן יהיה שלך". הרוחב (50 אחוז) הוא החלטה, ראו buildHomeSummary. */
-#s-mine .sg.zero{background:none;border:1.5px dashed var(--leaf)}
-/* וכשהמקטע שלי מקווקו, השני מתמלא: שם הוא הכסף היחיד שקיים, ופס
-   שכולו מקווקו אינו מציג דבר. כלומר במצב הריק המקווקו אומר "עוד
-   אין ממך" ובמלא הוא אומר "לא ממך", **וזו אותה צורה בשתי
-   משמעויות** — המחיר נאמר ואלון בחר בו. */
-#s-mine .sg.o.solo{background:var(--leaf);border:0}
-/* פרצוף בתוך מקטע שקוף יושב על --s2 ולא על --face-fill, שהוא לבן
-   בבהירה ולכן נעלם על הדף. */
-#s-mine .sg.o:not(.solo) .sgf{background:var(--s2)}
-#s-mine .sg.o:not(.solo) .sgf .avsvg{color:var(--s2)}
-#s-mine .sgf{display:block;width:24px;height:24px;border-radius:50%;
-  overflow:hidden;background:var(--face-fill);flex-shrink:0}
-/* גם על ה-svg עצמו: ה-rect בספרייט הוא currentColor והכלל הגלובלי
-   שבשורה 919 צובע אותו --s2, ובלי הצהרה ממוקדת נשאר ריבוע כהה
-   בתוך העיגול הבהיר. אותה מלכודת של "ערוגה בתוך ערוגה". */
-#s-mine .sgf svg,#s-mine .sgf img{display:block;width:100%;height:100%}
-#s-mine .sgf .avsvg{color:var(--face-fill)}
-#s-mine .sg.zero .sgf{opacity:.55}
-/* כל כיתוב מתחת למקטע שלו וממורכז עליו: אותם כללי flex בדיוק כמו
-   בפס, ולכן המרכזים מתלכדים בלי חישוב אחוזים. מיקום מוחלט לפי אחוז
-   נמדד ונפסל, כי min-width גורם לרוחב בפועל להיות שונה מהאחוז.
-
-   שתי צורות נמדדו בדרך ונפסלו: זוג אחד ממורכז מתחת לפס (הכיתוב אינו
-   מעל שום דבר), וכיתוב שממורכז בחצי שלו. */
-/* בלי gap, בדיוק כמו בפס: השורה מקבלת את אותם כללים, ומרווח
-   שקיים באחד ולא בשני היה מזיז את המרכזים. */
-#s-mine .sunder{display:flex;margin-top:8px;
-  font-size:11px;color:var(--tx-2)}
-/* ‏min-width:max-content הוא מה שמחזיק את זה: "מהקרובים 370 ₪" רחב
-   מ-88 פיקסלים, וכשהמקטע שלו צר ממנו כיתוב ממורכז היה חורג מהפס
-   החוצה, עד 29 פיקסלים אל תוך ריפוד של 18. עכשיו התא אינו קטן
-   מהטקסט שבו, והשני מתכווץ. המחיר: במקרה הקיצון המרכז סוטה
-   מהמקטע, במקום שהטקסט ייצא מהמסך. סכום שני הטקסטים הוא כ-136
-   מול 284 שיש אפילו ב-320, ולכן השורה עצמה לעולם אינה גולשת. */
-#s-mine .sunder span{display:flex;align-items:baseline;justify-content:center;
-  gap:5px;white-space:nowrap;min-width:max-content}
-#s-mine .sunder span.m{flex:0 1 auto}
-#s-mine .sunder span.o{flex:1 1 auto}
-/* שניהם --leaf: שני הצדדים הם כסף שקיים, ומה שמבדיל ביניהם הוא
-   המילוי שמעליהם ולא צבע הטקסט. */
-#s-mine .sunder b{font-size:12.5px;font-weight:600;color:var(--leaf);
-  font-variant-numeric:tabular-nums}
-#s-mine .sunder span.m.zero b{color:var(--tx-3)}
+   **ומה שהפס לימד ושווה לזכור:** שני ירוקים שכל אחד מהם חייב להיפרד
+   גם מהשני וגם מהדף נעולים על תקרה של 3.10 בבהירה ו-2.91 בכהה, בכל
+   גוון ובכל רוויה. זה מה שהרג את --leaf-mid, וזה מה שהפך את הפתרון
+   ל"מלא מול מתאר": מילוי מול מתאר אינו נמדד בניגודיות בין שני
+   צבעים, ולכן הוא משוחרר מהתקרה. אותה מסקנה עומדת בכל מקום שבו
+   צריך להבדיל בין שני מקטעים ירוקים. */
 .dm-split em{font-style:normal;color:var(--leaf-soft)}
 .dm-split b{color:var(--sun-soft);font-weight:500}
 .dm-chart{position:relative;margin-top:14px;touch-action:pan-y}
@@ -1520,8 +1577,9 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    האמוג'י הוא הזיהוי, ורקע הערוגה מבדיל אותה משורה של אדם. */
 .cba.pcicon{background:var(--leaf-bg);display:grid;place-items:center;font-size:14px}
 .cbn{flex:1;font-size:12.5px}
-/* ‏--leaf ולא --leaf-soft: זה כסף שקיים, וזו אותה חלוקה בדיוק
-   של .fu-amt ברשימת הרגעים. */
+/* ‏--leaf ולא --leaf-soft: זה כסף שקיים. ‏(.fu-amt ברשימת הרגעים
+   הייתה הדוגמה השנייה לזה, ומסבב ספטמבר 2026 היא חול, כי שם
+   הסכום הוא הצפי ולא הנצבר.) */
 .cbv{font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--leaf)}
 .cbn b{display:block;font-size:12.5px;font-weight:500}
 .cbn i{display:block;font-style:normal;font-size:10.5px;color:var(--tx-2);margin-top:2px}
@@ -1723,15 +1781,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* תמונה אמיתית בכל מקום שבו יושבת דמות: אותו עיגול, ולכן cover. */
 .kidimg{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit}
 
-/* ✎ על הפרצוף שנבחר בבורר "העתיד שלנו". פינה עליונה-שמאלית, כי שם
-   הפרצוף אינו מכוסה על ידי שכנו, ובגודל שמאפשר להקיש עליו בלי לפגוע
-   בבחירה שמתחתיו. */
-.fu-item{position:relative}
-.fu-pen{position:absolute;top:-2px;left:-2px;width:22px;height:22px;border-radius:50%;
-  background:var(--s2);border:1px solid var(--line-2);color:var(--tx-2);
-  display:grid;place-items:center;font-size:10px;font-style:normal;line-height:1;
-  cursor:pointer;z-index:2}
-.fu-item.on .fu-pen{border-color:var(--leaf);color:var(--leaf)}
+/* ✎ עריכת הילד: משבצת במתג (`.fuseg .fupk.pen`), ולא תג על הפרצוף.
+   הוא היה `.fu-pen`, עיגול של 22 בפינה העליונה-השמאלית של הפרצוף
+   בגלגל, ושלושת הכללים שלו נמחקו כאן יחד עם הגלגל. **ומה שהעברה
+   פתרה:** תג שיושב על הפרצוף הופך את הנבחר לשני דברים שאפשר
+   ללחוץ עליהם באותו שטח, ושטח המגע שלו היה 22. */
 /* בורר הדמויות בגיליון הילד. אותה רשת כמו במסך ההקמה, ולכן אותם
    כללים — אבל היא חיה בגיליון ולא במסך "הקמה", ולכן שם מקומי. */
 #k-av{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
@@ -1793,7 +1847,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   display:grid;gap:7px;justify-items:center;transition:.15s;line-height:1.3}
 [data-name="הקמה"] .occgrid button:hover{border-color:var(--line-2)}
 [data-name="הקמה"] .occgrid button.on{border-color:var(--leaf);background:var(--s2);color:var(--tx)}
-[data-name="הקמה"] .occgrid .em{font-size:23px;line-height:1}
+/* ‏line-height:0 ולא 1: ל-svg אין baseline שצריך לפנות לו מקום,
+   ושורה של 23 מתחת לציור של 26 היא אוויר שה-CSS אינו מודה בו. */
+[data-name="הקמה"] .occgrid .em{line-height:0;color:var(--leaf)}
+[data-name="הקמה"] .occgrid .em svg{display:block}
 /* שתי שורות קבועות לכל תווית: "טיול אחרי צבא" נשבר לשתיים ו"דירה"
    לא, וברשת של שלוש עמודות זה הפרש גובה בין אריחים באותה שורה. */
 [data-name="הקמה"] .occgrid .lb{font-size:11px;text-align:center;
@@ -1858,7 +1915,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* פרצוף מלא צבע ב-.34 ובסטורציה של 45 אחוז יוצא כתם אפור ולא פנים,
    בדיוק כמו בדגם של הקרובים. ומאותו רגע שדגם הפעילות נושא פרצופים
    ולא נבטים, הוא בדיוק באותה סירה. */
-#home-ghost > *,#act-ghost > *{opacity:var(--ghost-2);filter:saturate(var(--ghost-sat-2))}
+#act-ghost > *{opacity:var(--ghost-2);filter:saturate(var(--ghost-sat-2))}
 /* המסך הריק של הבית בלבד, ולא .es הגלובלי שמשרת עוד שני מסכים.
 
    רוחב: 27ch נתנו לפסקה 190px, והיא נשברה לשלוש שורות. שתי שורות
@@ -1879,8 +1936,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* אותו רוחב שורה בכל המצבים הריקים: 27ch של .es מצמצם ל-190 פיקסל
    ושובר את הפסקה לשלוש-ארבע שורות. #rel-list נכנס לכאן כדי
    שהמצב הריק של הקרובים ייראה כמו זה של הטאב הנכנס. */
-#home-empty p,#kin-empty p,#rel-list .es p{max-width:290px}
-#home-empty .fine{max-width:290px}
+#rel-list .es p{max-width:290px}
 .es .art{margin-bottom:16px;color:var(--leaf)}
 /* הראש המאויר של הפעילות. ממוקד למזהה ולא ל-.es: הוא אינו מצב ריק,
    אין בו כפתור שצריך להתיישר עם טאב אחר, ו-.es נושא min-height של 62%
@@ -1938,20 +1994,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ‏`#act-empty` לא נגע: שם `.bigfav` נשאר 70 בריבוע מעוגל, כי הוא
    כוון מול שלושת המצבים הריקים האחרים ולא מול הטאב השכן. */
 #act-head .art{height:81px;display:grid;place-items:center;color:var(--leaf);margin-bottom:8px}
-/* ואותו ראש ב"העתיד שלנו". כאן האיור הוא קו ולא פרצוף, ולכן הגוש
-   הוא גובה האייקון עצמו ולא 81. */
-/* 22 ולא 12 כמו בשני הראשים האחרים: מרגע שהאייקון ירד, הכותרת
-   והבורר הם שני גושים סמוכים בלי שום דבר ביניהם, והרווח הנראה בין
-   שורת הטקסט התחתונה לפרצוף הראשון היה 19. עכשיו 29. עשרת הפיקסלים
-   האלה יורדים מהמספר הגדול (274 ל-284), וזה עדיין הרבה מתחת ל-334
-   שהיה כשהאייקון היה כאן. */
-#fut-head{text-align:center;padding:26px 4px 0;margin-bottom:22px}
-/* ‏18 במשקל 600. ‏700 נוסה ואלון אמר שההדגשה חזקה מדי, והפונט
-   נטען ב-300/400/500/600/700 בלבד, כלומר 600 הוא הצעד היחיד
-   מתחתיו; מה שמחזיר לכותרת את המשקל שירד הוא הפיקסל הנוסף.
-   התקרה של "לא יותר משתי שורות" היא 19, ו-21 שובר שורה ב-320. */
-#fut-head h3{font-size:18px;font-weight:600;line-height:1.35;text-wrap:balance;
-  margin:0 auto;max-width:310px}
+/* ‏**הראש של "העתיד שלנו" הוא היום .leafhead, ושלושת הכללים שהיו
+   כאן נמחקו.** הוא היה גוש ממורכז על רקע הדף (`text-align:center`,
+   ‏`padding:26px 4px 0`, כותרת h3 של 18px/600 ברוחב 310), וירש את
+   המידות מ-`.es`. הכותרת היא עכשיו h2 בתוך ראש ירוק ברוחב מלא,
+   והיא מיושרת לימין כמו בכל השפה החדשה.
+   **ומה שהמדידה תפסה כאן:** הכללים הישנים המשיכו לחול על המזהה,
+   ולכן הכותרת יצאה ממורכזת והריפוד התחתון היה 0 במקום 52 — הגיליון
+   הלבן טיפס 40 וחתך 18 פיקסלים מתחתית הכרטיס. בלי שום שגיאה.
+   **מזהה ששורד שינוי מבנה נושא איתו את כל הכללים הישנים.** */
+
 /* ── "ההשקעות שלי": אותו מבנה ראש, במספר במקום בכותרת ─────────────
    שני הטאבים השכנים פותחים באיור ממורכז ומתחתיו טקסט, וזה היה המסך
    היחיד שפותח בשורה: מספר מימין ונבט משמאלו. עכשיו הנבט עולה מעל
@@ -2008,7 +2060,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ממוקד למזהים ולא ל-.es הגלובלי: אותו קלאס משרת גם שלושה מצבים ריקים
    קטנים בתוך כרטיסים (אמצעי תשלום, מכתבים, בקשות), ושם 81 היה מנפח
    קופסה בגובה שורה אחת. */
-#home-empty .art,#kin-empty .art,#act-empty .art,#rel-list .es .art{
+#act-empty .art,#rel-list .es .art{
   height:81px;display:grid;place-items:center}
 /* גובה של שתי שורות, גם כשהכותרת תופסת אחת. ‏.es ממרכזת אנכית, ולכן
    גובה הגוש קובע איפה נוחת כל דבר בתוכו: ברגע שכותרת אחת נשברת לשתי
@@ -2032,23 +2084,17 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    קלאס משרת גם מצב ריק של סקשן (garden-empty) ושלושה מצבים ריקים
    קטנים בתוך כרטיסים. שם אין כפתור שצריך להתיישר עם איש, והגובה
    הקבוע רק הוסיף 23 פיקסלים של אוויר. */
-#home-empty h3,#kin-empty h3,#act-empty h3,#rel-list .es h3{
+#act-empty h3,#rel-list .es h3{
   min-height:calc(17px * 1.35 * 2);display:grid;align-content:center}
-/* השבירה אחרי הפסיק ולא באמצע הפסוקית: balance מאזן אורכי שורות ושבר
-   את הכותרת אחרי "שיהיה", שנשארה תלויה בסוף השורה. הפסיק הוא גבול
-   הפסוקית, ושם השבירה נקראת.
-
-   ויתור עצמי מתחת ל-360: "שיהיה ליקרים שלך ממה להתחיל" הוא 234px, וב-320
-   נשארים 5 פיקסלים בלבד. זה נכנס, אבל גופן חלופי מפיל את זה לשלוש שורות,
-   והכותרת גולשת מהגובה השמור ומורידה את הכפתור. br ב-display:none אינו
-   יוצר שבירה כלל, ולכן שם balance חוזר לעשות את עבודתו. */
-#home-empty h3 br{display:none}
-@media (min-width:360px){#home-empty h3 br{display:inline}}
+/* ‏(שני כללי ה-br של הכותרת ב-#home-empty נמחקו בסבב ספטמבר 2026
+   יחד עם הכותרת עצמה. מה שנשאר מהם נכון: ‏balance מאזן אורכי שורות
+   ולא פסוקיות, ולכן br ידני הוא הדרך לשבור אחרי הפסיק — אבל
+   ב-display:none הוא אינו יוצר שבירה כלל, וזה מה שמחזיר את balance
+   לעבודתו במכשיר צר.) */
 /* ואותו דבר למשפט. הכותרת לבדה לא הספיקה: הכפתור יורד גם כשהמשפט
    נשבר לשתי שורות באחד המסכים ולא באחר, וזה מה שקרה כשהמשפט של
    "העתיד שלנו" נכתב מחדש והתקצר לשורה אחת. הכלל הוא שני שורות בכל
    מקרה, כדי שהקופסה לא תלויה באורך הטקסט שיכתוב מישהו בעוד שנה. */
-#home-empty > p:not(.fine),#kin-empty > p:not(.fine),
 #act-empty > p:not(.fine),#rel-list .es > p:not(.fine){
   min-height:calc(12.5px * 1.65 * 2);display:grid;align-content:center}
 /* ערך ידוע שמוצג ואינו נשאל. מקווקו כדי שייקרא כמידע ולא כשדה ריק
@@ -2086,8 +2132,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    והדגם הדוהה הוחלף בשלושת הצעדים. ‏width:auto על כפתור שאינו יותר
    פריט flex מכווץ אותו לרוחב הטקסט, בלי שום שגיאה, וזה בדיוק מה
    שקרה שם. */
-#home-empty > .btn,#act-empty > .btn,
-#home-ghost,#act-ghost{
+#act-empty > .btn,#act-ghost{
   width:auto;align-self:stretch;margin-inline:-4px}
 /* מסך הסיום מאמץ את אותה מוסכמת טיפוגרפיה, בלי לאמץ את .es עצמו:
    ‏min-height:62% שלו נועד למסך שאין בו דבר מלבד ההודעה, וכאן יש
@@ -2536,7 +2581,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ברירת המחדל היא על הראש הירוק, כי שם הוא מופיע (בורר הילד
    ב"מה מחכה להם"). .segbar.lite הוא אותו רכיב על משטח לבן, לבחירת
    תדירות ההפקדה. */
-.segbar{background:var(--leaf-tile);border-radius:14px;padding:4px;display:flex;gap:2px}
+.segbar,.fuseg{background:var(--leaf-tile);border-radius:14px;padding:4px;display:flex;gap:2px}
 .segbar>button{flex:1;height:38px;border:0;border-radius:11px;background:none;
   font:600 14px/1 inherit;font-family:inherit;color:var(--on-leaf-2);
   display:flex;align-items:center;justify-content:center;gap:7px;
@@ -2627,7 +2672,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b57be5c';
+window.NETA_BUILD = '9ba277c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2955,66 +3000,78 @@ window.NETA_CONFIG = {
 
 <!-- 0 HOME -->
 <section class="screen on" data-name="העתיד שלנו">
-  <div id="home-full">
-  <!-- ראש של כותרת בלבד, והיחיד מארבעת הטאבים שאינו נפתח באיור.
-       הוא חי בתוך home-full ולא מעליו, מאותה סיבה שהראש בפעילות חי
-       בתוך act-full: applyTabSources מזיזה את הגוש בעצמה, ואלמנט
-       שחייב להיעלם יחד איתו יושב בתוכו.
+  <!-- ── הראש הירוק ────────────────────────────────────────────────
+       כותרת, המתג, ומסילת הכרטיסים.
 
-       האייקון ירד לבקשת אלון, והוא היה 62 פיקסלים: 54 של הציור ועוד
-       8 של מרווח. זה המסך שמשלם על ראש מעליו יותר מכל מסך אחר,
-       והמספר הגדול חוזר מ-345 ל-283. מה שהורדתו מבטלת, וזה נאמר
-       לפני הבחירה, הוא התאמת הדיו שלו לנבט של "ההשקעות שלי" שאלון
-       עצמו ביקש בסבב קודם, ואת האחידות בין ארבעת הראשים.
-       ‏CLAUDE.md מחזיק את מה שנמדד שם. -->
-  <div id="fut-head">
-    <!-- שתי שורות בכותרת ובלי משפט שקט מתחתיהן: השאלה ומה שעונה
-         עליה הן אמירה אחת, ושורה אפורה שחוזרת על אותה עובדה במשקל
-         שני מוסיפה שכבה ולא מידע. זה גם מה שמחזיר 30 פיקסלים למספר
-         הגדול, שהמסך הזה משלם עליהם יותר מכל מסך אחר. -->
-    <h3>מה מחכה להם?<br>כמה נצבר לכל אחד מהיקרים שלך</h3>
-  </div>
-  <!-- הבורר. פריט לכל נהנה, ואחריהם צ'יפ ההוספה: פרצוף בודד בשורה
-       נראה כמו שריד, ולצידו הוא נראה כמו התחלה. המסך מציג נהנה אחד
-       בכל פעם, והפתיחה היא על מי שהרגע שלו הקרוב ביותר. -->
-  <div class="fu-pick" id="fu-pick"></div>
-  <div class="summary" id="home-sum">
-    <div class="s-row">
-      <div class="s-body">
-        <div class="duo" id="s-duo">
-          <div>
-            <div class="n" id="s-you">13,300 ₪</div>
-            <div class="l" id="s-label">נצבר עד כה</div>
-            <!-- הצפי בשורה אחת מתחת לכיתוב, ולא בטור שני. הטור השני
-                 הציב מספר שאין לו פילוח מעל פס מפולח; משפט אינו טור,
-                 ואין לו מה לחרוג אליו. -->
-            <div class="l fut" id="s-rate"></div>
-          </div>
-          <div id="s-futbox">
-            <div class="n fut" id="s-fut">·</div>
-            <div class="l" id="s-futk">יחכו להם</div>
-            <div class="l l2" id="s-futwhen">במועדים</div>
-          </div>
-        </div>
+       **והוא מחוץ ל-home-full, בכוונה.** עד סבב ספטמבר 2026 הוא ישב
+       בתוכו, כדי שיירד יחד איתו כש-applyTabSources מזיזה את הגוש —
+       אותה הכרעה של הראש בפעילות. מרגע שהמצב הריק הוא **אותו מסך**
+       ולא מסך אחר, הראש מוצג בשני המצבים ומה שמתחלף הוא מה שבתוך
+       הגיליון: home-full או home-empty. זה בדיוק המבנה של "ההשקעות
+       שלי", ושם הוא נבנה ואושר.
+
+       **ואין כאן ברכה ואין כפתורי ראש.** ב"ההשקעות שלי" הראש נושא
+       את הברכה ואת השם, כי שם הנושא הוא אני; כאן הנושא הוא הילד,
+       והזהות שלו היא הכרטיס. הפרופיל נשאר במרחק טאב אחד.
+       **המחיר שנאמר:** ‏.nhdr מוצגת בשניים מארבעת הטאבים ולא
+       בשלושה.
+
+       **והאייקון שירד לפני הסבב** היה 62 פיקסלים (54 של ציור ו-8 של
+       מרווח), והורדתו החזירה את המספר הגדול מ-345 ל-283. מה שהיא
+       ביטלה, ונאמר לפני הבחירה: את התאמת הדיו שלו לנבט של "ההשקעות
+       שלי", ואת האחידות בין ארבעת הראשים. -->
+  <div class="leafhead" id="fut-head">
+    <h2>מה מחכה להם</h2>
+    <!-- המתג. פריט לכל נהנה, אחריהם הקופות ואז ＋. הנבחר מתרחב
+         לכדור לבן עם פרצוף ושם; השאר פרצוף בלבד. -->
+    <div class="fuseg" id="fu-pick"></div>
+    <!-- ── מסילת הכרטיסים ────────────────────────────────────────
+         כרטיס לכל ילד, מסונכרן עם המתג שמעליו: החלקה מחליפה ילד,
+         ולחיצה במתג מגלגלת לכרטיס שלו. השכנים מציצים מהצד, וזה מה
+         שאומר שיש עוד — במתג, שבו הלא-נבחרים הם עיגול בקוטר 26, זה
+         נאמר אבל לא נראה.
+         **הכרטיס האמיתי הוא אחד** (#fu-k), והוא זה שנושא את כל
+         המזהים; הפיינטר מזיז אותו למקומו ברשימה ומצייר סביבו כרטיסי
+         הצצה בלבד. כך אין שני מקומות שכותבים את אותו מספר, ואין
+         מזהה שמופיע פעמיים ב-DOM.
+         בילד אחד אין מסילה: הכרטיס ממלא את הרוחב, כמו בעיצוב. -->
+    <div class="fucar" id="fu-rail">
+    <div class="leafcard" id="fu-k">
+      <!-- ‏fk- ולא fu-, כי .fu-nm כבר תפוס כשם הקלאס של שם הרגע בשורות
+           שבגיליון. מזהה וקלאס אינם מתנגשים בקוד, אבל שני שמות זהים
+           לשני דברים שונים באותו מסך הם בדיוק מה שמייצר את הטעות. -->
+      <p class="for" id="fk-for">נשתל עבור</p>
+      <p class="nm" id="fk-nm">·</p>
+      <p class="ev" id="fk-ev">·</p>
+      <!-- שני מספרים בשורה. הם חזרו לראש יחד עם ירידת פס הפילוח:
+           הפס הוא מה שהפך שני מספרים מעליו להבטחה שקרית, כי הוא
+           מפלח את הנצבר ואינו מפלח את הצפי. בלעדיו הנימוק נעלם.
+
+           ‏"נטעתם" ברבים, כי זה מה שנצבר לרגע הזה מכל מי שנטע בו —
+           ולא "נצבר", שנבחרה בזמנו דווקא כי אין לה נושא אחד. כאן יש
+           נושא: כולכם. -->
+      <div class="pr" id="s-duo">
+        <div><p class="l" id="s-label">נטעתם עד היום</p>
+             <p class="v now" id="s-you">·</p></div>
+        <div id="s-futbox"><p class="l" id="s-futk">בקצב הזה ייצבר להם</p>
+             <p class="v fut" id="s-fut">·</p>
+             <p class="l l2" id="s-futwhen"></p></div>
       </div>
+      <!-- השורה שהחזיקה את הצפי כל עוד הוא היה מחוץ לראש. היא נשארת
+           בקוד ויורדת מהמסך: FUT_IN_HEAD הוא דגל, ומי שיחזיר אותו
+           לכבוי מקבל אותה בחזרה במקום טור שני. -->
+      <p class="l fut" id="s-rate" style="display:none"></p>
     </div>
-    <div id="s-mine" style="display:none">
-      <div class="sbar">
-        <div class="sg m" id="s-barmine"><span class="sgf" id="s-facem"></span></div>
-        <div class="sg o" id="s-barother"><span class="sgf" id="s-faceo"></span></div>
-      </div>
-      <div class="sunder">
-        <span class="m" id="s-minew">ממך<b id="s-minev">·</b></span>
-        <span class="o" id="s-othw">מהקרובים<b id="s-othv">·</b></span>
-      </div>
-    </div>
-    <!-- כאן ישבה שורת עובדות: ספירת הנטיעות וההפקדה החודשית שלי.
-         הספירה עברה לכותרות הסקשנים, שם כל מספר יושב מעל הרשימה
-         שהוא סופר, וההפקדה החודשית ירדה כי היא כבר יושבת ב"הנטיעות
-         שלי" באותן מילים בדיוק. שני המספרים גם לא היו זהים: כאן הוא
-         סוכם רק את הרגעים של המשפחה שלי ושם את הכול, ובחשבון עם
-         נטיעה למשפחה אחרת יצא 100 ₪ מול 150 ₪ באותו משפט. -->
-  </div>
+    </div><!-- /fu-rail -->
+  </div><!-- /fut-head -->
+
+  <!-- ── הגיליון הלבן ──────────────────────────────────────────────
+       אותו .sheetup של "ההשקעות שלי": ברוחב מלא, מטפס 40 מתוך 52
+       הפיקסלים שהראש משאיר מתחתיו, ומחזיר את הריפוד בתוכו. -->
+  <div class="sheetup">
+  <!-- ‏home-full ו-home-empty הם שני המילויים של הגיליון, לא שני
+       מסכים: הראש שמעליהם אחד. -->
+  <div id="home-full">
 
   <!-- שני סקשנים, והגבול ביניהם הוא family_of: רגע שייך למשפחה שלי,
        או למשפחה של מישהו אחר — לעולם לא לשתיהן. זה החתך היחיד שבו
@@ -3034,7 +3091,7 @@ window.NETA_CONFIG = {
   <!-- הרגעים של מי שנבחר, ומתחתיהם מי נוטע לו. שורת "מי נוטע" נושאת
        גם את ההזמנה כשאין עוד איש: הפעולה יושבת ליד העובדה שמולידה
        אותה, ולא בקופסה שנייה שחוזרת עליה במילים אחרות. -->
-  <div class="card" id="fu-card" style="padding:6px 12px"></div>
+  <div id="fu-card"></div>
   <!-- החשבון שמצדיק את ההזמנה. שורה שקטה ולא כותרת, כי הוא נימוק
        ולא מספר שמציגים. -->
   <p class="fine" id="fu-fine" style="display:none"></p>
@@ -3062,7 +3119,6 @@ window.NETA_CONFIG = {
     <button class="link" id="kz-rm" onclick="removeSelKid()">·</button>
   </div>
 
-
   <!-- הסקשן "נטיעות עבור אחרים" ירד מכאן. רגע של משפחה אחרת אינו
        שייך למסך ששואל מה מחכה לילדים שלי, והוא נספר במלואו בבית,
        שם השאלה היא כמה נתתי. כך גם נעלם המשפט "אינו נספר במספר
@@ -3070,37 +3126,38 @@ window.NETA_CONFIG = {
 
   </div><!-- /home-full -->
 
-  <div class="es" id="home-empty" style="display:none">
-    <!-- הנבט ירד מכאן. הוא סימן המותג ואינו אומר דבר על המסך הזה,
-         והמסך הזה הוא היחיד שהנושא שלו הוא אנשים שמחכה להם כסף.
-         אותו צביר כמו ב"הקרובים שלי", ובפרצופים של הנהנים ולא של
-         הנוטעים: שם אלה מי שנותנים, וכאן מי שמקבלים.
+  <!-- ── המצב הריק ────────────────────────────────────────────────
+       **אותו מסך, לא מסך אחר.** הראש הירוק, המתג והכרטיס נשארים,
+       ומה שמתחלף הוא המילוי: במתג משבצת מקווקוות אחת במקום פרצוף,
+       בכרטיס "·" במקום מספרים, וכאן שלושת הצעדים במקום הרשימה.
+       זו אותה הכרעה בדיוק שנבנתה ואושרה ב"ההשקעות שלי", ואלון בחר
+       בה גם כאן על פני מה שבחבילה — שם המצב הריק הוא ילדה מומצאת
+       ("נועה · לדוגמה") עם פרצוף וסכומים.
+       **המחיר שנאמר ונבחר:** המסך אינו מראה למה הוא טוב. מי שנכנס
+       רואה שלד ולא הבטחה.
 
-         ועל כל פרצוף תג רגע, שאומר בשביל מה הוא כאן בלי להמציא שם:
-         במסך ריק אין נהנים, וכל שם שיופיע כאן הוא בדוי, ושם בדוי על
-         איור שאינו דהוי נקרא כמו נתון.
-
-         שלושת התגים אינם 🎂🎓🏠 שב"הבית", אף שזה הסדר הכרונולוגי
-         המתבקש: שני מצבים ריקים שנושאים בדיוק את אותה שלישיה נקראים
-         כמו אותו מסך. כאן זה קשת חיים ארוכה יותר, בר מצווה, טיול
-         אחרי צבא, וחתונה. -->
-    <div class="art"><span class="esfaces kids" aria-hidden="true">
-      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-kid1"/></svg></span><i>🎂</i></span>
-      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-kid4"/></svg></span><i>🎒</i></span>
-      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-kid2"/></svg></span><i>💍</i></span>
-    </span></div>
-    <h3>כשיגיע הרגע,<br>שיהיה ליקרים שלך ממה להתחיל</h3>
-    <!-- הכותרת נושאת את המשמעות והמשפט את התיאור, ולא שניהם "כאן יופיע".
-         קודם הכותרת אמרה "כאן יופיע מה שמחכה..." והמשפט מנה מה יצויר
-         (פרצוף, מה שנצבר, מי נוטע) — כלומר פעמיים אותו דבר, ושניהם על
-         מה שהדגם הדוהה שמתחת לכפתור כבר מראה מ-plants{} האמיתי.
-
-         הצירוף "היקרים" חוזר כאן אחרי הכותרת, במודע: אלון בחר את
-         הניסוח המלא על פני "לכל אחד מהם" הקצר. -->
-    <p>כאן יופיע מה שמחכה בעתיד של<br>כל אחד מהיקרים שלכם</p>
-    <button class="btn" onclick="startCreate()">פתח את הנטיעה הראשונה</button>
-    <div class="gsample" id="home-ghost" aria-hidden="true"></div>
+       **ומה שירד כאן:** צביר שלושת הפרצופים עם תגי הרגע, הכותרת
+       ("כשיגיע הרגע, שיהיה ליקרים שלך ממה להתחיל"), המשפט, והדגם
+       הדוהה (#home-ghost). הראש כבר אומר "מה מחכה להם", והגיליון
+       עונה על "איך מתחילים". -->
+  <div id="home-empty" style="display:none">
+    <p class="eyebrow big" style="margin-top:0">איך מתחילים</p>
+    <div class="howsteps">
+      <div class="r"><span class="n">1</span><div style="min-width:0">
+        <div class="t">בוחרים למי</div>
+        <div class="s">ילד, נכד, אחיין, או כל קרוב</div></div></div>
+      <div class="r"><span class="n">2</span><div style="min-width:0">
+        <div class="t">בוחרים רגע</div>
+        <div class="s">לימודים, טיול אחרי צבא, חתונה, או משהו משלכם</div></div></div>
+      <div class="r"><span class="n">3</span><div style="min-width:0">
+        <div class="t">מחליטים כמה</div>
+        <div class="s">חד פעמי או כל חודש, מכל סכום</div></div></div>
+    </div>
+    <button class="btn gap" onclick="startCreate()">לנטוע בפעם הראשונה</button>
+    <p class="fine center" style="margin-top:10px">אפשר לשנות או לעצור בכל עת.</p>
   </div>
+
+  </div><!-- /sheetup -->
 
   <!-- הזמנה שנדחתה ב"בפעם אחרת". עד כה הכרטיס ישב בראש המסך ונפתח
        מעצמו בכניסה הבאה, בלי שאף אחד הכין אותה לזה — אחרי "לא עכשיו"
@@ -3210,14 +3267,14 @@ window.NETA_CONFIG = {
   <p class="sub gap">אפשר לשנות את זה בכל שלב, גם אחרי שהנטיעה נפתחה</p>
   <div class="field" style="margin-top:18px">
     <div class="occgrid" id="c-pills">
-      <button class="on" data-t="בר/בת מצווה" data-i="🎂"><span class="em">🎂</span><span class="lb">בר/בת מצווה</span></button>
-      <button data-t="לימודים" data-i="🎓"><span class="em">🎓</span><span class="lb">לימודים</span></button>
-      <button data-t="טיול אחרי צבא" data-i="🎒"><span class="em">🎒</span><span class="lb">טיול אחרי צבא</span></button>
-      <button data-t="רכב ראשון" data-i="🚗"><span class="em">🚗</span><span class="lb">רכב ראשון</span></button>
-      <button data-t="דירה" data-i="🏠"><span class="em">🏠</span><span class="lb">דירה</span></button>
-      <button data-t="חתונה" data-i="💍"><span class="em">💍</span><span class="lb">חתונה</span></button>
-      <button data-t="קופת הפתעות" data-i="🎁"><span class="em">🎁</span><span class="lb">קופת הפתעות</span></button>
-      <button data-t="custom" data-i="✦"><span class="em">✦</span><span class="lb">משהו אחר</span></button>
+      <button class="on" data-t="בר/בת מצווה"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></span><span class="lb">בר/בת מצווה</span></button>
+      <button data-t="לימודים"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-studies"/></svg></span><span class="lb">לימודים</span></button>
+      <button data-t="טיול אחרי צבא"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-trip"/></svg></span><span class="lb">טיול אחרי צבא</span></button>
+      <button data-t="רכב ראשון"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-car"/></svg></span><span class="lb">רכב ראשון</span></button>
+      <button data-t="דירה"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-home"/></svg></span><span class="lb">דירה</span></button>
+      <button data-t="חתונה"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-wedding"/></svg></span><span class="lb">חתונה</span></button>
+      <button data-t="קופת הפתעות"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-fund"/></svg></span><span class="lb">קופת הפתעות</span></button>
+      <button data-t="custom"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-other"/></svg></span><span class="lb">משהו אחר</span></button>
     </div>
     <input type="text" id="c-custom" placeholder="למשל: טיול גדול, רכב ראשון" style="margin-top:8px;display:none">
   </div>
@@ -3319,7 +3376,7 @@ window.NETA_CONFIG = {
 
 <!-- 2 CONTRIBUTE -->
 <section class="screen" data-name="השקעה">
-  <div class="row gap"><div class="dot g" id="ct-icon">🎂</div><div><div class="title" id="ct-title">השקע עבור דניאל</div><div class="meta" id="ct-meta">בר מצווה · המועד המיוחל אוגוסט 2032</div></div></div>
+  <div class="row gap"><div class="dot g" id="ct-icon"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div><div><div class="title" id="ct-title">השקע עבור דניאל</div><div class="meta" id="ct-meta">בר מצווה · המועד המיוחל אוגוסט 2032</div></div></div>
   <p class="sticky-sum" id="amt-sticky"><span id="amt-sticky-txt"></span></p>
   <p class="eyebrow" id="eb-freq">כל חודש או פעם אחת</p>
   <div class="two gap"><button class="pill" data-f="m" onclick="setFreq('m')">כל חודש</button><button class="pill" data-f="l" onclick="setFreq('l')">סכום חד פעמי</button></div>
@@ -3398,7 +3455,7 @@ window.NETA_CONFIG = {
 
 <!-- 3 PAYMENT -->
 <section class="screen center-v" data-name="תשלום">
-  <div class="row gap"><div class="dot g" id="pay-icon">🎂</div><div><div class="title">איך תעביר את ההפקדה?</div><div class="meta" id="pay-meta">הפקדה חודשית · עבור דניאל</div></div></div>
+  <div class="row gap"><div class="dot g" id="pay-icon"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div><div><div class="title">איך תעביר את ההפקדה?</div><div class="meta" id="pay-meta">הפקדה חודשית · עבור דניאל</div></div></div>
 
   <!-- נטע אינה מבקשת מספר כרטיס ואינה מבקשת מספר חשבון. כל אמצעי נגבה
        אצל מי שגובה אותו: ההרשאה לחיוב חשבון נחתמת מול הבנק, כרטיס נקלט
@@ -3478,7 +3535,7 @@ window.NETA_CONFIG = {
        מהסיבה הזאת. -->
   <div class="d-money">
     <div class="dm-head">
-      <div class="dot g" id="d-icon">🎂</div>
+      <div class="dot g" id="d-icon"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div>
       <div class="dm-id">
         <div class="title" id="d-title">בר המצווה של דניאל</div>
         <div class="meta" id="d-date">המועד המיוחל: אוגוסט 2032</div>
@@ -3589,7 +3646,7 @@ window.NETA_CONFIG = {
 
 <!-- 8 REDEEM -->
 <section class="screen" data-name="פדיון">
-  <div class="center gap"><div style="font-size:26px" id="rd-icon">🎂</div><h2 style="margin:8px 0 4px" id="rd-h">הגיע היום, דניאל</h2><p class="sub" id="rd-sub">אוגוסט 2032 · הנטיעה שלך הבשילה</p></div>
+  <div class="center gap"><div id="rd-icon"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div><h2 style="margin:8px 0 4px" id="rd-h">הגיע היום, דניאל</h2><p class="sub" id="rd-sub">אוגוסט 2032 · הנטיעה שלך הבשילה</p></div>
   <div class="card"><div class="stat"><span class="k">נפתחה</span><span class="v" id="rd-planted">2019</span></div><div class="stat"><span class="k" id="rd-whok">השקיעו עבורך</span><span class="v" id="rd-who">4 אנשים</span></div><div class="stat"><span class="k">סכום לפדיון</span><span class="v" style="color:var(--leaf)" id="rd-sum">35,300 ₪</span></div></div>
   <div class="card" style="background:var(--sun-bg);border-color:var(--sun-line)"><div class="row gap-s"><span>✉</span><b style="font-size:13.5px" id="rd-lcount">3 מכתבים מחכים לך</b></div><p class="sub" style="color:var(--sun-txt)" id="rd-lsub">נכתבו לפני שנים על ידי סבתא, דוד יוסי ואמא ואבא. הם נפתחים היום, יחד איתך.</p></div>
   <div class="lock gap"><b style="display:block;margin-bottom:4px;font-size:13.5px">אימות זהות</b><p class="sub">הפדיון מתבצע מול הגוף הפיננסי המנהל, לאחר אימות זהות מלא. נטע לא מחזיקה ולא מנהלת את הכספים.</p></div>
@@ -3643,12 +3700,13 @@ window.NETA_CONFIG = {
          מתאר הצטברות: "מה קרה מאז שנטעת" הוא רבים. שלושת התגים הם
          גם שלושת סוגי השורות שהפיד מחזיק, רק בשפה של רגעים.
 
-         ואותה שלישייה בדיוק (🎂🎓🏠) יושבת גם בצביר של המצב הריק
+         ואותה שלישייה בדיוק (בר מצווה, לימודים, דירה) יושבת גם בצביר
+         של המצב הריק
          ב"הנטיעות שלי", וזה בטוח: המצב ההוא מוצג רק כשאין נטיעות
          והראש הזה רק כשיש פיד, כלומר שני המסכים לעולם אינם נראים
          באותו חשבון באותו רגע. -->
     <div class="art"><span class="esfaces kids" aria-hidden="true">
-      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></span><i>🎂</i><i>🎓</i><i>🏠</i></span>
+      <span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></span><i><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></i><i><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-studies"/></svg></i><i><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-home"/></svg></i></span>
     </span></div>
     <!-- שתי שורות, ובלי המשפט האפור שהיה מתחתיהן. הוא מנה את מה
          שיש בפיד ("קרוב שהפקיד, אבן דרך שנחצתה, מכתב שנוסף"), כלומר
@@ -3679,7 +3737,7 @@ window.NETA_CONFIG = {
     <!-- הנבט ירד: הוא זהה לזה שב"כל הנטיעות". במקומו שורת הפיד עצמה
          בגודל איור, פרצוף עם תג הרגע, כי זה מה שיופיע כאן. -->
     <div class="art"><span class="bigfav" aria-hidden="true">
-      <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg><i>🎂</i></span></div>
+      <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg><i><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></i></span></div>
     <h3 id="act-e-h">כאן יופיעו אבני הדרך<br>לרגעים הכי משמעותיים שלהם</h3>
     <p id="act-e-p">קרוב שהפקיד, אבן דרך שנחצתה, מכתב שנוסף. הכול מתחיל בנטיעה.</p>
     <button class="btn" id="act-e-cta" onclick="actEmptyCta()">פתח את הנטיעה הראשונה</button>
@@ -3716,7 +3774,7 @@ window.NETA_CONFIG = {
 
 <!-- 11 EDIT -->
 <section class="screen" data-name="עריכה">
-  <div class="row gap"><div class="dot g">🎂</div><div><div class="title">עריכת הנטיעה</div><div class="meta" id="e-meta">בר המצווה של דניאל</div></div></div>
+  <div class="row gap"><div class="dot g"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div><div><div class="title">עריכת הנטיעה</div><div class="meta" id="e-meta">בר המצווה של דניאל</div></div></div>
 
   <p class="eyebrow">מה שאתה יכול לשנות בכל רגע</p>
   <div class="field"><label>שם הנטיעה</label><input type="text" id="e-name" value="בר המצווה של דניאל"></div>
@@ -4143,7 +4201,7 @@ window.NETA_CONFIG = {
 <!-- 18 NEW PLANTING, DAY TWO -->
 <section class="screen center-v" data-name="נטיעה · יום 2">
   <div class="row gap" style="align-items:flex-start">
-    <div class="dot g" style="width:40px;height:40px;font-size:17px">🎂</div>
+    <div class="dot g" style="width:40px;height:40px"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div>
     <div style="flex:1"><div class="title" style="font-size:14.5px">בר המצווה של איתי</div><div class="meta" style="margin-top:3px">המועד המיוחל: אוגוסט 2039</div></div>
   </div>
   <svg width="146" height="166" viewBox="0 0 140 162" style="margin:2px auto 0;display:block;opacity:.55" aria-hidden="true">
@@ -4165,7 +4223,7 @@ window.NETA_CONFIG = {
     <div class="tax-rail"><div class="tax-fut"></div><div class="tax-past" style="width:0"></div>
       <span class="tax-medal idle" style="right:0;color:#7FC088"><svg width="14" height="15" viewBox="0 0 14 15"><use href="#sprout"/></svg></span>
     </div>
-    <span class="tax-goal"><span class="disc dash">🎂</span><span class="yr">2039</span></span>
+    <span class="tax-goal"><span class="disc dash"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></span><span class="yr">2039</span></span>
   </div>
   <div class="lock" style="text-align:right;margin-top:26px">
     <p class="sub" style="color:var(--sun-txt)">הנבט עומד בתחילת הציר. ב-1 בספטמבר הוא יזוז בפעם הראשונה, ומשם הוא רק ממשיך.</p>
@@ -4355,7 +4413,7 @@ window.NETA_CONFIG = {
         </div>
         <h2>מה שנטעתם היום,<br>הופך לרגע שלו</h2>
         <p>בר/בת מצווה, לימודים, דירה ראשונה, או מה שהוא יבחר.</p>
-        <div class="how-occasions" aria-hidden="true">🎂 🎓 🏠 💍</div>
+        <div class="how-occasions" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-studies"/></svg><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-home"/></svg><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-wedding"/></svg></div>
         <div class="how-aha">
           <p class="how-aha-line">אחרי שלוש עשרה שנה</p>
           <p class="how-aha-num"><span class="how-cur">₪</span><span>23,500</span></p>
@@ -4438,7 +4496,7 @@ window.NETA_CONFIG = {
        זה גם אותו כרטיס שיופיע ברשימה בעוד רגע, ולכן המסך מפסיק להיות
        טופס והופך לתצוגה מקדימה של מה שנוצר. -->
   <div class="pyc">
-    <div class="dot g" id="py-icon">🎂</div>
+    <div class="dot g" id="py-icon"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div>
     <div class="pyc-x">
       <div class="pyc-nm" id="py-title">בר/בת מצווה של דניאל</div>
       <div class="pyc-am" id="py-amt">100 ₪ בכל חודש</div>
@@ -4481,7 +4539,7 @@ window.NETA_CONFIG = {
   </div>
 
   <div class="card center" style="background:var(--leaf-bg);border-color:var(--leaf-line)">
-    <div style="font-size:22px" id="pi-icon">🎂</div>
+    <div id="pi-icon"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div>
     <b style="display:block;margin:6px 0 4px;font-size:14px" id="pi-title">בר המצווה של דניאל</b>
     <p class="sub" style="color:var(--leaf-soft)" id="pi-meta">המועד המיוחל: אוגוסט 2032 · נצבר עד כה 15,600 ₪</p>
   </div>
@@ -4682,7 +4740,7 @@ window.NETA_CONFIG = {
     <div class="dm-ax">
       <span id="d-planted">נשתל 2019</span>
       <b id="d-when">עוד 6 שנים</b>
-      <span><span id="d-goalicon">🎂</span> <span id="d-yr">2032</span></span>
+      <span><span id="d-goalicon"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></span> <span id="d-yr">2032</span></span>
     </div>
     <div class="dm-key" id="d-key">
       <span><i class="dsw m"></i><span id="d-kdepw">ההפקדות שלכם</span> <em id="d-kdep"></em></span>
@@ -4954,8 +5012,9 @@ const topbars={
    בהם: שם הכניסה לפרופיל היא המסך עצמו, וכפתור שמוביל למסך שכבר
    פתוח אינו כפתור. */
 const HDR_TABS=[0,9,14,15];
-/* הטאבים שכבר עברו לראש הירוק של סבב ספטמבר 2026. */
-const GREEN_HEAD=[14];
+/* הטאבים שכבר עברו לראש הירוק של סבב ספטמבר 2026. מי שמוסיף מסך
+   לשפה החדשה מוסיף מספר אחד כאן, והשורה העליונה יורדת ממנו. */
+const GREEN_HEAD=[14,0];
 /* הברכה נקבעת בכל פתיחת מסך ולא פעם אחת בטעינה: אפליקציה שנשארת
    פתוחה בטלפון חוצה את הגבול בלי שאיש יטען אותה מחדש.
 
@@ -5072,7 +5131,7 @@ function bShortWhen(o){
 /* "שני רגעים", לא "2 רגעים". */
 const COUNT_WORD=['','','שני','שלושה','ארבעה','חמישה','שישה'];
 function countWord(n){return COUNT_WORD[n]||String(n)}
-let cType='בר/בת מצווה',cIcon='🎂',dateTouched=false;
+let cType='בר/בת מצווה',cIcon='bar_mitzvah',dateTouched=false;
 /* a fund without a named beneficiary is a different instrument, and says so */
 let designated=true;
 /* a wedding fund and a bar-mitzva fund are not the same year — derive the date from the occasion */
@@ -5305,12 +5364,12 @@ function openExactDate(el){
 }
 function onExactDate(){dateNote();prev();updateGoal();render();}
 const cName=document.getElementById('c-name'),cCustom=document.getElementById('c-custom'),cDate=document.getElementById('c-date');
-document.querySelectorAll('#c-pills button').forEach(p=>p.onclick=()=>{document.querySelectorAll('#c-pills button').forEach(x=>x.classList.remove('on'));p.classList.add('on');cType=p.dataset.t;cIcon=p.dataset.i;cCustom.style.display=cType==='custom'?'block':'none';prev();checkBene();render()});
+document.querySelectorAll('#c-pills button').forEach(p=>p.onclick=()=>{document.querySelectorAll('#c-pills button').forEach(x=>x.classList.remove('on'));p.classList.add('on');cType=p.dataset.t;cIcon=occasionEnum(p.dataset.t);cCustom.style.display=cType==='custom'?'block':'none';prev();checkBene();render()});
 /* שם הרגע והאייקון שלו, כפי שייכתבו. עד כה הם נכתבו ל-DOM של כרטיס
    התצוגה המקדימה, ומסך הסיכום קרא אותם משם — כלומר הכרטיס היה גם
    תצוגה וגם מקום האחסון, והורדתו הייתה מרוקנת את הסיכום. עכשיו הם
    אובייקט, והתצוגה נגזרת ממנו ולא להפך. */
-const preview={title:'',icon:'🎂'};
+const preview={title:'',icon:'bar_mitzvah'};
 function prev(){
   const n=cName.value.trim()||'הילד',t=cType==='custom'?(cCustom.value.trim()||'המטרה'):cType;
   preview.title=designated?(t+' של '+n):t;
@@ -5327,7 +5386,7 @@ function toggleShare(sw){
   sw.classList.toggle('on');
   document.getElementById('c-share-box').style.display=sw.classList.contains('on')?'block':'none';
 }
-let goal={name:'דניאל',type:'בר/בת מצווה',icon:'🎂',dateLabel:'אוגוסט 2032',years:yearsUntil('2032-08-01')};
+let goal={name:'דניאל',type:'בר/בת מצווה',icon:'bar_mitzvah',dateLabel:'אוגוסט 2032',years:yearsUntil('2032-08-01')};
 function yearsUntil(dateStr){const target=new Date(dateStr),today=new Date();let y=target.getFullYear()-today.getFullYear();if(target.getMonth()<today.getMonth()||(target.getMonth()===today.getMonth()&&target.getDate()<today.getDate()))y--;return Math.max(1,y);}
 /* onboarding: the same creation flow, wrapped — it ends only when a standing order exists */
 function playSplash(){
@@ -5538,11 +5597,30 @@ function paintLaterCard(){
     paintLaterPeek(t,r.occasion);
   },function(){hide()});
 }
-/* אייקוני הרגעים, באותם ערכים שיושבים ב-data-i של הצ'יפים במסך ההקמה.
-   ‏occasion חוזר מ-share_link_summary רק בהזמנה אישית, ובקישור פתוח
-   הוא null — ואז נופלים לנבט, שהוא ממילא ברירת המחדל של שורת פיד. */
-const OCC_ICON={bar_mitzvah:'🎂',studies:'🎓',army_trip:'🎒',first_car:'🚗',
-                apartment:'🏠',wedding:'💍',open_fund:'🎁'};
+/* ── אייקון הרגע ──────────────────────────────────────────────────
+   שמונת אייקוני הרגעים של סבב ספטמבר 2026, באותם ערכים שיושבים
+   ב-data-i של הצ'יפים במסך ההקמה. הם מחליפים את האמוג'י שישב כאן
+   עד כה, וההערה שמעל הספרייט מחזיקה את כל מה שנמדד עליהם.
+
+   **המפתח הוא `occasion` ולא `icon`.** ‏`plantings` מחזיקה את
+   שניהם: ‏`icon` הוא האמוג'י שנשמר בשורה, ו-`occasion` הוא האנום.
+   ציור מהאמוג'י היה מחייב טבלת היפוך מתו לאייקון, ומי שיוסיף רגע
+   חדש היה צריך לזכור שניים. **ורגע שנשמר לפני הסבב עדיין מחזיק
+   אמוג'י בעמודה `icon`**, ולכן שם אין מה להסתמך עליו בכלל.
+
+   ‏`occasion` חוזר `null` בקישור פתוח (‏0030) ובשורות ישנות, ואז
+   `ic-occ-other`: "משהו אחר" הוא רגע, והנבט הוא סימן המותג. */
+const OCC_SYM={bar_mitzvah:'mitzvah',studies:'studies',army_trip:'trip',
+               first_car:'car',apartment:'home',wedding:'wedding',
+               open_fund:'fund',other:'other'};
+/* ‏`size` הוא הציור, והצבע מגיע מ-`color` שמורש מהאריח שמסביב.
+   ‏aria-hidden כי התווית של הרגע היא השם שלידו, תמיד. */
+function occIcon(occ,size){
+  const k=OCC_SYM[occ]||'other';
+  const n=size||20;
+  return '<svg width="'+n+'" height="'+n+'" viewBox="0 0 24 24" aria-hidden="true">'+
+         '<use href="#ic-occ-'+k+'"/></svg>';
+}
 /* הרגע בצורה שכרטיס ההזמנה מציג אותה: "ללימודים שלה". המפתח הוא
    האנום שהשרת מחזיר ולא תווית הצ'יפ, ולכן זו טבלה נפרדת מ-OCCASION_NOUN:
    ההיא מקבלת תווית וגם קוראת ל-bs() שנשען על מצב האשף, ובמסך הזה אין
@@ -5621,7 +5699,7 @@ function paintLaterPeek(token,occasion){
   if(!netaServer||!netaServer.sharedActivity){box.style.display='none';return}
   netaServer.sharedActivity(token).then(function(rows){
     if(!rows||!rows.length){box.style.display='none';peekOn=false;return}
-    const icon=OCC_ICON[occasion]||'🌱';
+    const icon=occIcon(occasion,18);
     txt('later-peek-h',withPrep('ב',rows[0].planting_name||'נטיעה'));
     document.getElementById('later-peek-rows').innerHTML=
       rows.map(function(e){return peekRowHTML(e,icon)}).join('');
@@ -6295,7 +6373,7 @@ function updateGoal(){
   txt('eb-term',(designated&&!beneIsMe())
     ?('מתי תרצה ש'+n+' '+bs('יוכל','תוכל')+' לקצור את הפירות?')
     :'מתי תרצה לקצור את הפירות?');
-  txt('ct-icon',cIcon);
+  htm('ct-icon',occIcon(occasionEnum(cType),20));
   document.getElementById('ct-title').textContent=designated?('השקע עבור '+n):('השקע ל'+t);
   /* the header no longer states the date — it is an input on this screen now */
   document.getElementById('ct-meta').textContent=designated?t:'קופה שעדיין לא יועדה';
@@ -6460,7 +6538,7 @@ function openPayment(){
   payPick=freq==='m'?'hora':'card';
   document.querySelectorAll('.opt.pay').forEach(function(x){x.classList.toggle('on',paySaved===null&&x.dataset.p===payPick)});
   renderSavedPays();
-  txt('pay-icon',goal.icon||cIcon);
+  htm('pay-icon',occIcon(occasionEnum(goal.type||cType),20));
   /* הסכום, התדירות והמועד מורכבים עכשיו למשפט אחד בתוך כרטיס הסיכום,
      ולכן paySummary מרכיבה אותם ולא שלוש שורות נפרדות כאן. */
   document.getElementById('pay-recurring').style.display=freq==='m'?'flex':'none';
@@ -6640,7 +6718,7 @@ function startCreate(){
   document.getElementById('c-name').value='';
   document.querySelectorAll('#c-pills button').forEach(function(x,i){
     x.classList.toggle('on',i===0)});
-  cType='בר/בת מצווה';cIcon='🎂';
+  cType='בר/בת מצווה';cIcon='bar_mitzvah';
   /* הדמות הראשונה ואיתה הצ'יפ שהיא מסמנת. עד כה beneSex היה 'm'
      בלי ששום צ'יפ נדלק, כלומר ברירת מחדל שאיש לא ראה ולכן איש לא
      תיקן. */
@@ -6703,7 +6781,9 @@ function setOccasion(t){
   all.forEach(function(x){const on=x.dataset.t===t;
     x.classList.toggle('on',on); if(on)hit=x});
   if(!hit)return;
-  cType=hit.dataset.t;cIcon=hit.dataset.i;
+  /* ‏data-i ירד עם האמוג'י. הרגע נגזר מהתווית דרך occasionEnum,
+     שהיא ממילא מה שנשמר במסד, ולכן אין שני מקורות שצריך לסנכרן. */
+  cType=hit.dataset.t;cIcon=occasionEnum(hit.dataset.t);
   cCustom.style.display='none';
   prev();checkBene();
 }
@@ -6875,7 +6955,7 @@ function paySummaryBody(){
     /* וגם הכותרת: אין כאן מה שייפתח, יש רגע שכבר קיים שההפקדה נכנסת אליו. */
     txt('py-h','זה הרגע שאליו זה נכנס');
     txt('py-sub','ההפקדה מצטרפת לנטיעה שכבר קיימת, ומכאן היא נעולה עד המועד.');
-    txt('py-icon',(plantAt(cur)||{}).icon||goal.icon||'🌱');
+    htm('py-icon',occIcon((plantAt(cur)||{}).occasion||occasionEnum(goal.type),20));
     txt('py-title',(plantAt(cur)||{}).name||goal.type||'');
     payPreview('');
     document.getElementById('py-benerow').style.display='none';
@@ -6896,7 +6976,7 @@ function paySummaryBody(){
   }
   txt('py-h','זה מה שייפתח');
   txt('py-sub','כך תיראה הנטיעה במסך ההשקעות שלי, ומכאן היא צפויה לגדול עד הרגע המיוחל.');
-  txt('py-icon',preview.icon);
+  htm('py-icon',occIcon(occasionEnum(cType),20));
   txt('py-title',preview.title);
   document.getElementById('py-ownrow').style.display='flex';
   txt('py-own',opennessLabel());
@@ -7031,6 +7111,9 @@ document.querySelectorAll('.opt.dest').forEach(el=>el.onclick=()=>{
 let plantName='בר המצווה של דניאל';
 function childOf(t){const p=t.split(' של ');return (p.length>1?p[p.length-1]:t).trim()||'הילד';}
 function txt(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+/* אותו דבר, ל-svg. ‏txt כותב textContent, ולכן אייקון שנכתב דרכו
+   מופיע כקוד המקור שלו. */
+function htm(id,v){const el=document.getElementById(id);if(el)el.innerHTML=v;}
 function applyPlantName(raw){
   plantName=(raw||'').trim()||'הנטיעה';
   const kid=childOf(plantName);
@@ -7236,13 +7319,13 @@ function invitablePlantings(){
     return ((lastModel&&lastModel.plantings)||[])
       .filter(function(p){return p.designated!==false})
       .map(function(p){const w=bShortWhen(p);
-        return {key:p.key,icon:p.icon,name:p.name,
+        return {key:p.key,occasion:p.occasion,name:p.name,
         sub:plantSub(w,(p.participants||[]).length),
         meta:'המועד המיוחל: '+monthsShort[p.targetMonth]+' '+p.targetYear};});
   }
   return Object.keys(plants).filter(function(k){return plants[k].mine&&plants[k].designated!==false})
     .map(function(k){const p=plants[k];
-      return {key:k,icon:p.icon,name:p.name,
+      return {key:k,occasion:p.occasion,name:p.name,
         sub:plantSub(bShortWhen(p),(p.who||[]).length),
         meta:'המועד המיוחל: '+p.date+(p.shared?'':' · <span style="color:var(--tx-3)">פרטית</span>')};});
 }
@@ -7963,7 +8046,7 @@ function openInvitePicker(){
   const el=document.getElementById('ip-list');
   el.innerHTML=list.length?list.map(function(p){
     return '<div class="card tap" onclick="pickInvite(\''+p.key+'\')">'+
-      '<div class="row"><div class="dot g">'+p.icon+'</div><div style="flex:1">'+
+      '<div class="row"><div class="dot g">'+occIcon(p.occasion,20)+'</div><div style="flex:1">'+
       '<div class="title">'+p.name+'</div><div class="meta">'+p.meta+'</div></div>'+
       '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12">'+
       '<use href="#chev"/></svg></span></div></div>';
@@ -8540,27 +8623,27 @@ function shareFromAha(){
 }
 /* ---- per-planting data for the detail screen ---- */
 const plants={
-  danielBar:{icon:'🎂',name:'בר המצווה של דניאל',date:'אוגוסט 2032',yr:2032,planted:2019,
+  danielBar:{occ:'bar_mitzvah',name:'בר המצווה של דניאל',date:'אוגוסט 2032',yr:2032,planted:2019,
     now:15600,end:35300,yl:6,tNow:53.8,monthly:150,occasion:'bar_mitzvah',sex:'m',kid:'דניאל',approver:'self',shared:true,mine:true,
     who:[['av-parent','אתה','9,100 ₪','m'],['av-granny','סבתא רחל','4,300 ₪','f'],['av-uncle','דוד יוסי','2,200 ₪','m']],
     lCount:'ולא רק כסף, 3 מכתבים חתומים: מסבתא, מדוד יוסי וממך',lSub:'המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.',
     line:'בזכות 150 ₪ בחודש ממך, מסבתא ומדוד יוסי, דניאל מתקרב ליום הגדול שלו'},
-  noaStudy:{icon:'🎓',name:'הלימודים של נועה',date:'ספטמבר 2038',yr:2038,planted:2024,
+  noaStudy:{occ:'studies',name:'הלימודים של נועה',date:'ספטמבר 2038',yr:2038,planted:2024,
     now:1500,end:15700,yl:12,tNow:14.3,monthly:60,occasion:'studies',sex:'f',kid:'נועה',approver:'guardian',guardName:'מיכל',shared:false,mine:true,co:'מיכל',
     who:[['av-parent','אתה','1,500 ₪','m']],
     lCount:'ולא רק כסף, מכתב אחד חתום ממך',lSub:'המכתב ייפתח בספטמבר 2038, יחד עם נועה.',
     line:'בזכות 60 ₪ בחודש שאתה מפקיד, נועה מתקרבת ללימודים שלה'},
-  danielArmy:{icon:'★',name:'הגיוס של דניאל',date:'מרץ 2030',yr:2030,planted:2022,
+  danielArmy:{icon:'other',name:'הגיוס של דניאל',date:'מרץ 2030',yr:2030,planted:2022,
     now:2700,end:6100,yl:4,tNow:50,monthly:50,occasion:'other',sex:'m',kid:'דניאל',approver:'later',shared:true,mine:false,
     who:[['av-uncle','דוד יוסי','2,700 ₪','m']],
     lCount:'ולא רק כסף, מכתב אחד חתום מדוד יוסי',lSub:'המכתב ייפתח במרץ 2030, יחד עם דניאל.',
     line:'בזכות 50 ₪ בחודש שדוד יוסי מפקיד, דניאל יגיע מוכן לגיוס'},
-  openFund:{icon:'🎁',name:'קופת הפתעות',date:'יוני 2035',yr:2035,planted:2025,
+  openFund:{icon:'open_fund',name:'קופת הפתעות',date:'יוני 2035',yr:2035,planted:2025,
     now:400,end:4900,yl:9,tNow:11.1,monthly:30,occasion:'open_fund',kid:'מי שאחליט',shared:false,mine:true,designated:false,
     who:[['av-parent','אתה','400 ₪','m']],
     lCount:'ולא רק כסף, עוד לא נכתב מכתב',lSub:'אפשר לצרף מכתב ברגע שתייעד את הקופה.',
     line:'בזכות 30 ₪ בחודש שאתה מפקיד, יש כאן משהו שמחכה לרגע הנכון'},
-  noaHome:{icon:'🏠',name:'הדירה של נועה',date:'יוני 2045',yr:2045,planted:2021,
+  noaHome:{occ:'apartment',name:'הדירה של נועה',date:'יוני 2045',yr:2045,planted:2021,
     now:7000,end:64100,yl:19,tNow:20.8,monthly:100,occasion:'apartment',sex:'f',kid:'נועה',shared:true,mine:false,
     who:[['av-granny','סבתא רחל','7,000 ₪','f']],
     lCount:'ולא רק כסף, מכתב אחד חתום מסבתא רחל',lSub:'המכתב ייפתח ביוני 2045, יחד עם נועה.',
@@ -9174,12 +9257,12 @@ function paintDetail(key,p){
   if(dic){
     dic.classList.toggle('kidhd',!!kav);
     if(kav)dic.innerHTML='<span class="fw">'+kidFaceHTML(kav,40)+'</span>'+
-      '<i>'+(p.icon||'🌱')+'</i>';
-    else dic.textContent=p.icon||'🌱';
+      '<i>'+occIcon(p.occasion,14)+'</i>';
+    else dic.innerHTML=occIcon(p.occasion,20);
   }
   /* אייקון הרגע בקצה הקו. הוא נכתב כאן ומוצב בציור הגרף, כי שם
      יושבת נקודת הסיום. */
-  txt('d-endic',p.icon||'');
+  htm('d-endic',occIcon(p.occasion,17));
   txt('d-title',p.name);
   txt('d-date','המועד המיוחל: '+p.date);
   const own=document.getElementById('d-owners');
@@ -9206,7 +9289,7 @@ function paintDetail(key,p){
   }
   txt('d-planted','נשתל '+p.planted);
   txt('d-yr',p.yr);
-  txt('d-goalicon',p.icon);
+  htm('d-goalicon',occIcon(p.occasion,14));
   txt('d-cbh','מי נוטע כאן');
   /* שני מצבים: יש מכתב, ואז הכרטיס מספר עליו; אין, ואז הוא מזמין
      לכתוב. קודם הוא פשוט נעלם כשלא היה מכתב, והציג לפני כן את המשפט
@@ -9357,7 +9440,7 @@ function populateRedeem(p){
   txt('rc-sub',guardian
     ?('את/ה מורשה/ית לפתוח את מה שנטעו עבור '+p.kid+', הזן/י את הקוד שקיבלת.')
     :'מישהו שתל עבורך משהו לפני שנים. הזן את הקוד שקיבלת כדי לפתוח אותו.');
-  txt('rd-icon',p.icon);
+  htm('rd-icon',occIcon(p.occasion,26));
   txt('rd-h',guardian?('הגיע היום המיוחל של '+p.kid):('הגיע היום, '+p.kid));
   txt('rd-sub',p.date+(guardian?' · את/ה פועל/ת בשמו/ה, כמורשה/ית שנקבע/ה':' · הנטיעה שלך הבשילה'));
   txt('rd-planted',p.planted);
@@ -9460,7 +9543,8 @@ function plantHTML(req){
   pickedPlant=(req&&opts.length)?opts[0].key:'';
   return '<div class="chips">'+opts.map(function(p,i){
     return '<button'+((req&&!i)?' class="on"':'')+
-      ' onclick="pickedPlant=\''+p.key+'\';markChip(this)">'+p.icon+' '+p.name+'</button>';
+      ' onclick="pickedPlant=\''+p.key+'\';markChip(this)">'+
+      occIcon(p.occasion,15)+' '+p.name+'</button>';
   }).join('')+
   (req?'':'<button class="on" onclick="pickedPlant=\'\';markChip(this)">לא עכשיו</button>')+
   '</div>';
@@ -9666,7 +9750,7 @@ function personalInviteSheet(key,r,url,emailed){
       '<div class="stat"><span class="k">'+(emailed?'נשלח אל':'לשליחה אל')+'</span>'+
         '<span class="v" style="direction:ltr;unicode-bidi:isolate">'+attrText(r.contact)+'</span></div>'+
       '<div class="stat"><span class="k">לרגע</span><span class="v">'+
-        (p&&p.icon?p.icon+' ':'')+attrText(nameOfPlanting(key))+'</span></div>'+
+        (p?occIcon(p.occasion,15)+' ':'')+attrText(nameOfPlanting(key))+'</span></div>'+
       '<div class="stat"><span class="k">בהמתנה</span>'+
         '<span class="v" style="font-weight:400;color:var(--tx-2)">עד שהקישור ייפתח מהכתובת הזאת</span></div>'+
     '</div>'+
@@ -11140,7 +11224,7 @@ function apEnter(id){
 function apPlantRowHTML(o){
   const on=apPlants.indexOf(o.key)>=0;
   return '<div class="mrow'+(on?' on':'')+'" onclick="apTogglePlant(this,\''+o.key+'\')">'+
-    '<span class="mi">'+o.icon+'</span>'+
+    '<span class="mi">'+occIcon(o.occasion,18)+'</span>'+
     '<span class="mt"><b>'+attrText(o.name)+'</b>'+(o.sub?'<i>'+o.sub+'</i>':'')+'</span>'+
     '<span class="relbox'+(on?' on':'')+'">'+(on?TICK:'')+'</span></div>';
 }
@@ -11796,9 +11880,10 @@ function setMyName(name){
    הגיע, נופלים לדמות וחותמים, והציור השני מגיע מיד אחריו. */
 function applyMyAvatar(av){
   const html=faceHTML(av,'av-parent');
-  /* ‏#s-facem הוא הפרצוף שלי בתוך פס הפילוח, והוא ברשימה הזאת כדי
-     שהחתימה החוזרת של תמונה אמיתית תצייר גם אותו. */
-  document.querySelectorAll('.topbar .me, .hdr .me, .nhdr .me, #s-facem').forEach(function(box){
+  /* ‏#s-facem ירד מהרשימה עם פס הפילוח שהוא ישב בתוכו. הפרצוף שלי
+     במתג של "מה מחכה להם" נצבע מ-fuItems ולא מכאן, כי שם הוא אחד
+     מכמה ולא "הפרצוף שלי" בפינה. */
+  document.querySelectorAll('.topbar .me, .hdr .me, .nhdr .me').forEach(function(box){
     box.innerHTML=html;
   });
   if(av&&av.indexOf('av-')!==0&&!photoUrl(av))
@@ -12241,7 +12326,8 @@ function netaBackend(cfg){
         const s=(r[0]&&r[0][0])||{},rows=r[1]||[],joined=r[2]||[];
         const shape=function(p,by,bySex,byAv){
           const d=new Date(p.target_date+'T00:00:00');
-          return {key:p.id,name:p.name,icon:p.icon,designated:p.designated,
+          return {key:p.id,name:p.name,icon:p.icon,occasion:p.occasion,
+                  designated:p.designated,
                   targetYear:d.getFullYear(),targetMonth:d.getMonth(),
                   accrued:Number(p.accrued_agorot||0),
                   /* מה שאני נטעתי, בנפרד ממה שנצבר לרגע כולו: הכרטיס
@@ -12927,7 +13013,8 @@ function demoPlanting(k){
   const meRow=(p.who||[]).find(function(w){return w[1]==='אתה'});
   const mineAg=meRow?Math.round(parseFloat(String(meRow[2]).replace(/[^\d.]/g,''))*100)
                    :((p.who&&p.who.length)?0:p.now*100);
-  return {key:k,name:p.name,icon:p.icon,designated:p.designated!==false,
+  return {key:k,name:p.name,icon:p.icon,occasion:p.occasion||null,
+          designated:p.designated!==false,
           /* המין נוסע עם השורה כי הדמות של הילד נגזרת ממנו כשאין
              דמות שמורה, ובלעדיו נועה ודניאל היו מקבלים את "אחר". */
           sex:p.sex||null,
@@ -12982,6 +13069,7 @@ const demoSource={
      ההדגמה לא אמורה לצבור מצב שאף אחד לא ניקה. */
   create:function(p){
     demoExtra.push({key:'new-'+(demoExtra.length+1),name:p.name,icon:p.icon,
+      occasion:p.occasion||null,
       designated:p.designated,beneficiary:p.beneficiary,
       targetYear:p.targetYear,targetMonth:p.targetMonth,
       accrued:p.amount,mine:p.amount,since:new Date().toISOString().slice(0,10),
@@ -13009,43 +13097,42 @@ function inMonth(back,day){
 /* הוראת קבע על ארבע נטיעות — שמונה שורות זהות בשני חודשים, שהפיד מקפל
    לשתי שורות. בלעדיהן ההדגמה מראה פיד של רגעים בלבד, שהוא בדיוק המצב
    שאינו קורה לאף הורה שמפקיד כל חודש. */
-const DEMO_RECUR=[['הלימודים של נועה','🎓',6000],['הגיוס של דניאל','🪖',10000],
-                  ['בר המצווה של דניאל','🎂',5000],['הדירה של נועה','🏠',15000]];
+const DEMO_RECUR=[['הלימודים של נועה','studies',6000],['הגיוס של דניאל','other',10000],
+                  ['בר המצווה של דניאל','bar_mitzvah',5000],['הדירה של נועה','apartment',15000]];
 function demoRecurring(back,day){
   return DEMO_RECUR.map(function(r){
-    return {kind:'contribution',actor:'אתה',name:r[0],icon:r[1],
+    return {kind:'contribution',actor:'אתה',name:r[0],occ:r[1],
             amount:r[2],isMe:true,contribKind:'recurring',at:inMonth(back,day)};
   });
 }
-/* ‏avatar ו-icon בכל שורה, כמו במקור החי (actor_avatar מ-0031).
-   בלעדיהם ההדגמה הציגה נבט במקום פרצוף, כלומר עברה על נתיב אחר
-   מזה של חשבון אמיתי בדיוק במסך שכל כולו פרצופים. */
+/* ‏avatar ו-occ בכל שורה, כמו במקור החי (actor_avatar מ-0031,
+   ‏planting_occasion מ-0075). בלעדיהם ההדגמה הציגה נבט במקום פרצוף
+   ורגע ניטרלי במקום הרגע עצמו, כלומר עברה על נתיב אחר מזה של חשבון
+   אמיתי בדיוק במסך שכל כולו פרצופים. */
 demoSource.feed=function(){
   return Promise.resolve([
-    /* ‏🪖 ולא ★ שב-plants.danielArmy: אותה נטיעה מופיעה באותו מסך
-       גם בשורות הקבועות (DEMO_RECUR), ושני אייקונים לרגע אחד נקראים
-       כשני רגעים. ★ הוא גם תו טקסט ולא אמוג'י, ולכן הוא יוצא
-       חד-צבעי בין שכנים צבעוניים. */
-    {kind:'contribution',   actor:'דוד יוסי', avatar:'av-uncle', icon:'🪖',
+    /* אותו occ שב-DEMO_RECUR לאותה נטיעה: היא מופיעה באותו מסך גם
+       בשורות הקבועות, ושני אייקונים לרגע אחד נקראים כשני רגעים. */
+    {kind:'contribution',   actor:'דוד יוסי', avatar:'av-uncle', occ:'other',
      name:'הגיוס של דניאל',
      amount:5000, isMe:false, contribKind:'gift', at:daysAgo(2)},
-    {kind:'contribution',   actor:'אתה',      icon:'🎓',
+    {kind:'contribution',   actor:'אתה',      occ:'studies',
      name:'הלימודים של נועה',
      amount:6000, isMe:true,  contribKind:'one_time', at:daysAgo(7)},
-    {kind:'letter_signed',  actor:'סבתא רחל', avatar:'av-granny', icon:'🏠',
+    {kind:'letter_signed',  actor:'סבתא רחל', avatar:'av-granny', occ:'apartment',
      name:'הדירה של נועה',
      amount:null, isMe:false, at:daysAgo(14)},
     {kind:'anniversary',    actor:null,       name:'בר המצווה של דניאל',
-     amount:null, isMe:false, at:daysAgo(32), years:6, icon:'🎂'},
+     amount:null, isMe:false, at:daysAgo(32), years:6, occ:'bar_mitzvah'},
     /* שלושת מצבי בקשת האישור (0073). בהדגמה הם יושבים על שלוש נטיעות
        שונות, כי על נטיעה אחת רק אחד מהם יכול להיות נכון בכל רגע:
        השרת מוריד את שורת הבקשה ברגע שהיא נענית. */
-    {kind:'guardian_requested', actor:'אתה',  icon:'🎂', name:'בר המצווה של דניאל',
+    {kind:'guardian_requested', actor:'אתה',  occ:'bar_mitzvah', name:'בר המצווה של דניאל',
      subject:'רון קידון', amount:null, isMe:true,  at:daysAgo(1)},
-    {kind:'guardian_confirmed', actor:'סבתא רחל', avatar:'av-granny', icon:'🏠',
+    {kind:'guardian_confirmed', actor:'סבתא רחל', avatar:'av-granny', occ:'apartment',
      name:'הדירה של נועה',
      subject:'סבתא רחל', amount:null, isMe:false, at:daysAgo(9)},
-    {kind:'guardian_declined',  actor:null,   icon:'🎓', name:'הלימודים של נועה',
+    {kind:'guardian_declined',  actor:null,   occ:'studies', name:'הלימודים של נועה',
      subject:'גל סליימן', amount:null, isMe:false, at:daysAgo(11)}
   ].concat(demoRecurring(0,4)).concat(demoRecurring(1,4)));
 };
@@ -13062,7 +13149,8 @@ function supabaseSource(client){
                    kids:sum.beneficiary_names||[]},
           plantings:rows.map(function(p){
             const d=new Date(p.target_date+'T00:00:00');
-            return {key:p.id,name:p.name,icon:p.icon,designated:p.designated,
+            return {key:p.id,name:p.name,icon:p.icon,occasion:p.occasion,
+                  designated:p.designated,
                     targetYear:d.getFullYear(),targetMonth:d.getMonth(),
                     accrued:Number(p.accrued_agorot||0),
                     projection:Number(p.projection_agorot||0),
@@ -13222,8 +13310,8 @@ function plantCard(o){
        לה אדם. צללית אנונימית שם הייתה אדם שאינו קיים. */
     '<div class="pc-ic'+(o.face?' kidic':'')+'">'+
       (o.face
-        ? '<span class="fw">'+kidFaceHTML(o.face,48)+'</span><i>'+(o.icon||'🌱')+'</i>'
-        : (o.icon||'🌱'))+'</div>'+
+        ? '<span class="fw">'+kidFaceHTML(o.face,48)+'</span><i>'+occIcon(o.occ,14)+'</i>'
+        : occIcon(o.occ,20))+'</div>'+
     '<div class="pc-x"><div class="pc-nm">'+o.name+'</div>'+
       '<div class="pc-amt'+(o.amountText?' q':'')+(side?' withside':'')+'">'+
         '<span>'+(o.amountText||(o.verb+' '+shekel(o.amount)))+'</span>'+side+'</div>'+
@@ -13251,7 +13339,7 @@ function cardHTML(p){
 
      והתאריך ירד: הסקשן כבר מקבץ אותם, ומי שפתח את הרגע הוא הפרט
      שבאמת חסר. */
-  return plantCard({key:p.key,icon:p.icon,name:p.name,verb:'נצבר עד כה',
+  return plantCard({key:p.key,occ:p.occasion,name:p.name,verb:'נצבר עד כה',
                     amount:Number(p.accrued||0),
                     cap:planterCap(p.participants,(p.mine==null?p.accrued:p.mine)),
                     by:p.by,when:targetLine(p),
@@ -13313,7 +13401,7 @@ function projectedHorizon(rows){
    בשמות ההדגמה — לעולם לא בשם שהמשתמש הקליד. */
 function ghostCardHTML(p,by){
   return '<div class="ncard"><div class="nc-top">'+
-    '<div class="dot '+(p.designated===false?'s':'g')+'">'+p.icon+'</div>'+
+    '<div class="dot '+(p.designated===false?'s':'g')+'">'+occIcon(p.occasion,20)+'</div>'+
     '<div class="nc-id"><div class="nc-nm">'+p.name+'</div>'+
     '<div class="nc-meta">'+(by||('המועד המיוחל: '+p.date))+'</div></div>'+
     '<span class="peek"><span class="pk">נצבר</span>'+
@@ -13321,28 +13409,13 @@ function ghostCardHTML(p,by){
     '</div></div>';
 }
 function buildGhosts(){
-  /* הדגם של "העתיד שלנו" מצויר בדיוק בבנאים של המסך עצמו: הבורר
-     מ-fuPickHTML ושורות הרגעים מ-fuMomentHTML. קודם הוא צויר
-     ב-ghostCardHTML, שהוא כרטיס נטיעה — כלומר הבטיח מבנה שלא יופיע
-     שם לעולם, וזה בדיוק מה שדגם אמור לא לעשות. */
-  const home=document.getElementById('home-ghost');
-  if(home){
-    const items=fuItems(['danielBar','danielArmy','noaStudy'].map(demoPlanting));
-    const g=items[0];
-    const names=(g.people||[]).map(function(x){return firstName(x.name)});
-    const last=names.pop();
-    /* בלי הבורר. מרגע שהאיור שמעל הוא פרצופים, שורת פרצופים שנייה
-       מיד מתחת לכפתור אומרת את אותו דבר פעמיים על אותו מסך. הדגם
-       נשאר על מה שהאיור אינו מראה: הרגעים עצמם ומי נוטע להם. */
-    home.innerHTML=
-      '<div class="card" style="padding:6px 12px;margin:0">'+
-        g.rows.map(function(p){return fuMomentHTML(p)}).join('')+
-        '<div class="fu-who">'+faceStack(g.people)+
-          '<span class="fu-t">'+(names.join(', ')+' ו'+last).replace('אתה','<b>אתה</b>')+
-          ' נוטעים ל'+firstName(g.name)+'</span></div>'+
-      '</div>';
-  }
-
+  /* ‏**הדגם הדוהה של "העתיד שלנו" ירד בסבב ספטמבר 2026**, יחד עם
+     המצב הריק שהוא ישב בו: שם הגיליון נושא עכשיו את שלושת הצעדים
+     ("איך מתחילים") ולא איור, משפט ודגם.
+     מה שנשאר נכון ממנו, והוא הכלל: הוא נבנה מ-fuMomentHTML עצמה
+     ולא מ-ghostCardHTML, כלומר מהבנאי של המסך ולא מהעתק שלו — עותק
+     שני של המבנה נשאר מאחור בכל שינוי. שלושת הדגמים האחרים עדיין
+     עובדים כך. */
 
   /* הדגם של הקרובים נבנה כאן ומוצג רק במצב הריק, כמו שאר הדגמים.
      הוא יושב אחרי "הוסף קרוב" ולא לפניו: הפעולה קודמת, והדגם אומר
@@ -13364,11 +13437,11 @@ function buildGhosts(){
      הנטיעה, ושורה של קרוב את פניו, כפי שהפיד החי עושה. */
   const act=document.getElementById('act-ghost');
   if(act)act.innerHTML=[
-    {kind:'contribution',actor:'סבתא רחל',avatar:'av-granny',icon:'🎂',
+    {kind:'contribution',actor:'סבתא רחל',avatar:'av-granny',occ:'bar_mitzvah',
      name:'בר המצווה של דניאל',isMe:false,amount:null,at:daysAgo(1)},
-    {kind:'contribution',name:'בר המצווה של דניאל',icon:'🎂',
+    {kind:'contribution',name:'בר המצווה של דניאל',occ:'bar_mitzvah',
      isMe:true,amount:15000,at:daysAgo(8)},
-    {kind:'letter_signed',actor:'דוד יוסי',avatar:'av-uncle',icon:'🎂',
+    {kind:'letter_signed',actor:'דוד יוסי',avatar:'av-uncle',occ:'bar_mitzvah',
      name:'בר המצווה של דניאל',isMe:false,at:daysAgo(34)}
   ].map(feedRowHTML).join('');
 }
@@ -13439,7 +13512,7 @@ function relAvatar(name){
 }
 function feedRowHTML(e){
   const mine=!!e.isMe;
-  let sub='',amount='',cls='',glyph=e.icon||'🌱',title=e.name;
+  let sub='',amount='',cls='',glyph=occIcon(e.occ,18),title=e.name;
   /* חלוקה קבועה בכל סוגי השורות: הכותרת אומרת לאן, השורה מתחתיה אומרת
      מי, והעמודה בקצה אומרת מה. כך אפשר לסרוק כל עמודה בנפרד, ואף שורה
      אינה חוזרת על עצמה בשני מקומות.
@@ -13507,7 +13580,7 @@ function feedRowHTML(e){
     : ((!mine&&e.avatar&&e.kind!=='anniversary')?e.avatar:null);
   const badge=face
     ? '<div class="fav">'+faceHTML(face,'av-parent')+
-      '<span class="fbadge">'+(e.icon||'🌱')+'</span></div>'
+      '<span class="fbadge">'+occIcon(e.occ,11)+'</span></div>'
     : '<div class="fic'+cls+'">'+glyph+'</div>';
   const open=e.key?' onclick="openDetail(\''+e.key+'\')"':'';
   return '<div class="fr'+(sub?'':' one')+'"'+open+'>'+badge+
@@ -13612,7 +13685,11 @@ function openActivity(){
 
    ומה שהוא עולה כל עוד הוא כבוי: הצפי אינו מוצג בשום מקום במסך הזה.
    הוא המספר היחיד שמראה לאן ההשקעה הולכת, והוא ממתין להכרעה. */
-const FUT_IN_HEAD=false;
+/* הצפי בראש. הוא כובה כשפס הפילוח היה מתחתיו: שני מספרים מעל פס
+   מפולח הם הבטחה שקרית, כי הפס מפלח את הנצבר ואינו מפלח את הצפי.
+   מרגע שהפס ירד (סבב ספטמבר 2026) הנימוק נעלם, וזה גם מה שהעיצוב
+   מראה — שני מספרים בשורה בתוך הכרטיס הכהה. */
+const FUT_IN_HEAD=true;
 function buildHomeSummary(){
   const src=netaSource();
   /* במקביל ולא בשרשור: זו קריאה שנייה שאינה תלויה במודל, ושרשור
@@ -13690,6 +13767,14 @@ function buildHomeSummary(){
        את השני ומתחתיו כרטיס של הראשון. */
     const selEmpty=!(sel&&sel.rows&&sel.rows.length);
     lastFuSel=sel||null;
+    lastFuAll=fuAll;
+    /* ‏**המצב הריק הוא אותו מסך, ולכן הראש מצויר בשני המצבים.**
+       מה שמתחלף בו הוא המילוי: משבצת מקווקוות אחת במתג במקום
+       הפרצופים, ו-"·" בשני המספרים. ‏isEmpty הוא מתג ההדגמה,
+       ובחשבון חי הרשימה עצמה ריקה — שני המסלולים נפגשים כאן, בדיוק
+       כמו ב-paintInvestments. */
+    const blank=isEmpty||!fuAll.length;
+    fuPaintRail(blank?[]:fuAll,blank?null:sel);
     /* הבורר נבנה מחדש רק כשהרשימה עצמה משתנה. בלחיצה על פרצוף
        הוא נשאר כפי שהוא, רק הסימון זז והשורה גוללת, ולכן הפרצוף
        שנלחץ נוסע אל המרכז במקום להיבנות שם. החלפת innerHTML הורגת
@@ -13698,17 +13783,22 @@ function buildHomeSummary(){
     /* הנתיב החתום נכנס לחתימה: הוא מגיע אחרי הציור הראשון ומחליף
        דמות בתמונה, ובלעדיו הרשימה לא הייתה נבנית מחדש והתמונה
        לא הייתה מופיעה עד רענון. */
-    const fuSigNow=fuAll.map(function(x){
+    const fuSigNow=blank?'~blank':fuAll.map(function(x){
       return x.id+'|'+(x.av||'')+'|'+(x.label||x.name||'')+'|'+(photoUrl(x.av)?1:0);
     }).join('~');
-    if(anyPick&&fuSigNow!==fuSig){
+    /* ‏**המתג נשאר גם בחשבון ריק**, עם משבצת מקווקוות אחת במקום
+       פרצוף ועם ה-＋ לצידה. מתג שנעלם היה הופך את המצב הריק למסך
+       אחר, וזו בדיוק ההכרעה שהמסך הזה בנוי עליה. */
+    if(blank){
+      if(fuSigNow!==fuSig){fuRow.innerHTML=fuPickHTML([],'');fuSig=fuSigNow;fuPickDrawn=false}
+    }else if(anyPick&&fuSigNow!==fuSig){
       fuRow.innerHTML=fuPickHTML(fuAll,fuPick);
       fuSig=fuSigNow;fuPickDrawn=false;
     }else if(anyPick){
       fuMarkOn(fuAll,fuPick);
     }else{fuRow.innerHTML='';fuSig='';}
-    fuRow.style.display=anyPick?'':'none';
-    if(anyPick)fuCenterPick();
+    fuRow.style.display=(blank||anyPick)?'':'none';
+    if(anyPick&&!blank)fuScrollPick();
     /* המסך הזה מתאר רגעים, לא את חלקי בהם. זה מה שמבדיל אותו
        מ"הנטיעות שלי", ולכן גם בסקשן השני המספר הוא מה שנצבר לרגע.
 
@@ -13720,24 +13810,17 @@ function buildHomeSummary(){
        נשאר, ומתחתיו הכרטיס המקווקו. מי שאין לו אף רגע בכלל, כלומר
        אין לו גם ילד נבחר, נשאר עם המצב הריק כפי שהיה. */
     const kidZero=!!(selEmpty&&sel&&sel.pending);
-    const sumBox=document.getElementById('home-sum');
-    if(sumBox)sumBox.style.display=(selEmpty&&!kidZero)?'none':'';
-    const gEmpty=document.getElementById('garden-empty');
+    /* ‏**הראש נשאר על המסך תמיד.** ‏`#home-sum` נמחק בסבב ספטמבר
+       2026 יחד עם גוש הסיכום הישן, והשורה שהסתירה אותו הצביעה על
+       כלום; ו-`fut-head` היה יורד כאן כדי שלא יהיו שני איורים מעל
+       ‏`garden-empty`, שהוא מצב ריק שלם עם איור וכותרת משלו.
+       **שניהם נכונים למבנה הקודם בלבד:** הראש הירוק הוא עכשיו חלק
+       מהמסך בשני המצבים, ומה שמתחלף הוא מה שבתוך הגיליון — בדיוק
+       כמו ב"ההשקעות שלי". הראש גם יצא מ-`home-full`, ולכן אין יותר
+       גוש שהוא צריך ליפול יחד איתו. */
     const sectEmpty=(selEmpty&&!kidZero);
+    const gEmpty=document.getElementById('garden-empty');
     if(gEmpty)gEmpty.style.display=sectEmpty?'':'none';
-    /* והראש המאויר יורד איתו. ‏garden-empty הוא מצב ריק שלם, עם איור
-       משלו וכותרת משלו, ומעליו ישב fut-head עם איור וכותרת משלו:
-       שני איורים ושתי כותרות על מסך אחד, אצל מי שרק הוזמן לרגע של
-       קרוב. זו אותה מלכודת של act-head, שם הראש יושב **בתוך**
-       act-full כדי ליפול איתו; כאן הוא באמת בתוך home-full, אבל
-       home-full נשאר גלוי ומה שמתרוקן הוא הסקשן שבתוכו.
-
-       והראש הוא שיורד ולא האיור שמתחת: "מה מחכה להם" מבטיח רשימה
-       שאינה קיימת, בעוד שההערה מעל garden-empty קובעת שהמסך הראשון
-       שאדם רואה במוצר לא ייפתח בהודעה על מה שאין. ‏kidZero נשאר עם
-       הראש, כי שם יש ילד נבחר והשאלה עליו נכונה. */
-    const futHead=document.getElementById('fut-head');
-    if(futHead)futHead.style.display=sectEmpty?'none':'';
     const kz=document.getElementById('kid-zero');
     if(kz)kz.style.display=kidZero?'':'none';
     /* ‏garden-new אינו נוגע כאן. הוא יושב בתוך `kin-full`, כלומר על
@@ -13841,8 +13924,16 @@ function buildHomeSummary(){
        ובלי מגדר: "עבור X" הוא שם ולא פועל, ולכן הוא נכון תמיד — זו
        בדיוק הסיבה שהצד הזהוב העדיף "יחכו לדניאל" על "יחכו לו". */
     const forWho=sel&&sel.name?firstName(sel.name):'';
-    txt('s-label',accrued>0?('נצבר עד כה'+(forWho?' עבור '+forWho:''))
-                           :(coming?'ההפקדה הראשונה בדרך':'עוד לא נצבר'));
+    /* ‏**"נטעתם עד היום", ובלי השם.** הכרטיס שמעל כבר נושא את השם
+       באות של 34 פיקסל, ולכן תווית שחוזרת עליו במרחק 60 פיקסלים
+       היא השכבה השלישית של אותה עובדה — זו בדיוק הסיבה שהשם ירד
+       בזמנו מ-mi-meta כשהשורה העליונה החזירה אותו.
+       **וברבים**, כי זה מה שנצבר לרגעים האלה מכל מי שנטע בהם ולא
+       ממני בלבד. זה אינו סותר את "נצבר" שבמסך הרגע: שם אין נושא
+       אחד ולכן נבחרה צורה סבילה, וכאן הנושא הוא כולכם.
+       ומי שעוד לא הפקידו בו כלום מקבל את מה שכן קרה. */
+    txt('s-label',accrued>0?'נטעתם עד היום'
+                           :(coming?'ההפקדה הראשונה בדרך':'עוד לא נטעתם'));
     /* רק כשיש מה למדוד: "מאז" ליד "עוד לא נצבר" הוא סתירה. */
     /* "הושקעו" סבילה וחסרת נושא, ולכן היא נקראת כמו "זה מה שאני
        הפקדתי" — בדיוק ההפך מהמספר, שהוא מה שנצבר לרגעים האלה כולם,
@@ -13851,50 +13942,21 @@ function buildHomeSummary(){
     /* קצר בכוונה. כותרת הסקשן מיד מתחת כבר אומרת "עבורי ובני משפחתי",
        והשורה הזאת צריכה רק לומר מה המספר מודד. ניסוח ארוך יותר שבר
        את השורה לשתיים, והנבט שלצידה נראה ננסי — homefix בודק את זה. */
-    const others=Math.max(0,selAcc-selMine);
-    const sm=document.getElementById('s-mine');
-    if(sm){
-      sm.style.display=others>0?'':'none';
-      if(others>0){
-        txt('s-minev',shekel(selMine));txt('s-othv',shekel(others));
-        /* ‏selMine ולא mineTot. ‏mineTot הוא הסכום שלי בכל הנטיעות
-           יחד, ולכן מי שהפקיד לילד אחד וכלום לילד השני ראה אצל השני
-           פס מלא בגוון של "מהקרובים" מעל המילים "ממך 0 ₪". */
-        const zero=!(selMine>0);
-        /* כשאין ממך כלום זו מסגרת מקווקוות שאומרת "כאן יהיה שלך",
-           ולכן הרוחב הוא החלטה ולא נתון. הוא היה 15 אחוז ואז 20,
-           ועלה ל-50 לבקשת אלון: סימטריה, ושהחלק שלך יהיה ברור.
-           **המחיר נאמר ונבחר:** חצי־חצי נקרא כמו פילוח, והכיתוב
-           שמתחתיו אומר "0 ₪". מה שמחזיק את זה הוא שהמקטע מקווקו
-           ולא מלא, כלומר מסגרת ולא ערך, ושהמספר אומר במפורש כמה יש. */
-        const pct=zero?50:(selAcc>0?Math.round(selMine/selAcc*1000)/10:0);
-        const bm=document.getElementById('s-barmine'),bo=document.getElementById('s-barother');
-        if(bm){bm.style.width=pct+'%';bm.classList.toggle('zero',zero)}
-        if(bo){bo.style.width=(100-pct)+'%';bo.classList.toggle('solo',zero)}
-        /* אותו רוחב בדיוק לכיתוב שמתחת, כדי ששני המרכזים יתלכדו. */
-        const um=document.getElementById('s-minew'),uo=document.getElementById('s-othw');
-        if(um){um.style.width=pct+'%';um.classList.toggle('zero',zero)}
-        if(uo)uo.style.width=(100-pct)+'%';
-        /* הפרצוף הוא מה שהחליף את המקרא, ולכן הוא חייב להיות אדם
-           אמיתי: שלי מהפרופיל (‏faceHTML כדי שתמונה אמיתית תעבוד
-           כמו בהאדר, ו---applyMyAvatar מצייר אותו שוב כשהחתימה
-           חוזרת), והשני מרשימת המשתתפים בלי אותי.
+    /* ── פס הפילוח "ממך / מהקרובים" ירד ───────────────────────────
+       הוא נבחר בזמנו מתוך שבע צורות, והוא גם מה שהרג את --leaf-mid.
+       בסבב ספטמבר 2026 הוא אינו בעיצוב כלל, ואלון אישר את ההורדה.
 
-           אחד לכל צד ולא צביר: הכרטיס שמיד מתחת כבר מצייר את כל
-           הנוטעים ב---faceStack עם "+N", וצביר שני במרחק 60 פיקסלים
-           הוא אותו מידע פעמיים. כאן הפרצוף הוא תווית של הצד ולא
-           מפקד. */
-        const fm=document.getElementById('s-facem');
-        if(fm)fm.innerHTML=faceHTML(myAvatarKey()||'av-parent','av-parent');
-        const fo=document.getElementById('s-faceo');
-        if(fo){
-          const them=otherPlanters(sel&&sel.people);
-          const av=(them[0]&&them[0].avatar)||
-                   (sel&&sel.rows[0]&&sel.rows[0].byAv)||'av-someone';
-          fo.innerHTML=faceHTML(av,'av-someone');
-        }
-      }
-    }
+       **ומה שירד איתו:** זה היה המקום היחיד שבו מוזמנת רואה את
+       עצמה לפני ההפקדה הראשונה. התשובה לזה יושבת ב-02b שבחבילה —
+       רשימת הנוטעים בגיליון, ובסופה שורה שלה עצמה — וזה עוד לא
+       נבנה.
+
+       **וזה גם מה שהחזיר את הצפי לראש.** שני מספרים מעל פס מפולח
+       הם הבטחה שקרית, כי הפס מפלח את הנצבר ואינו מפלח את הצפי;
+       בלי הפס הנימוק נעלם, ו-FUT_IN_HEAD חזר לדלוק.
+
+       ‏.split-bar ו-.mine-split הגלובליים נשארו: מסך הרגע מצייר
+       איתם את אותו פילוח (#d-barmine), ושם הוא לא נגע. */
     /* כותרת הסקשן יורדת עם הרשימה: ההודעה שבמקומה כבר אומרת את
        אותו דבר, וכותרת מעל מצב ריק מכריזה על מדור שאין בו כלום. */
     /* הספירה יושבת בכותרת ולא בשורת העובדות: שם היא סופרת רק את
@@ -13906,6 +13968,31 @@ function buildHomeSummary(){
     /* הכותרת סופרת את מה שברשימה, וברשימה יושבים ילדים. "ילד אחד"
        ולא "1 ילד", מאותה סיבה שהספירה כאן במילים: ספרה בודדת בכותרת
        קטנה נקראת כמו טופס. */
+    /* ── הכרטיס הכהה: מי, וכמה רגעים מחכים לו ──────────────────
+       הפרצוף אינו כאן אלא במתג, וזו הכרעה של העיצוב: מי שנבחר
+       מסומן שם בכדור לבן עם פרצוף ושם, ופרצוף שני בכרטיס שמתחתיו
+       הוא אותו אדם פעמיים במרחק 70 פיקסלים — בדיוק מה שנפסל כשראש
+       "העתיד שלנו" נשא אייקון ולא פרצוף.
+
+       והשורה השנייה סופרת רגעים ואינה נוקבת בגיל: "בלי גילאים בשום
+       מקום" הוא כלל של הסבב, ומעבר לזה אין במסד תאריך לידה. */
+    if(sel){
+      txt('fk-nm', isSelfRel(sel.rel)?'את/ה' : (firstName(sel.name)||'·'));
+      /* "מחכים לה" דורש מגדר, ולכן הוא נאמר רק כשהוא ידוע; בלעדיו
+         הצורה חסרת הגוף, כמו בכל שאר המוצר. אין לוכסן. */
+      const n=sel.rows.length;
+      const to=isSelfRel(sel.rel)?' לך'
+              :sel.sex==='f'?' לה':sel.sex==='m'?' לו':'';
+      txt('fk-ev', n
+        ? (n===1?('רגע אחד מחכה'+to):(hebCount(n)+' רגעים מחכים'+to))
+        : 'עוד לא נפתח לו רגע');
+    }
+    /* ‏"נשתל עבור" הוא מי שפתח; מי שהוזמן רואה "הוזמנת לנטוע עבור".
+       ההבחנה היא מי יצר את הרגע ולא אם הפקדתי, בדיוק כמו בכפתור
+       שמתחת לרשימה. */
+    if(sel)txt('fk-for', sel.rows.some(function(p){return !p.joined})
+      ? 'נשתל עבור' : 'הוזמנת לנטוע עבור');
+
     const ownHead=document.getElementById('own-head');
     ownHead.style.display=selEmpty?'none':'';
     /* הכותרת מתארת את הרשימה שמתחתיה, שהיא הרגעים של מי שנבחר. */
@@ -14017,13 +14104,32 @@ function buildHomeSummary(){
         /* "+ הוסף רגע" ולא "הוסף רגע משמעותי שתרצה להשקיע בו":
            הכותרת שמעל הכרטיסייה כבר אומרת "שני הרגעים של אביב",
            ולכן גם "רגע" וגם "של מי" כבר נאמרו. */
+        /* ‏**מי שפתח מקבל שורה מקווקוות, ומי שהוזמן כפתור ירוק.**
+           זו הכרעה של אלון מתוך שלוש: להוסיף רגע לילד שלי היא
+           פעולה שממשיכה רשימה, ולכן היא שורה נוספת בה — אותה צורה
+           בדיוק של "+ הוסף קרוב" ב"הקרובים שלי". להצטרף להשקעה של
+           מישהו אחר היא הפעולה שכל המסך משרת אצל מי שהוזמנה, ולכן
+           שם היא נשארת כפתור.
+           **והתוצאה היא שבמסך של בעלים אין ולו כפתור ירוק אחד**,
+           בדיוק כמו ב"הקרובים שלי" עם רשימה מלאה. */
         fuCard.innerHTML=
           sel.rows.map(function(p){return fuMomentHTML(p)}).join('')+
-          '<div class="fu-act"><button class="btn">'+
-            (iOpened?'+ הוסף רגע':iPlant?'לפרטי ההשקעה':join)+'</button></div>';
+          (iOpened
+            ? fuAddRowHTML(sel)
+            : fuPlantersHTML(near,sel,ppl)+
+              '<div class="fu-act"><button class="btn">'+
+              (iPlant?'לפרטי ההשקעה':join)+'</button></div>'+
+              /* ‏**ומי שהוזמנה יכולה גם לפתוח רגע משלה לאותו ילד.**
+                 זו ההחלטה שנשארה פתוחה כשהכיתוב "פתח נטיעה משלך" ירד
+                 מהכרטיסייה, ו-02b שבחבילה מחזיר אותה. **והיא שורה
+                 מקווקוות ולא כפתור מתאר כמו בעיצוב**, כי זו בדיוק
+                 אותה פעולה של מי שפתח — להוסיף רגע לילד — ושתי צורות
+                 לאותה פעולה בשני מצבים של אותו מסך הן שתי שפות. */
+              fuAddRowHTML(sel));
         /* המאזין נקשר ואינו נכתב לתוך onclick: מפתח נטיעה הוא מחרוזת
            מהשרת, והשחלה שלה לתוך תכונה דורשת בריחה שאין לה סיבה. */
-        const fuBtn=fuCard.querySelector('.fu-act .btn');
+        const fuBtn=fuCard.querySelector('.fu-act .btn')||
+                    fuCard.querySelector('#fu-add');
         if(fuBtn)fuBtn.onclick=iOpened
           /* אותה כניסה בדיוק של gardenEmptyCta: האשף נפתח עם הילד
              שכבר נבחר, ולא בשדה ריק שדורש להקליד את שמו מחדש —
@@ -14097,33 +14203,28 @@ function buildHomeSummary(){
          מתי משמאל. קודם הצד הזהוב היה משפט אחד שנשבר לפי הרוחב,
          כלומר לפעמים שורה ולפעמים שתיים, והצד הירוק היה שורה אחת —
          שני חצאים בגבהים שונים שמשתנים לפי המכשיר. */
+      /* ‏**"בקצב הזה ייצבר לה", שורה אחת.** הצד הזהוב היה שתי שורות
+         ("זה מה שיחכה" / "לנועה בקצב הזה"), והן נבנו כשהוא היה חייב
+         להתאים בגובה לצד הירוק שנשא "נצבר מאז ספט׳ 2026". מרגע ששני
+         הכיתובים הם שורה אחת אין מה להשוות, והשנייה הייתה אוויר.
+         **והיא גם מה שמרכיבות שורות הרשימה שמתחת**, ולכן היא מנוסחת
+         כמו הכיתוב שבשורה: אותו "ייצבר" שכבר יושב בכרטיס ב"ההשקעות
+         שלי".
+         **המגדר רק כשהוא ידוע**, ובלעדיו "להם" — אין לוכסן ואין
+         ניחוש לפי שם. */
       const futL=(function(){
         const nm=sel?firstName(sel.name):'';
-        /* "זה מה שיחכה" בשורה הראשונה, והשם בשנייה: "במועדים" לא אמר
-           דבר שאי אפשר להסיק, ו"בקצב הזה" אומר גם למה המספר הזה וגם
-           שהוא תלוי בכך שההפקדה נמשכת. אותה מילה שכבר משמשת כאן
-           בענף בלי השם. */
-        if(proj.length!==1)return ['זה מה שיחכה',
-          (nm?('ל'+nm):'להם')+' בקצב הזה'];
-        /* ‏date קיים רק במודל של מסך הרגע. הרשימה מחזיקה targetYear
-           ו-targetMonth, ולכן התנאי הזה היה תמיד שקרי והתאריך נשמט
-           בשקט משני המקורות, החי וההדגמה כאחד. */
-        const one=proj[0];
-        /* החודש בקיצור: "יחכו לשימי בספטמבר 2036" מגיע ל-130 פיקסלים
-           בחצי שרוחבו 134, ועם שם ארוך יותר הוא נשבר לשתי שורות. */
-        const w=bShortWhen(one),when=w?('ב'+w):'';
-        /* השם ולא הכינוי: המקור החי אינו מחזיר את מין הנהנה, ולכן
-           "יחכו לו" היה ניחוש. עם השם אין מה לנחש. */
-        if(sel&&isSelfRel(sel.rel))return ['יחכו לך',when];
-        if(nm)return ['יחכו ל'+nm,when];
-        if(one.sex==='f')return ['יחכו לה',when];
-        if(one.sex==='m')return ['יחכו לו',when];
-        return ['יחכו שם','בקצב הזה'];
+        if(sel&&isSelfRel(sel.rel))return ['בקצב הזה ייצבר לך',''];
+        if(sel&&sel.sex==='f')return ['בקצב הזה ייצבר לה',''];
+        if(sel&&sel.sex==='m')return ['בקצב הזה ייצבר לו',''];
+        if(nm)return ['בקצב הזה ייצבר '+withPrep('ל',nm),''];
+        return ['בקצב הזה ייצבר להם',''];
       })();
       txt('s-futk',futL[0]);txt('s-futwhen',futL[1]);
       /* אחרון, כי הבלוק שמעל כותב את הצפי בכל מקרה: בלי רגע
          projectedTotal הוא 0, ו"כ-0 ₪" הוא בדיוק המספר שקיומו
          מודיע על היעדרו. */
+      if(blank)fuBlankHead();
       if(!proj.length&&kidZero){
         /* אפס ולא "·", במסך הזה בלבד. בשאר המסכים "·" נשאר המציין
            של "אין ערך עדיין", אבל כאן כל המסך הוא שלד שעתיד להתמלא,
@@ -14190,7 +14291,7 @@ function paintWaitCar(waiting){
        בלי נהנה נשאר ריבוע מעוגל עם האייקון: עיגול הוא אדם. */
     return '<div class="invrow"><div class="top">'+
       '<span class="fc'+(kid?'':' sq')+'">'+
-      (kid?faceHTML(kidFace([p],kid),'av-kid1'):(p.icon||'🎁'))+
+      (kid?faceHTML(kidFace([p],kid),'av-kid1'):occIcon(p.occasion,20))+
       '</span><div style="min-width:0">'+
       '<div class="t">'+attrText(momentNoun(p)+(kid?' של '+kid:''))+'</div>'+
       /* "נפתח על ידי" ולא "X הזמין אותך": סביל, ולכן בלי ניחוש
@@ -14315,7 +14416,7 @@ function paintInvestments(){
       /* קופה שלא יועדה אינה אדם, ולכן היא נכנסת לערימה רק כשאין
          מספיק נהנים למלא אותה, וכריבוע מעוגל ולא כעיגול. */
       g.loose.slice(0,Math.max(0,3-faces.length)).forEach(function(p){
-        faces.push('<span class="sq">'+(p.icon||'🎁')+'</span>');
+        faces.push('<span class="sq">'+occIcon(p.occasion,20)+'</span>');
       });
       stk.innerHTML=faces.map(function(h){
         return h.indexOf('<span')===0?h:('<span>'+h+'</span>');
@@ -14378,7 +14479,7 @@ function paintInvestments(){
   }).concat(g.loose.map(function(p){
     /* עיגול הוא אדם וריבוע מעוגל הוא רגע: לקופה שלא יועדה אין נהנה,
        וצללית אנונימית שם היא אדם שאינו קיים. */
-    return item({sq:true,html:(p.icon||'🎁')},momentNoun(p),'עוד לא יועדה',
+    return item({sq:true,html:occIcon(p.occasion,20)},momentNoun(p),'עוד לא יועדה',
                 mineOf(p),'openDetail(\''+attrText(p.key)+'\')');
   })).join('');
   document.getElementById('mi-list').innerHTML=html;
@@ -14528,7 +14629,7 @@ function fuItems(own){
   });
   kg.loose.forEach(function(p){
     /* "קופה" ולא firstName(name): "קופת הפתעות" היה יוצא "קופת". */
-    out.push({id:'p:'+p.key,name:p.name,label:'קופה',icon:p.icon||'🎁',rows:[p],
+    out.push({id:'p:'+p.key,name:p.name,label:'קופה',occ:p.occasion,rows:[p],
               accrued:Number(p.accrued||0),
               mine:Number(p.mine==null?p.accrued:p.mine),
               proj:Number(p.projection||0),people:p.participants||[]});
@@ -14613,116 +14714,166 @@ function fuWithBenes(items,all){
   return items.concat(extra);
 }
 let fuSig='';
-/* מזיז את הסימון ואת ✎ בין הפריטים הקיימים, בלי לגעת בסדר.
-   הקלאס on הוא מה שהעיצוב נשען עליו, ו-fuCenterPick שרצה אחריו
-   מגלגלת את השורה אל הנבחר החדש. */
-function fuMarkOn(items,sel){
-  const row=document.getElementById('fu-pick');if(!row)return;
-  const it=items.filter(function(x){return x.id===sel})[0];
-  row.querySelectorAll('.fu-item[data-fu]').forEach(function(el){
-    const on=el.dataset.fu===sel;
-    el.classList.toggle('on',on);
-    const pen=el.querySelector('.fu-pen');
-    if(pen)pen.remove();
-    if(on&&it&&it.kidId){
-      const b=document.createElement('i');
-      b.className='fu-pen';b.textContent='✎';
-      b.onclick=function(e){e.stopPropagation();editKid(it.kidId)};
-      el.insertBefore(b,el.querySelector('span:last-child'));
-    }
-  });
-}
 function fuPickHTML(items,sel){
-  /* תמיד, בכל מספר נהנים. קודם הוא ירד מחמישה ואילך, כי השורה גללה
-     והוא נשאר מחוץ למסך — עכשיו השורה ממורכזת וגוללת בכל מקרה, והוא
-     במרחק החלקה אחת. הוא גם מה שממלא את הצד שמתרוקן כשהנבחר בקצה. */
-  const add='<button class="fu-item fu-add" onclick="startCreate()">'+
-      '<span class="fu-ring">+</span><span>הוסף</span></button>';
-  /* הנבחר באמצע והאחרים מתחלקים סביבו, כדי שתמיד יהיה מישהו משני
-     צדדיו: בשלושה אחד מימין ואחד משמאל, בשניים אחד מימין והצ'יפ
-     משמאל. בלי החלוקה הזאת הנבחר הפותח הוא הראשון ברשימה, ומימינו
-     אין דבר — חצי מסך ריק בדיוק ברגע שנכנסים.
-     המחיר: פרצוף יכול לעבור מצד לצד כשמחליפים בחירה. זה מה שקונה
-     את הסימטריה, ואין דרך לקבל את שניהם עם סדר קבוע. */
-  const k=items.map(function(x){return x.id}).indexOf(sel);
-  const rest=items.filter(function(x){return x.id!==sel});
-  const right=rest.slice(0,Math.ceil(rest.length/2));
-  const left=rest.slice(Math.ceil(rest.length/2));
-  const ordered=k<0?items:right.concat(items[k]).concat(left);
-  return ordered.map(function(it){
+  /* ‏＋ תמיד, בכל מספר נהנים. הוא גם מה שממלא את הקצה כשיש נהנה
+     אחד: פרצוף בודד במתג נראה כמו שריד, ולצידו הוא נראה כמו התחלה.
+     **ובנהנה אחד הוא גם אומר מה הוא עושה**, כי אז יש מקום למילים. */
+  /* חשבון ריק: משבצת מקווקוות אחת ולצידה ה-＋ במצבו הרחב. אותו
+     מתג בדיוק, ומה שמתחלף הוא המילוי — כמו שלושת העיגולים
+     המקווקווים בערימה של "ההשקעות שלי". */
+  if(!items.length)
+    return '<span class="fupk on dash" aria-hidden="true"><span class="f"></span></span>'+
+      '<button class="fupk add wide" onclick="startCreate()" '+
+      'aria-label="לנטוע למישהו">+ <span>להוסיף קרוב</span></button>';
+  const wide=items.length<=1;
+  const add='<button class="fupk add'+(wide?' wide':'')+'" onclick="startCreate()" '+
+    'aria-label="לנטוע למישהו נוסף">+'+(wide?' <span>להוסיף קרוב</span>':'')+'</button>';
+  /* בלי סידור מחדש. הבורר שקדם למתג העביר את הנבחר לאמצע, ולכן סדר
+     הילדים השתנה בכל לחיצה; במתג הנבחר מתרחב במקומו, והסדר קבוע. */
+  return items.map(function(it){
+    const on=it.id===sel;
     const face=it.av
-      ? '<span class="fu-ring">'+kidFaceHTML(it.av,40)+'</span>'
-      : '<span class="fu-ring emoji">'+it.icon+'</span>';
-    /* ✎ רק על מי שנבחר, ורק כשיש לו ישות במסד. הוא הדבר היחיד
-       במסך שמוביל אל הילד עצמו ולא אל הרגעים שלו. */
-    const pen=(it.id===sel&&it.kidId)
-      ? '<i class="fu-pen" onclick="event.stopPropagation();editKid(\''+it.kidId+'\')">✎</i>' : '';
-    return '<button class="fu-item'+(it.id===sel?' on':'')+'" '+
+      ? '<span class="f">'+kidFaceHTML(it.av,26)+'</span>'
+      : '<span class="f sq">'+occIcon(it.occ,15)+'</span>';
+    return '<button class="fupk'+(on?' on':'')+'" '+
       'data-fu="'+attrText(it.id)+'" '+
       'onclick="pickFuture(\''+it.id.replace(/'/g,"\\'")+'\')">'+
-      face+pen+'<span>'+(it.label||firstName(it.name))+'</span></button>';
-  }).join('')+add;
+      face+(on?'<span class="nm3">'+attrText(it.label||firstName(it.name))+'</span>':'')+
+      '</button>';
+  }).join('')+
+  /* ✎ רק על מי שנבחר, ורק כשיש לו ישות במסד. הוא הדבר היחיד במתג
+     שמוביל אל הילד עצמו ולא אל הרגעים שלו, ולכן הוא משבצת משלו
+     ולא אייקון בתוך הכדור הלבן: שם הוא היה הופך את הנבחר לשני
+     דברים שאפשר ללחוץ עליהם. */
+  (function(){
+    const it=items.filter(function(x){return x.id===sel})[0];
+    /* ורק על ילד שאני פתחתי לו רגע. מי שהוזמנה רואה כאן את הילד
+       של מישהו אחר, ו-`editKid` פותח גיליון שכותב ל-`beneficiaries`
+       — טבלה שנעולה ליוצר. הכפתור היה מוביל למסך שאי אפשר לשמור בו. */
+    const mine=it&&(it.rows||[]).some(function(p){return !p.joined});
+    return (it&&it.kidId&&mine)
+      ? '<button class="fupk pen" onclick="editKid(\''+attrText(it.kidId)+'\')" '+
+        'aria-label="עריכת הפרטים">\u270E</button>' : '';
+  })()+add;
 }
-/* מרכוז הנבחר. הריפוד הוא מה שמאפשר לו להגיע למרכז גם כשהוא בקצה,
-   ולכן השורה נגללת גם כששלושה נכנסים בלי גלילה — בדיוק כמו באינסטגרם.
-
-   גם בנהנה אחד. קודם הוא נשאר בימין, וזה נראה שבור: הפרצוף בימין
-   והמספרים שמתחתיו ממורכזים — שני צירים על מסך אחד. וזה גם היה
-   המצב היחיד שבו המסך מתנהג אחרת לפי כמה ילדים יש, כלומר דבר שאי
-   אפשר ללמוד. עכשיו יש ציר אחד בכל מצב. */
-let fuPickDrawn=false;
-function fuCenterPick(){
-  const row=document.getElementById('fu-pick');
-  if(!row||!row.clientWidth)return;
-  const one=row.querySelector('.fu-item');
-  if(!one){fuPickDrawn=true;return}
-  const pad=Math.max(18,Math.round(row.clientWidth/2-one.offsetWidth/2));
-  row.style.paddingInlineStart=pad+'px';
-  row.style.paddingInlineEnd=pad+'px';
-  const t=row.querySelector('.fu-item.on');
-  if(!t){fuPickDrawn=true;return}
-  const to=t.offsetLeft+t.offsetWidth/2-row.clientWidth/2;
-  if(row.scrollTo)row.scrollTo({left:to,behavior:fuPickDrawn?'smooth':'auto'});
-  else row.scrollLeft=to;
-  fuPickDrawn=true;
-  fuTaperOn(row);
-  fuTaper();
+/* מזיז את הסימון בין הפריטים הקיימים בלי לצייר מחדש. הכדור הלבן
+   נסגר ונפתח, ולכן השם נכנס ויוצא איתו. */
+function fuMarkOn(items,sel){
+  const row=document.getElementById('fu-pick');if(!row)return;
+  row.innerHTML=fuPickHTML(items,sel);
+  fuScrollPick();
 }
-/* גלגל ולא שורה: כל פריט מתכווץ ודוהה ככל שהוא רחוק ממרכז השורה.
-   הסיבה אינה קישוט. הבורר מגלגל את עצמו כדי שהנבחר יהיה במרכז, ולכן
-   בקצוות נשאר ריפוד ריק, ואלון ראה אותו כחור א-סימטרי. המרכוז עצמו
-   אינו נתון למשא ומתן, ולכן מה שמשתנה הוא מה שהקצה אומר: בשורה שכל
-   הפריטים בה באותו גודל הוא נקרא כמשבצת חסרה, ובגלגל שמתרחק הוא
-   נקרא כ"כאן זה נגמר". נוסו גם לולאה (כל פריט מופיע פעמיים, כולל
-   "הוסף") וסידור מחדש שמעביר את הנבחר לאמצע (סדר הילדים משתנה בכל
-   לחיצה), ושתיהן נפסלו.
+/* ── הנבחר תמיד נראה ──────────────────────────────────────────────
+   המתג של העיצוב אינו נגלל, ואז הנבחר מתכווץ ככל שיש יותר ילדים
+   ובשלב מסוים השם שלו נחתך (נמדד: ארבעה ילדים ב-320, חמישה ב-360,
+   שישה ב-390). כאן הוא נגלל, ולכן במקום שהוא יתכווץ הוא יוצא מהמסך —
+   וזה מה שהפונקציה הזאת מחזירה.
 
-   המדידה היא מהמרכז האמיתי של כל פריט ולא מהאינדקס שלו, כי בזמן
-   גלילה ידנית אין "פריט נבחר" באמצע, ומי שנמצא שם הוא מי שנמצא. */
-const FU_MIN=.74,FU_DIM=.45;
-function fuTaper(){
-  const row=document.getElementById('fu-pick');
-  if(!row||!row.clientWidth)return;
-  const c=row.getBoundingClientRect().left+row.clientWidth/2;
-  const reach=row.clientWidth*.62;
-  row.querySelectorAll('.fu-item').forEach(function(it){
-    const b=it.getBoundingClientRect();
-    const k=Math.max(0,1-Math.abs(b.left+b.width/2-c)/reach);
-    it.style.transform='scale('+(FU_MIN+(1-FU_MIN)*k).toFixed(3)+')';
-    it.style.opacity=(FU_DIM+(1-FU_DIM)*k).toFixed(3);
+   ‏scrollIntoView ולא חישוב ידני: הוא מזיז את המינימום שצריך, כלומר
+   פריט שכבר נראה אינו זז בכלל. זה ההפרש מהבורר שקדם לו, שמרכז את
+   הנבחר תמיד — ומה שנשמר ממנו הוא הכלל עצמו, שמי שאני מסתכל עליו
+   נראה. */
+/* ── המסילה: כרטיס לכל ילד, ואחד מהם אמיתי ──────────────────────
+   ‏`appendChild` מזיז צומת קיים ואינו משכפל אותו, ולכן #fu-k נודד
+   למקומו ברשימה והקריאה אידמפוטנטית — אותה הכרעה בדיוק של
+   ‏`placeKidSection`. כרטיסי ההצצה נבנים מחדש בכל ציור, כי הם
+   נגזרים מהפריטים ואין בהם מצב. */
+function fuPeekHTML(it){
+  const nm=isSelfRel(it.rel)?'את/ה':(firstName(it.name)||'·');
+  const n=(it.rows||[]).length;
+  const to=isSelfRel(it.rel)?' לך':it.sex==='f'?' לה':it.sex==='m'?' לו':'';
+  const ev=n?(n===1?('רגע אחד מחכה'+to):(hebCount(n)+' רגעים מחכים'+to))
+           :'עוד לא נפתח לו רגע';
+  const acc=Number(it.accrued||0);
+  const proj=projectedTotal(projectablePlantings({plantings:it.rows||[]}));
+  return '<p class="for">'+((it.rows||[]).some(function(p){return !p.joined})
+           ?'נשתל עבור':'הוזמנת לנטוע עבור')+'</p>'+
+    '<p class="nm">'+attrText(nm)+'</p>'+
+    '<p class="ev">'+attrText(ev)+'</p>'+
+    '<div class="pr"><div><p class="l">'+(acc>0?'נטעתם עד היום':'עוד לא נטעתם')+'</p>'+
+      '<p class="v now">'+(acc>0?shekel(acc):'·')+'</p></div>'+
+      (proj>0?('<div><p class="l">בקצב הזה ייצבר'+(to||' להם')+'</p>'+
+               '<p class="v fut">כ-'+shekel(proj)+'</p></div>'):'')+
+    '</div>';
+}
+/* מי החליף — האצבע או המתג. כשהמתג, המסילה נגללת אל הכרטיס; כשהאצבע,
+   היא כבר שם וגלילה נוספת הייתה נלחמת בה. */
+let fuFromSwipe=false, fuRailT=null, fuRailDrawn=false;
+function fuPaintRail(items,sel){
+  const rail=document.getElementById('fu-rail');
+  const real=document.getElementById('fu-k');
+  if(!rail||!real)return;
+  rail.classList.toggle('one',items.length<=1);
+  /* **הניקוי קודם ליציאה המוקדמת.** בציור ריק הוא היה יוצא לפני
+     המחיקה, ושלושת כרטיסי ההצצה של הציור הקודם נשארו על המסך —
+     בדיוק אותה מלכודת של #mi-inv ששרד אל תוך המצב הריק. */
+  Array.prototype.slice.call(rail.querySelectorAll('.peekcard'))
+       .forEach(function(n){n.remove()});
+  if(!items.length){rail.appendChild(real);return}
+  (items.length?items:[null]).forEach(function(it){
+    if(!it||(sel&&it.id===sel.id)){rail.appendChild(real);return}
+    const d=document.createElement('div');
+    d.className='leafcard peekcard';
+    d.innerHTML=fuPeekHTML(it);
+    d.onclick=function(){pickFuture(it.id)};
+    rail.appendChild(d);
   });
+  if(!rail.onscroll)rail.onscroll=function(){
+    if(fuRailT)clearTimeout(fuRailT);
+    /* ‏120ms אחרי שהאצבע עצרה: ‏scrollend אינו קיים בכל דפדפן,
+       ומדידה בכל פריים הייתה מריצה ציור מלא על כל תנועת אצבע. */
+    fuRailT=setTimeout(function(){
+      const cards=rail.querySelectorAll('.leafcard');
+      if(cards.length<2)return;
+      const x=rail.scrollLeft, best={i:0,d:Infinity};
+      for(let i=0;i<cards.length;i++){
+        const d=Math.abs(cards[i].offsetLeft-rail.offsetLeft-x);
+        if(d<best.d){best.d=d;best.i=i}
+      }
+      const it=(lastFuAll||[])[best.i];
+      if(it&&it.id!==fuPick){fuFromSwipe=true;pickFuture(it.id);fuFromSwipe=false}
+    },120);
+  };
+  if(fuFromSwipe){fuRailDrawn=true;return}
+  fuRailScroll();
+  fuRailDrawn=true;
 }
-/* מאזין אחד לשורה, ומצויר בפריים ולא בכל אירוע גלילה: בלי זה כל
-   תנועת אצבע מריצה מדידה על כל הפריטים. */
-let fuTaperBound=false,fuTaperTick=false;
-function fuTaperOn(row){
-  if(fuTaperBound||!row)return;
-  fuTaperBound=true;
-  row.addEventListener('scroll',function(){
-    if(fuTaperTick)return;
-    fuTaperTick=true;
-    requestAnimationFrame(function(){fuTaperTick=false;fuTaper()});
-  },{passive:true});
+/* גלילת המסילה אל הכרטיס הנבחר. נפרדת מהציור, כי היא נחוצה גם
+   בכניסה לטאב: המסילה נמדדת רק כשהיא על המסך, וציור שקרה בזמן
+   שהמסך מוסתר מחזיר 0 מכל מדידה. */
+function fuRailScroll(){
+  const rail=document.getElementById('fu-rail');
+  if(!rail||!rail.clientWidth)return;
+  const on=rail.querySelector('.leafcard:not(.peekcard)');
+  if(!on||!on.scrollIntoView)return;
+  if(rail.querySelectorAll('.leafcard').length<2)return;
+  on.scrollIntoView({block:'nearest',inline:'start',
+                     behavior:fuRailDrawn?'smooth':'auto'});
+}
+/* חשבון ריק: הכרטיס נשאר ומתרוקן. ‏"·" הוא כבר המציין של "אין ערך
+   עדיין" בכל שאר המסכים, והוא שומר על צורת הכרטיס כך שמי שפותח
+   נטיעה ראשונה רואה אותו מתמלא ולא מתחלף.
+   **והיא נקראת אחרונה, אחרי כל מי שכותב לראש.** ‏buildHomeSummary
+   ממשיכה לחשב מתוך פריט ההדגמה גם כשמתג "מצב ריק" דלוק, ולכן ציור
+   מוקדם היה נדרס בשקט. */
+function fuBlankHead(){
+  txt('fk-for','נשתל עבור');txt('fk-nm','·');
+  txt('fk-ev','כאן יופיע מי שנטעת עבורו');
+  txt('s-label','עוד לא נטעתם');txt('s-you','·');
+  txt('s-futk','בקצב הזה ייצבר להם');txt('s-fut','·');txt('s-futwhen','');
+  const d=document.getElementById('s-duo');if(d)d.classList.remove('solo');
+  const fb=document.getElementById('s-futbox');if(fb)fb.style.display='';
+}
+let lastFuAll=null;
+let fuPickDrawn=false;
+function fuScrollPick(){
+  const row=document.getElementById('fu-pick');
+  if(!row||!row.clientWidth)return;
+  const t=row.querySelector('.fupk.on');
+  if(!t){fuPickDrawn=true;return}
+  if(t.scrollIntoView)t.scrollIntoView({block:'nearest',inline:'nearest',
+                                        behavior:fuPickDrawn?'smooth':'auto'});
+  fuPickDrawn=true;
 }
 /* שורת רגע. הסכום מוצג רק כשיש כמה רגעים: ברגע אחד הראש כבר נושא
    אותו, ומספר שחוזר על עצמו הוא מה שהופך מסך לעמוס. */
@@ -14936,21 +15087,102 @@ function saveKid(id){
 }
 function fuMomentHTML(p){
   const yrs=p.targetYear?Math.max(0,p.targetYear-new Date().getFullYear()):0;
-  const when=(targetLine(p)||'').replace(/^עד /,'')+(p.targetYear?(' · בעוד '+yrs+yrWord(yrs)):'');
+  /* מי פתח, כשזה לא אני. בעיצוב זו הסיפא של שורת המשנה ("נפתח בידי
+     סבתא רחל"), והיא מה שמסביר למה יש כאן רגע שלא אני יצרתי. סביל
+     ולכן בלי ניחוש מגדר, בדיוק כמו בכרטיס ב"ההשקעות שלי". */
+  const by=p.joined&&p.by?(' · נפתח בידי '+p.by):'';
+  const when=(targetLine(p)||'').replace(/^עד /,'')+
+             (p.targetYear?(' · בעוד '+yrs+yrWord(yrs)):'')+by;
+  /* ‏**הסכום הוא הצפי ולא הנצבר, והוא בחול.** עד סבב ספטמבר 2026 הוא
+     היה הנצבר בירוק, כי אז הראש נשא מספר אחד והשורות היו מה שמרכיב
+     אותו. מרגע שהראש נושא שניים — "נטעתם עד היום" ו"בקצב הזה ייצבר"
+     — הכלל עדיין מתקיים, והשורות מרכיבות את השני: הטאב שואל מה מחכה
+     להם, והתשובה לכל רגע היא הצפי שלו.
+     **המחיר שנאמר ונבחר:** הנצבר לכל רגע בנפרד יורד מהמסך הזה, והוא
+     נשאר לחיצה אחת פנימה — במסך הרגע הוא המספר הגדול. */
+  const amt=Number(p.projection||0);
   return '<div class="fu-mrow" onclick="openDetail(\''+p.key+'\')">'+
-    '<div class="fu-mic">'+(p.icon||'🌱')+'</div>'+
+    '<div class="fu-mic">'+occIcon(p.occasion,21)+'</div>'+
     '<div style="flex:1;min-width:0"><div class="fu-nm">'+momentNoun(p)+'</div>'+
       (when?'<div class="fu-dt">'+when+'</div>':'')+'</div>'+
-    /* הסכום **וגם** החץ, תמיד. עד כאן זה היה אחד מהשניים לפי
-       ‏many: ברגע בודד הופיע חץ בלי סכום, וברשימה סכום בלי חץ.
-       שתי התוצאות היו שגויות — שורה שהיא ניווט צריכה חץ, ו**סכומי
-       השורות הם מה שמרכיב את המספר הגדול שמעליהן**. ברגע אחד
-       המספר הגדול והשורה נשאו את אותו ערך בלי שנאמר שזה אותו ערך,
-       וברשימה החץ נעלם דווקא כשיש יותר לאן להיכנס.
-       ‏accrued ולא mine: זה מה שהכותרת סוכמת, וזו גם הסיבה שמרים
-       רואה 370 למעלה על רגע שהפקידה בו 0. */
-    '<span class="fu-amt">'+shekel(Number(p.accrued||0))+'</span>'+
+    (amt>0?'<span class="fu-amt">'+shekel(amt)+'</span>':'')+
     '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>'+
+  '</div>';
+}
+/* ── מי נוטע כאן, ברשימה של מי שהוזמנה ─────────────────────────
+   **זה המקום היחיד שבו מי שהוזמנה רואה את עצמה לפני ההפקדה
+   הראשונה.** עד סבב ספטמבר 2026 זה היה פס הפילוח "ממך / מהקרובים",
+   והוא ירד; ‏02b שבחבילה מחזיר את זה כרשימת נוטעים שבסופה שורה
+   שלה עצמה.
+
+   **הסכום מגיע מ-0076.** ‏`participants` נושאת מעכשיו גם `amount`,
+   לפי אותו כלל חשיפה של `planting_detail`: שלי, של מי שפתח, וכל
+   השאר רק אם `visible_to_others`. ‏`null` פירושו חסוי, ואז אין
+   סכום — בדיוק כמו במסך הרגע.
+
+   **ומה ששונה מהעיצוב, ונאמר:** שם הגיליון מציג את הנוטעים
+   **במקום** רשימת הרגעים. כאן הוא מתחתיה, כי מוזמנת שצורפה לשני
+   רגעים של אותו ילד הייתה מאבדת את הדרך להיכנס לכל אחד מהם;
+   העיצוב מתאר רגע אחד. **והרשימה היא של הרגע הקרוב ביותר**, שהוא
+   גם זה שהכפתור מכוון אליו, ולכן התווית נוקבת בשמו. */
+function fuPlantersHTML(row,sel,people){
+  if(!row)return '';
+  /* ‏people מגיעה מהקבוצה ולא מהשורה: ‏fuItems אוספת את
+     ‏participants של כל הרגעים של אותו ילד אל `people` של הפריט,
+     ולשורה עצמה אין את השדה. ‏`row.people` היה undefined תמיד,
+     כלומר הרשימה יצאה ריקה בלי שום שגיאה. */
+  const ppl=(people||[]).filter(function(x){return x&&x.name});
+  const nm=sel&&sel.name?firstName(sel.name):'';
+  const label='נוטעים '+withPrep('ל',momentNoun(row))+(nm?(' של '+nm):'');
+  const rows=ppl.map(function(x){
+    const amt=(x.amount==null)?'':shekel(Number(x.amount||0));
+    return '<div class="fu-mrow pl">'+
+      '<span class="fu-pav">'+faceHTML(x.avatar,'av-someone')+'</span>'+
+      '<div style="flex:1;min-width:0"><div class="fu-nm">'+
+        attrText(firstName(x.name))+'</div></div>'+
+      (amt?'<span class="fu-amt g">'+amt+'</span>':'')+
+    '</div>';
+  }).join('');
+  /* השורה שלי, אחרונה. **תג ולא סכום**: מי שעוד לא הפקידה אין לה
+     מספר, ו-"0 ₪" כאן הוא בדיוק המספר שקיומו מודיע על היעדרו.
+     ומה שכן נאמר הוא מה שכן יקרה — כמה 100 ₪ שלה יהיו, מאותו
+     צפי שכבר מחושב לרגע ולא מהמצאה. */
+  const mine=Number(row.mine||0);
+  const me=mine>0
+    ? '<span class="fu-amt g">'+shekel(mine)+'</span>'
+    : '<span class="pill">הזמנה</span>';
+  const yrs=fuYears([row]);
+  const rate=Number(row.myMonthly||0);
+  const worth=(!mine&&rate>0&&row.projection>rate&&yrs)
+    ? ('כל 100 ₪ שלך יהיו כ-'+shekel(Math.round(row.projection*10000/rate))+
+       (row.targetYear?(' ב-'+row.targetYear):''))
+    : '';
+  const meRow='<div class="fu-mrow pl me">'+
+    '<span class="fu-pav">'+faceHTML(myAvatarKey(),'av-parent')+'</span>'+
+    /* ‏**השם שלי ולא "את/ה".** בעיצוב כתוב "את", והוא מניח נקבה;
+       לוכסן נפסל בכל שאר המוצר. השורה היא רשימת שמות, ולכן מה
+       שנכון בה הוא השם שבחרתי לעצמי — ו"אני" כשאין פרופיל. */
+    '<div style="flex:1;min-width:0"><div class="fu-nm">'+
+      attrText(firstName(myName()||'')||'אני')+'</div>'+
+      (worth?'<div class="fu-dt">'+worth+'</div>':'')+'</div>'+
+    me+'</div>';
+  return '<p class="eyebrow fu-plh">'+attrText(label)+'</p>'+rows+meRow;
+}
+/* שורת ההוספה בסוף הרשימה. מקווקוות ולא כפתור ירוק, באותה הכרעה של
+   "+ הוסף קרוב" ב"הקרובים שלי": פעולה בתוך רשימה יושבת כשורה נוספת
+   בה, והירוק המלא שמור לפעולה ראשית אחת במסך. הריבוע המקווקו יושב
+   בדיוק במקום שבו יושב אייקון הרגע בשורות שמעליו. */
+function fuAddRowHTML(sel){
+  /* קופה שלא יועדה אין לה נהנה, ו-firstName('קופת הפתעות') הוא
+     "קופת". הפריט מסומן ב-label, וזה גם ההבדל האמיתי. */
+  const fund=sel&&!sel.kidId&&!!sel.label;
+  const nm=(sel&&!fund&&sel.name)?firstName(sel.name):'';
+  const t=isSelfRel(sel&&sel.rel)?'רגע חדש שלך'
+         :nm?('רגע חדש '+withPrep('ל',nm)):'רגע חדש';
+  return '<div class="fu-mrow addr" id="fu-add">'+
+    '<div class="fu-mic plusq">+</div>'+
+    '<div style="flex:1;min-width:0"><div class="fu-nm">'+attrText(t)+'</div>'+
+      '<div class="fu-dt">לימודים, טיול, דירה, או משהו משלכם</div></div>'+
   '</div>';
 }
 /* "הלימודים של נטע" מיותר ברשימה שכולה שלו. השם נשאר כשאין " של ". */
@@ -14982,7 +15214,11 @@ function openHome(){ openInvestments(); }
 /* המרכוז נמדד מרוחב השורה, ואלמנט במסך שאינו .on מחזיר 0 מכל מדידה
    — כלומר buildHomeSummary שרצה לפני שהמסך נפתח מרכזת על כלום. לכן
    המרכוז נקרא שוב אחרי הפתיחה. */
-function openFuture(){ go(0); fuCenterPick(); }
+/* ‏fuScrollPick ולא fuCenterPick: הבורר הוא מתג נגלל ולא גלגל,
+   והמרכוז הפך לגלילה שמביאה את הנבחר אל תוך המסך. ‏fuCenterPick
+   נמחק עם הגלגל, והקריאה כאן שרדה אותו — כלומר כל כניסה לטאב זרקה
+   ReferenceError. בלי שום סימן במסך, כי go(0) כבר רץ לפניה. */
+function openFuture(){ go(0); fuScrollPick(); fuRailScroll(); }
 /* הבחירה שורדת מעבר בין טאבים. עד כה הכניסה מהסרגל התחתון ניקתה את
    fuPick, כלומר מי שבחר ילד, עבר ל"פעילות" וחזר, מצא את המסך על ילד
    אחר. זו בחירה של המשתמש ולא מצב זמני של המסך, ואיפוס שלה הוא
@@ -15092,7 +15328,7 @@ function addPartner(){
 function openPartnerInvite(key,name){
   const p=plantAt(key);
   txt('pi-sub','להיות שותף/ה שווה ב'+p.name+', לא רק להשקיע');
-  txt('pi-icon',p.icon);
+  htm('pi-icon',occIcon(p.occasion,22));
   txt('pi-title',p.name);
   txt('pi-meta','המועד המיוחל: '+p.date+' · נצבר עד כה '+p.now.toLocaleString('he-IL')+' ₪');
   document.getElementById('pi-done').style.display='none';
@@ -15654,6 +15890,14 @@ function setEmpty(on){
     FULL.pay.forEach(function(x){pays.push(x)});
   }
   buildRequests();buildRelatives();buildLetters();buildPays();
+  /* ‏**והראש הירוק מצויר מחדש.** מסבב ספטמבר 2026 המצב הריק אינו
+     מסך אחר אלא אותו מסך: ‏setEmpty מחליפה את המילוי של הגיליון
+     לפי מזהה, אבל הראש שמעליו נצבע ב-buildHomeSummary — ובלי
+     הקריאה הזאת הוא נשאר עם השם והמספרים של ההדגמה מעל גיליון
+     שאומר "איך מתחילים". נמדד: "נועה · 8,500 ₪" מעל שלושת
+     הצעדים. זה חל על שני הטאבים, כי paintInvestments נקראת
+     בסופה. */
+  buildHomeSummary();
 }
 document.getElementById('empty-btn').onclick=function(){setEmpty(!isEmpty)};
 
