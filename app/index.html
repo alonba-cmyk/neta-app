@@ -46,7 +46,11 @@ setTimeout(function(){
      הדמויות בספרייט ממילא מצוירות מול משבצת קרם, וזה הערך כאן.
      בבהירה הוא לבן, ראו שם. */
   --face-fill:#EEE9DF;
-  --sun:#D9B25F;--sun-2:#BE9748;--sun-soft:#E5CB96;--sun-big:#E5CB96;--sun-bg:#2A2318;--sun-line:#3D3520;
+  /* ‏--sun-2 היה מוגדר ולא נקרא ולו פעם אחת (אפס var). הסבב נותן לו
+     תפקיד — טקסט על משטח החול, ו"עוד לא…" בשורות מצב — ולכן הערך
+     כאן הוא זה שבעיצוב ולא זה שהיה: בכהה החול כטקסט חייב להיות
+     בהיר. ‏9.8 על --s1 ו-9.1 על --sun-bg. */
+  --sun:#D9B25F;--sun-2:#D9C49A;--sun-soft:#E5CB96;--sun-big:#E5CB96;--sun-bg:#2A2318;--sun-line:#3D3520;
   --rose:#D99BA6;--rose-bg:#2A1F22;
   /* קו מפריד פנימי, שקט מ---line: הוא מפריד בתוך כרטיס ולא בין כרטיסים.
      היה בשימוש בשלושה מקומות בלי שהוגדר, ולכן פשוט לא צויר. */
@@ -88,6 +92,32 @@ setTimeout(function(){
      בעוד שטקסט בהיר ב-34 אחוז על כהה עדיין רומז. */
   --ghost:.34;--ghost-sat:.45;
   --ghost-2:.44;--ghost-sat-2:.72;
+
+  /* ── הראש הירוק, מסבב ספטמבר 2026 ──────────────────────────────
+     כמעט כל מסך מרכזי נפתח בראש ירוק ברוחב מלא שנושא את הזהות ואת
+     המספר הגדול. הוא **משטח ולא הירוק של הכפתור**, וזו ההפרדה
+     שחייבת להיות: בערכה הכהה --leaf הוא #7FC088, מנטה בהיר, וראש
+     שעשוי ממנו הוא גוש זוהר על מסך כהה.
+
+     ולכן --leaf-head נפרד. בבהירה הוא בדיוק --leaf (יער עמוק),
+     ובכהה הוא ירוק עמוק משלו: 1.27 מול --bg, כלומר משטח מורם,
+     ולא --leaf-bg שמשרת ממילא צ'יפים וכרטיסים.
+
+     **ושלושת צבעי הטקסט עליו זהים בשתי הערכות**, כי בשתיהן הראש
+     כהה. זה החריג היחיד בפלטה שאינו מתהפך. */
+  --leaf-head:#1D2E21;
+  /* הכותרת ומשטח הנבחר על הראש. --on-leaf אינו מתאים להם: הוא
+     הטקסט שעל הכפתור הירוק, ולכן הוא מתהפך בין הערכות (לבן בבהירה,
+     כמעט-שחור בכהה), בעוד שהראש הוא ירוק עמוק בשתיהן. */
+  --on-head:#F4F7F4;      /* כותרת ומשטח נבחר על הראש · 13.3 */
+  --on-leaf-2:#DCEADF;    /* טקסט גוף על הראש · 11.5 */
+  --mist:#9FBCAB;         /* הכיתוב השקט על הראש: מייל, תוויות · 7.0 */
+  --sun-on-leaf:#E3CE9F;  /* חול על הראש: מסגרת, טבעת, צפי · 9.3 */
+  --leaf-tile:rgba(255,255,255,.06);
+  --leaf-tile-line:rgba(227,206,159,.22);
+  /* הרקע שמתחת לכרטיסים לבנים מקובצים (הגיליון של הפרופיל).
+     נבחר כך שהכרטיס ייפרד ממנו: 1.17 מול --s1. */
+  --page-warm:#0F0D0A;
 }
 
 .thpick{margin:0;flex:0 0 auto;gap:6px}
@@ -148,6 +178,19 @@ setTimeout(function(){
   --inset:rgba(255,255,255,.6);
   --ghost:.5;--ghost-sat:.68;
   --ghost-2:.6;--ghost-sat-2:.9;
+
+  /* הראש הירוק. כאן הוא בדיוק --leaf, כי בבהירה הירוק כבר כהה. */
+  --leaf-head:#1F4D3A;
+  --on-head:#FFFFFF;      /* 9.7 על הראש */
+  --on-leaf-2:#DCEADF;    /* 7.7 על הראש */
+  --mist:#9FBCAB;         /* 4.7 על הראש */
+  --sun-on-leaf:#E3CE9F;  /* 6.2 על הראש */
+  --leaf-tile:rgba(255,255,255,.08);
+  --leaf-tile-line:rgba(227,206,159,.28);
+  /* ‏#F4F2ED שבעיצוב הוא 1.12 מול כרטיס לבן, כלומר מתחת לסף המשטח
+     הרופף של contrast.js (1.15): הכרטיסים היו מרחפים על רקע שכמעט
+     אינו נפרד מהם. ‏#F0EDE6 הוא 1.17. */
+  --page-warm:#F0EDE6;
 }
 /* כלל הצבע של הסכומים, אחרי שהצטבר בלגן: ירוק הוא כסף שקיים — נצבר,
    הופקד, יש אותו — וזהב הוא כסף שצפוי. עד כה תחזית הופיעה אפורה בשני
@@ -384,11 +427,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .hero-num{font-size:32px;font-weight:500;color:var(--leaf);letter-spacing:-.02em;line-height:1.25;margin:3px 0 2px}
 .hero-num.idle{color:var(--tx-3);font-size:26px}
 .hero-sub{font-size:11.5px;color:var(--leaf-txt);line-height:1.5}
-.gcard .gline{font-size:14.5px;line-height:1.55;color:var(--leaf-ink);margin:10px 0 0;font-weight:400;text-wrap:balance}
-.gcard .gask{font-size:14.5px;line-height:1.5;color:var(--leaf-ink);margin:15px 0 0;font-weight:400}
-.gcard .gask .gname{display:block;margin-top:2px}
-.gcard .gask b{font-weight:600;color:var(--leaf)}
-.gcard .gyear{font-size:11px;color:var(--leaf-soft);opacity:.75;margin:14px 0 0}
 .note{background:var(--leaf-bg);border:1px solid var(--leaf-line);border-radius:11px;padding:12px 13px;font-size:12.5px;line-height:1.55;color:var(--leaf-ink-2)}
 .note b{color:var(--leaf);font-weight:500}
 .lock{background:var(--sun-bg);border:1px solid var(--sun-line);border-radius:11px;padding:14px;text-align:center}
@@ -495,7 +533,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    והתמונה כבר נחתכה לריבוע בהעלאה, וזה מה שמונע פסים. */
 .avimg{width:100%;height:100%;object-fit:cover;display:block}
 /* משבצת ההעלאה, באותה שפה של הבורר בשני האשפים. */
-.avpick button.up{border-style:dashed;color:var(--leaf);font-size:26px;
+.avpick button.up{border-style:dashed;color:var(--leaf);
   display:grid;place-items:center}
 .hdr{display:flex;align-items:center;gap:11px;margin-bottom:12px}
 .hdr .htxt{flex:1;min-width:0}
@@ -1127,8 +1165,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שהייתה (18 מתוך 56) בכל אחד מהגדלים האלה. */
 .avpick{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
   justify-content:stretch;margin:6px 0 2px}
+/* עיגול ולא ריבוע מעוגל: עיגול הוא אדם. עד הסבב זה היה 32 אחוז,
+   כלומר ריבוע מעוגל, שהוא ממילא הצורה של רגע. */
 .avpick button{width:100%;max-width:64px;height:auto;aspect-ratio:1;justify-self:center;
-  border-radius:32%;overflow:hidden;padding:0;cursor:pointer;
+  border-radius:50%;overflow:hidden;padding:0;cursor:pointer;
   background:var(--s2);border:2px solid transparent;transition:border-color .15s}
 .avpick button.on{border-color:var(--leaf)}
 .avpick svg{display:block;width:100%;height:100%}
@@ -1592,7 +1632,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .scrim{position:absolute;inset:0;z-index:50;background:var(--scrim);display:flex;align-items:flex-end;
   opacity:0;pointer-events:none;transition:opacity .2s}
 .scrim.on{opacity:1;pointer-events:auto}
-.sheet{width:100%;background:var(--s1);border-top:1px solid var(--line);border-radius:20px 20px 0 0;
+.sheet{width:100%;background:var(--s1);border-top:1px solid var(--line);border-radius:26px 26px 0 0;
   padding:16px 18px 20px;transform:translateY(100%);transition:transform .26s cubic-bezier(.22,.8,.3,1);
   max-height:86%;overflow-y:auto;scrollbar-width:none}
 .sheet::-webkit-scrollbar{display:none}
@@ -2034,8 +2074,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   background:var(--s1);border:1px dashed var(--line-2);border-radius:10px;
   padding:11px 12px;font-size:13.5px;color:var(--tx-2)}
 .fixedval i{font-style:normal;color:var(--leaf)}
-[data-name="הצטרפות"] .codebox{font-size:22px;letter-spacing:.34em;text-align:center}
-[data-name="הצטרפות"] .avpick{margin-top:10px}
 /* מצב ריק של סקשן, לא של מסך: מי שהוזמן לרגע של מישהו אחר ואין לו
    נטיעה משלו. ‏min-height:62% של .es נועד למסך שאין בו דבר מלבד
    ההודעה; כאן יש מתחתיה סקשן שלם, ולכן הוא יורד. */
@@ -2248,19 +2286,215 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .fold{font-family:inherit;font-size:11px;color:var(--tx-3);background:none;border:none;cursor:pointer;
   padding:4px 0;text-decoration:underline;text-underline-offset:3px}
 .scrim.on .sheet{transform:translateY(0)}
-.sheet-grip{width:34px;height:4px;border-radius:2px;background:var(--s2);margin:0 auto 13px}
-.sheet h3{font-size:14.5px;font-weight:600;margin:0 0 7px}
+.sheet-grip{width:40px;height:4px;border-radius:2px;background:var(--s2);margin:0 auto 13px}
+/* ‏20px ולא 14.5: הגיליון נושא שאלה אחת, והכותרת שלו היא השאלה.
+   ‏14.5 היה גודל של תווית, ובגיליון שכל תוכנו טופס היא נקראה
+   כשורה ראשונה בטופס ולא ככותרת. */
+.sheet h3{font-size:20px;font-weight:700;line-height:1.3;margin:0 0 8px}
 .sheet p{font-size:12px;color:var(--tx-2);line-height:1.6;margin:0 0 14px;white-space:pre-line}
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
   /* סימן המותג לא צריך חריג: מצב המנוחה שלו גלוי, ולכן ביטול
      האנימציה פשוט מציג אותו מיד. */
 }
+
+/* ═══ רכיבי סבב ספטמבר 2026 ═══════════════════════════════════════
+   שבעת הרכיבים שכל שאר הסבב נשען עליהם. הם גלובליים בכוונה — זה
+   בדיוק מה שהופך אותם לרכיבים — ולכן כל אחד מהם נבדק ב-grep לפני
+   שנוסף, כפי ש-COMPONENTS.md דורש: בסבב הזה חזרו התנגשויות שבהן
+   .row, .cta, .done ו-.r דרסו רכיבים אחרים.
+
+   הם עוד אינם מחוברים לאף מסך. */
+
+/* ── תיבת הקוד: שש משבצות, קלט אחד ────────────────────────────────
+   שש משבצות שהן שישה <input> שוברות הדבקה, מילוי אוטומטי
+   (one-time-code) ו-undo, וכל אלה כבר עובדים כאן ומתועדים. לכן זה
+   קלט אחד שקוף שפרוש על כל השורה, והמשבצות הן תצוגה בלבד. */
+.otpbox{position:relative;margin:4px 0 2px}
+/* ‏direction:ltr על המשבצות: ספרות נקראות משמאל לימין גם במסמך RTL,
+   ובלי זה המשבצת הראשונה היא הימנית והקוד 123456 מוצג הפוך. אותה
+   הכרעה בדיוק כבר יושבת במייל קוד הכניסה. */
+.otpcells{display:grid;gap:8px;pointer-events:none;direction:ltr}
+.otpcells i{height:56px;border:1.5px solid var(--line);border-radius:14px;
+  display:grid;place-items:center;font-style:normal;font-weight:700;font-size:22px;
+  color:var(--tx);background:var(--s1);font-variant-numeric:tabular-nums;
+  transition:border-color .15s}
+.otpcells i.on{border-color:var(--leaf);border-width:2px}
+.otpbox input{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;
+  border:0;background:none;color:transparent;caret-color:transparent;
+  font-size:16px;text-align:center;letter-spacing:0}
+.otpbox input:focus{outline:none}
+/* שורת השליחה מחדש, ומתחתיה שתי היציאות. */
+.otpmeta{font-size:12.5px;color:var(--tx-3);margin-top:10px}
+.otpout{font-size:13px;font-weight:600;color:var(--leaf);margin-top:4px}
+.otpout button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.otpout span{color:var(--tx-3);font-weight:400;margin:0 5px}
+
+/* ── הראש הירוק ברוחב מלא ────────────────────────────────────────
+   הוא יוצא מהריפוד של .stage אל שלושת הקצוות (8 מלמעלה, 18 מהצדדים),
+   ולכן margin שלילי ולא כלל גלובלי על .stage: 27 מסכים חולקים אותה.
+   הריפוד התחתון הוא 52 בכוונה ו-.sheetup מטפס 40 מתוכם, כלומר מה
+   שנראה מתחת לכרטיס הוא 12. */
+.leafhead{background:var(--leaf-head);color:var(--on-head);
+  margin:-8px -18px 0;padding:18px 18px 52px;flex:0 0 auto}
+.leafhead .mk{color:var(--sun-on-leaf);line-height:0;display:block}
+.leafhead h2{font-size:24px;font-weight:800;line-height:1.25;
+  margin:14px 0 0;color:var(--on-head);text-wrap:balance}
+/* הקישור אל הסטורי. חול ולא לבן, כי הוא אינו הכותרת. */
+.leafhead .what{font-size:13.5px;font-weight:600;color:var(--sun-on-leaf);
+  background:none;border:0;padding:8px 0 0;font-family:inherit;
+  cursor:pointer;display:block;text-align:start}
+
+/* ── הכרטיס שעל הראש הירוק ───────────────────────────────────────
+   המילוי הוא שחור בשקיפות ולא משתנה נפרד: מה שהוא צריך להיות הוא
+   "אותו ירוק, מעט כהה יותר", וזה נכון בשתי הערכות בלי להגדיר שני
+   ערכים שצריך לשמור מסונכרנים. המסגרת היא --leaf-tile-line, שהוא
+   החול בשקיפות, ולכן היא נקראת כמסגרת ולא כקו מפריד. */
+.leafcard{border:1px solid var(--leaf-tile-line);border-radius:24px;
+  padding:16px 18px;background:rgba(0,0,0,.08);margin-top:16px}
+.leafcard .for{font-size:12.5px;color:var(--mist);letter-spacing:.4px}
+.leafcard .nm{font-size:34px;font-weight:800;color:var(--on-head);
+  line-height:1.05;margin-top:2px;overflow-wrap:anywhere}
+.leafcard .ev{font-size:14.5px;color:var(--sun-on-leaf);margin-top:3px}
+.leafcard .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+/* הטבעת הכפולה היא חול ואז צבע הראש, כלומר הפרצוף נקרא כמוטבע
+   בכרטיס ולא כמונח עליו. --face-fill מאחוריו מאותה סיבה שבפס
+   הפילוח: ה-rect בספרייט הוא currentColor. */
+.leafcard .pt{width:52px;height:52px;border-radius:50%;overflow:hidden;flex:none;
+  background:var(--face-fill);
+  box-shadow:0 0 0 2px var(--sun-on-leaf),0 0 0 5px var(--leaf-head)}
+.leafcard .pt svg,.leafcard .pt img{display:block;width:100%;height:100%;object-fit:cover}
+/* התצוגה המקדימה שבעל הנטיעה רואה במסך ההזמנה. אותו ציור ואותם
+   כללים, בלי המרווח השלילי ובקנה מידה קטן: ההזמנה שהוא שולח נראית
+   לו כמו שהיא, ולא כחיקוי שמתיישן בסבב הבא. */
+.leafhead.prev{margin:0;border-radius:20px;padding:14px 16px 16px}
+.leafhead.prev h2{font-size:17px;margin-top:10px}
+.leafhead.prev .leafcard{padding:13px 14px;border-radius:18px;margin-top:12px}
+.leafhead.prev .leafcard .nm{font-size:25px}
+.leafhead.prev .leafcard .ev{font-size:13px}
+.leafhead.prev .leafcard .pt{width:42px;height:42px}
+
+/* ── שורה בפאנל הלבן של הנחיתה ───────────────────────────────────
+   שתי שורות בלבד יש שם, והמפריד הוא border-top על השנייה: כשהראשונה
+   יורדת (אין משפט אישי ואין inviteLine) אין קו מרחף. */
+.lndrow{display:flex;align-items:center;gap:12px;padding:14px 0}
+.lndrow+.lndrow{border-top:1px solid var(--line)}
+.lndrow .f1{width:40px;height:40px;border-radius:50%;overflow:hidden;flex:none;
+  display:block;background:var(--face-fill)}
+.lndrow .f1 svg,.lndrow .f1 img{display:block;width:100%;height:100%;object-fit:cover}
+.lndrow .qt{font-size:14.5px;line-height:1.5;color:var(--tx)}
+.lndrow .pf{font-size:14.5px;font-weight:600;color:var(--tx)}
+
+/* מסך הקישור: הראש והפאנל ממלאים את הבמה, ולכן הכרטיס עצמו הוא
+   עמודת flex ולא גוש ממורכז. ארבעת המצבים האחרים של המסך נשארים
+   center-v כפי שהיו. */
+[data-name="קישור לנטיעה"] #sl-card{display:flex;flex-direction:column;
+  flex:1 1 auto;align-self:stretch;width:100%}
+[data-name="קישור לנטיעה"] #sl-card .link{display:block;width:100%;text-align:center;margin-top:10px}
+
+/* ── הפאנל הלבן שמתחת לראש הירוק ─────────────────────────────────
+   זה הרכיב שמגדיר את כל השפה החדשה: כמעט כל מסך מרכזי הוא ראש ירוק
+   ומתחתיו הפאנל הזה, שמטפס 40 פיקסלים אל תוך הראש. הוא אינו הגיליון
+   התחתון (.sheet) ואין לו שום קשר אליו. */
+.sheetup{background:var(--s1);border-radius:28px 28px 0 0;margin-top:-40px;
+  position:relative;flex:1 1 auto;display:flex;flex-direction:column;padding-top:24px}
+
+/* ── מתג מפולח ───────────────────────────────────────────────────
+   ברירת המחדל היא על הראש הירוק, כי שם הוא מופיע (בורר הילד
+   ב"מה מחכה להם"). .segbar.lite הוא אותו רכיב על משטח לבן, לבחירת
+   תדירות ההפקדה. */
+.segbar{background:var(--leaf-tile);border-radius:14px;padding:4px;display:flex;gap:2px}
+.segbar>button{flex:1;height:38px;border:0;border-radius:11px;background:none;
+  font:600 14px/1 inherit;font-family:inherit;color:var(--on-leaf-2);
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  cursor:pointer;transition:.18s;min-width:0}
+.segbar>button.on{background:var(--on-head);color:var(--leaf-head)}
+/* הווריאנט שבו רק הנבחר נפתח והשאר נשארים ריבוע של פרצוף: זה
+   הבורר של "מה מחכה להם", שבו הנבחר נושא שם והאחרים פרצוף בלבד. */
+.segbar.only>button{flex:0 0 44px}
+.segbar.only>button.on{flex:1 1 auto}
+.segbar.lite{background:var(--s2)}
+.segbar.lite>button{color:var(--tx-2)}
+.segbar.lite>button.on{background:var(--s1);color:var(--leaf);
+  box-shadow:0 1px 3px var(--shadow)}
+
+/* ── שורת המסלול ─────────────────────────────────────────────────
+   בחירה שיש לה ברירת מחדל טובה היא שורה ולא שלב. .trkrow ולא .trk:
+   ‏.trk כבר תפוס באפליקציה כאפשרות מסלול בגיליון. */
+.trkrow{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  width:100%;text-align:right;font-family:inherit;cursor:pointer;
+  padding:10px 12px;border-radius:12px;border:1px solid var(--leaf-tile-line);
+  background:var(--leaf-tile);color:var(--on-leaf-2);font-size:13px}
+.trkrow b{display:block;font-weight:600;color:var(--on-leaf);font-size:14px}
+.trkrow i{font-style:normal;color:var(--sun-on-leaf)}
+.trkrow .go{flex:0 0 auto;color:var(--sun-on-leaf);font-weight:600}
+/* על משטח לבן, כמו בשלב הסכום של האשף. */
+.trkrow.lite{background:var(--s1);border-color:var(--line);color:var(--tx-3)}
+.trkrow.lite b{color:var(--tx)}
+.trkrow.lite i{color:var(--sun-soft)}
+.trkrow.lite .go{color:var(--leaf)}
+
+/* ── ערימת פרצופים ───────────────────────────────────────────────
+   הטבעת היא בצבע המשטח שמאחור ולא צבע קבוע, ולכן היא משתנה: על
+   הראש הירוק --leaf-head, על כרטיס --s1. --stk-ring הוא מה שקובע. */
+.stk{display:flex;flex-shrink:0;--stk-ring:var(--s1);--stk-sz:40px}
+.stk>span{width:var(--stk-sz);height:var(--stk-sz);border-radius:50%;overflow:hidden;
+  display:block;flex:none;background:var(--face-fill);
+  box-shadow:0 0 0 2.5px var(--stk-ring)}
+.stk>span+span{margin-inline-start:calc(var(--stk-sz) * -.3)}
+.stk>span svg,.stk>span img{display:block;width:100%;height:100%;object-fit:cover}
+.stk.ghost>span{opacity:.55}
+/* עיגול ריק: אדם שעוד לא נוסף. קווקו בחול ו-+, ולא פרצוף מעומעם —
+   דמות דוהה נקראת כאדם שקיים ואינו זמין. */
+.stk>span.emptydot{background:none;border:1.5px dashed var(--sun-line);
+  color:var(--sun-soft);display:grid;place-items:center;
+  font-size:calc(var(--stk-sz) * .42);line-height:1}
+.stk.on-leaf{--stk-ring:var(--leaf-head)}
+.stk.on-leaf>span.emptydot{border-color:var(--leaf-tile-line);color:var(--sun-on-leaf)}
+
+/* ── מצב ריק בתוך כרטיס ──────────────────────────────────────────
+   סקשן ריק הוא כרטיס ולא מסך: הכותרת של המסך, ההערה והחזרה
+   נשארות, ורק תוכן הכרטיס מתחלף. זה מבדיל אותו מארבעת המצבים
+   הריקים של הטאבים, שהם מסך שלם עם איור, כותרת, משפט וכפתור. */
+.empc{border:1.5px solid var(--line);border-radius:20px;
+  padding:22px 18px 18px;margin-top:14px;text-align:center}
+.empc .ill{display:flex;justify-content:center;color:var(--leaf)}
+.empc .t{font-size:17px;font-weight:700;color:var(--tx);margin-top:12px}
+.empc .s{font-size:13.5px;color:var(--tx-3);line-height:1.55;margin-top:6px}
+.empc .btn{width:100%;margin-top:16px}
+
+/* ── הכפתור הראשי לפני בחירה ─────────────────────────────────────
+   מופיע תמיד, כבוי עד שיש בחירה, ואף פעם לא מוסתר. כפתור שנעלם
+   ומופיע מזיז את כל מה שמעליו ברגע הלחיצה. */
+.btn.off{background:var(--s2);border-color:var(--s2);color:var(--tx-3);
+  cursor:default;pointer-events:none}
+.btn.off:hover{opacity:1}
+
+/* ── הכפתור הדביק ────────────────────────────────────────────────
+   מתחת ל-780 פיקסלים של גובה הכפתור הראשי יושב קבוע בתחתית והתוכן
+   נגלל מעליו. הריפוד התחתון הוא של האזור הבטוח, כי בנייד הוא יושב
+   מעל סרגל המערכת. */
+.stickcta{margin-top:auto;padding-top:12px}
+@media (max-height:780px){
+  .stickcta{position:sticky;bottom:0;z-index:4;background:var(--s1);
+    padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));
+    box-shadow:0 -10px 14px -10px var(--shadow)}
+}
+
+/* ── התצוגה הגדולה מעל בורר התמונה ───────────────────────────────
+   ‏"איך יראו אותך" הוא שלב משלו, והתמונה שנבחרה מוצגת בגדול מעל
+   הרשת. בלי זה בוחרים פרצוף בגודל 60 ומגלים אותו בגודל 88 במסך אחר. */
+/* הטבעת בירוק על משטח לבן, ובחול על הראש הירוק — היא תמיד הצבע
+   שנפרד מהמשטח שמאחור, כמו הטבעת של ערימת הפרצופים. */
+.avbig{width:96px;height:96px;border-radius:50%;overflow:hidden;margin:0 auto 16px;
+  background:var(--face-fill);box-shadow:0 0 0 3px var(--leaf)}
+.avbig.on-leaf{box-shadow:0 0 0 3px var(--sun-on-leaf)}
+.avbig svg,.avbig img{display:block;width:100%;height:100%;object-fit:cover}
 </style>
 </head>
 <body>
 <script>
-window.NETA_BUILD = '72923ed';
+window.NETA_BUILD = 'f1cd515';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2426,6 +2660,85 @@ window.NETA_CONFIG = {
   <g id="ic-theme">
     <circle cx="12" cy="12" r="8.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
     <path d="M12 3.4 A8.6 8.6 0 0 1 12 20.6 Z" fill="currentColor"/>
+  </g>
+  <!-- ── אייקוני הרגעים ────────────────────────────────────────────
+       שבעת הרגעים ועוד "משהו אחר", מסבב ספטמבר 2026. הם מחליפים את
+       האמוג'י של OCC_ICON: אמוג'י נראה אחרת בכל מערכת הפעלה, וזו
+       בדיוק הסיבה שסימן המותג אינו אמוג'י.
+
+       **הם מלאים ולא קוויים, וזו הבחנה ולא חוסר עקביות.** אייקון
+       הגדרות (ic-card, ic-bell) הוא קווי ובלי מסגרת כדי שלא ייקרא
+       כאדם ולא כרגע; אייקון רגע יושב בריבוע מעוגל, שהוא ממילא
+       הצורה של רגע, ולכן הוא מלא.
+
+       **שלוש דרגות מ-currentColor אחד:** 1, ‏0.72 ו-0.45. בעיצוב
+       הן שלושה צבעים (--leaf, ‏--leaf-soft, ‏--sun), ואי אפשר
+       להעביר אותן כפי שהן: var() בתוך תכונת SVG אינו מובטח, ו-CSS
+       אינו מגיע אל תוך <use>. מה שכן עובר הוא color שמורש מהאריח,
+       ולכן הגוון מגיע ממנו ומה שנשאר לאייקון הוא היחס.
+       **המחיר שנאמר: גוון החול יורד מהם.**
+
+       **וחיתוך הוא חור ולא צבע.** בעיצוב השמשה של הרכב, הדלת של
+       הדירה וקו המשווה של הגלובוס צבועים בצבע הערוגה, כלומר מניחים
+       שהרקע קרם. בספרייט אין דרך לדעת על מה האייקון יושב (לבן,
+       ערוגה, או ראש ירוק), ולכן הם fill-rule="evenodd" וחור אמיתי. -->
+  <g id="ic-occ-studies" fill="currentColor">
+    <path d="M2 8.5 12 4l10 4.5-10 4.5z"/>
+    <path d="M6.5 11v4.2c0 1.5 2.6 2.6 5.5 2.6s5.5-1.1 5.5-2.6V11l-5.5 2.5z" opacity=".72"/>
+    <path d="M20.5 9.6v5" fill="none" stroke="currentColor" stroke-width="1.6"
+          stroke-linecap="round" opacity=".45"/>
+  </g>
+  <!-- **הזיהוי הוא הצללית ולא מה שבתוכה.** גוף מלבני עם פס עליון ומוט
+       מעליו נקרא תיבת דואר או פטיש בכל גודל, כי הצללית היא קופסה.
+       שלוש הגבשושיות של הציפוי הופכות את הקו העליון לגלי, וזה מה
+       שהופך אותו לעוגה — הן גם מה שנשאר קריא ב-14 פיקסלים, כשהנר
+       כבר כמעט אינו נראה.
+
+       הנר והלהבה ב-1 ולא ב-0.45: בעיצוב הם חול, כלומר נפרדים בגוון,
+       וכדרגה שלישית של אותו ירוק הם נעלמו. והמקל דק מהלהבה (1.3 מול
+       1.5), כי בעובי זהה השניים נקראו מוט אחד. -->
+  <g id="ic-occ-mitzvah" fill="currentColor">
+    <path d="M4 11.6A2.67 2.67 0 0 1 9.33 11.6A2.67 2.67 0 0 1 14.67 11.6A2.67 2.67 0 0 1 20 11.6V14H4Z"/>
+    <path d="M4 14h16v3.4a1.8 1.8 0 0 1-1.8 1.8H5.8A1.8 1.8 0 0 1 4 17.4Z" opacity=".72"/>
+    <path d="M12 8.9V6.4" fill="none" stroke="currentColor" stroke-width="1.3"
+          stroke-linecap="round"/>
+    <circle cx="12" cy="5" r="1.5"/>
+  </g>
+  <!-- שני חורים ולא קו אחד ומרידיאן מלא: המרידיאן ב-0.72 על דיסק מלא
+       יצר עדשה שנקראה כפרוסה, ובגודל קטן הגלובוס נראה כמו חצי עיגול.
+       עכשיו הדיסק שלם ושני הגפים נחתכים ממנו, והאנכי מעוגל כדי שלא
+       ייקרא כצלב. -->
+  <g id="ic-occ-trip" fill="currentColor">
+    <path fill-rule="evenodd" d="M12 3.6a8.4 8.4 0 1 1 0 16.8 8.4 8.4 0 0 1 0-16.8z
+      M3.7 11.2h16.6v1.6H3.7z
+      M11.2 3.9c-1.75 3.1-1.75 13.1 0 16.2.5.9 1.1.9 1.6 0 1.75-3.1 1.75-13.1 0-16.2-.5-.9-1.1-.9-1.6 0z"/>
+  </g>
+  <g id="ic-occ-car" fill="currentColor">
+    <path fill-rule="evenodd" d="M3.5 12.5 6 7.5h12l2.5 5v5H3.5z
+      M6.8 8.8h10.4l1.4 3H5.4z"/>
+    <g opacity=".45"><circle cx="7.5" cy="17.5" r="1.9"/><circle cx="16.5" cy="17.5" r="1.9"/></g>
+  </g>
+  <g id="ic-occ-home" fill="currentColor">
+    <path fill-rule="evenodd" d="M4 11 12 5l8 6v8.5H4z M10 14.5h4v5h-4z"/>
+    <path d="M12 4.2 21 11" fill="none" stroke="currentColor" stroke-width="1.7"
+          stroke-linecap="round" opacity=".45"/>
+  </g>
+  <!-- היהלום ב-1: הוא מה שמבדיל טבעת מעיגול, וב-0.45 הטבעת נקראה
+       כחור מנעול. -->
+  <g id="ic-occ-wedding" fill="currentColor">
+    <circle cx="12" cy="15.1" r="5.2" fill="none" stroke="currentColor" stroke-width="2.2"/>
+    <path d="M9 4.4h6l-3 4.4z"/>
+  </g>
+  <!-- הסרט הוא חור ולא דרגה שלישית: הוא מה שהופך קופסה למתנה,
+       וב-0.45 הוא כמעט לא נראה. -->
+  <g id="ic-occ-fund" fill="currentColor">
+    <path fill-rule="evenodd" d="M3.5 10.8h17V20h-17z M10.7 10.8h2.6V20h-2.6z"/>
+    <path fill-rule="evenodd" d="M3 7h18v3.4H3z M10.7 7h2.6v3.4h-2.6z" opacity=".72"/>
+  </g>
+  <g id="ic-occ-other" fill="currentColor">
+    <circle cx="6" cy="12" r="2"/>
+    <circle cx="12" cy="12" r="2" opacity=".72"/>
+    <circle cx="18" cy="12" r="2" opacity=".45"/>
   </g>
   <g id="sprout-art">
     <line x1="30" y1="62" x2="30" y2="20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
@@ -3105,18 +3418,28 @@ window.NETA_CONFIG = {
   <h2 class="gap-s" id="inv-h2">ההזמנה</h2>
   <p class="sub gap" id="inv-sub1">כך היא תיראה למי שיקבל אותה.</p>
 
-  <div class="card" style="border-color:var(--leaf-line)">
-    <div class="center">
-      <div class="pic" style="width:48px;height:48px;border-radius:15px;overflow:hidden;margin:0 auto;background:var(--s2);border:1px solid var(--line)">
-        <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent" id="iv-av"/></svg>
+  <!-- אותו ראש ואותו כרטיס של מסך הנחיתה, בקנה מידה קטן. זה מה
+       שהנמען יראה, ולכן זה מצויר מאותה פונקציה ולא מהעתק שני. -->
+  <div class="leafhead prev">
+    <span class="mk"><svg width="22" height="26" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span>
+    <h2 id="iv-h">·</h2>
+    <div class="leafcard">
+      <div class="row">
+        <div style="min-width:0">
+          <p class="for" id="iv-for">הוזמנת לנטוע עבור</p>
+          <p class="nm" id="iv-kid">·</p>
+        </div>
+        <span class="pt" id="iv-kidav" style="display:none"></span>
       </div>
-      <b style="display:block;font-size:14.5px;line-height:1.35;margin:10px 0 0" id="iv-h">·</b>
+      <p class="ev" id="iv-meta">·</p>
     </div>
-    <div class="card center gcard" style="background:var(--leaf-bg);border-color:var(--leaf-line);margin:13px 0 0">
-      <div class="brandmark"><svg width="30" height="35" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
-      <p class="gline" id="iv-why">·</p>
-      <p class="gask" id="iv-ask">·</p>
-      <p class="gyear" id="iv-meta">·</p>
+  </div>
+  <!-- השורה שהנמען רואה מתחת לכרטיס: המשפט האישי אם נכתב, ואחרת
+       מה שהמוצר אומר על הרגע. בלעדיה התצוגה המקדימה מראה חצי הזמנה. -->
+  <div class="card" style="margin-top:10px;padding-top:4px;padding-bottom:4px">
+    <div class="lndrow" id="iv-note">
+      <span class="f1" id="iv-face"></span>
+      <p class="qt" id="iv-note-t"></p>
     </div>
   </div>
 
@@ -3764,8 +4087,11 @@ window.NETA_CONFIG = {
         <input type="email" id="w-id" name="email" inputmode="email"
           placeholder="you@example.com" autocomplete="email"
           autocapitalize="off" autocorrect="off" spellcheck="false"
+          oninput="doorGate()"
           onkeydown="if(event.key==='Enter')doorNext()"></div>
-      <button class="btn" id="w-cta" style="margin-top:9px" onclick="doorNext()">המשך</button>
+      <!-- כבוי ולא מוסתר: כפתור שנעלם ומופיע מזיז את הכפתורים שמתחתיו
+           ברגע שמתחילים להקליד. -->
+      <button class="btn off" id="w-cta" style="margin-top:9px" onclick="doorNext()">המשך</button>
       <div class="orline">או</div>
       <div class="social" id="w-social">
         <button onclick="socialIn('Apple')"><svg width="13" height="15" viewBox="0 0 14 17" fill="currentColor"><path d="M11.6 9c0-2 1.6-2.9 1.7-3-.9-1.4-2.4-1.5-2.9-1.6-1.2-.1-2.4.7-3 .7s-1.6-.7-2.6-.7C3.5 4.4 2.2 5.2 1.5 6.5.1 9 1.1 12.8 2.5 14.9c.7 1 1.5 2.1 2.5 2.1s1.3-.6 2.5-.6 1.5.6 2.6.6 1.7-1 2.4-2c.7-1.1 1-2.2 1-2.3 0 0-1.9-.7-1.9-2.7zM9.7 3.2c.5-.7.9-1.6.8-2.5-.8 0-1.8.5-2.4 1.2-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.4-1.1z"/></svg>Apple</button>
@@ -3773,7 +4099,15 @@ window.NETA_CONFIG = {
       </div>
       <!-- מסך שפותח חשבון ואוסף כתובת. השורה אינה קישור כרגע, בדיוק
            כמו בפוטר של דף הבית, כי הדפים עצמם עוד לא נכתבו. -->
-      <p class="fine" id="w-terms">בהמשך אתה מאשר את תנאי השימוש ואת מדיניות הפרטיות</p>
+      <!-- "אותו כפתור" ישב עד כה במסך הכניסה, כלומר אחרי הלחיצה. הוא
+           עונה על ההיסוס שקורה **לפני** ההקלדה ("אני כבר רשום?"),
+           ולכן מקומו כאן. -->
+      <p class="fine" id="w-same">יש חשבון? נכנסים אליו. אין? נפתח אחד. אותו כפתור.</p>
+      <!-- "מאשרים" ולא "אתה מאשר": הפנייה נשאלת במסך שאחרי הקוד, ובדלת
+           היא עוד לא ידועה. ציווי מגדרי בלי פנייה ידועה הוא בדיוק מה
+           שהסבב אוסר. השורה אינה קישור, כמו בפוטר של דף הבית, כי
+           הדפים עצמם עוד לא נכתבו. -->
+      <p class="fine" id="w-terms">בהמשך מאשרים את תנאי השימוש ואת מדיניות הפרטיות</p>
     </div>
   </div>
 </section>
@@ -3797,9 +4131,22 @@ window.NETA_CONFIG = {
       autocapitalize="off" autocorrect="off" spellcheck="false">
     <button type="button" class="link" style="padding-top:6px" onclick="togglePwVisible('lg-pw',this)">הצג סיסמה</button>
   </div>
+  <!-- הקוד במסך משלו, לא שדה נוסף במסך שכבר שאל משהו אחר: כשהוא ישב
+       לצד שדה הכתובת, מי שהקליד כתובת ראה שני שדות ולא ידע באיזה
+       להקליד. loginAsVerify מוריד את כל מה שאינו הקוד. -->
   <div id="lg-codebox" style="display:none">
-    <div class="field"><label id="lg-codelbl">קוד אימות נשלח אליך</label><input type="text" id="lg-otp" placeholder="6 ספרות"></div>
-    <button class="link" style="text-align:right;padding-top:0" onclick="toast('נשלח קוד חדש')">לא קיבלתי? שלח שוב</button>
+    <p class="sub gap-s" id="lg-codelbl">·</p>
+    <div class="otpbox">
+      <div class="otpcells" id="lg-cells" aria-hidden="true"></div>
+      <input type="text" id="lg-otp" inputmode="numeric" autocomplete="one-time-code"
+             aria-label="הקוד מהמייל" oninput="otpPaint('lg')">
+    </div>
+    <p class="otpmeta" id="lg-resend">·</p>
+    <p class="otpout">
+      <button onclick="otpChangeMail()">לשנות כתובת</button>
+      <span>·</span>
+      <button id="lg-pwout" onclick="usePassword()">להיכנס עם סיסמה</button>
+    </p>
   </div>
   <button class="btn" id="lg-cta" onclick="loginNext()">שלח קוד</button>
   <!-- מי שמגיע דרך קישור מדלג על מסך הפתיחה ונוחת כאן ישר, ולכן עד
@@ -3893,17 +4240,36 @@ window.NETA_CONFIG = {
 </section>
 
 <!-- 20 IDENTITY -->
+<!-- שני שלבים ולא מסך אחד: שם ופנייה, ואחריהם התמונה. הם שני פאנלים
+     בתוך המסך הזה ולא שני מסכים, כי כל go(N) בקובץ נשען על המספר —
+     אותו דפוס בדיוק של cp-0..cp-2 באשף ו-ap-0..ap-5 בהוספת אדם.
+
+     **ולמה בכלל לפצל:** כשהשלושה ישבו יחד, בורר הדמויות תפס את רוב
+     המסך ונקרא כשאלה הראשית, בזמן שהשם הוא מה שבאמת נשאל. ובנפרד
+     התמונה מקבלת תצוגה גדולה של מה שנבחר, וזה מה שהיה חסר: בחרו
+     פרצוף בגודל 60 וגילו אותו בגודל 88 במסך אחר. -->
 <section class="screen center-v" data-name="פתיחת חשבון">
-  <h2 class="gap-s">מי אתה?</h2>
-  <p class="sub gap" id="id-sub">כבר אימתנו אותך. זה השם שיופיע לך ולקרובים שתזמין.</p>
-  <div class="field"><label>שם מלא</label><input type="text" id="id-name"
-    placeholder="השם המלא שלך"></div>
+  <div id="id-p0">
+  <h2 class="gap-s">נעים להכיר</h2>
+  <p class="sub gap" id="id-sub">ככה יכירו אותך הקרובים שיוזמנו לנטוע איתך.</p>
+  <div class="field"><label>שם</label><input type="text" id="id-name"
+    placeholder="השם שלך" oninput="idGate()"></div>
   <!-- לא בשביל זהות אלא בשביל פועל: בלי זה כל מסך שמדבר עליך כותב
        "פתח/ה" ו"נטע/ה". אפשר לדלג — הצורה הכפולה נשארת, וזה בדיוק מה
        שהדוגמה שבכל כרטיסייה מראה. הגוש נכתב ב-JS כי הדוגמה נגזרת מהשם
        שבשדה שמעליו. -->
-  <div class="field"><label>איך לפנות אליך</label><div id="id-sexbox"></div></div>
-  <div class="field"><label>תמונה</label><div id="id-avpick"></div></div>
+  <div class="field"><label>איך לפנות אליך?</label><div id="id-sexbox"></div></div>
+  <p class="fine">כדי שנדבר אליך נכון בכל מסך.</p>
+  </div><!-- /id-p0 -->
+
+  <div id="id-p1" style="display:none">
+  <h2 class="gap-s">איך יראו אותך?</h2>
+  <p class="sub gap">הפרצוף שיופיע ליד השם שלך אצל הקרובים.</p>
+  <div class="avbig" id="id-avbig" aria-hidden="true"></div>
+  <p class="center" id="id-avname" style="font-weight:700;margin:-8px 0 16px">·</p>
+  <div id="id-avpick"></div>
+  <p class="fine" style="margin-top:9px">תמונה מהטלפון, או אחת הדמויות.</p>
+  </div><!-- /id-p1 -->
   <!-- שדה תעודת הזהות הוסר. אימות זהות מלא נדרש רק במועד הפדיון, ומתבצע
      דרך ה-KYC של הגוף הפיננסי המנהל — נטע לא מאחסנת ולא מעבדת מסמכי זיהוי.
      כשיהיה גוף מנהל בפועל, השדה יחזור במקום ובצורה שהוא ידרוש. -->
@@ -3912,8 +4278,8 @@ window.NETA_CONFIG = {
        התראות על מסך שכל תפקידו לשאול שם ותמונה. -->
   <!-- אין "חזרה": המסך הזה מגיע מיד אחרי אימות, ואין לאן לחזור ממנו.
        (הכפתור הקודם הוביל למסך ההקמה — יעד שנשאר מהזרימה הישנה.) -->
-  <button class="btn" id="id-cta" onclick="idNext()">אשר והמשך</button>
-  <p class="fine">אימות זהות מלא נדרש רק במועד הפדיון, ומתבצע מול הגוף הפיננסי המנהל.</p>
+  <button class="btn off" id="id-cta" onclick="idNext()">המשך</button>
+  <button class="link backlink" id="id-back" style="display:none" onclick="idBack()">חזרה</button>
 </section>
 
 <!-- 21 ONBOARDING DONE -->
@@ -4007,49 +4373,60 @@ window.NETA_CONFIG = {
 <!-- 26 SHARED LINK (what someone who opens the link sees, before signing in) -->
 <section class="screen center-v" data-name="קישור לנטיעה">
 
-  <!-- הכרטיס לפני אימות. אין בו שם ילד ואין יעד — אלה בדיוק שני השדות
-       שהאפיון אוסר לחשוף כאן, וקישור עובר בוואטסאפ. -->
+  <!-- ראש ירוק ומתחתיו פאנל לבן, כמו בכל השפה החדשה. מה שהראש חושף —
+       שם הנהנה, הרגע והשנה — הוא בדיוק מה ש-share_link_summary מחזירה,
+       והיא מחזירה את הרגע ואת המגדר רק בהזמנה אישית. ההכרעה והמחיר
+       שלה ב-docs/open-decisions.md §10. מה שאינו כאן בשום מקרה: תאריך
+       מדויק וכל סכום.
+
+       הכותרת עברה אל הראש, ולכן שורת השאלה שהייתה בכרטיס ("להצטרף
+       להשקעה שנטע אלון?") ירדה: היא ואותו ראש אומרים את אותו הדבר. -->
   <div id="sl-card">
-    <div class="center gap">
-      <div class="pic" id="sl-face" style="width:52px;height:52px;border-radius:16px;overflow:hidden;margin:0 auto;background:var(--s2);border:1px solid var(--line)">
-        <svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent" id="sl-av"/></svg>
-      </div>
-      <h2 style="margin:11px 0 4px" id="sl-h">מישהו הזמין אותך להיות חלק</h2>
+    <div class="leafhead">
+      <span class="mk"><svg width="26" height="30" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></span>
+      <h2 id="sl-h">·</h2>
       <!-- מתחת לכותרת ולא בתחתית: מי שהגיע לכאן אינו מכיר את נטע, והוא
            צריך את ההסבר לפני שהוא מחליט, לא אחרי. -->
-      <button class="link" style="padding:2px 0 0" onclick="howOpen(true)">מה זה נטע, ואיך זה עובד ›</button>
+      <button class="what" onclick="howOpen(true)">מה זה נטע, ואיך זה עובד ›</button>
+
+      <div class="leafcard">
+        <div class="row">
+          <div style="min-width:0">
+            <p class="for" id="sl-for">הוזמנת לנטוע עבור</p>
+            <p class="nm" id="sl-kid">·</p>
+          </div>
+          <!-- הפרצוף של מי שהנטיעה נועדה לו. בקישור פתוח אין נהנה,
+               ואז כל העמודה יורדת ולא מוצגת דמות אנונימית: עיגול הוא
+               אדם, ואדם שאיננו יודעים מיהו אינו אדם. -->
+          <span class="pt" id="sl-kidav" style="display:none"></span>
+        </div>
+        <p class="ev" id="sl-meta">·</p>
+      </div>
     </div>
 
-    <!-- מה שהמזמין כתב בעצמו. מוצג רק אם נכתב. -->
-    <div class="card" id="sl-note" style="display:none;position:relative;padding-inline-start:16px">
-      <div style="position:absolute;inset-inline-start:0;top:12px;bottom:12px;width:2px;background:var(--leaf-2);border-radius:2px"></div>
-      <p class="sub" style="color:var(--tx)" id="sl-note-t"></p>
-      <p class="fine" style="margin-top:7px" id="sl-note-by"></p>
-    </div>
+    <div class="sheetup">
+      <!-- מה שהמזמין כתב בעצמו. כשאין משפט אישי נכנס לשורה הזאת המשפט
+           שהמוצר אומר על הרגע (inviteLine) — הפאנל הזה מחזיק שתי שורות
+           בלבד, ובלי אף אחת מהן הוא ריק. -->
+      <div class="lndrow" id="sl-note">
+        <span class="f1" id="sl-face"></span>
+        <p class="qt" id="sl-note-t"></p>
+      </div>
 
-    <!-- הכרטיס הוא ההזמנה עצמה: משפט על הילד, השאלה, והשנה. הפס והשורה
-         "כבר נטע כאן" ירדו — שם המזמין נמצא בשאלה, ואמירה נוספת עליו היא
-         כפילות. השורה על המשתתפים חוזרת רק כשיש יותר מאחד, ואז היא
-         מוסיפה משהו שהשאלה אינה אומרת.
+      <!-- מי כבר נוטע. הפרצוף היחיד שידוע לנו לפני אימות הוא של המזמין;
+           השאר עיגולים ניטרליים, ולא פרצופים שנבחרו להם. העיגול המקווקו
+           בסוף הוא מי שקורא את המסך. -->
+      <div class="lndrow" id="sl-whorow">
+        <span class="stk" id="sl-stk"></span>
+        <p class="pf" id="sl-who">·</p>
+      </div>
 
-         המשפט נוקב ברגע רק בהזמנה אישית. בקישור פתוח share_link_summary
-         מחזירה occasion=null בכוונה, וההסבר המלא בראש 0030 וב-§10. -->
-    <div class="card center gcard" style="background:var(--leaf-bg);border-color:var(--leaf-line)">
-      <div class="brandmark"><svg width="34" height="40" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
-      <p class="gline" id="sl-why">·</p>
-      <p class="gask" id="sl-ask">·</p>
-      <p class="gyear" id="sl-meta">·</p>
-    </div>
-    <!-- מי שמגיע לכאן אינו מכיר את נטע, ועומד למסור פרטים לשירות פיננסי
-         שלא שמע עליו. ההרגעה קודמת לסייג: היא מה שמאפשר ללחוץ, והסייג
-         מסביר למה לא הכול מוצג. שניהם בלשון ניטרלית, כי בקישור פתוח
-         איננו יודעים מי פותח אותו ואף בהזמנה אישית יש לנו שם ולא מגדר. -->
-    <p class="fine gap" id="sl-fine">להצטרף לא מחייב בכלום. אפשר לראות מה יש שם, ולהחליט אחר כך אם ובכמה להשקיע.<br>לאיזה רגע היא נועדה, ומתי בדיוק, יוצג רק אחרי שנוודא שהקישור הגיע אליך.</p>
-
-    <div id="sl-live-actions">
-      <button class="btn gap-s" onclick="startJoin()">אני רוצה להצטרף</button>
-      <!-- "רק הצצתי" תיאר מה המשתמשת עשתה, לא מה יקרה כשתלחץ. -->
-      <button class="btn ghost" style="margin-top:8px" onclick="leaveShared()">בפעם אחרת</button>
+      <div id="sl-live-actions" class="stickcta">
+        <p class="fine center" id="sl-fine">·</p>
+        <button class="btn gap-s" onclick="startJoin()">להצטרף להשקעה</button>
+        <!-- "רק הצצתי" תיאר מה המשתמשת עשתה, לא מה יקרה כשתלחץ. -->
+        <button class="link" onclick="leaveShared()">בפעם אחרת</button>
+      </div>
     </div>
   </div>
 
@@ -4218,8 +4595,8 @@ window.NETA_CONFIG = {
 <section class="screen center-v" data-name="הצטרפות">
   <div class="center gap">
     <div class="brandmark"><svg width="40" height="47" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
-    <h2 style="margin:11px 0 5px" id="jo-h">נעים להכיר</h2>
-    <p class="sub" id="jo-sub">שני פרטים, ואפשר להיכנס.</p>
+    <h2 style="margin:11px 0 5px" id="jo-h">·</h2>
+    <p class="sub" id="jo-sub">·</p>
   </div>
 
   <!-- השם והתמונה ירדו מכאן, וזה לא קיצור אלא סדר. המסך הזה רץ לפני
@@ -4232,29 +4609,44 @@ window.NETA_CONFIG = {
        והוא קיים ועובד ממילא. וגם לחדשה זה הסדר הנכון, כי היא כבר לא
        ממלאת טופס לפני שהיא יודעת שהקוד בכלל הגיע. -->
 
-  <!-- הכתובת ידועה מההזמנה, ולכן היא מוצגת ולא נשאלת. מסכה ולא הערך
-       המלא: קישור אישי ניתן להעברה, ומי שיפתח אותו אינו צריך לראות
-       למי הוא נשלח. -->
-  <div class="field" id="jo-known" style="display:none">
-    <label>הקוד יישלח לכתובת שאליה נשלחה ההזמנה</label>
-    <div class="fixedval"><span id="jo-mask">·</span><i>✓</i></div>
-    <button class="link" style="padding-top:7px" onclick="joUseOther()">זו לא הכתובת שלי, אני רוצה להזין אחרת</button>
+  <!-- שני פאנלים ולא שני מסכים, כמו ב"פתיחת חשבון": האימות והקוד הם
+       שני שלבים באותה שאלה, וכל go(N) בקובץ נשען על מספר המסך. -->
+  <div id="jo-p0">
+    <!-- הכתובת ידועה מההזמנה, ולכן היא מוצגת ולא נשאלת. מסכה ולא הערך
+         המלא: קישור אישי ניתן להעברה, ומי שיפתח אותו אינו צריך לראות
+         למי הוא נשלח. -->
+    <div class="field" id="jo-known" style="display:none">
+      <label>הקוד יישלח אל</label>
+      <div class="fixedval"><span id="jo-mask">·</span><i>✓</i></div>
+      <button class="link" style="padding-top:7px" onclick="joUseOther()">זו לא הכתובת שלי</button>
+    </div>
+
+    <div class="field" id="jo-askmail">
+      <label for="jo-mail">האימייל שלך</label>
+      <input type="email" id="jo-mail" name="email" inputmode="email"
+        placeholder="you@example.com" autocomplete="email"
+        autocapitalize="off" autocorrect="off" spellcheck="false"
+        oninput="joGate()"
+        onkeydown="if(event.key==='Enter')joNext()">
+      <p class="fine" id="jo-mailfine" style="margin-top:6px">לכאן יישלח קוד בן שש ספרות. אין סיסמה.</p>
+    </div>
   </div>
 
-  <div class="field" id="jo-askmail">
-    <label>המייל שלך</label>
-    <input type="email" id="jo-mail" placeholder="you@example.com"
-      autocapitalize="off" autocorrect="off" spellcheck="false">
-    <p class="fine" id="jo-mailfine" style="margin-top:6px">לכאן יישלח קוד בן שש ספרות. אין סיסמה.</p>
+  <div id="jo-p1" style="display:none">
+    <p class="sub gap-s" id="jo-codelbl">·</p>
+    <div class="otpbox">
+      <div class="otpcells" id="jo-cells" aria-hidden="true"></div>
+      <input type="text" id="jo-otp" inputmode="numeric" autocomplete="one-time-code"
+             aria-label="הקוד מהמייל" oninput="otpPaint('jo')">
+    </div>
+    <p class="otpmeta" id="jo-resend">·</p>
+    <!-- "לשנות כתובת" קיים גם כאן ולא רק במסך הכניסה: מי שהקליד כתובת
+         בעצמו ("זו לא הכתובת שלי") יכול היה לטעות באות אחת, ומרגע
+         שהקוד יצא הפאנל הראשון כבר אינו על המסך. -->
+    <p class="otpout"><button onclick="joChangeMail()">לשנות כתובת</button></p>
   </div>
 
-  <div class="field" id="jo-codebox" style="display:none">
-    <label id="jo-codelbl">הקוד מהמייל</label>
-    <input type="text" id="jo-otp" class="codebox" inputmode="numeric" placeholder="······" aria-label="הקוד מהמייל">
-    <button class="link" style="text-align:right;padding-top:6px" onclick="joResend()">לא קיבלת? שלח שוב</button>
-  </div>
-
-  <button class="btn" id="jo-cta" onclick="joNext()">שלח לי קוד</button>
+  <button class="btn off" id="jo-cta" onclick="joNext()">שלח לי קוד</button>
   <button class="link backlink" onclick="joBack()">חזרה</button>
 </section>
 
@@ -4833,8 +5225,22 @@ function loginAsVerify(on){
   const pl=el('lg-pwlink');  if(pl)pl.style.display=(on&&live)?'':'none';
   const sub=el('lg-sub');    if(sub)sub.style.display=on?'none':'';
   const fine=el('lg-fine');  if(fine)fine.style.display=on?'none':'';
+  /* מסך הקוד מציג את הקוד בלבד. הנבט וכפתור גוגל שייכים לדלת, שבה
+     עוד בוחרים איך להיכנס; כאן כבר נבחר, והקוד כבר יצא. */
+  const ic=document.querySelector('[data-name="כניסה"] .scr-icon');
+  if(ic)ic.style.display=on?'none':'';
+  const soc=el('lg-social-wrap');
+  if(soc)soc.style.display=on?'none':'';
   const h=document.querySelector('[data-name="כניסה"] h2');
-  if(h&&live)h.textContent=on?'הזן את הקוד':'מה האימייל שלך?';
+  if(h&&live)h.textContent=on?'מה הקוד?':'מה האימייל שלך?';
+  /* היציאה לסיסמה חיה בתוך פאנל הקוד (lg-pwout), ולכן הישנה יורדת:
+     שתי דרכים לאותו מקום באותו מסך. */
+  if(pl)pl.style.display='none';
+  const po=el('lg-pwout');
+  if(po)po.style.display=(on&&live&&hasPassword())?'':'none';
+  /* "·" שבין שתי היציאות יורד יחד עם השנייה. */
+  const sep=po&&po.parentNode?po.parentNode.querySelector('span'):null;
+  if(sep)sep.style.display=(po&&po.style.display==='')?'':'none';
 }
 
 /* מי שהגדיר סיסמה בעבר במכשיר הזה — מזכירים לו, כדי שלא ייצור בטעות
@@ -5009,6 +5415,20 @@ function paintLaterCard(){
    הוא null — ואז נופלים לנבט, שהוא ממילא ברירת המחדל של שורת פיד. */
 const OCC_ICON={bar_mitzvah:'🎂',studies:'🎓',army_trip:'🎒',first_car:'🚗',
                 apartment:'🏠',wedding:'💍',open_fund:'🎁'};
+/* הרגע בצורה שכרטיס ההזמנה מציג אותה: "ללימודים שלה". המפתח הוא
+   האנום שהשרת מחזיר ולא תווית הצ'יפ, ולכן זו טבלה נפרדת מ-OCCASION_NOUN:
+   ההיא מקבלת תווית וגם קוראת ל-bs() שנשען על מצב האשף, ובמסך הזה אין
+   אשף. הכינוי נוסף רק כשהמגדר ידוע, ובכרטיס ההזמנה שני השדות מגיעים
+   יחד — share_link_summary מחזירה את הרגע ואת המגדר באותו תנאי. */
+const OCC_FOR={bar_mitzvah:['לבר המצווה','לבת המצווה'],studies:['ללימודים','ללימודים'],
+               army_trip:['לטיול אחרי הצבא','לטיול אחרי הצבא'],
+               first_car:['לרכב הראשון','לרכב הראשון'],apartment:['לדירה','לדירה'],
+               wedding:['לחתונה','לחתונה'],open_fund:['לקופת ההפתעות','לקופת ההפתעות']};
+function occFor(occ,sex){
+  const p=OCC_FOR[occ];
+  if(!p)return '';
+  return p[sex==='f'?1:0]+(sex==='f'?' שלה':sex==='m'?' שלו':'');
+}
 /* בלי שם ובלי פועל. כל מה שבבלוק הזה עשה אדם אחד, והוא כבר נקוב
    בשורה שמעליו — "אלון" בכל שורה היה חוזר שלוש פעמים באותו מסך.
 
@@ -5206,9 +5626,62 @@ function sexPickHTML(boxId,sel,call){
       '<b>בלשון '+(x==='m'?'זכר':'נקבה')+'</b></button>';
   }).join('')+'</div>';
 }
+/* ── "מי אתה" בשני שלבים ────────────────────────────────────────
+   idStep הוא 0 (שם ופנייה) או 1 (תמונה). שני פאנלים ולא שני מסכים,
+   ראו ההערה מעל המסך. */
+let idStep=0;
+function idShow(){
+  const p0=document.getElementById('id-p0'),p1=document.getElementById('id-p1');
+  if(p0)p0.style.display=idStep?'none':'';
+  if(p1)p1.style.display=idStep?'':'none';
+  const bk=document.getElementById('id-back');
+  if(bk)bk.style.display=idStep?'':'none';
+  if(idStep)idPaintBig();
+  idGate();
+  document.querySelector('.stage').scrollTo?.(0,0);
+}
+function idBack(){idStep=0;idShow()}
+/* הכפתור כבוי עד שיש שם **ופנייה**. הפנייה היא חובה כאן ורשות
+   בפרופיל, וזו הכרעה: נמדד במסד שארבעה מתוך חמישה פרופילים ריקים
+   מהשדה הזה, כלומר "רשות בהרשמה" כבר נוסתה ואינה עובדת. */
+function idGate(){
+  const b=document.getElementById('id-cta');
+  if(!b)return;
+  if(idStep){b.classList.remove('off');txt('id-cta','המשך');return}
+  const n=((document.getElementById('id-name')||{}).value||'').trim();
+  b.classList.toggle('off',!(n&&mySex));
+  txt('id-cta','המשך');
+}
+/* התצוגה הגדולה של מה שנבחר, ומתחתיה השם שהרגע הוקלד: זה המסך
+   שבו רואים את עצמך כפי שהקרובים יראו. */
+function idPaintBig(){
+  const box=document.getElementById('id-avbig');
+  if(box)box.innerHTML=(myPhoto&&myPhoto.url)
+    ? '<img src="'+myPhoto.url+'" alt="">'
+    : faceHTML(pickedAv,'av-parent');
+  const n=((document.getElementById('id-name')||{}).value||'').trim();
+  txt('id-avname',n||'·');
+}
+/* הפנייה גוזרת את הדמות שנפתחת מסומנת. זו ברירת מחדל ולא נעילה:
+   מי שבוחר אחרת מקבל את מה שבחר, ומרגע שנגע בבורר הפנייה אינה
+   דורסת אותו. */
+let idAvTouched=false;
+function idDefaultAv(){
+  if(idAvTouched)return;
+  const av=mySex==='m'?'av-friend':'av-parent';
+  pickedAv=av;myPaintAv(av,'id-avpick');
+}
+function pickIdSex(el,x){
+  pickMySex(el,x);
+  idDefaultAv();
+  idGate();
+}
 function idNext(){
   const n=(document.getElementById('id-name')||{}).value;
-  if(!n||!n.trim()){toast('צריך שם מלא');return}
+  if(!n||!n.trim()){toast('צריך שם');return}
+  /* השלב הראשון אינו שומר דבר: הוא רק מעביר לתמונה. */
+  if(!idStep){if(!mySex){toast('צריך לבחור איך לפנות אליך');return}
+    idStep=1;idShow();return}
   /* נקרא מה-DOM ולא מ-pickedAv הגלובלי: אותו משתנה משמש כל בוררי התמונה
      באפליקציה, ובורר הזה יושב על מסך קבוע ולא בגיליון חד-פעמי — ניווט
      דרך מסך אחר שפותח בורר תמונה משלו היה עלול לדרוס את מה שנבחר כאן. */
@@ -5347,11 +5820,93 @@ function otpDigits(raw){
    את ההגדרה משנה אותו כאן. */
 const OTP_LEN=6;
 const OTP_WORD={4:'ארבע',5:'חמש',6:'שש',7:'שבע',8:'שמונה',9:'תשע',10:'עשר'};
+/* ── תיבת הקוד ──────────────────────────────────────────────────
+   המשבצות הן תצוגה, והקלט הוא אחד ושקוף מעליהן. ‏otpClean כבר
+   מטפל בהדבקה, במילוי האוטומטי ובקוד שמודבק עם טקסט סביבו, וכל
+   זה היה נשבר בשישה שדות נפרדים. מספר המשבצות נגזר מ-OTP_LEN,
+   שהוא הגדרה של Supabase ולא שלנו. */
+function otpCells(pre){
+  const box=document.getElementById(pre+'-cells');
+  if(!box)return;
+  box.style.gridTemplateColumns='repeat('+OTP_LEN+',1fr)';
+  box.innerHTML=new Array(OTP_LEN+1).join('<i></i>');
+  otpPaint(pre);
+}
+/* מונע ריצה כפולה: otpPaint נקרא גם מה-input וגם מההדבקה, ובלי
+   הדגל הקוד המלא היה נשלח פעמיים. */
+let otpSent='';
+function otpPaint(pre){
+  const inp=document.getElementById(pre+'-otp');
+  const box=document.getElementById(pre+'-cells');
+  if(!inp||!box)return;
+  const v=String(inp.value||'').replace(/\D/g,'').slice(0,OTP_LEN);
+  if(inp.value!==v)inp.value=v;
+  [].forEach.call(box.children,function(c,i){
+    c.textContent=v[i]||'';
+    c.classList.toggle('on',i===Math.min(v.length,OTP_LEN-1));
+  });
+  const cta=document.getElementById(pre==='lg'?'lg-cta':'jo-cta');
+  if(cta)cta.classList.toggle('off',v.length<OTP_LEN);
+  /* ממשיך לבד כשהקוד מלא. מי שהקליד שש ספרות אמר את מה שהמסך
+     ביקש, ולחיצה נוספת היא אישור על מה שכבר נאמר. */
+  if(v.length===OTP_LEN&&otpSent!==pre+v){otpSent=pre+v;
+    setTimeout(function(){pre==='lg'?loginNext():joNext()},120);}
+  if(v.length<OTP_LEN)otpSent='';
+}
+/* השעון של "אפשר לשלוח שוב". 24 שניות, כמו בעיצוב. התחילית היא
+   פרמטר ולא 'lg' קשיח: אותה תיבה משרתת את מסך הכניסה ואת ההצטרפות,
+   ושעון שכותב תמיד לאותו צומת היה משאיר את השני על "·" לנצח. */
+let otpTick=null;
+function otpCountdown(pre,sec){
+  clearInterval(otpTick);
+  let n=sec;
+  const again=pre==='jo'?'joResend()':'otpSendAgain()';
+  const paint=function(){
+    const el=document.getElementById(pre+'-resend');
+    if(!el)return;
+    el.innerHTML=n>0
+      ? 'לא הגיע? אפשר לשלוח שוב בעוד '+Math.floor(n/60)+':'+
+        (n%60<10?'0':'')+(n%60)
+      : 'לא הגיע? <button onclick="'+again+'">לשלוח שוב</button>';
+  };
+  paint();
+  otpTick=setInterval(function(){n--;paint();if(n<=0)clearInterval(otpTick)},1000);
+}
+function otpSendAgain(){
+  if(!netaServer||!userPhone){toast('נשלח קוד חדש');otpCountdown('lg',24);return}
+  netaServer.sendCode(userPhone).then(function(){
+    toast('נשלח קוד חדש');otpCountdown('lg',24);
+  },function(e){toast((e&&e.message)||'לא הצלחנו לשלוח')});
+}
+/* "לשנות כתובת" מחזיר את השדה, ולא מוציא מהמסך: מי שטעה בכתובת
+   רוצה לתקן אות אחת. */
+function otpChangeMail(){
+  clearInterval(otpTick);
+  const box=document.getElementById('lg-codebox');
+  if(box)box.style.display='none';
+  loginAsVerify(false);
+  const f=document.getElementById('lg-phone');
+  if(f){f.focus();f.select&&f.select()}
+  txt('lg-cta','שלח קוד');
+}
+/* האם להציע "להיכנס עם סיסמה". **אין לזה סימן אמין בלקוח**: השרת
+   אינו מספר אם לחשבון יש סיסמה, ולשאול אותו על כתובת שעוד לא
+   אומתה זה אותו אורקל שנפסל בכרטיס ההזמנה. מה שיש הוא מה שנשמר
+   במכשיר הזה — מי שכבר נכנס כאן פעם עם סיסמה. המחיר: מי שהגדיר
+   סיסמה במכשיר אחר לא יראה את ההצעה, והוא ייכנס בקוד ויגיע אליה
+   מהפרופיל. */
+function hasPassword(){
+  try{return localStorage.getItem('neta.loginMethod')==='password'}catch(e){return false}
+}
+/* הכפתור בדלת כבוי עד שיש כתובת שנראית תקינה. */
+function doorGate(){
+  const v=((document.getElementById('w-id')||{}).value||'').trim();
+  const b=document.getElementById('w-cta');
+  if(b)b.classList.toggle('off',!looksLikeEmail(v));
+}
+/* שתי תיבות הקוד הן עכשיו משבצות ולא placeholder, ולכן מה שנשאר
+   כאן הוא ההבטחה בטקסט. המשבצות עצמן נגזרות מ-OTP_LEN ב-otpCells. */
 function otpSay(){
-  const lg=document.getElementById('lg-otp');
-  if(lg)lg.placeholder=OTP_LEN+' ספרות';
-  const jo=document.getElementById('jo-otp');
-  if(jo)jo.placeholder=new Array(OTP_LEN+1).join('·');
   txt('jo-mailfine','לכאן יישלח קוד בן '+(OTP_WORD[OTP_LEN]||OTP_LEN)+
                     ' ספרות. אין סיסמה.');
 }
@@ -5383,8 +5938,11 @@ function loginPrep(){
   const h=document.querySelector('[data-name="כניסה"] h2');
   if(h)h.textContent='מה האימייל שלך?';
   txt('lg-sub','אותו מייל משמש לכניסה ולהזמנות שתשלח.');
+  /* הקלט שקוף מעל המשבצות, ולכן placeholder עליו הוא הבטחה שאיש
+     אינו רואה. מה שאומר "שש ספרות" הוא שש המשבצות, ואותן otpCells
+     גוזר מ-OTP_LEN. */
   const otp=document.getElementById('lg-otp');
-  if(otp){otp.placeholder=OTP_LEN+' ספרות';otp.inputMode='numeric'}
+  if(otp)otp.inputMode='numeric';
   const methodBox=document.getElementById('lg-method');
   if(methodBox)methodBox.style.display='flex';
   let saved='code';
@@ -5415,6 +5973,21 @@ function loginBusy(on,label){
   if(label)txt('lg-cta',label);
 }
 
+/* פתיחת פאנל הקוד. במקום אחד ולא בשניים: הוא נפתח גם במצב הדגמה
+   וגם אחרי שליחה אמיתית, ושני העתקים נפרדו בשקט בעבר. */
+function openCodePanel(){
+  const box=document.getElementById('lg-codebox');
+  if(box)box.style.display='block';
+  /* ‏"ל-" ולא "ל": אות יחס נדבקת למילה עברית, ולפני כתובת בלטינית
+     היא צריכה מקף. וזה אותו כלל שכבר יושב ב-withPrep במיילים. */
+  const lbl=document.getElementById('lg-codelbl');
+  if(lbl)lbl.innerHTML='שלחנו קוד בן '+OTP_LEN+' ספרות ל-<b>'+
+    attrText(userPhone)+'</b>';
+  otpCells('lg');
+  otpCountdown('lg',24);
+  const o=document.getElementById('lg-otp');
+  if(o){o.value='';otpPaint('lg');o.focus()}
+}
 function loginNext(){
   if(loginIsEmail()&&loginMethod==='password'){loginWithPassword();return}
   const box=document.getElementById('lg-codebox');
@@ -5426,16 +5999,14 @@ function loginNext(){
     userPhone=idField.trim();
 
     if(!netaServer){
-      box.style.display='block';
-      txt('lg-codelbl','קוד אימות נשלח ל'+userPhone);
+      openCodePanel();
       txt('lg-cta','אשר והמשך');
       return;
     }
     loginBusy(true,'שולח…');
     netaServer.sendCode(userPhone).then(function(){
       loginBusy(false,'אשר והמשך');
-      box.style.display='block';
-      txt('lg-codelbl','קוד אימות נשלח ל'+userPhone);
+      openCodePanel();
       keepCodeSent({where:'login',mail:userPhone,onbo:onbo});
     }).catch(function(e){
       loginBusy(false,'שלח קוד');
@@ -6655,54 +7226,77 @@ function paintSharedCard(r,pre){
                        by:(r.inviter_name||'').trim(),
                        bySex:r.inviter_sex||null};
   const who=r.inviter_name||'מישהו';
+  const fn=firstName(who);
   const kid=r.beneficiary_name||'';
   const sex=r.beneficiary_sex||null;
-  /* "עתידו" או "עתידה" רק כשהמגדר ידוע. אחרת "העתיד של", שנכון תמיד. */
-  const fut=kid?(sex==='f'?'עתידה של '+kid:sex==='m'?'עתידו של '+kid:'העתיד של '+kid)
-               :'משהו שהוא פתח';
-  txt(q+'h', who+' נטע השקעה חדשה עבור '+fut+', והזמין אותך להצטרף.');
 
-  /* הפרצוף של מי שהזמין. הוא יכול להיות נתיב לתמונה, ואז הוא
-     מוחלף כולו ולא רק ה-href: מדיניות הקריאה של profile-photos
-     מתירה לנמען לחתום אותו, כי הוא רואה את הפרופיל של המזמין. */
-  const av=document.getElementById(q+'av');
+  /* הכותרת שעל הראש הירוק. המגדר של המזמין מגיע מ-0057, ובלעדיו
+     נשארת צורת שם עצם בלי פועל — אותה הכרעה בדיוק כמו "העתיד של"
+     כשמגדר הנהנה אינו ידוע, ולא לוכסן. */
+  txt(q+'h', r.inviter_sex==='f' ? fn+' מזמינה אותך לנטוע איתה'
+           : r.inviter_sex==='m' ? fn+' מזמין אותך לנטוע איתו'
+           : 'הזמנה לנטוע יחד עם '+fn);
+
+  /* הכרטיס: למי, ולקראת מה. בקישור פתוח אין נהנה ואין רגע, ואז מה
+     שנשאר הוא הנטיעה עצמה ומי פתח אותה — ולא שם ילד שאיננו יודעים. */
+  txt(q+'for', kid?'הוזמנת לנטוע עבור':'הוזמנת להצטרף לנטיעה של');
+  txt(q+'kid', kid||fn);
+  txt(q+'meta', [occFor(r.occasion,sex),'לקראת '+r.target_year]
+                .filter(Boolean).join(' · '));
+
+  /* הפרצוף בכרטיס הוא של הנהנה, כי הכרטיס מדבר עליו. בלי נהנה הוא
+     יורד ולא מוחלף בצללית אנונימית: עיגול הוא אדם, ואדם שאיננו
+     יודעים מיהו אינו אדם. beneficiary_avatar אינו ב-share_link_summary,
+     ולכן הדמות נגזרת מהשם ומהמגדר, כמו בכל מקום שאין בו ערך שמור. */
+  const kav=document.getElementById(q+'kidav');
+  if(kav){
+    kav.style.display=kid?'':'none';
+    if(kid)kav.innerHTML=faceHTML(kidAvatar(kid,sex),'av-kid1');
+  }
+
+  /* הפרצוף של מי שהזמין, בשורת המשפט שכתב. הוא יכול להיות נתיב
+     לתמונה, ואז הוא מוחלף כולו ולא רק ה-href: מדיניות הקריאה של
+     profile-photos מתירה לנמען לחתום אותו, כי הוא רואה את הפרופיל
+     של המזמין. */
+  const av=document.getElementById(q+'face');
   const iav=r.inviter_avatar||'av-parent';
   if(av){
-    const box=av.closest('svg')?av.closest('svg').parentNode:av.parentNode;
-    box.innerHTML=faceHTML(iav,'av-parent');
+    av.innerHTML=faceHTML(iav,'av-parent');
     if(iav.indexOf('av-')!==0&&!photoUrl(iav))
       signFaces([iav]).then(function(){
-        if(photoUrl(iav))box.innerHTML=faceHTML(iav,'av-parent');
+        if(photoUrl(iav))av.innerHTML=faceHTML(iav,'av-parent');
       });
   }
 
+  /* שורת המשפט. מה שהמזמין כתב גובר, וכשלא כתב נכנס המשפט שהמוצר
+     אומר על הרגע הזה — אותו inviteLine שנושא את כותרת מייל ההזמנה.
+     בלעדיו הפאנל הלבן נשאר עם שורה אחת בלבד. */
   const note=document.getElementById(q+'note');
   if(note){
-    if(r.personal_note){
-      txt(q+'note-t','"'+r.personal_note+'"');
-      txt(q+'note-by',who);
-      note.style.display='';
-    } else note.style.display='none';
+    const own=(r.personal_note||'').trim();
+    txt(q+'note-t', own?('"'+own+'"'):inviteLine(kid,r.occasion,sex));
+    note.style.display='';
   }
 
-  /* השאלה נושאת את שם המזמין, ולכן היא גם מה שמחליף את "כבר נטע כאן".
-     מספר, לא שמות: רשימת שמות מתחילה להיות פרופיל של משפחה. */
-  const el=document.getElementById(q+'ask');
-  /* בלי פנייה לנמען: להזמנה יש שם ואין מגדר, וניחוש לפי שם נפסל
-     בכל שאר המוצר. "להצטרף" אומר את אותו הדבר בלי מין בכלל, בדיוק
-     כמו "הזמנה בפועל נשלחת רק מהחשבון שלך" במייל ההצעה. */
-  if(el)el.innerHTML='להצטרף להשקעה שנטע'+
-    '<span class="gname"><b>'+firstName(who)+'</b>?</span>';
-  const n=Number(r.participants)||0;
-  txt(q+'meta','נטיעה שנפתחה לקראת '+r.target_year+
-      (n>1?(' · '+who+' ועוד '+(n-1)+' מהמשפחה כבר נטעו כאן'):''));
-
-  txt(q+'why', inviteLine(kid,r.occasion,sex));
+  /* מי כבר נוטע. מספר, לא שמות: רשימת שמות מתחילה להיות פרופיל של
+     משפחה, ולפני אימות אין לזה מקום. הפרצוף היחיד שידוע הוא של
+     המזמין, והשאר עיגולים ניטרליים — פרצוף שנבחר לאדם שאיננו
+     מכירים הוא המצאה. האחרון מקווקו, והוא מי שקורא את המסך. */
+  const n=Math.max(1,Number(r.participants)||1);
+  const stk=document.getElementById(q+'stk');
+  if(stk){
+    let h='<span>'+faceHTML(iav,'av-parent')+'</span>';
+    for(let i=1;i<Math.min(n,3);i++)h+='<span>'+faceHTML('av-someone','av-someone')+'</span>';
+    stk.innerHTML=h+'<span class="emptydot">+</span>';
+  }
+  /* ביחיד אין רבים שיכסו על המגדר, ולכן סביל: "נפתחה על ידי" היא
+     אותה צורה שכבר פותרת את זה בכרטיס הרגע ב"ההשקעות שלי". */
+  txt(q+'who', n>1 ? (fn+' ועוד '+(n-1)+' כבר נוטעים') : ('נפתחה על ידי '+fn));
 
   /* בהזמנה אישית הרגע כבר נאמר בכרטיס, ולכן ההבטחה להסתיר אותו הופכת
      שם לשקר. היא נשארת רק בקישור פתוח, ושם היא נכונה. */
   const fine=document.getElementById(q+'fine');
-  if(fine)fine.innerHTML='להצטרף לא מחייב בכלום. אפשר לראות מה יש שם, ולהחליט אחר כך אם ובכמה להשקיע.'+
+  if(fine)fine.innerHTML='להצטרף לא מחייב בכלום. את הסכום בוחרים אחרי שנכנסים.'+
     (r.occasion?'':'<br>לאיזה רגע היא נועדה, ומתי בדיוק, יוצג רק אחרי שנוודא שהקישור הגיע אליך.');
 }
 /* האם כרטיס ההזמנה כבר צויר בסבב הזה. לא di localStorage: טוקן ישן
@@ -6811,14 +7405,10 @@ function resumeCodeSent(){
     if(!pendingInvite())return false;
     inviteKnows={name:c.name||'',mail:c.mail,by:c.by||'',bySex:c.bySex||null};
     openJoin();
-    const box=document.getElementById('jo-codebox');
-    const kn=document.getElementById('jo-known');
-    const am=document.getElementById('jo-askmail');
-    if(box)box.style.display='';
-    if(kn)kn.style.display='none';
-    if(am)am.style.display='none';
-    txt('jo-codelbl','הקוד נשלח ל'+maskMail(c.mail));
-    txt('jo-cta','הצטרף לנטיעה');
+    /* הקוד כבר נשלח, ולכן נוחתים על הפאנל השני. joShow הוא שכותב את
+       הכותרת, את הכיתוב ואת המשבצות — אין כאן הצבות ידניות שיתיישנו
+       ברגע שהפאנל ישתנה. */
+    joMail=c.mail;joStep=1;joShow();otpCountdown('jo',24);
     const o=document.getElementById('jo-otp');if(o)o.focus();
     return true;
   }
@@ -6827,10 +7417,10 @@ function resumeCodeSent(){
   go(ONBO.login);
   loginAsVerify(true);
   const ph=document.getElementById('lg-phone');if(ph)ph.value=c.mail;
-  const box=document.getElementById('lg-codebox');
-  if(box)box.style.display='block';
-  txt('lg-codelbl','קוד אימות נשלח ל'+c.mail);
-  txt('lg-cta','אשר והמשך');
+  /* אותה פתיחה בדיוק ולא הצבות ידניות: העתק שני של הכיתוב נשאר
+     כאן על "קוד אימות נשלח ל" בזמן שהמסך עצמו כבר אמר משהו אחר,
+     ובלי המקף שלפני כתובת לטינית. */
+  openCodePanel();
   const o=document.getElementById('lg-otp');if(o)o.focus();
   return true;
 }
@@ -6876,19 +7466,49 @@ function startJoin(){
 function openJoin(){
   const known=!!inviteKnows.mail;
   joMail=inviteKnows.mail;
+  joStep=0;
   /* "נעים להכיר" ירד: המסך הזה רואה גם את מי שכבר רשום, והוא אינו יכול
      לדעת מי מהם זה (ראו ההערה במסך). מה שהוא כן עושה נכון לשניהם הוא
      לאמת את הכתובת, ולכן זה מה שכתוב. */
-  txt('jo-h','נשאר רק לאמת את הכתובת');
-  txt('jo-sub',known ? 'נשלח קוד לכתובת שאליה הגיעה ההזמנה. אין סיסמה.'
-                     : 'נשלח קוד לכתובת שתזין. אין סיסמה.');
   txt('jo-mask',maskMail(joMail));
   document.getElementById('jo-known').style.display=known?'':'none';
   document.getElementById('jo-askmail').style.display=known?'none':'';
-  document.getElementById('jo-codebox').style.display='none';
   const otp=document.getElementById('jo-otp');if(otp)otp.value='';
-  txt('jo-cta','שלח לי קוד');
+  joShow();
   go(JOIN_SCREEN());
+}
+/* שני הפאנלים. הכותרת והמשפט מתחלפים איתם, כי "נשאר רק לאמת את
+   הכתובת" מתאר את השלב הראשון ולא את השני. */
+let joStep=0;
+function joShow(){
+  const known=!!inviteKnows.mail&&!!joMail;
+  const p0=document.getElementById('jo-p0'),p1=document.getElementById('jo-p1');
+  if(p0)p0.style.display=joStep?'none':'';
+  if(p1)p1.style.display=joStep?'':'none';
+  if(joStep){
+    txt('jo-h','מה הקוד?');
+    txt('jo-sub','');
+    txt('jo-codelbl','הקוד נשלח אל '+maskMail(joMail));
+    otpCells('jo');
+  }else{
+    txt('jo-h','נשאר רק לאמת את הכתובת');
+    txt('jo-sub',known ? 'נשלח קוד לכתובת שאליה הגיעה ההזמנה. אין סיסמה.'
+                       : 'נשלח קוד לכתובת שתזין. אין סיסמה.');
+  }
+  const sub=document.getElementById('jo-sub');
+  if(sub)sub.style.display=joStep?'none':'';
+  joGate();
+}
+/* הכפתור כבוי עד שיש במה להמשיך: כתובת תקינה בשלב הראשון, קוד מלא
+   בשני. ‏otpPaint הוא שמדליק אותו בשלב השני, ולכן כאן רק השלב הראשון. */
+function joGate(){
+  const b=document.getElementById('jo-cta');
+  if(!b)return;
+  if(joStep){txt('jo-cta','להצטרף');return}
+  txt('jo-cta','לשלוח קוד');
+  const ok=!!inviteKnows.mail&&!!joMail;
+  b.classList.toggle('off',!(ok||looksLikeEmail(
+    ((document.getElementById('jo-mail')||{}).value||'').trim())));
 }
 /* "זו לא הכתובת שלי" פותח את השדה. מכאן ההזמנה כבר אינה מאמתת את
    הכתובת, ולכן הצירוף יעבור דרך בקשת אישור — וזה בדיוק מה שהמסלול
@@ -6897,11 +7517,19 @@ function joUseOther(){
   joMail='';
   document.getElementById('jo-known').style.display='none';
   document.getElementById('jo-askmail').style.display='';
+  joGate();
   const m=document.getElementById('jo-mail');if(m)m.focus();
+}
+/* "לשנות כתובת" מחזיר לפאנל הראשון עם השדה פתוח, ולא מוציא מהמסך:
+   מי שטעה בכתובת רוצה לתקן אות אחת. */
+function joChangeMail(){
+  clearInterval(otpTick);
+  joStep=0;joShow();
+  joUseOther();
 }
 function joBack(){
   dropCodeSent();
-  sharedState(sharedCardShown?'card':'card');
+  sharedState('card');
 }
 function joResend(){
   if(!joMail||!netaServer)return;
@@ -6913,30 +7541,22 @@ function joResend(){
        מהשדה נשארה כאן מוגנת ב-||{} והחזירה תמיד מחרוזת ריקה. */
     keepCodeSent({where:'join',mail:joMail,name:c.name||inviteKnows.name||'',
       by:inviteKnows.by,bySex:inviteKnows.bySex});
-    toast('נשלח קוד חדש');
+    toast('נשלח קוד חדש');otpCountdown('jo',24);
   },function(e){toast((e&&e.message)||'לא הצלחנו לשלוח')});
 }
 function joNext(){
-  const box=document.getElementById('jo-codebox');
   const btn=document.getElementById('jo-cta');
-  if(box.style.display==='none'){
+  if(!joStep){
     if(!joMail){
       const typed=((document.getElementById('jo-mail')||{}).value||'').trim();
       if(!looksLikeEmail(typed)){toast('כתובת אימייל לא תקינה');return}
       joMail=typed;
     }
-    if(!netaServer){box.style.display='';txt('jo-cta','הצטרף לנטיעה');return}
+    if(!netaServer){joStep=1;joShow();return}
     btn.disabled=true;txt('jo-cta','שולח…');
     netaServer.sendCode(joMail).then(function(){
       btn.disabled=false;
-      box.style.display='';
-      /* הכתובת מופיעה עכשיו בכיתוב של שדה הקוד, ו"זו לא הכתובת שלי"
-         כבר אינה הצעה: הקוד יצא. הגוש שמעל יורד כדי שהמסכה לא תופיע
-         פעמיים באותו מסך. */
-      const kn=document.getElementById('jo-known');
-      if(kn)kn.style.display='none';
-      txt('jo-codelbl','הקוד נשלח ל'+maskMail(joMail));
-      txt('jo-cta','הצטרף לנטיעה');
+      joStep=1;joShow();otpCountdown('jo',24);
       /* השם שנשמר הוא זה שההזמנה נושאת ולא כזה שהוקלד כאן, כי כאן
          כבר אין מה להקליד. הוא מה שממלא מראש את שדה השם ב-introduceThen
          אחרי שהסבב מתחדש, ושם הוא הצעה על המסך שאפשר לערוך ולא ערך
@@ -6945,7 +7565,7 @@ function joNext(){
                     by:inviteKnows.by,bySex:inviteKnows.bySex});
       const o=document.getElementById('jo-otp');if(o)o.focus();
     },function(e){
-      btn.disabled=false;txt('jo-cta','שלח לי קוד');
+      btn.disabled=false;joGate();
       toast((e&&e.message)||'לא הצלחנו לשלוח את הקוד');
     });
     return;
@@ -6956,8 +7576,8 @@ function joNext(){
   netaServer.verifyCode(joMail,code)
     .then(function(){return netaServer.loadProfile()})
     .then(function(prof){
-      applyIdentity();dropCodeSent();
-      btn.disabled=false;txt('jo-cta','הצטרף לנטיעה');
+      applyIdentity();dropCodeSent();clearInterval(otpTick);
+      btn.disabled=false;txt('jo-cta','להצטרף');
       /* מי שכבר יש לו פרופיל ממשיך ישר. מי שאין לו נשאל ב-introduceThen,
          שרץ בתוך finishJoin ושואל רק את מי שבאמת חדש. זה גם מה שמחזיר
          את "נעים להכיר" למקום שבו הוא נכון.
@@ -6969,7 +7589,7 @@ function joNext(){
       if(introduced(prof))land(); else introduceThen(null,land);
     })
     .catch(function(e){
-      btn.disabled=false;txt('jo-cta','הצטרף לנטיעה');
+      btn.disabled=false;txt('jo-cta','להצטרף');
       ask('לא הצלחנו להיכנס',(e&&e.message)||'אפשר לנסות שוב.','הבנתי');
     });
 }
@@ -7023,45 +7643,123 @@ function finishJoin(){
    בלי דמות שובר את השער הזה, ולכן `introduced()` היא פונקציה ולא תנאי
    מפוזר, ו-`joinask.js` בודק אותה. */
 function introduced(prof){return !!(prof&&prof.name&&prof.avatar_key)}
+/* ── "נעים להכיר" למי שהוזמן ─────────────────────────────────────
+   שני שלבים בגיליון אחד, כמו "פתיחת חשבון": שם ופנייה, ואז תמונה.
+   שלב ולא שדה נוסף באותו מסך, כי "איך יראו אותך" הוא מסך שמראה את
+   מה שנבחר בגדול, ובורר שיושב מתחת לשני שדות אינו מראה דבר.
+
+   אין "ביטול". סגירת הגיליון אינה כותבת פרופיל ואינה מריצה את next,
+   כלומר מי שסגר אותו נשאר במסך ההצטרפות בלי שום דרך להמשיך; זה היה
+   המצב עד כה. הדרך היחידה החוצה היא לענות. */
+let jnStep=0,jnNextFn=null,jnPlanting=null,jnAvTouched=false;
+function jnHTML(plantingId){
+  const by=firstName(inviteKnows.by||'');
+  return '<div id="jn-p0">'+
+    '<p class="sub gap-s">'+
+      (by?('ככה יראו אותך '+attrText(by)+' והקרובים שנוטעים כאן.')
+         :'ככה יראו אותך הקרובים שנוטעים כאן.')+
+      ' רק בפעם הראשונה.</p>'+
+    /* ‏value ולא placeholder: מה שהמזמין הקליד הוא תשובה ולא רמז. */
+    '<label for="jn-name">שם</label><input type="text" id="jn-name" value="'+
+      attrText(inviteKnows.name||'')+'" placeholder="למשל: סבתא רחל" oninput="jnGate()">'+
+    (inviteKnows.name
+      ? '<p class="fine" style="margin-top:6px">'+attrText(by||'מי שהזמין אותך')+
+        ' רשם "'+attrText(inviteKnows.name)+'". אפשר לשנות.</p>'
+      : '')+
+    /* השאלה הזאת נשאלה עד כה במסלול אחד מתוך שניים: היא ישבה ב"מי
+       אתה?" ולא כאן, ולכן מי שהגיע מהזמנה לא נשאל מעולם ונשאר על
+       הצורה הכפולה. זה מסביר בדיוק את מה שנמדד במסד — ארבעה מתוך
+       חמישה פרופילים בלי מין — כי רוב האנשים מגיעים כמוזמנים. */
+    '<label>איך לפנות אליך?</label>'+
+    sexPickHTML('jn-sex','','pickJnSex(this)')+
+  '</div>'+
+  '<div id="jn-p1" style="display:none">'+
+    '<p class="sub gap-s">תמונה מהטלפון, או אחת הדמויות.</p>'+
+    '<div class="avbig" id="jn-avbig" aria-hidden="true"></div>'+
+    '<p class="center" id="jn-avname" style="font-weight:700;margin:-8px 0 16px">·</p>'+
+    '<div id="jn-avpick"></div>'+
+    /* ⚠ הקרבה אינה קיימת בעיצוב החדש של שני השלבים, והיא לא נמחקה:
+       ‏invitations.relation הוא מה ש-planting_detail מחזיר כ-w[9],
+       והוא השורה "סבתא · נוטעת מאז ספטמבר" ברשימת הנוטעים. הוא יושב
+       כאן זמנית עד שיוכרע איפה מקומו. */
+    (plantingId?'<label>מה את/ה לילד</label>'+
+      '<input type="text" id="jn-rel" placeholder="למשל: סבתא">':'')+
+  '</div>';
+}
+function jnShow(){
+  const p0=document.getElementById('jn-p0'),p1=document.getElementById('jn-p1');
+  if(p0)p0.style.display=jnStep?'none':'';
+  if(p1)p1.style.display=jnStep?'':'none';
+  txt('sh-t',jnStep?'איך יראו אותך?':'נעים להכיר');
+  document.getElementById('sh-acts').innerHTML=
+    '<button class="btn" id="jn-cta" onclick="sheetConfirm()">המשך</button>'+
+    (jnStep?'<button class="link" onclick="jnBack()">חזרה</button>':'');
+  if(jnStep)jnPaintBig();
+  jnGate();
+}
+function jnBack(){jnStep=0;jnShow()}
+function jnGate(){
+  const b=document.getElementById('jn-cta');
+  if(!b)return;
+  if(jnStep){b.classList.remove('off');return}
+  const n=((document.getElementById('jn-name')||{}).value||'').trim();
+  const sx=!!document.querySelector('#jn-sex button.on');
+  b.classList.toggle('off',!(n&&sx));
+}
+/* הפנייה גוזרת את הדמות שנפתחת מסומנת, בדיוק כמו במסך "פתיחת חשבון".
+   ברירת מחדל ולא נעילה: מרגע שנגעו בבורר היא אינה דורסת אותו. */
+function pickJnSex(el){
+  pickEditSex(el);
+  if(!jnAvTouched){
+    const on=document.querySelector('#jn-sex button.on');
+    pickedAv=(on&&on.dataset.x==='m')?'av-friend':'av-parent';
+    myPaintAv(pickedAv,'jn-avpick');
+  }
+  jnGate();
+}
+function jnPaintBig(){
+  const box=document.getElementById('jn-avbig');
+  if(box)box.innerHTML=(myPhoto&&myPhoto.url)
+    ? '<img src="'+myPhoto.url+'" alt="">'
+    : faceHTML(pickedAv,'av-parent');
+  const n=((document.getElementById('jn-name')||{}).value||'').trim();
+  txt('jn-avname',n||'·');
+}
+function jnNext(){
+  const n=((document.getElementById('jn-name')||{}).value||'').trim();
+  if(!n){toast('צריך שם');return false}
+  if(!jnStep){
+    if(!document.querySelector('#jn-sex button.on')){
+      toast('צריך לבחור איך לפנות אליך');return false}
+    jnStep=1;jnShow();return false;
+  }
+  /* נקרא מה-DOM ולא מ-pickedAv הגלובלי: אותו משתנה משמש כל בוררי
+     התמונה באפליקציה. [data-av] מפורש, כי משבצת התמונה גם היא .on
+     ובלעדיו dataset.av היה undefined והדמות לא הייתה נשמרת כלל. */
+  const avBtn=document.querySelector('#jn-avpick button[data-av].on');
+  const av=avBtn?avBtn.dataset.av:'av-parent';
+  const pic=!!(myPhoto&&myPhoto.blob);
+  const sexBtn=document.querySelector('#jn-sex button.on');
+  const sex=sexBtn?sexBtn.dataset.x:null;
+  const done=jnNextFn||function(){};
+  netaServer.ensureProfile(n,av,sex).then(function(){
+    return pic?netaServer.updateAvatar(av,myPhoto.blob):null;
+  }).then(function(){
+    applyIdentity();
+    const rel=jnPlanting?((document.getElementById('jn-rel')||{}).value||'').trim():'';
+    if(jnPlanting&&rel){netaServer.setMyRelation(jnPlanting,rel).catch(function(){}).then(done)}
+    else done();
+  }).catch(function(e){ask('השם לא נשמר',(e&&e.message)||'נסה שוב.','הבנתי')});
+}
 function introduceThen(plantingId,next){
   if(!netaServer)return next();
   netaServer.loadProfile().then(function(prof){
     if(introduced(prof)){applyIdentity();return next()}
+    jnStep=0;jnAvTouched=false;jnPlanting=plantingId||null;jnNextFn=next;
     pickedAv='av-parent';myPhoto=null;
-    sheetForm('נעים להכיר',
-      'איך שייקרא לך אצל מי שהזמין אותך, ואיך זה יופיע לילד ביום שהנטיעה נפתחת.'+
-      /* ‏value ולא placeholder: מה שהמזמין הקליד הוא תשובה ולא רמז,
-         וזה מה שמסך ההצטרפות מילא מראש לפני שהשדה ירד ממנו. */
-      '<label>שם</label><input type="text" id="jn-name" value="'+
-        attrText(inviteKnows.name||'')+'" placeholder="למשל: סבתא רחל" '+
-        '>'+
-      /* השאלה הזאת נשאלה עד כה במסלול אחד מתוך שניים: היא ישבה ב"מי
-         אתה?" ולא כאן, ולכן מי שהגיע מהזמנה לא נשאל מעולם ונשאר על
-         הצורה הכפולה. זה מסביר בדיוק את מה שנמדד במסד — ארבעה מתוך
-         חמישה פרופילים בלי מין — כי רוב האנשים מגיעים כמוזמנים.
-         ובלי ברירת מחדל, כמו בכל מקום אחר. */
-      '<label>איך לפנות אליך</label>'+
-      sexPickHTML('jn-sex','','pickEditSex(this)')+
-      '<label>תמונה</label><div id="jn-avpick">'+
-        avpickHTML('av-parent',null,"myPickPhoto('jn-avpick')")+'</div>'+
-      (plantingId?'<label>מה את/ה לילד</label><input type="text" id="jn-rel" placeholder="למשל: סבתא">':''),
-      'המשך',
-      function(){
-        const n=((document.getElementById('jn-name')||{}).value||'').trim();
-        if(!n){toast('צריך שם');return false}
-        const av=pickedAv;
-        const pic=!!(myPhoto&&myPhoto.blob);
-        const sexBtn=document.querySelector('#jn-sex button.on');
-        const sex=sexBtn?sexBtn.dataset.x:null;
-        netaServer.ensureProfile(n,av,sex).then(function(){
-          return pic?netaServer.updateAvatar(av,myPhoto.blob):null;
-        }).then(function(){
-          applyIdentity();
-          const rel=plantingId?((document.getElementById('jn-rel')||{}).value||'').trim():'';
-          if(plantingId&&rel){netaServer.setMyRelation(plantingId,rel).catch(function(){}).then(next)}
-          else next();
-        }).catch(function(e){ask('השם לא נשמר',(e&&e.message)||'נסה שוב.','הבנתי')});
-      });
+    sheetForm('נעים להכיר',jnHTML(plantingId),'המשך',jnNext);
+    myPaintAv(pickedAv,'jn-avpick');
+    jnShow();
   });
 }
 
@@ -9738,12 +10436,18 @@ let pickedAv='av-parent',pickAvTarget=null;
 /* משבצת ההעלאה נוספת רק כשמעבירים onUp, ולכן ששת מקומות הקריאה
    האחרים נשארים כפי שהיו: תמונה של קרוב היא ישות אחרת, בלי bucket
    ובלי מדיניות, והצגת "העלה" שם הייתה הבטחה שאין מאחוריה כלום. */
+const CAM='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" '+
+  'stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+
+  '<path d="M3.5 8.4h3.2l1.5-2.2h7.6l1.5 2.2h3.2v9.4a1.4 1.4 0 0 1-1.4 1.4H4.9a1.4 1.4 0 0 1-1.4-1.4z"/>'+
+  '<circle cx="12" cy="13.1" r="3.3"/></svg>';
 function avpickHTML(sel,photo,onUp){
   const up=onUp
     ? (photo
         ? '<button type="button" class="on" onclick="'+onUp+'">'+
             '<img class="avimg" src="'+attrText(photo.url)+'" alt=""></button>'
-        : '<button type="button" class="up" onclick="'+onUp+'" aria-label="העלה תמונה">＋</button>')
+        /* מצלמה ולא ＋: המשבצת אומרת **מה** ייכנס לשם, ולא רק
+           שאפשר להוסיף. ＋ הוא מה שאומרות שורות ההוספה ברשימות. */
+        : '<button type="button" class="up" onclick="'+onUp+'" aria-label="תמונה מהטלפון">'+CAM+'</button>')
     : '';
   return '<div class="avpick">'+up+AVATARS.map(function(a){
     return '<button class="'+(!photo&&a===sel?'on':'')+'" data-av="'+a+'" onclick="chooseAv(this,\''+a+'\')">'+
@@ -9756,8 +10460,13 @@ function chooseAv(el,a){
   if(myPhoto&&myPhoto.blob&&myPhoto.url)URL.revokeObjectURL(myPhoto.url);
   myPhoto=null;
   const box=el.parentNode,up=box.querySelector('button:not([data-av])');
-  if(up){up.className='up';up.innerHTML='＋'}
+  if(up){up.className='up';up.innerHTML=CAM}
   [...box.children].forEach(function(b){b.classList.toggle('on',b===el)});
+  /* בבורר של ההרשמה: הבחירה נועלת את ברירת המחדל שנגזרת מהפנייה,
+     והתצוגה הגדולה מתעדכנת. */
+  const pid=box.parentNode&&box.parentNode.id;
+  if(pid==='id-avpick'){idAvTouched=true;idPaintBig()}
+  if(pid==='jn-avpick'){jnAvTouched=true;jnPaintBig()}
 }
 /* תמונה שנבחרה לפרופיל שלי. blob קיים רק אחרי בחירה חדשה, והוא מה
    שמבדיל בשמירה בין "החלף תמונה" ל"השאר כפי שהיא". */
@@ -9772,9 +10481,12 @@ function myPaintAv(sel,box){
   if(el)el.innerHTML=avpickHTML(sel,myPhoto,"myPickPhoto('"+id+"')");
 }
 function myPickPhoto(box){
+  if(box==='id-avpick')idAvTouched=true;
+  if(box==='jn-avpick')jnAvTouched=true;
   pickPhotoInto(function(ph){
     if(myPhoto&&myPhoto.blob&&myPhoto.url)URL.revokeObjectURL(myPhoto.url);
     myPhoto=ph;myPaintAv(pickedAv,box);
+    if(box==='jn-avpick')jnPaintBig();
     const n=document.getElementById('me-upnote');
     if(n){n.style.display='block';n.textContent='התמונה תישמר כשתלחץ "שמור".'}
   });
@@ -14431,6 +15143,9 @@ function inviteFor(key){
     /* הזמנה מהמסך הזה היא תמיד אישית, ולכן התצוגה המקדימה מראה את
        הרגע — בדיוק כמו שהנמענת תראה אותו. */
     card:{inviter_name:who, inviter_avatar:av,
+          /* בלי זה התצוגה המקדימה נופלת לצורה הניטרלית ומראה לבעלים
+             כותרת אחרת מזו שהנמענת תקבל. */
+          inviter_sex:(liveAccount()&&netaServer.profile&&netaServer.profile.sex)||null,
           /* קופה שלא יועדה אין לה נהנה. בהדגמה ה-kid שלה הוא תיאור
              ("מי שאחליט") ולא שם, ולכן הוא לא נכנס לכותרת. */
           beneficiary_name:(p.designated===false?'':(p.kid||'')), target_year:p.yr||'',
@@ -14817,7 +15532,8 @@ pickedAv='av-parent';myPhoto=null;myPaintAv('av-parent','id-avpick');
 /* הגוש נצבע פעם אחת בטעינה ולא בכל כניסה למסך: השדה שמעליו ריק בשלב
    הזה, ו-oninput הוא מה שמעדכן את הדוגמה בזמן שמקלידים. */
 document.getElementById('id-sexbox').innerHTML=
-  sexPickHTML('id-sex','',"pickMySex(this,'%X%')");
+  sexPickHTML('id-sex','',"pickIdSex(this,'%X%')");
+idShow();
 otpClean(document.getElementById('lg-otp'));otpClean(document.getElementById('jo-otp'));otpSay();
 loginPrep();hideUnbuiltSignIn();hideTestRig();blankBeforeFirstLoad();applyTabSources();buildGhosts();
 /* סשן שמור מהכניסה הקודמת — טוענים את הפרופיל לפני שהמסך נצבע. */
