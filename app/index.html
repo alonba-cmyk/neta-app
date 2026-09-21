@@ -977,7 +977,9 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ‏start הוא ימין ב-RTL, כלומר שני הטורים היו נצמדים לאותו צד. */
 [data-name="העתיד שלנו"] .leafcard .pr>div+div{text-align:end}
 [data-name="העתיד שלנו"] .leafcard .pr .fut{color:var(--sun-on-leaf)}
-[data-name="העתיד שלנו"] .leafhead h2{margin:0 0 14px}
+/* בשורה אחת עם החץ, ולכן המרווח התחתון עובר לשורה ולא לכותרת. */
+[data-name="העתיד שלנו"] .leafhead .gbrow{margin:0 0 14px}
+[data-name="העתיד שלנו"] .leafhead h2{margin:0}
 /* המסך פותח בראש הירוק, ולכן הוא עמודה כמו "ההשקעות שלי". */
 .screen.on[data-name="העתיד שלנו"]{display:flex;flex-direction:column}
 [data-name="העתיד שלנו"] #home-full{display:flex;flex-direction:column;flex:1 1 auto;
@@ -2385,6 +2387,36 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שנראה מתחת לכרטיס הוא 12. */
 .leafhead{background:var(--leaf-head);color:var(--on-head);
   margin:-8px -18px 0;padding:18px 18px 52px;flex:0 0 auto}
+/* ── הרצועה הלבנה שמעל הראש ──────────────────────────────────────
+   ‏`.device` נושא `padding-top:calc(14px + env(safe-area-inset-top))`,
+   שנוסף כשהמסגרת המדומה ירדה וכדי שבמסך מלא השם לא ייכנס מתחת לשעון.
+   מרגע שהראש הירוק יוצא אל שלושת הקצוות, הריפוד הזה הוא 14 פיקסלים
+   של רקע הדף **מעל** הירוק — רצועה לבנה שאלון ראה במכשיר.
+   **ואי אפשר לבלוע אותה במרווח שלילי:** ‏`.stage` הוא `overflow:auto`
+   וחותך בקצה תיבת הריפוד שלו, כלומר כל מה שמעבר ל-‎-8 נעלם.
+   לכן הריפוד יורד מ-`.device` ועובר אל הראש עצמו, במסכים שנפתחים
+   בראש ירוק בלבד. התוכן אינו זז ולו פיקסל, ומה שמתחלף הוא מי צובע
+   את הפיקסלים האלה. ‏`gtop` נגזר מה-DOM ולא מרשימה שנייה: מסך שהילד
+   הראשון שלו הוא `.leafhead`. */
+.device.gtop{padding-top:0}
+.device.gtop .screen.on>.leafhead{
+  padding-top:calc(18px + 14px + env(safe-area-inset-top))}
+
+/* ── חזרה וכותרת, כמו בעיצוב ──────────────────────────────────────
+   ‏`CHANGES.md` §3 נוקב ב"חזרה וכותרת בלבד", והחץ ירד בשלב 3 בנימוק
+   שלטאב בסרגל התחתון אין לאן לחזור. **אלון ביקש אותו בחזרה**, ומה
+   שפותר את הנימוק הוא שהחץ מוביל למסך שממנו באת (`navBack`) ולא
+   למקום קבוע: לטאב הזה נכנסים גם מ"ההשקעות שלי" דרך שורת ילד, ומשם
+   חזרה היא בדיוק מה שהיא אומרת.
+   ‏40 על 40 כמו בעיצוב, והמרווח השלילי מיישר את הדיו לקצה הריפוד
+   ולא את הקופסה שסביבו. */
+.leafhead .gbrow{display:flex;align-items:center;gap:4px}
+.leafhead .gbk{width:40px;height:40px;margin-inline-start:-10px;
+  display:grid;place-items:center;border:0;background:none;padding:0;
+  color:var(--on-head);cursor:pointer;flex-shrink:0}
+/* ב-RTL "חזרה" היא חץ שמצביע ימינה, ולכן אותו `#chev` של השורות
+   מסובב. הוא מצויר לשמאל בקובץ. */
+.leafhead .gbk svg{display:block;transform:scaleX(-1)}
 .leafhead .mk{color:var(--sun-on-leaf);line-height:0;display:block}
 .leafhead h2{font-size:24px;font-weight:800;line-height:1.25;
   margin:14px 0 0;color:var(--on-head);text-wrap:balance}
@@ -2687,7 +2719,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4d8b4e6';
+window.NETA_BUILD = '713836b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3036,7 +3068,12 @@ window.NETA_CONFIG = {
        ביטלה, ונאמר לפני הבחירה: את התאמת הדיו שלו לנבט של "ההשקעות
        שלי", ואת האחידות בין ארבעת הראשים. -->
   <div class="leafhead" id="fut-head">
-    <h2>מה מחכה להם</h2>
+    <div class="gbrow">
+      <button class="gbk" onclick="navBack()" aria-label="חזרה">
+        <svg width="11" height="19" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg>
+      </button>
+      <h2>מה מחכה להם</h2>
+    </div>
     <!-- המתג. פריט לכל נהנה, אחריהם הקופות ואז ＋. הנבחר מתרחב
          לכדור לבן עם פרצוף ושם; השאר פרצוף בלבד. -->
     <div class="fuseg" id="fu-pick"></div>
@@ -5094,6 +5131,17 @@ function releaseStage(){
   if(!stageHold)return;
   const f=stageHold;stageHold=null;f();
 }
+let curScreen=null, prevScreen=null;
+/* החץ שבראש הירוק. הוא מוביל למסך שממנו באת, כי לטאב בסרגל התחתון
+   אין "אחורה" קבוע: נכנסים אליו גם מהסרגל וגם משורת ילד ב"ההשקעות
+   שלי". בלי קודם — הטאב הראשון, שהוא הבית של המוצר.
+   **ולא חזרה אל עצמו**: מסך שהוא גם הקודם הוא לחיצה שאינה עושה דבר,
+   וזה בדיוק מה שהנימוק להוריד את החץ בשלב 3 נקב בו. */
+function navBack(){
+  const p=prevScreen;
+  if(p!=null&&p!==curScreen){prevScreen=null;go(p);return}
+  goHome();
+}
 function go(i){
   releaseStage();
   if(i===ONBO.welcome)playSplash();
@@ -5119,7 +5167,17 @@ function go(i){
   /* המסך הראשון נבחר, ולכן יש מה להראות בשורת הכותרת. עד כאן היא
      הוסתרה: ראו blankBeforeFirstLoad. */
   bar.style.visibility='';
+  /* המסך שממנו באנו, בשביל החץ שבראש הירוק. נשמר לפני ההחלפה ורק
+     כשבאמת זזנו, אחרת לחיצה חוזרת על אותו טאב הייתה מציבה את המסך
+     כקודם של עצמו והחץ היה מוביל לשום מקום. */
+  if(curScreen!=null&&curScreen!==i)prevScreen=curScreen;
+  curScreen=i;
   screens.forEach((s,n)=>s.classList.toggle('on',n===i));
+  /* הרצועה הלבנה שמעל הראש הירוק, ראו ההערה ב-CSS. נגזר מה-DOM
+     ולא מרשימה שנייה שצריך לסנכרן. */
+  const dv=document.querySelector('.device');
+  if(dv)dv.classList.toggle('gtop',!!screens[i]&&
+    !!screens[i].querySelector(':scope > .leafhead'));
   [...nav.children].forEach((b,n)=>b.classList.toggle('on',n===i));
   let active=tabScreens[i];
   if(active===undefined && [2,3,4,5,8,11,12,13,28,REVIEW].includes(i)) active=0;
