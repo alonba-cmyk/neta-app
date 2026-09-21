@@ -897,22 +897,29 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    רוחב הכרטיס נגזר מהמסך ואינו קבוע: ‏312 פיקסלים שבעיצוב הם
    ‏390 פחות 78, וב-320 הם היו גולשים. מה שנשאר קבוע הוא ההצצה,
    ‏32 פיקסלים בכל רוחב מכשיר.
-   ‏touch-action:pan-y, אחרת החלקה אנכית שמתחילה על הכרטיס נבלעת
-   במסילה במקום לגלול — אותה מלכודת של המחוון שעל הגרף. */
+   **ואין כאן `touch-action:pan-y`, וזה היה הבאג.** הוא הועתק מהערה
+   של הבאנר, ששם הוא נכון כי אותו מכל אינו גולל לצדדים; על מסילה
+   אופקית הוא אומר לדפדפן **להתעלם מכל החלקה אופקית**, כלומר הוא
+   מכבה בדיוק את המחווה שהמסילה קיימת בשבילה. באצבע לא קרה כלום,
+   ובבדיקה זה עבר כי `mouse.wheel` אינו מושפע מ-`touch-action`.
+   ‏`.car` שבחבילה אינו מכריז עליו כלל.
+   **הכלל: `touch-action` הוא רשימת המחוות המותרות, לא הגנה על
+   השכנים** — מכל שגולל לצדדים חייב להרשות `pan-x`, ומי שמרשה
+   ‏`pan-y` בלבד מכבה את עצמו. */
 /* ‏12 פיקסלים בין המתג לכרטיס, כמו `.car` שבעיצוב. בלעדיהם הכרטיס
    נוגע במתג, ושני משטחים שנוגעים זה בזה על רקע ירוק אחד נקראים
    כרכיב אחד שבור. אלון ראה את זה במכשיר. */
-/* **הכרטיס ממורכז, והשכנים מציצים משני הצדדים.** ‏`scroll-snap-align`
-   היה `start` והכרטיס נצמד לימין, כלומר שכן אחד בלבד ורק משמאל.
-   הריפוד הצדדי נגזר מהרוחב ואינו נבחר: הכרטיס הוא `100vw-78`, ולכן
-   ‏39 בכל צד הם בדיוק מה שמאפשר גם לראשון וגם לאחרון להתמרכז. */
+/* **‏`start` ולא `center`, כמו `.car` שבחבילה.** המסמך ביקש `center`,
+   והעמוד עצמו — שהוא מה שאלון משווה אליו — מצמיד לקצה עם
+   `scroll-padding-inline:18px`, ומתאר "והכרטיס הבא מציץ בצד",
+   ביחיד. מרכוז מציץ משני הצדדים, וזו חוויה אחרת. */
 .fucar{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
-  margin:0 -18px;padding:12px 39px 2px;
-  scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+  scroll-padding-inline:18px;margin:0 -18px;padding:12px 18px 2px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .fucar::-webkit-scrollbar{display:none}
 /* בלי `transition` על המיקום: הכרטיס נוסע עם האצבע, וזו הגלילה
    עצמה. מה שכן מונפש הוא הדהייה של השכן. */
-.fucar>.leafcard{flex:0 0 calc(100vw - 78px);scroll-snap-align:center;
+.fucar>.leafcard{flex:0 0 calc(100vw - 78px);scroll-snap-align:start;
   margin-top:0;transition:opacity .3s}
 /* השכנים דוהים, ולא רק נחתכים: כרטיס שלם בבהירות מלאה בקצה המסך
    נקרא כמו עוד תוכן ולא כמו "יש עוד ילד". */
@@ -2742,7 +2749,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '5fac7e9';
+window.NETA_BUILD = '67e037d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3119,9 +3126,12 @@ window.NETA_CONFIG = {
       <!-- ‏fk- ולא fu-, כי .fu-nm כבר תפוס כשם הקלאס של שם הרגע בשורות
            שבגיליון. מזהה וקלאס אינם מתנגשים בקוד, אבל שני שמות זהים
            לשני דברים שונים באותו מסך הם בדיוק מה שמייצר את הטעות. -->
-      <p class="for" id="fk-for">נשתל עבור</p>
-      <p class="nm" id="fk-nm">·</p>
-      <p class="ev" id="fk-ev">·</p>
+      <!-- ‏data-k לצד המזהה: `fuCardHTML` מצייר את אותו שלד לכל
+           כרטיס במסילה, והמזהים נודדים אל הנבחר לפי ה-`data-k`.
+           כאן הם כתובים גם כמזהים, כי זה המצב שלפני שהמודל נטען. -->
+      <p class="for" id="fk-for" data-k="for">נשתל עבור</p>
+      <p class="nm" id="fk-nm" data-k="nm">·</p>
+      <p class="ev" id="fk-ev" data-k="ev">·</p>
       <!-- שני מספרים בשורה. הם חזרו לראש יחד עם ירידת פס הפילוח:
            הפס הוא מה שהפך שני מספרים מעליו להבטחה שקרית, כי הוא
            מפלח את הנצבר ואינו מפלח את הצפי. בלעדיו הנימוק נעלם.
@@ -3129,17 +3139,17 @@ window.NETA_CONFIG = {
            ‏"נטעתם" ברבים, כי זה מה שנצבר לרגע הזה מכל מי שנטע בו —
            ולא "נצבר", שנבחרה בזמנו דווקא כי אין לה נושא אחד. כאן יש
            נושא: כולכם. -->
-      <div class="pr" id="s-duo">
-        <div><p class="l" id="s-label">נטעתם עד היום</p>
-             <p class="v now" id="s-you">·</p></div>
-        <div id="s-futbox"><p class="l" id="s-futk">בקצב הזה ייצבר להם</p>
-             <p class="v fut" id="s-fut">·</p>
-             <p class="l l2" id="s-futwhen"></p></div>
+      <div class="pr" id="s-duo" data-k="duo">
+        <div><p class="l" id="s-label" data-k="label">נטעת עד היום</p>
+             <p class="v now" id="s-you" data-k="you">·</p></div>
+        <div id="s-futbox" data-k="futbox"><p class="l" id="s-futk" data-k="futk">בקצב הזה ייצבר</p>
+             <p class="v fut" id="s-fut" data-k="fut">·</p>
+             <p class="l l2" id="s-futwhen" data-k="futwhen"></p></div>
       </div>
       <!-- השורה שהחזיקה את הצפי כל עוד הוא היה מחוץ לראש. היא נשארת
            בקוד ויורדת מהמסך: FUT_IN_HEAD הוא דגל, ומי שיחזיר אותו
            לכבוי מקבל אותה בחזרה במקום טור שני. -->
-      <p class="l fut" id="s-rate" style="display:none"></p>
+      <p class="l fut" id="s-rate" data-k="rate" style="display:none"></p>
     </div>
     </div><!-- /fu-rail -->
   </div><!-- /fut-head -->
@@ -13821,15 +13831,21 @@ function openActivity(){
    מרגע שהפס ירד (סבב ספטמבר 2026) הנימוק נעלם, וזה גם מה שהעיצוב
    מראה — שני מספרים בשורה בתוך הכרטיס הכהה. */
 const FUT_IN_HEAD=true;
-function buildHomeSummary(){
+/* **בחירה אינה קריאת רשת.** ‏`pickFuture` קראה ל-`buildHomeSummary`
+   המלאה, כלומר `load()` ו-`listBeneficiaries()` על כל החלקה — סבב
+   שלם מול השרת באמצע תנועת האצבע. ‏`fast` מחזיר את המודל האחרון,
+   והציור נשאר זהה: מה שהשתנה הוא מי נבחר, לא מה יש במסד. */
+function buildHomeSummary(fast){
   const src=netaSource();
   /* במקביל ולא בשרשור: זו קריאה שנייה שאינה תלויה במודל, ושרשור
      שלה היה מוסיף סבב שלם לפני הציור. מקור שאין לו את המתודה
      (הדגמה, וחשבון שעוד לא נכנס) שומר את מה שכבר נדחף מקומית. */
-  return Promise.all([src.load(),
-      src.listBeneficiaries
-        ? src.listBeneficiaries().catch(function(){return benes})
-        : Promise.resolve(benes)])
+  return (fast&&lastModel
+      ? Promise.resolve([lastModel,benes])
+      : Promise.all([src.load(),
+          src.listBeneficiaries
+            ? src.listBeneficiaries().catch(function(){return benes})
+            : Promise.resolve(benes)]))
     .then(function(res){
     const model=res[0];
     benes=res[1]||[];
@@ -14340,7 +14356,7 @@ function buildHomeSummary(){
       if(rate){
         const nm=sel?firstName(sel.name):'';
         rate.innerHTML=(proj.length&&projectedTotal(proj)>0)
-          ? ('בקצב הזה ייצבר '+(nm?withPrep('ל',nm):'להם')+': <b>כ-'+
+          ? ('בקצב הזה ייצבר '+(nm?withPrep('ל',nm):'להם')+': <b>'+APPROX+
              shekel(projectedTotal(proj))+'</b>')
           : '';
       }
@@ -14812,7 +14828,7 @@ function fuItems(own){
    כי fuDefault רצה רק כש-fuPick אינו קיים ברשימה. */
 function fuDefault(items){return (items[0]&&items[0].id)||''}
 let fuPick='';
-function pickFuture(id){fuPick=id;buildHomeSummary();}
+function pickFuture(id){fuPick=id;buildHomeSummary(true);}
 /* נתיבי התמונות שברשימה. הם נחתמים לפני הציור ולא בתוכו, ולכן
    הציור נשאר סינכרוני. */
 function photoPaths(items){
@@ -14938,33 +14954,67 @@ function fuMarkOn(items,sel){
    למקומו ברשימה והקריאה אידמפוטנטית — אותה הכרעה בדיוק של
    ‏`placeKidSection`. כרטיסי ההצצה נבנים מחדש בכל ציור, כי הם
    נגזרים מהפריטים ואין בהם מצב. */
-function fuPeekHTML(it){
+/* **כל כרטיס במסילה הוא כרטיס אמיתי, ולא "אחד אמיתי ושכנים
+   מצוירים".** הצורה הקודמת הזיזה את המזהה `fu-k` בין כרטיסים
+   והחליפה את ה-`innerHTML` של שניים מהם בכל החלפה — כלומר בדיוק
+   באמצע ההחלקה, כשהאצבע עוד על המסך. ‏`.car` שבחבילה מצייר את
+   כולם פעם אחת ומחליף `dim` בלבד, וזה מה שגורם לזה להרגיש
+   נייטיבי. **מה שזז בהחלפה הוא תכונת `id` ותו לא.**
+
+   הכרטיסים מחשבים את המספרים מהפריט עצמו, ולכן אין "מי הסמכות":
+   ‏`buildHomeSummary` ממשיכה לכתוב אל המזהים ומגיעה לאותם ערכים. */
+const FU_SLOTS=[['for','fk-for'],['nm','fk-nm'],['ev','fk-ev'],
+  ['duo','s-duo'],['label','s-label'],['you','s-you'],['futbox','s-futbox'],
+  ['futk','s-futk'],['fut','s-fut'],['futwhen','s-futwhen'],['rate','s-rate']];
+function fuCardFields(it){
+  if(!it)return null;
   const nm=isSelfRel(it.rel)?'את/ה':(firstName(it.name)||'·');
   const n=(it.rows||[]).length;
   const to=isSelfRel(it.rel)?' לך':it.sex==='f'?' לה':it.sex==='m'?' לו':'';
-  const ev=n?(n===1?('רגע אחד מחכה'+to):(hebCount(n)+' רגעים מחכים'+to))
-           :'עוד לא נפתח לו רגע';
   const acc=Number(it.accrued||0);
-  const manyP=(function(){
-    const a=Number(it.accrued||0), m=Number(it.mine||0);
-    if(a>0)return m<a;
-    return (it.rows||[]).some(function(x){return x.joined});
-  })();
+  /* רבים רק כשנטעו רבים, ונמדד מהכסף ולא מרשימת השמות: המספר הוא
+     מה שנצבר לרגע מכולם, ולכן היחיד נכון בדיוק כשכולו שלי. */
+  const many=acc>0 ? Number(it.mine||0)<acc
+                   : (it.rows||[]).some(function(x){return x.joined});
   const proj=projectedTotal(projectablePlantings({plantings:it.rows||[]}));
-  return '<p class="for">'+((it.rows||[]).some(function(p){return !p.joined})
-           ?'נשתל עבור':'הוזמנת לנטוע עבור')+'</p>'+
-    '<p class="nm">'+attrText(nm)+'</p>'+
-    '<p class="ev">'+attrText(ev)+'</p>'+
-    /* אותן שתי הכרעות של הכרטיס האמיתי: רבים רק כשנטעו רבים, ובלי
-       מגדר אין פנייה. שני הכרטיסים יושבים זה לצד זה במסילה, ולכן
-       ניסוח שונה ביניהם נקרא כמו שני מסכים. */
-    '<div class="pr"><div><p class="l">'+
-      (acc>0?(manyP?'נטעתם עד היום':'נטעת עד היום')
-            :(manyP?'עוד לא נטעתם':'עוד לא נטעת'))+'</p>'+
-      '<p class="v now">'+(acc>0?shekel(acc):'·')+'</p></div>'+
-      (proj>0?('<div><p class="l">בקצב הזה ייצבר'+to+'</p>'+
-               '<p class="v fut">'+shekel(proj)+'</p></div>'):'')+
-    '</div>';
+  return {
+    forTxt:(it.rows||[]).some(function(p){return !p.joined})
+             ?'נשתל עבור':'הוזמנת לנטוע עבור',
+    nm:attrText(nm),
+    ev:attrText(n?(n===1?('רגע אחד מחכה'+to):(hebCount(n)+' רגעים מחכים'+to))
+                 :'עוד לא נפתח לו רגע'),
+    lab:acc>0?(many?'נטעתם עד היום':'נטעת עד היום')
+             :(many?'עוד לא נטעתם':'עוד לא נטעת'),
+    you:acc>0?shekel(acc):'·',
+    futk:'בקצב הזה ייצבר'+to,
+    fut:proj>0?shekel(proj):'·',
+    futHide:!(proj>0)};
+}
+function fuCardHTML(it){
+  const f=fuCardFields(it);
+  return '<p class="for" data-k="for">'+(f?f.forTxt:'נשתל עבור')+'</p>'+
+    '<p class="nm" data-k="nm">'+(f?f.nm:'·')+'</p>'+
+    '<p class="ev" data-k="ev">'+(f?f.ev:'·')+'</p>'+
+    '<div class="pr" data-k="duo">'+
+      '<div><p class="l" data-k="label">'+(f?f.lab:'עוד לא נטעת')+'</p>'+
+           '<p class="v now" data-k="you">'+(f?f.you:'·')+'</p></div>'+
+      '<div data-k="futbox"><p class="l" data-k="futk">'+
+             (f?f.futk:'בקצב הזה ייצבר')+'</p>'+
+           '<p class="v fut" data-k="fut">'+(f?f.fut:'·')+'</p>'+
+           '<p class="l l2" data-k="futwhen"></p></div>'+
+    '</div>'+
+    '<p class="l fut" data-k="rate" style="display:none"></p>';
+}
+/* המזהים יושבים על הכרטיס הנבחר בלבד, ועוברים אליו בהחלפת תכונה.
+   שני כרטיסים עם אותו `id` הם בדיוק המלכודת ש-`getElementById`
+   פותרת לטובת הראשון בקובץ. */
+function fuIds(card,on){
+  if(!card)return;
+  FU_SLOTS.forEach(function(pair){
+    const e=card.querySelector('[data-k="'+pair[0]+'"]');
+    if(!e)return;
+    if(on)e.id=pair[1]; else e.removeAttribute('id');
+  });
 }
 /* מי החליף — האצבע או המתג. כשהמתג, המסילה נגללת אל הכרטיס; כשהאצבע,
    היא כבר שם וגלילה נוספת הייתה נלחמת בה. */
@@ -14983,7 +15033,7 @@ function fuPeekHTML(it){
    כפי שהיא:** היא כותבת ל-`s-you`, ל-`s-fut` ולשכניהם דרך `txt`,
    ולא אכפת לה באיזה כרטיס הם יושבים. השלד עצמו נשמר פעם אחת
    בטעינה ומוזרק לכרטיס שנבחר. */
-const FU_CARD_TPL=(document.getElementById('fu-k')||{}).innerHTML||'';
+
 let fuSigRail='', fuRailT=null, fuRailDrawn=false, fuIO=null,
     fuProg=false, fuProgT=null, fuTouched=false;
 /* **הצופה לעולם אינו דורס בחירה שבאה מבחוץ.** לחיצה במתג, כניסה
@@ -15003,23 +15053,18 @@ function fuHold(){
 function fuSmooth(){
   return !(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 }
-/* מעביר את הכרטיס האמיתי אל המשבצת של מי שנבחר, בלי להוסיף או
-   להסיר ולו צומת אחד. */
+/* מסמן את הכרטיס הנבחר. **בלי לגעת ב-`innerHTML` של אף אחד** —
+   הכרטיסים כבר מצוירים, ומה שזז הוא המזהים והדהייה. */
 function fuSetReal(items,idx){
   const rail=document.getElementById('fu-rail');if(!rail)return;
   const cards=Array.prototype.slice.call(rail.children);
   const want=cards[idx];if(!want)return;
   const cur=rail.querySelector('#fu-k');
   if(cur===want)return;
-  if(cur){
-    const i=cards.indexOf(cur);
-    cur.removeAttribute('id');
-    cur.classList.add('peekcard');
-    cur.innerHTML=fuPeekHTML(items[i]||{});
-  }
+  if(cur){cur.removeAttribute('id');cur.classList.add('peekcard');fuIds(cur,false)}
   want.id='fu-k';
   want.classList.remove('peekcard');
-  want.innerHTML=FU_CARD_TPL;
+  fuIds(want,true);
 }
 function fuPaintRail(items,sel){
   const rail=document.getElementById('fu-rail');
@@ -15034,7 +15079,8 @@ function fuPaintRail(items,sel){
     fuSigRail=sig;
     if(!items.length){
       const d=document.createElement('div');
-      d.className='leafcard';d.id='fu-k';d.innerHTML=FU_CARD_TPL;
+      d.className='leafcard';d.id='fu-k';d.innerHTML=fuCardHTML(null);
+      fuIds(d,true);
       rail.appendChild(d);
       fuObserve(rail,[]);
       return;
@@ -15042,7 +15088,7 @@ function fuPaintRail(items,sel){
     items.forEach(function(it){
       const d=document.createElement('div');
       d.className='leafcard peekcard';
-      d.innerHTML=fuPeekHTML(it);
+      d.innerHTML=fuCardHTML(it);
       d.onclick=function(){pickFuture(it.id)};
       rail.appendChild(d);
     });
@@ -15082,30 +15128,44 @@ function fuObserve(rail,items){
     ['pointerdown','touchstart','wheel'].forEach(function(e){
       rail.addEventListener(e,function(){fuTouched=true},{passive:true})});
   }
-  let want=null;
-  fuIO=new IntersectionObserver(function(es){
-    es.forEach(function(e){
-      if(e.isIntersecting&&e.intersectionRatio>=.6){
-        const i=Array.prototype.indexOf.call(rail.children,e.target);
-        if(i>=0)want=(lastFuAll||items)[i];
-      }
-    });
+  fuIO=new IntersectionObserver(function(){
+    /* **הצופה הוא הטריגר, והמדידה היא ההכרעה.** ‏`es` הוא אצווה
+       ואין ערובה שסדר הרשומות בה הוא סדר הזמן: נמדד שאחרי החלקה
+       אחת האחרון בה היה דווקא הכרטיס שיצא מהמסך, ולכן "הכרטיס
+       האחרון שחצה 60 אחוז" החזיר את הבחירה הקודמת. מי שבמסך
+       נקרא מהגאומטריה ברגע ההכרעה, ולא נצבר מהאירועים. */
     if(fuRailT)clearTimeout(fuRailT);
     fuRailT=setTimeout(function(){
       if(fuProg||!fuTouched)return;
       fuTouched=false;
-      if(want&&want.id!==fuPick)pickFuture(want.id);
+      const i=fuInView(rail);
+      const it=i>=0?((lastFuAll||items)[i]):null;
+      if(it&&it.id!==fuPick)pickFuture(it.id);
     },90);
   },{root:rail,threshold:[.6]});
   Array.prototype.slice.call(rail.children).forEach(function(n){fuIO.observe(n)});
+}
+/* מי תופס הכי הרבה מהמסילה עכשיו. ‏`getBoundingClientRect` ולא
+   `scrollLeft`, מאותה סיבה בדיוק: הסימן של `scrollLeft` ב-RTL
+   הפוך בין כרומיום לספארי, ותיבת הגבול זהה בשניהם. */
+function fuInView(rail){
+  const rb=rail.getBoundingClientRect();
+  let best=-1,ov=0;
+  Array.prototype.slice.call(rail.children).forEach(function(n,i){
+    const r=n.getBoundingClientRect();
+    const w=Math.max(0,Math.min(r.right,rb.right)-Math.max(r.left,rb.left));
+    if(w>ov){ov=w;best=i}
+  });
+  return best;
 }
 /* גלילת המסילה אל הכרטיס הנבחר. נפרדת מהציור, כי היא נחוצה גם
    בכניסה לטאב: המסילה נמדדת רק כשהיא על המסך, וציור שקרה בזמן
    שהמסך מוסתר מחזיר 0 מכל מדידה.
    **‏`scrollIntoView` ולא `scrollTo({left})`**, מאותה סיבה שהצופה
    החליף את `scrollLeft`: חישוב ידני של `left` ב-RTL נכון בדפדפן
-   אחד בלבד. `inline:'center'` הוא מה ש-`scroll-snap-align:center`
-   ממילא מבקש. */
+   אחד בלבד. **ו-`inline:'start'` ולא `center`**, כי זה מה
+   ש-`scroll-snap-align:start` מבקש: מרכוז ואז הצמדה מזיז את
+   המסילה פעמיים, והשנייה קורית אחרי שהיד כבר הורידה. */
 function fuRailScroll(){
   const rail=document.getElementById('fu-rail');
   if(!rail)return;
@@ -15113,7 +15173,7 @@ function fuRailScroll(){
   if(!on)return;
   fuHold();
   if(!rail.clientWidth||rail.children.length<2||!on.scrollIntoView)return;
-  on.scrollIntoView({block:'nearest',inline:'center',
+  on.scrollIntoView({block:'nearest',inline:'start',
                      behavior:(fuRailDrawn&&fuSmooth())?'smooth':'auto'});
 }
 /* חשבון ריק: הכרטיס נשאר ומתרוקן. ‏"·" הוא כבר המציין של "אין ערך
