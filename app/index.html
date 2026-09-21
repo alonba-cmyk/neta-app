@@ -553,8 +553,17 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   border:1px solid var(--line);cursor:pointer;transition:border-color .15s}
 .hdr .me:hover{border-color:var(--line-2)}
 .eyebrow.big{margin:30px 0 10px}
+/* תווית של רשימה בתוך גיליון, ולא תווית-על של סקשן: אותם 12.5px
+   ו---tx-3 של `.k2` שבחבילה, בלי ריווח אותיות ובלי אוויר מעל. */
+.eyebrow.k2{font-size:12.5px;letter-spacing:normal;color:var(--tx-3);
+  margin:0 0 10px;font-weight:400}
 .hdr-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:30px 0 10px}
 .hdr-row .eyebrow.big{margin:0}
+/* בראש גיליון אין מה להפריד: הקצה המעוגל הוא ההפרדה, והריפוד של
+   ‏24 הוא כל האוויר שהחבילה נותנת שם. ‏30 נוספים הם שורה ראשונה
+   שמרחפת, ואלון ראה אותה. ממוקד לגיליון ולא ל-.hdr-row הגלובלי,
+   שמשרת גם כותרות סקשן באמצע מסך. */
+.sheetup>*>.hdr-row:first-child,.sheetup>.hdr-row:first-child{margin-top:0}
 .summary{padding:6px 2px 0}
 /* ‏flex-start ולא center: מסך הבית מחזיק רק טקסט, ו"הנטיעות שלי"
    מחזיק גם נבט בגובה 68. במרכוז המספר של "שלי" נדחף למטה בחצי ההפרש,
@@ -893,17 +902,24 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ‏12 פיקסלים בין המתג לכרטיס, כמו `.car` שבעיצוב. בלעדיהם הכרטיס
    נוגע במתג, ושני משטחים שנוגעים זה בזה על רקע ירוק אחד נקראים
    כרכיב אחד שבור. אלון ראה את זה במכשיר. */
+/* **הכרטיס ממורכז, והשכנים מציצים משני הצדדים.** ‏`scroll-snap-align`
+   היה `start` והכרטיס נצמד לימין, כלומר שכן אחד בלבד ורק משמאל.
+   הריפוד הצדדי נגזר מהרוחב ואינו נבחר: הכרטיס הוא `100vw-78`, ולכן
+   ‏39 בכל צד הם בדיוק מה שמאפשר גם לראשון וגם לאחרון להתמרכז. */
 .fucar{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
-  scroll-padding-inline:18px;margin:0 -18px;padding:12px 18px 2px;
+  margin:0 -18px;padding:12px 39px 2px;
   scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-y}
 .fucar::-webkit-scrollbar{display:none}
-.fucar>.leafcard{flex:0 0 calc(100vw - 78px);scroll-snap-align:start;
+/* בלי `transition` על המיקום: הכרטיס נוסע עם האצבע, וזו הגלילה
+   עצמה. מה שכן מונפש הוא הדהייה של השכן. */
+.fucar>.leafcard{flex:0 0 calc(100vw - 78px);scroll-snap-align:center;
   margin-top:0;transition:opacity .3s}
 /* השכנים דוהים, ולא רק נחתכים: כרטיס שלם בבהירות מלאה בקצה המסך
    נקרא כמו עוד תוכן ולא כמו "יש עוד ילד". */
 .fucar>.leafcard.peekcard{opacity:.55;cursor:pointer}
 /* ילד אחד: אין מה להחליק, והכרטיס ממלא את הרוחב כמו בעיצוב. */
 .fucar.one{overflow:visible;margin:0;padding:12px 0 2px}
+@media (prefers-reduced-motion: reduce){.fucar>.leafcard{transition:none}}
 .fucar.one>.leafcard{flex:1 1 auto}
 .fuseg::-webkit-scrollbar{display:none}
 /* ‏**השם יושב בכל משבצת ונפתח בסימון, ולא נכתב בזמן הלחיצה.** זה מה
@@ -935,7 +951,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .fuseg .fupk.add{flex:0 0 40px;color:var(--on-head);font-size:19px;font-weight:400;opacity:.85}
 /* ילד אחד: ל-＋ יש מקום גם למילים, ואז הוא אומר מה הוא עושה. */
 .fuseg .fupk.add.wide{flex:0 0 auto;padding:0 14px;font-size:14px;font-weight:600;gap:6px}
-.fuseg .fupk.pen{flex:0 0 34px;color:var(--on-head);font-size:14px;opacity:.7}
+/* ‏✎ ירד מהמתג. הוא אינו בחבילה, והוא **תו טקסט ולא אייקון** —
+   המוצר כולו עבר לאייקונים קוויים בסבב הזה, ותו יוניקוד נראה אחרת
+   בכל מערכת הפעלה בדיוק כמו האמוג'י שירד. ‏`editKid` נשאר נגיש
+   משורת הילד ב"הקרובים שלי", שהיא הכניסה השנייה שהייתה לו ממילא. */
 /* המשבצת המקווקוות של חשבון ריק: אותו כדור לבן בלי מילוי ובלי שם,
    ובתוכו עיגול מקווקו במקום פרצוף. ‏--sun-on-leaf ולא לבן, כי
    מקווקו לבן על ירוק כהה נקרא כמו קו שנשבר. */
@@ -977,9 +996,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ‏start הוא ימין ב-RTL, כלומר שני הטורים היו נצמדים לאותו צד. */
 [data-name="העתיד שלנו"] .leafcard .pr>div+div{text-align:end}
 [data-name="העתיד שלנו"] .leafcard .pr .fut{color:var(--sun-on-leaf)}
-/* בשורה אחת עם החץ, ולכן המרווח התחתון עובר לשורה ולא לכותרת. */
+/* ── חזרה וכותרת, שורה אחת ────────────────────────────────────────
+   ‏`CHANGES.md` §3 נוקב ב"חזרה וכותרת בלבד", ו-`.gback .t` שבחבילה
+   הוא 18px במשקל 700 — לא 24 ב-800 של `.leafhead h2`. כותרת ענקית
+   מעל מתג ומסילה הופכת את הראש לשלוש שכבות שמתחרות זו בזו, והמסך
+   הזה משלם על כל פיקסל בראש. */
 [data-name="העתיד שלנו"] .leafhead .gbrow{margin:0 0 14px}
-[data-name="העתיד שלנו"] .leafhead h2{margin:0}
+[data-name="העתיד שלנו"] .leafhead h2{margin:0;font-size:18px;font-weight:700}
 /* המסך פותח בראש הירוק, ולכן הוא עמודה כמו "ההשקעות שלי". */
 .screen.on[data-name="העתיד שלנו"]{display:flex;flex-direction:column}
 [data-name="העתיד שלנו"] #home-full{display:flex;flex-direction:column;flex:1 1 auto;
@@ -2719,7 +2742,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '713836b';
+window.NETA_BUILD = '41b1a4f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -2960,10 +2983,14 @@ window.NETA_CONFIG = {
     <path fill-rule="evenodd" d="M3.5 10.8h17V20h-17z M10.7 10.8h2.6V20h-2.6z"/>
     <path fill-rule="evenodd" d="M3 7h18v3.4H3z M10.7 7h2.6v3.4h-2.6z" opacity=".72"/>
   </g>
+  <!-- "משהו אחר" הוא כוכב, ולא שלוש נקודות. שלוש נקודות הן הסימן
+       האוניברסלי ל"עוד אפשרויות" ולא לרגע, ובריבוע של 40 הן נקראו
+       כתפריט שנתקע: אלון ראה "•••" על "טיול גדול" במכשיר שלו.
+       ‏`ic-occ-trip` הוא גלובוס, ולכן רגע בשם חופשי שיש בו "טיול"
+       מקבל אותו; ראו `occIcon`. -->
   <g id="ic-occ-other" fill="currentColor">
-    <circle cx="6" cy="12" r="2"/>
-    <circle cx="12" cy="12" r="2" opacity=".72"/>
-    <circle cx="18" cy="12" r="2" opacity=".45"/>
+    <path d="M12 3.2l2.47 5.6 6.08.6-4.57 4.06 1.32 5.96L12 16.4l-5.3 3.02
+      1.32-5.96L3.45 9.4l6.08-.6z"/>
   </g>
   <g id="sprout-art">
     <line x1="30" y1="62" x2="30" y2="20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
@@ -3136,8 +3163,14 @@ window.NETA_CONFIG = {
   <!-- קישור "הצפי לעתיד" ישב כאן, לצד הכותרת, ופתח גיליון עם טבלה
        של כל הרגעים. הוא ירד: הצפי לרגע יושב במסך הרגע עצמו, לחיצה
        אחת מתחת, והצד הזהוב בראש המסך כבר אומר את הסכום. -->
+  <!-- התווית צמודה לראש הגיליון. ‏`.eyebrow.big` נושא `margin:30px 0 10px`,
+       כלומר 30 פיקסלים של אוויר בין הקצה המעוגל של הגיליון לבין השורה
+       הראשונה שבו; בחבילה `.k2` יושב מיד אחרי הריפוד של 24.
+       והיא 12.5px ב---tx-3 ובלי ריווח אותיות, כי `.eyebrow` הגלובלי
+       הוא 10px עם `letter-spacing:.12em` וזו צורה של תווית-על ולא של
+       כותרת רשימה. -->
   <div class="hdr-row">
-    <p class="eyebrow big" id="own-head">ילד אחד</p>
+    <p class="eyebrow big k2" id="own-head">ילד אחד</p>
   </div>
 
   <!-- הרגעים של מי שנבחר, ומתחתיהם מי נוטע לו. שורת "מי נוטע" נושאת
@@ -5688,8 +5721,26 @@ const OCC_SYM={bar_mitzvah:'mitzvah',studies:'studies',army_trip:'trip',
                open_fund:'fund',other:'other'};
 /* ‏`size` הוא הציור, והצבע מגיע מ-`color` שמורש מהאריח שמסביב.
    ‏aria-hidden כי התווית של הרגע היא השם שלידו, תמיד. */
-function occIcon(occ,size){
-  const k=OCC_SYM[occ]||'other';
+/* ‏**ושם הרגע הוא הנפילה האחורית, ולא "•••".** רגע שנפתח דרך "משהו
+   אחר" נשמר כ-`other` ומחזיק שם חופשי, ולכן "טיול גדול" קיבל את
+   אייקון שלוש הנקודות בזמן שיש בסט גלובוס שמתאר אותו בדיוק. המפתח
+   נשאר האנום; השם נבדק רק כשהאנום אינו אומר דבר. */
+/* "כ" עם מקף עברי (‏U+05BE) ולא עם מקף רגיל. מקף רגיל בין אות
+   עברית למספר נקרא כמינוס, וזו הצורה שבחבילה ("כ־23,500 ₪").
+   קבוע אחד, כדי ששתי הצורות לא יחיו זו לצד זו באותו מסך. */
+const APPROX='כ־';
+const OCC_WORD=[[/טיול|תיור|מסע|עולם|טרק/,'trip'],
+                [/לימוד|אוניברסיט|תואר|סטודנט/,'studies'],
+                [/חתונ|נישוא/,'wedding'],
+                [/דיר|בית|משכנת/,'home'],
+                [/רכב|אוטו|מכונית/,'car'],
+                [/מצוו/,'mitzvah']];
+function occIcon(occ,size,name){
+  let k=OCC_SYM[occ]||'other';
+  if(k==='other'&&name){
+    for(let i=0;i<OCC_WORD.length;i++)
+      if(OCC_WORD[i][0].test(name)){k=OCC_WORD[i][1];break}
+  }
   const n=size||20;
   return '<svg width="'+n+'" height="'+n+'" viewBox="0 0 24 24" aria-hidden="true">'+
          '<use href="#ic-occ-'+k+'"/></svg>';
@@ -6737,6 +6788,13 @@ function beneRel(id){
   if(!id)return '';
   const b=(benes||[]).filter(function(x){return x.id===id})[0];
   return (b&&b.relation)||'';
+}
+/* המין של הנהנה מהישות. ‏`beneSex` תפוס כמשתנה של האשף, ולכן שם
+   אחר — וזו בדיוק המלכודת של "שם שכבר תפוס", בגרסת הפונקציות. */
+function kidSexOf(id){
+  if(!id)return '';
+  const b=(benes||[]).filter(function(x){return x.id===id})[0];
+  return (b&&b.sex)||'';
 }
 function isSelfName(nm){
   if(!nm)return false;
@@ -9330,12 +9388,12 @@ function paintDetail(key,p){
   if(dic){
     dic.classList.toggle('kidhd',!!kav);
     if(kav)dic.innerHTML='<span class="fw">'+kidFaceHTML(kav,40)+'</span>'+
-      '<i>'+occIcon(p.occasion,14)+'</i>';
-    else dic.innerHTML=occIcon(p.occasion,20);
+      '<i>'+occIcon(p.occasion,14,p.name)+'</i>';
+    else dic.innerHTML=occIcon(p.occasion,20,p.name);
   }
   /* אייקון הרגע בקצה הקו. הוא נכתב כאן ומוצב בציור הגרף, כי שם
      יושבת נקודת הסיום. */
-  htm('d-endic',occIcon(p.occasion,17));
+  htm('d-endic',occIcon(p.occasion,17,p.name));
   txt('d-title',p.name);
   txt('d-date','המועד המיוחל: '+p.date);
   const own=document.getElementById('d-owners');
@@ -13474,7 +13532,7 @@ function projectedHorizon(rows){
    בשמות ההדגמה — לעולם לא בשם שהמשתמש הקליד. */
 function ghostCardHTML(p,by){
   return '<div class="ncard"><div class="nc-top">'+
-    '<div class="dot '+(p.designated===false?'s':'g')+'">'+occIcon(p.occasion,20)+'</div>'+
+    '<div class="dot '+(p.designated===false?'s':'g')+'">'+occIcon(p.occasion,20,p.name)+'</div>'+
     '<div class="nc-id"><div class="nc-nm">'+p.name+'</div>'+
     '<div class="nc-meta">'+(by||('המועד המיוחל: '+p.date))+'</div></div>'+
     '<span class="peek"><span class="pk">נצבר</span>'+
@@ -14012,15 +14070,17 @@ function buildHomeSummary(){
        אלון ראה את זה על "לניצקה", שבה הוא היחיד שנטע.
        הספירה היא של המשתתפים בפועל ולא של הרגעים: אדם אחד שפתח
        שני רגעים הוא עדיין נוטע אחד. */
-    const planters=(function(){
-      const seen={};
-      (sel?[sel]:(fuAll||[])).forEach(function(x){
-        ((x&&x.people)||[]).forEach(function(q){
-          const nm=(q&&(q.name||q))||'';if(nm)seen[nm]=1});
-      });
-      return Object.keys(seen).length;
+    /* **והמדידה היא הכסף ולא רשימת השמות.** ספירת משתתפים נתנה
+       "נטעת" למי שהוזמנה ולא הפקידה: ברגע שלה יש נוטע אחד, והוא
+       מישהו אחר. המספר שמעל התווית הוא מה שנצבר לרגע **מכולם**,
+       ולכן היחיד נכון בדיוק כשכולו שלי. */
+    const manyP=(function(){
+      const a=Number(sel?sel.accrued:tot)||0, m=Number(sel?sel.mine:mineTot)||0;
+      if(a>0)return m<a;
+      /* בלי כסף אין מה למדוד, ואז השאלה היא מי פתח: רגע שמישהו
+         אחר פתח הוא כבר "אתם". */
+      return !!(sel&&(sel.rows||[]).some(function(x){return x.joined}));
     })();
-    const manyP=planters>1;
     txt('s-label',accrued>0?(manyP?'נטעתם עד היום':'נטעת עד היום')
                            :(coming?'ההפקדה הראשונה בדרך'
                                    :(manyP?'עוד לא נטעתם':'עוד לא נטעת')));
@@ -14243,7 +14303,7 @@ function buildHomeSummary(){
           const to=fund?'לקופה הזאת':('לעתיד של '+firstName(sel.name));
           txt('fu-fine', mo>0&&sel.proj>mo&&yrs
             ? ('קרוב שיפקיד 50 ₪ בחודש במשך '+yearsWord(yrs)+
-               ', יכול להוסיף '+to+' כ-'+shekel(Math.round(sel.proj*5000/mo)))
+               ', יכול להוסיף '+to+' '+APPROX+shekel(Math.round(sel.proj*5000/mo)))
             : (fund?'כל קרוב שמצטרף מגדיל את מה שיחכה בקופה הזאת.'
                    :('כל קרוב שמצטרף מגדיל את מה שיחכה ל'+firstName(sel.name)+
                      ', ואת אותו רגע עצמו.')));
@@ -14269,7 +14329,10 @@ function buildHomeSummary(){
          הוא חיבור של תחזיות ליום אחר כל אחת — מספר שאינו קיים באף
          יום נתון. הצגתי את זה, ואלון בחר בקיצור. הפירוט לכל רגע, עם
          התאריך שלו, יושב במסך הרגע עצמו, לחיצה אחת מתחת. */
-      txt('s-fut','כ-'+shekel(projectedTotal(proj)));
+      /* **בכרטיס הסכום בלי "כ".** כך הוא בחבילה, ומה שמחזיק את זה
+         הוא שהכיתוב שמעליו כבר אומר "בקצב הזה ייצבר" — כלומר
+         ההסתייגות נאמרת פעם אחת, במילים, ולא פעמיים. */
+      txt('s-fut',shekel(projectedTotal(proj)));
       /* וגם לשורה שמתחת לכיתוב, שהיא מה שמוצג כל עוד FUT_IN_HEAD כבוי.
          ‏"ייצבר" ולא "יצבר": זו הצורה שכבר משמשת בכרטיס ב"ההשקעות
          שלי", ושם המשפט זהה כמעט מילה במילה. */
@@ -14720,13 +14783,20 @@ function fuItems(own){
        כאן היא נלקחת מהפרופיל בזמן הציור, ונחתמת מול ה-bucket שלה. */
     const mineAv=isSelfRel(rel)?myAvatarKey():'';
     const isPhoto=mineAv&&mineAv.indexOf('av-')!==0;
-    return {id:'k:'+(g.kidId||g.kid),name:g.kid,kidId:g.kidId,rel:rel,
+    /* **‏`sex` פשוט לא היה כאן, ולכן ההטיה מעולם לא רצה.** הכרטיס
+       שואל `sel.sex` ומקבל `undefined` תמיד, וגם בהדגמה שבה לנועה
+       יש `sex:'f'` על שתי הנטיעות המסך אמר "שני רגעים מחכים" בלי
+       "לה". הישות היא המקור, והשורה היא הנפילה האחורית: רגע שנוצר
+       לפני 0061 מחזיק את המין על הנטיעה ולא על הנהנה.
+       **תקלה שקטה מהסוג הגרוע**, כי הקוד שמעל נראה נכון לגמרי. */
+    const bs=kidSexOf(g.kidId)||(g.rows.filter(function(x){return x.sex})[0]||{}).sex||null;
+    return {id:'k:'+(g.kidId||g.kid),name:g.kid,kidId:g.kidId,rel:rel,sex:bs,
             av:isPhoto?mineAv:kidFace(g.rows,g.kid),selfav:!!isPhoto,
             rows:g.rows,accrued:g.accrued,mine:g.mine,proj:g.proj,people:g.people};
   });
   kg.loose.forEach(function(p){
     /* "קופה" ולא firstName(name): "קופת הפתעות" היה יוצא "קופת". */
-    out.push({id:'p:'+p.key,name:p.name,label:'קופה',occ:p.occasion,rows:[p],
+    out.push({id:'p:'+p.key,name:p.name,label:'קופה',occ:p.occasion,rows:[p],sex:null,
               accrued:Number(p.accrued||0),
               mine:Number(p.mine==null?p.accrued:p.mine),
               proj:Number(p.projection||0),people:p.participants||[]});
@@ -14831,31 +14901,14 @@ function fuPickHTML(items,sel){
     const on=it.id===sel;
     const face=it.av
       ? '<span class="f">'+kidFaceHTML(it.av,26)+'</span>'
-      : '<span class="f sq">'+occIcon(it.occ,15)+'</span>';
+      : '<span class="f sq">'+occIcon(it.occ,15,it.name)+'</span>';
     /* השם בכל משבצת ולא רק בנבחרת, ראו ההערה ב-CSS. */
     return '<button class="fupk'+(on?' on':'')+'" '+
       'data-fu="'+attrText(it.id)+'" '+
       'onclick="pickFuture(\''+it.id.replace(/'/g,"\\'")+'\')">'+
       face+'<span class="nm3">'+attrText(it.label||firstName(it.name))+'</span>'+
-      '</button>'+fuPenHTML(on?it:null);
+      '</button>';
   }).join('')+add;
-}
-/* ✎ רק על מי שנבחר, ורק כשיש לו ישות במסד. הוא הדבר היחיד במתג
-   שמוביל אל הילד עצמו ולא אל הרגעים שלו, ולכן הוא משבצת משלו
-   ולא אייקון בתוך הכדור הלבן: שם הוא היה הופך את הנבחר לשני
-   דברים שאפשר ללחוץ עליהם.
-   **ומיד אחרי המשבצת של הנבחר, ולא בסוף השורה.** הוא נבנה בסוף
-   הרשימה, ולכן כשהנבחר היה הראשון הוא ישב שתי משבצות ממנו, צמוד
-   ל-＋ — כלומר נקרא כפעולה על הרשימה ולא על הילד. אלון ראה את זה
-   בחשבון שלו. **משבצת שמתארת פריט חייבת לגעת בפריט.** */
-function fuPenHTML(it){
-  /* ורק על ילד שאני פתחתי לו רגע. מי שהוזמנה רואה כאן את הילד
-     של מישהו אחר, ו-`editKid` פותח גיליון שכותב ל-`beneficiaries`
-     — טבלה שנעולה ליוצר. הכפתור היה מוביל למסך שאי אפשר לשמור בו. */
-  const mine=it&&(it.rows||[]).some(function(p){return !p.joined});
-  return (it&&it.kidId&&mine)
-    ? '<button class="fupk pen" onclick="editKid(\''+attrText(it.kidId)+'\')" '+
-      'aria-label="עריכת הפרטים">\u270E</button>' : '';
 }
 /* מזיז את הסימון בין הפריטים הקיימים בלי לצייר מחדש. הכדור הלבן
    נסגר ונפתח, ולכן השם נכנס ויוצא איתו.
@@ -14866,18 +14919,8 @@ function fuPenHTML(it){
    ‏✎ הוא היחיד שנבנה מחדש, כי הוא נגזר מהנבחר ונוסע איתו. */
 function fuMarkOn(items,sel){
   const row=document.getElementById('fu-pick');if(!row)return;
-  const it=items.filter(function(x){return x.id===sel})[0]||null;
-  const old=row.querySelector('.fupk.pen');
-  if(old)old.remove();
-  let onNode=null;
   Array.prototype.slice.call(row.querySelectorAll('.fupk[data-fu]'))
-    .forEach(function(n){
-      const on=n.getAttribute('data-fu')===sel;
-      n.classList.toggle('on',on);
-      if(on)onNode=n;
-    });
-  const pen=fuPenHTML(it);
-  if(pen&&onNode)onNode.insertAdjacentHTML('afterend',pen);
+    .forEach(function(n){n.classList.toggle('on',n.getAttribute('data-fu')===sel)});
   fuScrollPick();
 }
 /* ── הנבחר תמיד נראה ──────────────────────────────────────────────
@@ -14903,9 +14946,9 @@ function fuPeekHTML(it){
            :'עוד לא נפתח לו רגע';
   const acc=Number(it.accrued||0);
   const manyP=(function(){
-    const seen={};((it&&it.people)||[]).forEach(function(q){
-      const nm=(q&&(q.name||q))||'';if(nm)seen[nm]=1});
-    return Object.keys(seen).length>1;
+    const a=Number(it.accrued||0), m=Number(it.mine||0);
+    if(a>0)return m<a;
+    return (it.rows||[]).some(function(x){return x.joined});
   })();
   const proj=projectedTotal(projectablePlantings({plantings:it.rows||[]}));
   return '<p class="for">'+((it.rows||[]).some(function(p){return !p.joined})
@@ -14920,62 +14963,158 @@ function fuPeekHTML(it){
             :(manyP?'עוד לא נטעתם':'עוד לא נטעת'))+'</p>'+
       '<p class="v now">'+(acc>0?shekel(acc):'·')+'</p></div>'+
       (proj>0?('<div><p class="l">בקצב הזה ייצבר'+to+'</p>'+
-               '<p class="v fut">כ-'+shekel(proj)+'</p></div>'):'')+
+               '<p class="v fut">'+shekel(proj)+'</p></div>'):'')+
     '</div>';
 }
 /* מי החליף — האצבע או המתג. כשהמתג, המסילה נגללת אל הכרטיס; כשהאצבע,
    היא כבר שם וגלילה נוספת הייתה נלחמת בה. */
-let fuFromSwipe=false, fuRailT=null, fuRailDrawn=false;
+/* ── המסילה: גלילה אופקית עם scroll-snap, ובלי לבנות מחדש ─────────
+   **מה שהיה שבור:** הציור מחק את כל כרטיסי ההצצה והוסיף אותם מחדש
+   בכל החלפת בחירה, ומחיקת ילדים ממכל שגולל מאפסת את `scrollLeft`.
+   התוצאה היא בדיוק מה שאלון תיאר: הכרטיס אינו נוסע עם האצבע אלא
+   קופץ לבא אחרי שהאצבע עזבה. **גלילה נייטיבית אינה שוברת את עצמה;
+   מה ששבר אותה הוא ה-DOM שהוחלף מתחתיה.**
+
+   עכשיו המסילה נבנית פעם אחת לכל רשימת פריטים (חתימה, בדיוק כמו
+   המתג), והחלפת בחירה **מזיזה את המזהה `fu-k` בין כרטיסים קיימים**
+   במקום להוסיף ולהסיר צמתים. אף ילד לא נמחק, ולכן הגלילה אינה זזה.
+
+   **ו-`id` שנודד בין שני צמתים הוא מה שמחזיק את `buildHomeSummary`
+   כפי שהיא:** היא כותבת ל-`s-you`, ל-`s-fut` ולשכניהם דרך `txt`,
+   ולא אכפת לה באיזה כרטיס הם יושבים. השלד עצמו נשמר פעם אחת
+   בטעינה ומוזרק לכרטיס שנבחר. */
+const FU_CARD_TPL=(document.getElementById('fu-k')||{}).innerHTML||'';
+let fuSigRail='', fuRailT=null, fuRailDrawn=false, fuIO=null,
+    fuProg=false, fuProgT=null, fuTouched=false;
+/* **הצופה לעולם אינו דורס בחירה שבאה מבחוץ.** לחיצה במתג, כניסה
+   לטאב או בחירה שנקבעה בקוד מזיזות את המסילה, והצופה יורה תוך כדי
+   ומדווח על הכרטיס שעוד לא זז — כלומר מחזיר את הבחירה הקודמת 90
+   אלפיות שנייה אחרי שהיא הוחלפה. ‏`fuHold` חוסם אותו עד שהתנועה
+   נגמרת, **וגם כשאין מה לגלול**: מסילה ברוחב 0 (מסך שעוד לא
+   פרוס) לא זזה, והצופה היה מדווח על הראשון ברשימה. */
+function fuHold(){
+  fuProg=true;fuTouched=false;
+  if(fuProgT)clearTimeout(fuProgT);
+  fuProgT=setTimeout(function(){fuProg=false},450);
+}
+/* המסילה מכבדת "בלי תנועה" בגלילה שהיא יוזמת. היא אינה מוותרת על
+   הגלילה עצמה — רק על ההנפשה שלה, כי גלילה היא הדרך היחידה להגיע
+   לכרטיס השני. זה שונה מהסטורי, שם ההחלפה עצמה היא התנועה. */
+function fuSmooth(){
+  return !(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+/* מעביר את הכרטיס האמיתי אל המשבצת של מי שנבחר, בלי להוסיף או
+   להסיר ולו צומת אחד. */
+function fuSetReal(items,idx){
+  const rail=document.getElementById('fu-rail');if(!rail)return;
+  const cards=Array.prototype.slice.call(rail.children);
+  const want=cards[idx];if(!want)return;
+  const cur=rail.querySelector('#fu-k');
+  if(cur===want)return;
+  if(cur){
+    const i=cards.indexOf(cur);
+    cur.removeAttribute('id');
+    cur.classList.add('peekcard');
+    cur.innerHTML=fuPeekHTML(items[i]||{});
+  }
+  want.id='fu-k';
+  want.classList.remove('peekcard');
+  want.innerHTML=FU_CARD_TPL;
+}
 function fuPaintRail(items,sel){
   const rail=document.getElementById('fu-rail');
-  const real=document.getElementById('fu-k');
-  if(!rail||!real)return;
+  if(!rail)return;
   rail.classList.toggle('one',items.length<=1);
-  /* **הניקוי קודם ליציאה המוקדמת.** בציור ריק הוא היה יוצא לפני
-     המחיקה, ושלושת כרטיסי ההצצה של הציור הקודם נשארו על המסך —
-     בדיוק אותה מלכודת של #mi-inv ששרד אל תוך המצב הריק. */
-  Array.prototype.slice.call(rail.querySelectorAll('.peekcard'))
-       .forEach(function(n){n.remove()});
-  if(!items.length){rail.appendChild(real);return}
-  (items.length?items:[null]).forEach(function(it){
-    if(!it||(sel&&it.id===sel.id)){rail.appendChild(real);return}
-    const d=document.createElement('div');
-    d.className='leafcard peekcard';
-    d.innerHTML=fuPeekHTML(it);
-    d.onclick=function(){pickFuture(it.id)};
-    rail.appendChild(d);
-  });
-  if(!rail.onscroll)rail.onscroll=function(){
-    if(fuRailT)clearTimeout(fuRailT);
-    /* ‏120ms אחרי שהאצבע עצרה: ‏scrollend אינו קיים בכל דפדפן,
-       ומדידה בכל פריים הייתה מריצה ציור מלא על כל תנועת אצבע. */
-    fuRailT=setTimeout(function(){
-      const cards=rail.querySelectorAll('.leafcard');
-      if(cards.length<2)return;
-      const x=rail.scrollLeft, best={i:0,d:Infinity};
-      for(let i=0;i<cards.length;i++){
-        const d=Math.abs(cards[i].offsetLeft-rail.offsetLeft-x);
-        if(d<best.d){best.d=d;best.i=i}
-      }
-      const it=(lastFuAll||[])[best.i];
-      if(it&&it.id!==fuPick){fuFromSwipe=true;pickFuture(it.id);fuFromSwipe=false}
-    },120);
-  };
-  if(fuFromSwipe){fuRailDrawn=true;return}
-  fuRailScroll();
+  const sig=items.map(function(x){return x.id}).join('~');
+  if(sig!==fuSigRail){
+    /* **הניקוי קודם ליציאה המוקדמת.** בציור ריק הוא היה יוצא לפני
+       המחיקה, וכרטיסי ההצצה של הציור הקודם נשארו על המסך — בדיוק
+       אותה מלכודת של #mi-inv ששרד אל תוך המצב הריק. */
+    rail.innerHTML='';
+    fuSigRail=sig;
+    if(!items.length){
+      const d=document.createElement('div');
+      d.className='leafcard';d.id='fu-k';d.innerHTML=FU_CARD_TPL;
+      rail.appendChild(d);
+      fuObserve(rail,[]);
+      return;
+    }
+    items.forEach(function(it){
+      const d=document.createElement('div');
+      d.className='leafcard peekcard';
+      d.innerHTML=fuPeekHTML(it);
+      d.onclick=function(){pickFuture(it.id)};
+      rail.appendChild(d);
+    });
+    fuObserve(rail,items);
+    fuRailDrawn=false;
+  }
+  if(!items.length)return;
+  let idx=0;
+  for(let i=0;i<items.length;i++)if(sel&&items[i].id===sel.id){idx=i;break}
+  fuSetReal(items,idx);
+  /* גלילה רק כשהמתג הוא שהחליף. כשהאצבע החליפה, המסילה כבר במקום
+     וגלילה נוספת הייתה נלחמת בה. */
+  if(!fuProg)fuRailScroll();
   fuRailDrawn=true;
+}
+/* ── מי במרכז ────────────────────────────────────────────────────
+   ‏`IntersectionObserver` ולא `scrollLeft`: ‏**ב-RTL הערך שלילי
+   בכרומיום וחיובי בספארי**, וכל חישוב שנשען עליו נכון בדפדפן אחד
+   ושבור בשני. מה שהצופה מחזיר הוא "איזה כרטיס נראה עכשיו", וזה
+   אותו דבר בשני הכיוונים.
+
+   **וההחלפה מתחייבת רק אחרי שהכרטיס נעצר.** הצופה יורה גם באמצע
+   התנועה, ופיינטר שרץ על כל ירייה היה מחליף את הרשימה שבגיליון
+   שלוש פעמים בהחלקה אחת. ‏`scrollend` אינו קיים בכל דפדפן, ולכן
+   ‏90ms של שקט. */
+function fuObserve(rail,items){
+  if(fuIO){fuIO.disconnect();fuIO=null}
+  if(!window.IntersectionObserver||items.length<2)return;
+  /* **והבחירה מתחלפת רק כשאצבע הזיזה את המסילה.** ‏`fuHold` לבדו
+     הוא חלון זמן, וכל מסלול שמצייר מחדש אחרי שהוא פג (מעבר בין
+     טאבים, טעינה שחזרה מהשרת) החזיר את הבחירה לכרטיס שבמרכז —
+     כלומר הצופה דרס בחירה שאיש לא נגע בה. ‏`fufirst.js` נכשל
+     בדיוק על זה. **דגל על מגע אמיתי הוא מדויק ולא תלוי בתזמון:**
+     גלילה שאיש לא ביקש אינה מחליפה דבר. */
+  if(!rail.__fuTap){
+    rail.__fuTap=1;
+    ['pointerdown','touchstart','wheel'].forEach(function(e){
+      rail.addEventListener(e,function(){fuTouched=true},{passive:true})});
+  }
+  let want=null;
+  fuIO=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting&&e.intersectionRatio>=.6){
+        const i=Array.prototype.indexOf.call(rail.children,e.target);
+        if(i>=0)want=(lastFuAll||items)[i];
+      }
+    });
+    if(fuRailT)clearTimeout(fuRailT);
+    fuRailT=setTimeout(function(){
+      if(fuProg||!fuTouched)return;
+      fuTouched=false;
+      if(want&&want.id!==fuPick)pickFuture(want.id);
+    },90);
+  },{root:rail,threshold:[.6]});
+  Array.prototype.slice.call(rail.children).forEach(function(n){fuIO.observe(n)});
 }
 /* גלילת המסילה אל הכרטיס הנבחר. נפרדת מהציור, כי היא נחוצה גם
    בכניסה לטאב: המסילה נמדדת רק כשהיא על המסך, וציור שקרה בזמן
-   שהמסך מוסתר מחזיר 0 מכל מדידה. */
+   שהמסך מוסתר מחזיר 0 מכל מדידה.
+   **‏`scrollIntoView` ולא `scrollTo({left})`**, מאותה סיבה שהצופה
+   החליף את `scrollLeft`: חישוב ידני של `left` ב-RTL נכון בדפדפן
+   אחד בלבד. `inline:'center'` הוא מה ש-`scroll-snap-align:center`
+   ממילא מבקש. */
 function fuRailScroll(){
   const rail=document.getElementById('fu-rail');
-  if(!rail||!rail.clientWidth)return;
-  const on=rail.querySelector('.leafcard:not(.peekcard)');
-  if(!on||!on.scrollIntoView)return;
-  if(rail.querySelectorAll('.leafcard').length<2)return;
-  on.scrollIntoView({block:'nearest',inline:'start',
-                     behavior:fuRailDrawn?'smooth':'auto'});
+  if(!rail)return;
+  const on=rail.querySelector('#fu-k');
+  if(!on)return;
+  fuHold();
+  if(!rail.clientWidth||rail.children.length<2||!on.scrollIntoView)return;
+  on.scrollIntoView({block:'nearest',inline:'center',
+                     behavior:(fuRailDrawn&&fuSmooth())?'smooth':'auto'});
 }
 /* חשבון ריק: הכרטיס נשאר ומתרוקן. ‏"·" הוא כבר המציין של "אין ערך
    עדיין" בכל שאר המסכים, והוא שומר על צורת הכרטיס כך שמי שפותח
@@ -15229,10 +15368,14 @@ function fuMomentHTML(p){
      נשאר לחיצה אחת פנימה — במסך הרגע הוא המספר הגדול. */
   const amt=Number(p.projection||0);
   return '<div class="fu-mrow" onclick="openDetail(\''+p.key+'\')">'+
-    '<div class="fu-mic">'+occIcon(p.occasion,21)+'</div>'+
+    '<div class="fu-mic">'+occIcon(p.occasion,21,p.name)+'</div>'+
     '<div style="flex:1;min-width:0"><div class="fu-nm">'+momentNoun(p)+'</div>'+
       (when?'<div class="fu-dt">'+when+'</div>':'')+'</div>'+
-    (amt>0?'<span class="fu-amt">'+shekel(amt)+'</span>':'')+
+    /* **"כ־" במקף עברי, ולא מקף רגיל.** הסכום בשורה הוא צפי, והכרטיס
+       שמעליו כבר ויתר על ה-"כ" כי הכיתוב שלו אומר "בקצב הזה"; כאן
+       אין כיתוב כזה, ולכן ההסתייגות חייבת להיות בסכום עצמו.
+       ‏U+05BE ולא ‎"-"‎: מקף רגיל בין אות עברית למספר נקרא כמינוס. */
+    (amt>0?'<span class="fu-amt">'+APPROX+shekel(amt)+'</span>':'')+
     '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>'+
   '</div>';
 }
@@ -15281,8 +15424,9 @@ function fuPlantersHTML(row,sel,people){
   const yrs=fuYears([row]);
   const rate=Number(row.myMonthly||0);
   const worth=(!mine&&rate>0&&row.projection>rate&&yrs)
-    ? ('כל 100 ₪ שלך יהיו כ-'+shekel(Math.round(row.projection*10000/rate))+
-       (row.targetYear?(' ב-'+row.targetYear):''))
+    ? ('כל 100 ₪ שלך יהיו '+APPROX+shekel(Math.round(row.projection*10000/rate))+
+       /* גם כאן מקף עברי: "ב־2038", כמו בחבילה. */
+       (row.targetYear?(' ב־'+row.targetYear):''))
     : '';
   const meRow='<div class="fu-mrow pl me">'+
     '<span class="fu-pav">'+faceHTML(myAvatarKey(),'av-parent')+'</span>'+
