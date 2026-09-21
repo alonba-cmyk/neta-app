@@ -2578,7 +2578,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   border-top:0;font-family:inherit;text-align:start;color:inherit;cursor:pointer}
 .tabrow:last-child{border-bottom:0}
 .tabrow .fc{width:44px;height:44px;border-radius:50%;overflow:hidden;flex:none;
-  background:var(--s2)}
+  display:block;background:var(--s2)}
 .tabrow .fc svg,.tabrow .fc img{display:block;width:100%;height:100%;object-fit:cover}
 .tabrow .sq{width:44px;height:44px;border-radius:14px;background:var(--leaf-bg);
   display:grid;place-items:center;flex:none;color:var(--leaf)}
@@ -2635,7 +2635,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   padding-block:5px;touch-action:pan-x}
 .tabpick::-webkit-scrollbar{display:none}
 .tabpick>*{flex:none;border:0;background:none;padding:0;cursor:pointer;display:block}
-.tabpick .f{width:34px;height:34px;border-radius:50%;overflow:hidden;
+/* ‏**‏`display:block` מפורש, וזה לא ייתור.** ‏`.f` הוא `<span>` בתוך
+   `<button>` שהוא `display:block`, כלומר הוא נשאר **inline** —
+   ו-`overflow` ו-`width`/`height` אינם חלים על inline שאינו מוחלף.
+   התוצאה שנראתה בצילום: הפרצוף יצא **ריבוע** בתוך טבעת עגולה, כי
+   הטבעת היא `box-shadow` שמכבד רדיוס והציור שבפנים לא נחתך.
+   שכנותיו לא נשברו רק במקרה — הן יושבות בתוך flex, שמבלק את
+   הילדים שלו. ‏`.fc` ו-`.ph` מקבלות אותו במפורש מאותה סיבה. */
+.tabpick .f{width:34px;height:34px;border-radius:50%;overflow:hidden;display:block;
   background:var(--face-fill);
   box-shadow:0 0 0 2px var(--leaf-head),0 0 0 4px var(--leaf-tile-line)}
 .tabpick .f svg,.tabpick .f img{display:block;width:100%;height:100%;object-fit:cover}
@@ -2654,6 +2661,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .card-main.kidc .utop .tx{min-width:0;flex:1}
 .card-main.kidc .tbhero{font-size:clamp(28px,10.8vw,42px);margin-top:0}
 .card-main.kidc .ph{width:56px;height:56px;border-radius:50%;overflow:hidden;flex:none;
+  display:block;
   margin-top:4px;background:var(--face-fill);
   box-shadow:0 0 0 2px var(--leaf-head),0 0 0 4px var(--sun-on-leaf)}
 .card-main.kidc .ph svg,.card-main.kidc .ph img{display:block;width:100%;height:100%;object-fit:cover}
@@ -3154,7 +3162,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '5dba39e';
+window.NETA_BUILD = '1693e15';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6217,7 +6225,14 @@ function paintActCard(){
   const f=actMonthSums();
   /* ‏"+" רק כשיש מה להוסיף. ‏"+0 ₪" הוא בדיוק מספר שקיומו מודיע על
      היעדרו, והצורה הנכונה לו היא "·" שכבר משרתת את כל המוצר. */
-  txt('ac-num',f.total>0?('+'+shekel(f.total)):'·');
+  /* ‏**הסימן מבודד, ולא הפסקה.** ‏`+` הוא תו ניטרלי, ובפסקה RTL
+     הוא נדחף אל הקצה השני של הספרות ונקרא "470+" — הפוך ממה שהוא
+     אומר. ‏`dir="ltr"` על הפסקה כולה נוסה ונפסל: הוא תיקן את הסימן
+     והזיז את ה-₪ אל הצד השני, כלומר הגיבור היה מציג "470 ₪" בסדר
+     הפוך משני הערכים שמתחתיו באותו כרטיס. ‏`U+2066`/`U+2069` מבודדים
+     את "+470" לבדו, והשקל נשאר במקומו. אותה משפחה של מלכודת כמו
+     הכתובת שבסוף משפט במייל. */
+  txt('ac-num',f.total>0?('\u2066+'+Math.round(f.total/100).toLocaleString('he-IL')+'\u2069 ₪'):'·');
   txt('ac-sub',f.total>0?'מכמה ידיים שנוטעות לאותו רגע'
                         :'כאן יופיע כל מה שנכנס לקופות');
   txt('ac-mine',f.mine>0?shekel(f.mine):'·');
