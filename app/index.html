@@ -510,29 +510,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 
    ‏.topbar נשארה למסך הפרופיל בלבד, כי שם הכותרת היא השם ומה
    שמתחתיו, ולא ברכה עם כפתור שמוביל למסך שכבר פתוח. */
-.nhdr{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:8px 18px 10px}
-.nhdr.off{display:none}
-.nhdr .me{width:34px;height:34px;border-radius:50%;overflow:hidden;flex-shrink:0;
-  background:var(--s2);border:1px solid var(--line);cursor:pointer;transition:border-color .15s}
-.nhdr .me:hover{border-color:var(--line-2)}
-.nhdr .me svg,.nhdr .me img{display:block;width:100%;height:100%}
-.nhdr .tt{flex:1;min-width:0}
-.nhdr .g{font-size:11px;color:var(--tx-3);line-height:1.25}
-/* השם המלא, ולכן חיתוך ולא שבירה: "אלון בר דוד" נכנס ב-390, ושם
-   ארוך ממנו ישבור את השורה השנייה ויגדיל את הראש לכל המסכים. */
-.nhdr .nm{font-size:14px;font-weight:600;color:var(--tx);line-height:1.3;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nhdr .acts{display:flex;align-items:center;gap:8px;flex-shrink:0}
 /* קו בלבד, בלי מילוי. המילוי היה `--s2`, קרם על לבן, כלומר 1.21:1
    מול הדף — עיגול שכמעט אינו שם. בלעדיו האייקון עולה מ-8.0 ל-9.7,
    כי הוא יושב על לבן ולא על קרם, והעיגול נשאר תחום מגע של 34.
 
    ‏background:none ולא `--bg`: מילוי שזהה לרקע הוא הצהרה שאין לה
    ביטוי בערכה הבהירה ויהיה לה בכהה, שבה `--bg` ו-`--s1` שונים. */
-.nhdr .ab{width:34px;height:34px;border-radius:50%;background:none;
-  border:1px solid var(--line);display:grid;place-items:center;color:var(--tx-2);
-  position:relative;cursor:pointer;padding:0;font-family:inherit;transition:.15s}
-.nhdr .ab:hover{border-color:var(--line-2)}
 /* הכפתור של המסך שפתוח, וזה תיקון ולא קישוט. הסימון היה
    `--leaf-bg` עם `--leaf-line`, ובפלטה "עתיד ירוק" שניהם קרם וחול:
    **המשטח השתנה ב-1.07:1 והאייקון ב-1.01:1**, כלומר הכפתור של המסך
@@ -541,9 +524,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    עכשיו אותו עיגול בדיוק עובר ממתאר למלא, 9.63 בין שני המצבים. זו
    כבר השפה של הצ'יפים ("מה שנבחר צבוע מלא"), ולכן זו צורה אחת עם
    שני מצבים ולא שתי צורות. */
-.nhdr .ab svg{display:block;width:18px;height:18px}
 /* בפינה החיצונית של הכפתור, בדיוק כמו הנקודה שעל הטאב. */
-.nhdr .ab i{position:absolute;top:-1px;left:-1px;width:9px;height:9px;border-radius:50%;
   background:var(--leaf);box-shadow:0 0 0 2px var(--bg)}
 .topbar{flex-shrink:0;display:flex;align-items:center;gap:11px;padding:18px 18px 12px;min-height:68px}
 .topbar.off{display:none}
@@ -3173,7 +3154,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '3a91f29';
+window.NETA_BUILD = '5dba39e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3452,33 +3433,14 @@ window.NETA_CONFIG = {
     <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.75" y="0.75" width="19.5" height="10.5" rx="2.5" stroke="currentColor" stroke-width="1"/><rect x="2" y="2" width="14" height="8" rx="1.3" fill="currentColor"/><rect x="21" y="4" width="1.6" height="4" rx="0.8" fill="currentColor" opacity=".6"/></svg>
   </span>
 </div>
-<!-- השורה העליונה של ארבעת יעדי הסרגל. מוסתרת מהפיקסל הראשון
-     מאותה סיבה בדיוק כמו זו שמתחתיה: הדפדפן מצייר את הגוף לפני
-     שידוע מי המשתמש ועל איזה מסך הוא נוחת, ו-go() מדליקה אותה.
+<!-- ‏**‏`.nhdr` ירדה לגמרי, וזה מה שההערה שישבה כאן הבטיחה.**
+     היא שירתה את ארבעת יעדי הסרגל עד שכל אחד מהם קיבל ראש ירוק
+     משלו, ומרגע ש-`GREEN_HEAD` הוא ארבעתם היא לא הוצגה ולו במסך
+     אחד: התנאי שהדליק אותה היה "בארבעת היעדים **ולא** בראש הירוק",
+     כלומר קבוצה ריקה. מה שהיה בה חי היום בתוך `.tabhd` של כל טאב.
+     **מסך הפרופיל אינו יוצא מן הכלל** — שם `.topbar` נושאת את
+     הכותרת, וכך היה מאז ומעולם. -->
 
-     הפרצוף לחיץ **וגם** יש כפתור פרופיל לידו, וזו כפילות שנאמרה
-     ונבחרה: הצעתי להשאיר כפתור אחד (פעילות) ולתת לפרצוף לשאת את
-     הפרופיל, ואלון בחר בשני הכפתורים. פרצוף לחיץ הוא מה שכל אדם
-     מנסה ממילא, וכפתור הוא מה שאומר שאפשר. -->
-<div class="nhdr" id="nhdr" style="visibility:hidden">
-  <!-- הפרצוף פותח את "השם והתמונה שלי" ולא את הפרופיל. עד כה שניהם
-       הובילו למסך 10, כלומר שתי דרכים לאותו מסך במרחק 44 פיקסלים,
-       וזה נאמר כמחיר כשהשורה נבנתה. עכשיו כל אחד עושה דבר אחר:
-       הפרצוף מוביל אל עצמו, והכפתור שמשמאל אל המסך שמחזיק את כל
-       השאר. זה גם "כפתור מוביל לדבר עצמו": מי שלוחץ על התמונה שלו
-       רוצה להחליף אותה, לא להגיע למסך שממנו מגיעים אליה. -->
-  <div class="me" onclick="editMyIdentity()" title="השם והתמונה שלי"><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-parent"/></svg></div>
-  <div class="tt">
-    <div class="g" id="nh-greet">בוקר טוב</div>
-    <div class="nm" id="nh-name">אלון</div>
-  </div>
-  <div class="acts">
-    <button class="ab" id="nh-prof" onclick="go(10)" aria-label="הפרופיל שלי"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-person"/></svg></button>
-    <!-- הנקודה היא "מה חדש בפיד", ולא "מה ממתין לתשובה שלך".
-         השנייה יושבת על הטאב שבסרגל התחתון, כפי שישבה תמיד. -->
-    <button class="ab" id="nh-act" onclick="openActivity()" aria-label="פעילות"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg><i id="nh-dot" style="display:none"></i></button>
-  </div>
-</div>
 
 <!-- מתחיל מוסתר: הדפדפן מצייר את הגוף לפני שהסקריפט שבסוף הקובץ רץ,
      ולכן כל טקסט שיושב כאן נראה פריים אחד לפני שידוע מי המשתמש ועל
@@ -4518,9 +4480,8 @@ window.NETA_CONFIG = {
            בלבד; אחריה הפרופיל, שהוא הדרך היחידה אליו. -->
       <button class="act" id="mi-how" style="display:none" onclick="howOpen()">
         <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"/></svg>איך זה עובד</button>
-      <button class="act ps" id="mi-prof" onclick="go(10)" aria-label="הפרופיל שלי" style="position:relative">
-        <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-person"/></svg>
-        <i class="dot" id="mi-actdot" style="display:none"></i></button>
+      <button class="act ps" id="mi-prof" onclick="go(10)" aria-label="הפרופיל שלי">
+        <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-person"/></svg></button>
     </div>
 
     <div class="card-main">
@@ -5514,15 +5475,10 @@ let onbo=false;
 const topbars={
   10:['אלון','מלווה 2 נטיעות · שותף ב-2 נוספות']
 };
-/* ארבעת יעדי הסרגל שנושאים את השורה העליונה החדשה. מסך 10 אינו
-   בהם: שם הכניסה לפרופיל היא המסך עצמו, וכפתור שמוביל למסך שכבר
-   פתוח אינו כפתור. */
-const HDR_TABS=[0,9,14,15];
 /* הטאבים שעברו לראש הירוק של סבב ספטמבר 2026, כלומר ארבעתם.
-   ‏`.nhdr` יורדת מכולם, ולכן היא חיה היום במסך הפרופיל בלבד —
-   ושם ממילא `.topbar` היא שנושאת את הכותרת. מה שמחזיק את הרשימה
-   הוא שהיא אינה נמחקת אלא מתרוקנת: מסך חדש שאינו בשפה הזאת עדיין
-   מקבל את השורה. */
+   ‏`HDR_TABS` ישבה כאן לצידו ונשאה את אותם ארבעה מספרים בדיוק,
+   ולכן התנאי שהדליק את `.nhdr` היה קבוצה ריקה; שתיהן ירדו יחד
+   עם השורה. */
 const GREEN_HEAD=[14,0,15,9];
 /* הברכה נקבעת בכל פתיחת מסך ולא פעם אחת בטעינה: אפליקציה שנשארת
    פתוחה בטלפון חוצה את הגבול בלי שאיש יטען אותה מחדש.
@@ -5538,22 +5494,10 @@ function greetNow(){
   if(h>=12&&h<17)return 'צהריים טובים';
   return 'ערב טוב';
 }
-function paintHeader(i){
-  const hd=document.getElementById('nhdr');
-  if(!hd)return;
-  /* מסך שקיבל ראש ירוק משלו נושא את הברכה, את השם ואת שני הכפתורים
-     בתוכו, ולכן .nhdr יורדת בו. כל טאב שיומר יצטרף לרשימה, ובסוף
-     היא יורדת לגמרי. */
-  const on=HDR_TABS.indexOf(i)>=0&&GREEN_HEAD.indexOf(i)<0;
-  hd.classList.toggle('off',!on);
-  if(!on)return;
-  txt('nh-greet',greetNow());
-  txt('nh-name',myName()||topbars[10][0]||'');
-  /* וכפתור הפעילות אינו נדלק במסך שלו, לבקשת אלון. הוא היה `--leaf`
-     מלא (ראו "כפתורי הראש"), ומה שנשאר לסמן איפה אתה הוא הסרגל
-     התחתון בלבד. */
-  hd.style.visibility='';
-}
+/* היא נשארה כקריאה ריקה ולא נמחקה, כי `go()` קורא לה בכל מעבר
+   מסך ומי שיוסיף מסך שאינו בשפה החדשה יצטרך מקום להחזיר אליו
+   שורה עליונה. היום אין לה מה לעשות. */
+function paintHeader(){}
 /* מסכים שאין בהם סרגל תחתון. 22 ו-26 נוספו אחרי שגל, שהגיעה דרך קישור
    ולא הייתה רשומה בכלל, ראתה את הסרגל, לחצה עליו והגיעה לנתוני ההדגמה
    של מישהו אחר. מסך שנפתח לפני שיש חשבון לא מציג ניווט לחשבון. */
@@ -6107,10 +6051,6 @@ function paintPending(){
   const home=document.getElementById('pend-home');
   const list=document.getElementById('pend-home-list');
   const act=document.getElementById('pend-act');
-  /* על טאב הפעילות, כפי שהייתה תמיד: pend-act נעוץ בראש המסך הזה.
-     זו נקודה אחרת מזו שעל כפתור הפעילות שבשורה העליונה, שאומרת
-     "מה חדש בפיד" ולא "מה ממתין לתשובה שלך". */
-  const tab=document.getElementById('tab-act');
   const html=items.map(pendRowHTML).join('');
   if(home&&list){
     home.style.display=items.length?'':'none';
@@ -6119,7 +6059,9 @@ function paintPending(){
     txt('pend-home-h',items.length>1?'ועוד שני דברים':'ועוד דבר אחד');
   }
   if(act){act.style.display=items.length?'':'none';act.innerHTML=html}
-  if(tab)tab.classList.toggle('pend',items.length>0);
+  /* הנקודה שעל הטאב נגזרת משתי העובדות יחד, ולכן היא נכתבת
+     במקום אחד. ראו `actDot`. */
+  paintActDot();
 }
 /* ההזמנה שנדחתה, בשני המקומות שבהם היא מופיעה. השם של מי שהזמין נשאב
    מהשרת פעם אחת.
@@ -12705,10 +12647,7 @@ function blankBeforeFirstLoad(){
   relatives.length=0;letters.length=0;requests.length=0;pays.length=0;
   topbars[10][0]='';
   txt('pf-name','');
-  txt('nh-name','');
   txt('mi-meta','');
-  const nh=document.getElementById('nhdr');
-  if(nh)nh.style.visibility='hidden';
 }
 
 function buildConnection(){
@@ -12760,7 +12699,6 @@ function myEmail(){
 function setMyName(name){
   if(!name)return;
   topbars[10][0]=name;
-  txt('nh-name',name);
   txt('pf-name',name);
   /* הכותרת נצבעת בתוך go(), אז מסך שכבר פתוח צריך רענון ידני.
      לא לפני הנחיתה: שם "המסך שכבר פתוח" הוא זה שמסומן ב-HTML ולא
@@ -12779,7 +12717,7 @@ function applyMyAvatar(av){
   /* ‏#s-facem ירד מהרשימה עם פס הפילוח שהוא ישב בתוכו. הפרצוף שלי
      במתג של "מה מחכה להם" נצבע מ-fuItems ולא מכאן, כי שם הוא אחד
      מכמה ולא "הפרצוף שלי" בפינה. */
-  document.querySelectorAll('.topbar .me, .hdr .me, .nhdr .me').forEach(function(box){
+  document.querySelectorAll('.topbar .me, .hdr .me').forEach(function(box){
     box.innerHTML=html;
   });
   if(av&&av.indexOf('av-')!==0&&!photoUrl(av))
@@ -14555,16 +14493,25 @@ function feedNewCount(){
     return e.at&&new Date(e.at).getTime()>t;
   }).length;
 }
-/* שתי נקודות ולא אחת, כי לכפתור הפעילות יש שני בתים: .nhdr שמשרת
-   את שלושת הטאבים שעוד לא קיבלו ראש ירוק, והראש של "ההשקעות שלי".
-   שתיהן על אותה עובדה, ולכן אותה פונקציה כותבת לשתיהן. */
+/* ‏**שתי הנקודות התאחדו לאחת, וזה מה שירידת כפתור הפעילות הכריחה.**
+   עד כה היו שתיים על שתי עובדות: "מה ממתין לתשובה שלך" על הטאב
+   שבסרגל, ו"מה חדש בפיד" על כפתור הפעילות שבשורה העליונה. השורה
+   ירדה מכל ארבעת הטאבים, ואיתה הכפתור — ומה שנשאר בראש הוא כפתור
+   **הפרופיל**, כלומר נקודה שאומרת "חדש בפיד" על הכפתור שפותח מסך
+   אחר. **סימן שיושב על פעולה שאינו מתאר הוא גרוע מסימן שאינו קיים.**
+
+   עכשיו שתיהן על טאב הפעילות, שהוא הכניסה היחידה שנשארה, ושתיהן
+   אומרות בו את אותו הדבר: יש שם משהו בשבילך. ‏`actDot` הוא המקום
+   היחיד שמכריע, ושני הפיינטרים קוראים לו — אחרת כל אחד מהם היה
+   מכבה את מה שהשני הדליק. */
+function actDot(){return pendItems().length>0||feedNewCount()>0}
+function paintActDot(){
+  const tab=document.getElementById('tab-act');
+  if(tab)tab.classList.toggle('pend',actDot());
+}
 function paintNewDot(){
   if(!feedSeen()&&feedRows.length)markFeedSeen();
-  const on=feedNewCount()>0?'':'none';
-  ['nh-dot','mi-actdot'].forEach(function(id){
-    const d=document.getElementById(id);
-    if(d)d.style.display=on;
-  });
+  paintActDot();
 }
 /* שתי הכניסות למסך הפעילות, הכפתור שבראש והטאב שבסרגל, עוברות
    דרך כאן. הסימון נמחק כאן ולא ב-go(9), כי go הוא גם החזרה אחורה
@@ -14696,6 +14643,12 @@ function buildHomeSummary(fast){
     }else if(anyPick&&fuSigNow!==fuSig){
       fuRow.innerHTML=fuPickHTML(fuAll,fuPick);
       fuSig=fuSigNow;fuPickDrawn=false;
+      /* ‏`fuMarkOn` הוא **המקום היחיד** שכותב את השם שבראש הירוק,
+         ולכן ציור מחדש של המתג בלי קריאה אליו משאיר "מה מחכה ל ·"
+         מעל כרטיס שכבר נוקב בשם. זה קרה בכניסה הראשונה, **ושוב
+         כשקישור חתום של תמונה מגיע** — החתימה כוללת אותו, כלומר
+         שם שכבר היה נכון התרוקן. */
+      fuMarkOn(fuAll,fuPick);
     }else if(anyPick){
       fuMarkOn(fuAll,fuPick);
     }else{fuRow.innerHTML='';fuSig='';}
