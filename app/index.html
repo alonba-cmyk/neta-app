@@ -961,10 +961,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .pc-side{font-size:11.5px;font-weight:600;color:var(--sun-soft)}
 .pc-side.dim{color:var(--tx-3);font-weight:400}
 /* בכרטיס שאין בו עמודת פרצופים השתחררו 74 פיקסלים, ולכן האייקון,
-   השם והצפי גדלים. ‏pc-solo ולא #mi-list: אותו כרטיס מצויר גם
-   ב-kin-ghost, והדגם חייב להיראות כמו הדבר עצמו. וגם לא על
-   הקלאסים הגלובליים, שמשרתים את גרסת הפרצופים — שם הרוחב לא
+   השם והצפי גדלים. ‏pc-solo ולא מזהה של מסך, כי זה מצב של הרכיב
+   (`nofaces`) ולא של המקום שהוא מצויר בו. וגם לא על הקלאסים
+   הגלובליים, שמשרתים את גרסת הפרצופים — שם הרוחב לא
    השתחרר, ושם אותה הגדלה הייתה שוברת את השם.
+   **ואין לו היום קורא:** הרשימה ב"ההשקעות שלי" עברה לשורות
+   מקובצות לפי אדם, והוא נשאר כמצב של plantCard למי שיעביר
+   ‏nofaces.
    נמדד ב-320 עד 430: אף שם ואף שורת סכום אינם נשברים, והכרטיס
    נשאר 86. */
 /* הריבוע מודד את השם והסכום, לא את שלוש השורות. גובה השם 22,
@@ -1552,24 +1555,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   background:none;font-family:inherit;
   color:var(--tx-3);font-size:12.5px;cursor:pointer;transition:.15s}
 .reladd:hover{background:var(--leaf-bg);color:var(--tx-2)}
-/* הפעולה של רגע שהוזמנת אליו ועוד לא הפקדת בו יושבת **בתוך**
-   הכרטיס ולא כתחתית שלו. הגרסה הראשונה איחדה את שניהם לצורה אחת
-   (הכרטיס בלי פינות תחתונות, הכפתור צמוד אליו מקצה לקצה), ואלון
-   ביקש עקביות עם שאר המסכים: באפליקציה פעולה שבתוך כרטיס יושבת
-   בתוך הריפוד שלו, כמו "+ הוסף קרוב" ברשימת הקרובים.
-
-   ‏.ivjoin הוא עכשיו הכרטיס עצמו — מסגרת, פינות וריפוד — והשורה
-   שבפנים מאבדת את שלה. */
-.ivjoin{background:var(--s1);border:1px solid var(--line);border-radius:13px;
-  padding:12px;margin-bottom:9px;transition:border-color .16s}
-.ivjoin:hover{border-color:var(--line-2)}
-.ivjoin .ncard{background:none;border:0;border-radius:0;padding:0;margin:0}
-.ivjoin .btn{margin-top:10px;font-size:13px;padding:11px}
-/* ומשתי הזמנות ומעלה רק הקרובה מקבלת כפתור מלא, והשאר שורה ירוקה
-   מעל קו מפריד: שני כפתורים ירוקים על מסך אחד הם שתי פעולות
-   ראשיות. הקו הוא --rule, המפריד שבתוך כרטיס. */
-.ivjoin .ivrow{margin-top:10px;padding-top:10px;border-top:1px solid var(--rule);
-  color:var(--leaf);font-weight:600;font-size:13px;text-align:center;cursor:pointer}
+/* ‏.ivjoin ו-.ivrow ירדו בסבב ספטמבר 2026 יחד עם הכרטיס שהם שירתו:
+   הרשימה ב"ההשקעות שלי" מקובצת עכשיו לפי אדם, ואין בה כרטיס רגע
+   שהפעולה יכולה להיצמד אליו. מה שבא במקומם הוא .invbox, קופסה
+   נעוצה בראש הגיליון עם שורה לכל רגע שממתין וכפתור ירוק אחד. */
 /* שורת החזרה לרשימה: בראש הפאנל, שקטה, ובלי קו תחתון. היא ניווט
    ולא קישור בתוך משפט. */
 #c-kidback{display:block;padding:0;margin:0 0 10px;font-size:12.5px;
@@ -1980,21 +1969,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שלנו", ושם היא נדחתה; כאן הנפילה קטנה בהרבה, ובמכשיר 360x640
    כרטיס אחד עדיין נשאר מעל הקיפול.
 
-   ממוקד ל-[data-name="הבית"]: .summary משרתת גם את "הנטיעות שלי",
-   ושם המספר עדיין יושב בשורה עם הנבט. */
-/* עשרה פיקסלים כדי שהנבט ינחת ב-101, בדיוק כמו האיור בשלושת
-   הראשים ובארבעת המצבים הריקים. בלעדיהם המסך הזה לבדו פותח עשרה
-   פיקסלים גבוה יותר, וזה נראה במעבר בין טאבים. הריפוד הוא בדיוק
-   זה של הראשים, כי גם הם מתחילים מאפס. */
-[data-name="הבית"] .summary{padding-top:26px}
-[data-name="הבית"] .summary .s-row{flex-direction:column;align-items:center;
-  text-align:center;gap:6px}
-[data-name="הבית"] .summary .s-art{order:-1}
-[data-name="הבית"] .s-meta{justify-content:center}
-/* ‏"עוד לא הפקדת" יושב במקום המספר, ולכן הוא אינו בגודל שלו: מספר
-   גדול שאין בו ספרה מתחזה למספר, וזה מה ש-"·" עשתה כאן לפניו. */
-[data-name="הבית"] #mi-meta{font-size:17px;font-weight:600;color:var(--tx);
-  line-height:1.35;margin-top:10px;max-width:290px;margin-inline:auto;text-wrap:balance}
+   **וכל התיאור הזה הוא היסטוריה מסבב ספטמבר 2026.** הנבט, המספר
+   הממורכז, הכותרת ושורת שלוש העובדות ירדו כולם, ובמקומם ראש ירוק
+   עם כרטיס. חמשת הכללים שהיו כאן נמחקו איתם: **סלקטור שאינו מצביע
+   על דבר הוא בדיוק המלכודת שהפרק "כלל שהורחב ואז מצטמצם" מתאר**,
+   ו-#mi-meta היה גרוע מזה — הוא המשיך להצביע על צומת שקיים, ולכן
+   צבע את הכותרת שעל הראש הירוק ב---tx, כלומר כהה על כהה.
+   ‏.summary עצמה נשארה, כי אותה שורה משרתת גם את "הנטיעות שלי". */
+/* הראש הירוק והפאנל הלבן ממלאים את הבמה, ולכן המסך הוא עמודת flex. */
+.screen.on[data-name="הבית"]{display:flex;flex-direction:column}
 /* שלושת התגים מתפרסים סביב הראש. הכלל הגלובלי של .esfaces.kids
    ממקם כל i באותה פינה, ולכן שלושתם היו יושבים זה על זה; ממוקד
    ל-#act-head, כי בכל שאר המקומות יש תג אחד בדיוק.
@@ -2098,8 +2081,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ואותם ארבעה פיקסלים בדיוק חלים על הדגם הדוהה שמתחת, מאותה סיבה:
    הוא היה 346 בשלושה ו-354 ב"הקרובים שלי", כלומר הקצה של הכרטיס
    הדוהה זז ארבעה פיקסלים לכל צד במעבר. */
-#home-empty > .btn,#kin-empty > .btn,#act-empty > .btn,
-#home-ghost,#kin-ghost,#act-ghost{
+/* ‏#kin-empty ו-#kin-ghost ירדו מכאן בסבב ספטמבר 2026: המצב הריק
+   של "ההשקעות שלי" אינו יותר .es אלא גיליון לבן מתחת לראש הירוק,
+   והדגם הדוהה הוחלף בשלושת הצעדים. ‏width:auto על כפתור שאינו יותר
+   פריט flex מכווץ אותו לרוחב הטקסט, בלי שום שגיאה, וזה בדיוק מה
+   שקרה שם. */
+#home-empty > .btn,#act-empty > .btn,
+#home-ghost,#act-ghost{
   width:auto;align-self:stretch;margin-inline:-4px}
 /* מסך הסיום מאמץ את אותה מוסכמת טיפוגרפיה, בלי לאמץ את .es עצמו:
    ‏min-height:62% שלו נועד למסך שאין בו דבר מלבד ההודעה, וכאן יש
@@ -2364,6 +2352,133 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   background:var(--face-fill);
   box-shadow:0 0 0 2px var(--sun-on-leaf),0 0 0 5px var(--leaf-head)}
 .leafcard .pt svg,.leafcard .pt img{display:block;width:100%;height:100%;object-fit:cover}
+/* שורת הברכה שבתוך הראש הירוק. היא מה שמחליף את .nhdr במסך הזה:
+   הברכה, השם ושני הכפתורים עוברים אל הירוק, ו-.nhdr יורד. כל מסך
+   שיקבל ראש ירוק יעשה את אותו הדבר, ובסוף .nhdr יורד לגמרי. */
+.leafhead .hgreet{display:flex;align-items:center;gap:10px}
+.leafhead .hgreet .fc{width:38px;height:38px;border-radius:50%;overflow:hidden;
+  flex:none;background:var(--face-fill);border:0;padding:0;cursor:pointer}
+.leafhead .hgreet .fc svg,.leafhead .hgreet .fc img{display:block;width:100%;height:100%;object-fit:cover}
+.leafhead .hgreet .g1{font-size:12.5px;color:var(--mist);line-height:1.3}
+.leafhead .hgreet .g2{font-size:16px;font-weight:700;color:var(--on-head);line-height:1.3}
+.leafhead .hgreet .acts{margin-inline-start:auto;display:flex;align-items:center;gap:8px}
+/* אותם כפתורי ראש של .nhdr, בצבעי הראש: מתאר חול על ירוק במקום
+   מתאר --line על לבן. */
+.leafhead .ab{width:34px;height:34px;border-radius:50%;flex:none;display:grid;
+  place-items:center;background:none;border:1px solid var(--leaf-tile-line);
+  color:var(--sun-on-leaf);cursor:pointer;position:relative}
+.leafhead .ab .dot{position:absolute;top:1px;inset-inline-end:1px;width:8px;height:8px;
+  border-radius:50%;background:var(--sun-on-leaf);box-shadow:0 0 0 2px var(--leaf-head)}
+/* "איך זה עובד", עד הנטיעה הראשונה בלבד. גלולה ולא כפתור עגול, כי
+   היא נושאת מילים ולא אייקון. */
+.leafhead .howl{display:flex;align-items:center;gap:6px;height:34px;padding:0 13px;
+  border-radius:99px;border:1px solid var(--leaf-tile-line);background:none;
+  color:var(--sun-on-leaf);font:600 13px/1 inherit;font-family:inherit;
+  white-space:nowrap;cursor:pointer;flex:none}
+
+/* המספר הגדול שבכרטיס. לבן ולא חול: כאן הוא כסף שקיים, ומה שחול
+   בכרטיס הזה הוא הצפי שבשורה התחתונה. */
+.leafcard .bignum{font-size:clamp(30px,9.2vw,38px);font-weight:800;color:var(--on-head);
+  line-height:1.05;letter-spacing:-.5px;white-space:nowrap}
+.leafcard .lead{font-size:14.5px;color:var(--on-leaf-2);line-height:1.45;
+  margin-top:6px;text-wrap:balance}
+/* שורת הצפי והפרצופים. הקו הוא border-top שלה, ולכן כשאין מה לומר
+   מתחתיו הוא יורד איתה — כאן זה בסדר, כי בניגוד לשורת העובדות
+   שקדמה לה אין מעליה רשימה שצריך להפריד ממנה. */
+.leafcard .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-top:14px;padding-top:12px;border-top:1px solid var(--leaf-tile-line)}
+.leafcard .foot .l{font-size:12px;color:var(--mist)}
+.leafcard .foot .v{font-size:21px;font-weight:700;color:var(--sun-on-leaf);margin-top:1px;
+  white-space:nowrap}
+
+/* שלושת העיגולים הריקים של המצב הריק: אותה ערימה, בלי ＋ ובלי
+   פרצוף. הם אומרים "כאן יעמדו אנשים" ולא "אפשר להוסיף", שזה מה
+   שהכפתור כבר אומר. */
+.stk.dash>span{background:none;border:1.5px dashed var(--leaf-tile-line);
+  box-shadow:none}
+/* קופה שלא יועדה בתוך הערימה: ריבוע מעוגל עם האמוג׳י, כי אין לה
+   נהנה ועיגול הוא אדם. */
+.stk>span.sq{border-radius:14px;background:var(--leaf-bg);display:grid;
+  place-items:center;font-size:19px}
+
+/* שורת אדם ברשימה. פרצוף, שם, הרגעים שלו, הסכום שלי בו, וחץ. */
+.prow{display:flex;align-items:center;gap:14px;width:100%;text-align:start;
+  padding:10px 0;border:0;background:none;font-family:inherit;cursor:pointer;
+  border-bottom:1px solid var(--s2)}
+.prow:last-of-type{border-bottom:0}
+.prow .fc{width:44px;height:44px;border-radius:50%;overflow:hidden;flex:none;
+  background:var(--face-fill)}
+/* עיגול הוא אדם וריבוע מעוגל הוא רגע, ולכן קופה שלא יועדה אינה
+   מקבלת פרצוף: אין לה נהנה, וצללית אנונימית שם היא אדם שאינו קיים. */
+.prow .fc.sq{border-radius:14px;background:var(--leaf-bg);display:grid;
+  place-items:center;font-size:20px}
+.prow .fc svg,.prow .fc img{display:block;width:100%;height:100%;object-fit:cover}
+.prow .grow{flex:1 1 auto;min-width:0}
+.prow .t{font-size:15.5px;font-weight:600;color:var(--tx);line-height:1.3}
+.prow .s{font-size:12.5px;color:var(--tx-3);margin-top:2px;line-height:1.4}
+.prow .a{font-size:16px;font-weight:600;color:var(--leaf);white-space:nowrap;flex:none}
+/* שורת ההוספה בסוף הרשימה. אותו מבנה של .prow בדיוק — ריבוע, שתי
+   שורות טקסט — ולכן היא נקראת כשייכת לרשימה ולא ככפתור שהודבק
+   מתחתיה. **ואין במסך המלא שום כפתור ירוק:** הפעולה הקבועה יושבת
+   בסרגל התחתון, והירוק היחיד בגיליון הוא זה שצמוד לבאנר "מחכה לך",
+   כשיש. זו אותה הכרעה שכבר יושבת ב"הקרובים שלי". */
+.prow.add{cursor:pointer;border-bottom:0}
+.prow.add .fc{background:none;border:1.5px dashed var(--leaf);
+  border-radius:14px;display:grid;place-items:center;
+  color:var(--leaf);font-size:22px;font-weight:400;line-height:1}
+.prow.add .t{color:var(--leaf)}
+
+/* "איך מתחילים": שלושה צעדים ממוספרים. ‏.howsteps ולא .steps,
+   שכבר תפוס בקובץ כסרגל השלבים של האשף — ושם הוא display:flex,
+   כלומר שלושת הצעדים יצאו זה לצד זה. */
+.howsteps .r{display:flex;align-items:center;gap:14px;padding:10px 0;
+  border-bottom:1px solid var(--s2)}
+.howsteps .r:last-child{border-bottom:0}
+.howsteps .n{width:30px;height:30px;border-radius:50%;background:var(--leaf-bg);
+  color:var(--leaf);font:700 14px/1 inherit;display:grid;place-items:center;flex:none}
+.howsteps .t{font-size:15.5px;font-weight:600;color:var(--tx)}
+.howsteps .s{font-size:12.5px;color:var(--tx-3);margin-top:2px;line-height:1.4}
+
+/* ── הבאנר "מחכה לך" ─────────────────────────────────────────────
+   מה שממתין לתשובה שלי, נעוץ בראש הגיליון הלבן. **וכשיש כמה, זו
+   קרוסלה ולא רשימה**: הגרסה הראשונה ערמה שורה מתחת לשורה, ואלון
+   ראה שזה אינו מה שהעיצוב אומר. מה שמחזיק את הקרוסלה: הבאנר יושב
+   מעל התוכן האמיתי של המסך, ורשימה שגדלה עם מספר ההזמנות דוחפת
+   אותו מטה בלי גבול — כלומר מה שממתין לתשובה מתחיל לדחוק את מה
+   שכבר עשית. לקרוסלה יש גובה אחד, ולא משנה כמה יש.
+
+   כל השקפים ב-grid-area אחד, ולכן הגובה הוא של הגבוה שבהם ושום
+   דבר אינו קופץ בהחלפה; זו אותה הכרעה של קרוסלת המכתבים בדף הבית
+   (ltcar), ושם היא נמדדה. ‏touch-action:pan-y כדי שהחלקה אנכית
+   תישאר גלילה של הדף. */
+.invbox .trk{display:grid;border-radius:18px;overflow:hidden;touch-action:pan-y}
+.invbox .invrow{grid-area:1/1;display:flex;align-items:center;gap:12px;
+  border:1.5px solid var(--leaf-line);border-radius:18px;padding:12px 14px;
+  opacity:0;transform:translateX(14px);pointer-events:none;
+  transition:opacity .35s,transform .35s}
+/* ‏translateX חיובי הוא ימינה במסמך RTL, ולכן השקף הנכנס מגיע מהצד
+   שממנו קוראים. */
+.invbox .invrow.on{opacity:1;transform:none;pointer-events:auto}
+.invbox .fc.sq{border-radius:14px;background:var(--leaf-bg);display:grid;
+  place-items:center;font-size:20px}
+.invbox .fc{width:44px;height:44px;border-radius:50%;overflow:hidden;flex:none;
+  background:var(--face-fill)}
+.invbox .fc svg,.invbox .fc img{display:block;width:100%;height:100%;object-fit:cover}
+.invbox .t{font-size:15px;font-weight:600;color:var(--tx);line-height:1.35}
+.invbox .s{font-size:12.5px;color:var(--tx-3);margin-top:2px}
+/* הנקודות. הפעילה מתארכת ל-16 במקום להחליף צבע בלבד, כי שש נקודות
+   בשני גוונים של חול נקראות כרעש. */
+.invbox{margin-bottom:14px}
+.invdots{display:flex;justify-content:center;gap:5px;margin-top:10px}
+/* באנר בודד: אין נקודות, ולכן גם אין את האוויר שמתחתן. */
+.invdots:empty{display:none}
+.invdots i{width:6px;height:6px;border-radius:99px;background:var(--line-2);
+  display:block;transition:width .25s,background .25s;cursor:pointer}
+.invdots i.on{width:16px;background:var(--sun-big)}
+/* "מחכה לך" ולצידו "1 מתוך 3". המונה קל יותר מהתווית, כי הוא מצב
+   ולא כותרת. */
+.invhd{display:flex;justify-content:space-between;align-items:baseline}
+.invhd .of{font-size:11px;letter-spacing:0;color:var(--tx-3)}
 /* התצוגה המקדימה שבעל הנטיעה רואה במסך ההזמנה. אותו ציור ואותם
    כללים, בלי המרווח השלילי ובקנה מידה קטן: ההזמנה שהוא שולח נראית
    לו כמו שהיא, ולא כחיקוי שמתיישן בסבב הבא. */
@@ -2395,9 +2510,17 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ── הפאנל הלבן שמתחת לראש הירוק ─────────────────────────────────
    זה הרכיב שמגדיר את כל השפה החדשה: כמעט כל מסך מרכזי הוא ראש ירוק
    ומתחתיו הפאנל הזה, שמטפס 40 פיקסלים אל תוך הראש. הוא אינו הגיליון
-   התחתון (.sheet) ואין לו שום קשר אליו. */
-.sheetup{background:var(--s1);border-radius:28px 28px 0 0;margin-top:-40px;
-  position:relative;flex:1 1 auto;display:flex;flex-direction:column;padding-top:24px}
+   התחתון (.sheet) ואין לו שום קשר אליו.
+
+   **והוא יוצא מהריפוד של .stage אל שני הצדדים, כמו הראש הירוק,
+   ומחזיר אותו בתוכו.** בלי זה הוא היה פאנל ברוחב התוכן והירוק היה
+   מציץ משני צדדיו; ובעיקר, הפינה המעוגלת (28) הייתה חותכת את
+   השורה הראשונה שבתוכו — התווית "מחכה לך" נגעה בקצה הימני בזמן
+   שהקופסה שמתחתיה כבר בתוך העיגול. הריפוד הוא אותם 18 שהבמה
+   נותנת, ולכן רוחב התוכן בתוך הפאנל זהה לרוחב התוכן בכל מסך אחר. */
+.sheetup{background:var(--s1);border-radius:28px 28px 0 0;
+  margin:-40px -18px 0;padding:24px 18px 0;
+  position:relative;flex:1 1 auto;display:flex;flex-direction:column}
 
 /* ── מתג מפולח ───────────────────────────────────────────────────
    ברירת המחדל היא על הראש הירוק, כי שם הוא מופיע (בורר הילד
@@ -2494,7 +2617,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '28d868f';
+window.NETA_BUILD = '51f888f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3751,120 +3874,115 @@ window.NETA_CONFIG = {
        לתחתית, אל pend-home, ואיתו התאחד עם ההזמנה שנדחתה: שתיהן
        "מישהו מחכה לתשובה שלך", שתיהן ישבו בשני מקומות שונים בשתי
        צורות שונות, ושתיהן נכתבו בשני זמנים. -->
-  <div id="kin-full">
-  <div class="summary">
-    <div class="s-row">
-      <div class="s-body">
-        <!-- אין כאן eyebrow. הוא היה שורה שלמה שמסך הבית אינו מחזיק,
-             ולכן המספר ישב כאן 17 פיקסלים נמוך יותר — והמעבר בין שני
-             הטאבים קפץ. "השקעת" עבר לשורה שמתחת למספר, שם מסך הבית
-             אומר "נצבר", וכך שני הראשים זהים במבנה ושונים רק במילה
-             שבאמת מבדילה ביניהם. -->
-        <div class="s-num" id="mi-num">300 ₪</div>
-        <div class="s-label" id="mi-meta"></div>
+
+  <!-- ראש ירוק ומתחתיו פאנל לבן. הברכה, השם ושני הכפתורים עברו לכאן
+       מ-.nhdr, שיורדת במסך הזה: כל מסך שמקבל ראש ירוק לוקח אותה
+       אליו, ובסוף היא יורדת לגמרי.
+
+       ומה שירד מכאן: הנבט, המספר בשורה עם הכותרת, ושורת העובדות בת
+       שלוש העובדות. מה שנשאר ממנה הוא הצפי, בתוך הכרטיס ולצד
+       הפרצופים. **המחיר נאמר ונבחר:** הקצב החודשי ("390 ₪ בכל
+       חודש") והספירה ("ב-5 רגעים") יורדים מהמסך, והקצב מפסיק
+       להופיע באפליקציה חוץ ממסך הרגע. -->
+  <div class="leafhead" id="mi-hd">
+    <div class="hgreet">
+      <!-- הפרצוף פותח את "השם והתמונה שלי" והכפתור שמשמאלו את
+           הפרופיל, בדיוק כמו ב-.nhdr. **בעיצוב אין כאן שני
+           הכפתורים**, ובלעדיהם אין באפליקציה שום דרך להגיע
+           לפרופיל: הוא ירד מהסרגל התחתון כשהטאב החמישי חזר
+           ל"פעילות". -->
+      <button class="fc" id="mi-face" onclick="editMyIdentity()" title="השם והתמונה שלי"></button>
+      <div>
+        <div class="g1" id="mi-greet">·</div>
+        <div class="g2" id="mi-name">·</div>
       </div>
-      <!-- הנבט נשאר כאן ויורד ממסך הבית: שם יש מעכשיו שני מספרים
-           שצריכים את כל הרוחב, וכאן נשאר מספר אחד. -->
-      <div class="s-art">
-        <svg width="51" height="60" viewBox="0 0 60 70" aria-hidden="true"><use href="#sprout-pot"/></svg>
+      <div class="acts">
+        <!-- עד הנטיעה הראשונה בלבד. מי שכבר נטע יודע מה זה. -->
+        <button class="howl" id="mi-how" style="display:none" onclick="howOpen()">
+          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"/></svg>איך זה עובד</button>
+        <button class="ab" id="mi-prof" onclick="go(10)" aria-label="הפרופיל שלי"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-person"/></svg></button>
+        <button class="ab" id="mi-act" onclick="openActivity()" aria-label="פעילות"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-feed"/></svg><i class="dot" id="mi-actdot" style="display:none"></i></button>
       </div>
     </div>
-    <!-- אותה שורת עובדות כמו במסך הבית, ובאותו מבנה: ההפקדה החודשית,
-         מספר הרגעים כשיש יותר מאחד, והצפי האישי בזהב. קודם ישב כאן
-         כרטיס בן שתי שורות, שהחזיק את אותן שתי עובדות במשקל של טבלה
-         ודחף את הרשימה למטה. -->
-    <div class="s-meta">
-      <!-- שתי עובדות בלבד, ושתיהן על המספר שמעליהן: הקצב החודשי שלי
-           והצפי שלי. השורה החזיקה חמש, ומהן שתיים תיארו את הכסף של
-           מי שפתח את הרגע ("9,700 ₪ כבר נצבר ברגעים", "דוד יוסי
-           וסבתא רחל נוטעים איתך") ואחת ספרה את הרשימה שמתחת.
 
-           מה שהכריע הוא מדידה: בחמש עובדות בשורה גולשת החלוקה בין
-           השורות נקבעת מרוחב המכשיר. ב-360 וב-390 היא יצאה במקרה
-           לפי נושא, ב-430 "390 ₪ בכל חודש" עלה לשורה של הכסף של
-           האחרים, וב-320 יצאו שלוש שורות בגובה 74. כלומר הקיבוץ
-           שהעין קוראת הוא תאונה.
-
-           הפירוט עבר למקומו: הכסף שנצבר ברגע ומי נוטע בו יושבים על
-           הכרטיס של אותו רגע, והספירה בתווית שמעל הרשימה שהיא
-           סופרת — בדיוק כמו שכבר נעשה בכותרות הסקשנים. -->
-      <!-- שתי העובדות של מי שצורף לרגע של מישהו אחר. הן ירדו כשהן
-           עברו אל הכרטיסים, ואלון ביקש שהשורה לא תישאר ריקה אצל מי
-           שעוד לא הפקידה — ולכן הן חוזרות **רק כשאין לה מה לומר
-           בלעדיהן**, כלומר כשאין קצב ואין צפי. המחיר נאמר: אצל מי
-           שהוזמנה לרגע אחד הן חוזרות על מה שהכרטיס שמתחת כבר אומר,
-           במרחק 100 פיקסלים. -->
-      <span id="mi-potgrp" style="display:none"><b id="mi-pot">·</b> <span id="mi-potk">כבר נצבר ברגע</span></span>
-      <span class="grp" id="mi-whogrp" style="display:none"><i></i><span id="mi-who">·</span></span>
-      <span id="mi-mongrp"><b id="mi-mon">·</b> בכל חודש</span>
-      <span class="grp" id="mi-cntgrp"><i></i><span id="mi-cnt">בשני רגעים</span></span>
-      <span class="grp" id="mi-projgrp"><i></i><span>יגדל ל<b class="fut" id="mi-proj">·</b></span></span>
+    <div class="leafcard">
+      <p class="bignum" id="mi-num">·</p>
+      <!-- משפט אחד, תמיד, ובלי מגדר. העיצוב נוקב במספר הנהנים
+           ובפנייה ("שלושה אנשים שאתה אוהב"), ואלון ביקש כותרת
+           אחידה — "הכי יקרים לך" ולא "היקרים שלך", כי "לך" זהה
+           בשני המגדרים בכתיב חסר ו"הכי" הוא מה שמחזיר את החום
+           שהניסוח המחושב נשא. -->
+      <p class="lead" id="mi-meta">·</p>
+      <div class="foot" id="mi-foot">
+        <div style="min-width:0">
+          <p class="l" id="mi-projk">בקצב הזה ייצבר להם</p>
+          <p class="v" id="mi-proj">·</p>
+        </div>
+        <!-- במצב מלא פרצופי הנהנים, ובריק שלושה עיגולים מקווקווים.
+             אותה ערימה בדיוק, ולכן המעבר בין שני המצבים הוא מילוי
+             ולא רכיב אחר. -->
+        <span class="stk on-leaf" id="mi-faces" aria-hidden="true"></span>
+      </div>
     </div>
   </div>
 
-  <p class="eyebrow big" id="mi-head">הרגעים שהשקעת בהם</p>
-  <div id="mi-list"></div>
-  <!-- שורה מקווקוות ולא כפתור ירוק: מי שהוזמנה לרגע של קרוב מקבלת
-       כפתור מלא על הרגע ההוא, ושני כפתורים ירוקים על מסך אחד הם שתי
-       פעולות ראשיות. אותה הכרעה בדיוק כמו "+ הוסף קרוב". וכשאין שום
-       רגע שממתין להפקדה הוא חוזר להיות הכפתור הראשי, כי אז הוא
-       הפעולה היחידה במסך. -->
-  <button class="reladd" id="garden-new" style="width:100%" onclick="startCreate()">+ פתח נטיעה משלך</button>
+  <div class="sheetup">
+    <!-- ההזמנה שממתינה להפקדה, נעוצה בראש. היא הייתה כפתור על
+         כרטיס הרגע, ומרגע שהרשימה מקובצת לפי אדם אין כרטיס רגע
+         להיצמד אליו. -->
+    <div id="mi-inv" style="display:none">
+      <p class="eyebrow big invhd" id="mi-invh" style="margin-top:0">
+        <span>מחכה לך</span><span class="of" id="mi-invof"></span></p>
+      <!-- קרוסלה כשיש כמה, באנר בודד כשיש אחד. הכפתור שמתחת עוקב
+           אחרי השקף הפעיל: כפתור שנוקב בשם אחד מתחת לבאנר שמראה
+           שם אחר הוא בדיוק מה שהקרוסלה מייצרת אם שוכחים אותו. -->
+      <div class="invbox" id="mi-invbox"><div class="trk" id="mi-invtrk"></div>
+        <div class="invdots" id="mi-invdots"></div></div>
+      <button class="btn gap" id="mi-invcta">·</button>
+    </div>
 
-  </div><!-- /kin-full -->
+    <div id="kin-full">
+    <p class="eyebrow big" id="mi-head">למי נטעת</p>
+    <div id="mi-list"></div>
+    <!-- שורה מקווקוות ולא כפתור ירוק, כשיש הזמנה שממתינה: שני
+         כפתורים ירוקים על מסך אחד הם שתי פעולות ראשיות. -->
+    <button class="prow add" id="garden-new" onclick="startCreate()">
+      <span class="fc">+</span>
+      <div class="grow"><div class="t">לנטוע למישהו נוסף</div>
+        <div class="s">ילד, נכד, אחיין, או כל קרוב</div></div>
+    </button>
+    </div><!-- /kin-full -->
 
-  <!-- אותו מצב ריק של הבית, כי זו אותה עובדה: עוד לא נטעת. -->
-  <div class="es" id="kin-empty" style="display:none">
-    <!-- אותו נבט ובאותו גודל כמו במצב הריק של "כל הנטיעות". קודם הוא
-         היה 63x74 מול 66x78, כי גובה הגוש נגזר אז מהאיור עצמו והיה
-         צריך לכוון אותו ידנית מול המצב הריק של הקרובים. מאז הגוש נעול
-         ל-81 בכולם, וההתאמה הידנית מיותרת. esalign בודק. -->
-    <!-- הנבט ירד מכאן. הוא זהה לזה שב"כל הנטיעות", ושני טאבים שכנים
-         שמציגים את אותו איור נראים כמו אותו מסך. הרגעים הם מה שמבדיל
-         את המסך הזה, ולכן הם האיור. הסדר כרונולוגי: בר מצווה, לימודים,
-         דירה, והראשון הוא גם העליון בערימה. -->
-    <!-- אותו תג כמו ב"העתיד שלנו", בדיוק הפוך: שם פרצוף עם תג רגע,
-         וכאן רגע עם תג פרצוף. שני מרכיבים, שני תפקידים, ולכן שני
-         איורים ולא אחד. ＋ ישב כאן לרגע ולא החזיק: הוא אומר "אפשר
-         להוסיף", וזה מה שהכפתור כבר אומר.
+    <!-- אותו מצב ריק, ובלי איור משלו: הראש הירוק הוא אותו ראש בשני
+         המצבים, ומה שמתחלף הוא המילוי שלו (שלושה עיגולים מקווקווים
+         במקום פרצופים) והגיליון שמתחתיו. צביר הרגעים שהיה כאן ירד
+         איתו, וכך גם הכותרת והמשפט: הראש כבר אומר "כאן יצטברו
+         ההשקעות שלך", והגיליון עונה על "איך מתחילים". -->
+    <div id="kin-empty" style="display:none">
+      <p class="eyebrow big" style="margin-top:0">איך מתחילים</p>
+      <div class="howsteps">
+        <div class="r"><span class="n">1</span><div style="min-width:0">
+          <div class="t">בוחרים למי</div>
+          <div class="s">ילד, נכד, אחיין, או כל קרוב</div></div></div>
+        <div class="r"><span class="n">2</span><div style="min-width:0">
+          <div class="t">בוחרים רגע</div>
+          <div class="s">לימודים, טיול אחרי צבא, חתונה, או משהו משלכם</div></div></div>
+        <div class="r"><span class="n">3</span><div style="min-width:0">
+          <div class="t">מחליטים כמה</div>
+          <div class="s">חד פעמי או כל חודש, מכל סכום</div></div></div>
+      </div>
+      <button class="btn gap" onclick="startCreate()">לנטוע בפעם הראשונה</button>
+      <p class="fine center" style="margin-top:10px">אפשר לשנות או לעצור בכל עת.</p>
+    </div>
 
-         שלוש דמויות אחרות מאלה שב"העתיד שלנו" (kid1/kid4/kid2),
-         כי שני מצבים ריקים שנושאים את אותה שלישייה נקראים כמו
-         אותו מסך.
-
-         התג יושב ישירות בתוך העיגול ולא בתוך .fc: אין כאן תמונה
-         שצריך לחתוך, רק אמוג'י ממורכז. -->
-    <div class="art"><span class="esfaces occ plus" aria-hidden="true">
-      <span>🎂<i><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-kid3"/></svg></i></span>
-      <span>🎓<i><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-kid6"/></svg></i></span>
-      <span>🏠<i><svg class="avsvg" viewBox="0 0 40 40"><use href="#av-kid5"/></svg></i></span>
-      </span></div>
-    <h3>כאן יופיעו ההשקעות שלך<br>בקרובים שלך</h3>
-    <!-- שתי שורות ב-390. "לאן זה הולך" ירד: שתי השאלות שנשארו הן
-         מה אני שם ולמה זה הופך, וזה בדיוק מה שהמסך מודד. -->
-    <p>לימודים, טיול אחרי צבא או חתונה, נטעו היום כדי שהם יוכלו לקצור את הפירות בעתיד</p>
-    <button class="btn" onclick="startCreate()">פתח את הנטיעה הראשונה</button>
-    <!-- ההבטחה של הסימולטור ישבה במצב הריק של "כל הנטיעות", שהיה אז
-         המסך הראשון שמשתמש חדש רואה. מאז הבית הוא מסך 14, והיא עברה
-         איתו: היא מה שמסביר למה בכלל לפתוח נטיעה, ולכן היא שייכת למסך
-         שנפתח ראשון ולא לטאב השני.
-
-         השבירה מפורשת ולא זרימה: המספר בשורה אחת, וההרגעה ("אפשר
-         לשנות") בשורה משלה. בזרימה חופשית "עת." נשאר לבדו בשורה
-         שלישית, או ש"אפשר לשנות" נדחק לסוף הראשונה ונקרא כחלק מהתחזית. -->
-    <p class="fine">100 ₪ בחודש יהפכו לכ-23,500 ₪ בעוד 13 שנה.<br>אפשר לשנות בכל עת.</p>
-    <div class="gsample" id="kin-ghost" aria-hidden="true"></div>
-  </div>
-  <!-- ההצצה לפעילות ישבה כאן, וירדה יחד עם החזרת הטאב: יעד שיש לו
-       כפתור בראש וטאב בסרגל אינו צריך גם סקשן במסך אחר. מה שנשאר
-       ממנה הוא הנקודה על כפתור הפעילות, שנשענת על אותו neta-feed-seen. -->
-  <!-- מה שממתין לתשובה שלך: בקשת אישור כהורה, הזמנה שנדחתה, או
-       שתיהן. השורות נבנות ב-pendRowsHTML ומוזרקות לשני המקומות מאותו
-       מקור, כדי שלא יהיו שוב שתי צורות לאותו דבר. -->
-  <div id="pend-home" style="display:none">
-    <p class="eyebrow" style="margin-top:22px" id="pend-home-h">ועוד דבר אחד</p>
-    <div id="pend-home-list"></div>
-  </div>
+    <!-- מה שממתין לתשובה שלך: בקשת אישור כהורה, הזמנה שנדחתה, או
+         שתיהן. השורות נבנות ב-pendRowsHTML ומוזרקות לשני המקומות
+         מאותו מקור, כדי שלא יהיו שוב שתי צורות לאותו דבר. -->
+    <div id="pend-home" style="display:none">
+      <p class="eyebrow" style="margin-top:22px" id="pend-home-h">ועוד דבר אחד</p>
+      <div id="pend-home-list"></div>
+    </div>
+  </div><!-- /sheetup -->
 </section>
 
 
@@ -4826,6 +4944,8 @@ const topbars={
    בהם: שם הכניסה לפרופיל היא המסך עצמו, וכפתור שמוביל למסך שכבר
    פתוח אינו כפתור. */
 const HDR_TABS=[0,9,14,15];
+/* הטאבים שכבר עברו לראש הירוק של סבב ספטמבר 2026. */
+const GREEN_HEAD=[14];
 /* הברכה נקבעת בכל פתיחת מסך ולא פעם אחת בטעינה: אפליקציה שנשארת
    פתוחה בטלפון חוצה את הגבול בלי שאיש יטען אותה מחדש.
 
@@ -4843,7 +4963,10 @@ function greetNow(){
 function paintHeader(i){
   const hd=document.getElementById('nhdr');
   if(!hd)return;
-  const on=HDR_TABS.indexOf(i)>=0;
+  /* מסך שקיבל ראש ירוק משלו נושא את הברכה, את השם ואת שני הכפתורים
+     בתוכו, ולכן .nhdr יורדת בו. כל טאב שיומר יצטרף לרשימה, ובסוף
+     היא יורדת לגמרי. */
+  const on=HDR_TABS.indexOf(i)>=0&&GREEN_HEAD.indexOf(i)<0;
   hd.classList.toggle('off',!on);
   if(!on)return;
   txt('nh-greet',greetNow());
@@ -5375,11 +5498,6 @@ function paintPending(){
   }
   if(act){act.style.display=items.length?'':'none';act.innerHTML=html}
   if(tab)tab.classList.toggle('pend',items.length>0);
-  /* הדגם הדוהה שבתחתית המסך הריק מראה "מה יופיע כאן". כשמשהו ממתין
-     כבר יש מה שיופיע כאן, והוא יורד: כרטיסייה דהויה בין הכפתור לבין
-     ההזמנה היא רעש בין שני דברים אמיתיים. */
-  const ghost=document.getElementById('kin-ghost');
-  if(ghost)ghost.style.display=items.length?'none':'';
 }
 /* ההזמנה שנדחתה, בשני המקומות שבהם היא מופיעה. השם של מי שהזמין נשאב
    מהשרת פעם אחת.
@@ -13215,17 +13333,6 @@ function buildGhosts(){
       '</div>';
   }
 
-  /* הדגם מסמן את מה שבאמת יופיע כאן, ובגובה שלו. המסך הזה מונה את מה
-     שאני נתתי, ולכן הדגם הוא כרטיס "נטעת" עם קצב חודשי — לא "נטעו". */
-  const kin=document.getElementById('kin-ghost');
-  if(kin){
-    kin.innerHTML=[['🎂','בר המצווה של פיסטוק',22000,10000,'2026-05-01'],
-                   ['🎓','הלימודים של נועה',4000,6000,'2024-03-01']]
-      .map(function(g){
-        return ivCardHTML({key:'',icon:g[0],name:g[1],mine:g[2],myMonthly:g[3],
-                           since:g[4],designated:true,familyMine:true});
-      }).join('');
-  }
 
   /* הדגם של הקרובים נבנה כאן ומוצג רק במצב הריק, כמו שאר הדגמים.
      הוא יושב אחרי "הוסף קרוב" ולא לפניו: הפעולה קודמת, והדגם אומר
@@ -13469,11 +13576,16 @@ function feedNewCount(){
     return e.at&&new Date(e.at).getTime()>t;
   }).length;
 }
+/* שתי נקודות ולא אחת, כי לכפתור הפעילות יש שני בתים: .nhdr שמשרת
+   את שלושת הטאבים שעוד לא קיבלו ראש ירוק, והראש של "ההשקעות שלי".
+   שתיהן על אותה עובדה, ולכן אותה פונקציה כותבת לשתיהן. */
 function paintNewDot(){
-  const d=document.getElementById('nh-dot');
-  if(!d)return;
   if(!feedSeen()&&feedRows.length)markFeedSeen();
-  d.style.display=feedNewCount()>0?'':'none';
+  const on=feedNewCount()>0?'':'none';
+  ['nh-dot','mi-actdot'].forEach(function(id){
+    const d=document.getElementById(id);
+    if(d)d.style.display=on;
+  });
 }
 /* שתי הכניסות למסך הפעילות, הכפתור שבראש והטאב שבסרגל, עוברות
    דרך כאן. הסימון נמחק כאן ולא ב-go(9), כי go הוא גם החזרה אחורה
@@ -14033,249 +14145,229 @@ function buildHomeSummary(){
    אין כאן קריאה נוספת לשרת: הרשימה היא lastModel, אותו מודל שמסך הבית
    כבר טען. מסך שמראה סכום אחר מזה שבמסך הקודם, כי הוא שאל שוב בזמן
    אחר, גרוע ממסך שמתעדכן רגע מאוחר יותר. */
-/* שם הרגע כפי שמציגים אותו לבעליו. במסד הוא נשמר כ"בר המצווה של
-   אלון בר דוד", וזה נכון: זה השם שקרוב רואה בהזמנה ובפיד, ושם הנהנה
-   הוא חלק ממנו. אבל כשהנהנה הוא מי שקורא, מסך שכל כולו שלו מדבר עליו
-   בגוף שלישי ובשמו המלא. אותה משפחה בדיוק כמו תשעת המקומות של
-   selfsay.js, רק שכאן המחרוזת מגיעה מהמסד ולא נבנית בלקוח.
+/* ‏plantTitle, ivCardHTML ו-ivJoinHTML ירדו בסבב ספטמבר 2026 יחד
+   עם הכרטיס שהן בנו: הרשימה כאן מקובצת לפי אדם, ושורה אחת מחזיקה
+   כמה רגעים. מה שהן אמרו עבר לשני מקומות — שם הרגע ל-momentNoun
+   שבתוך שורת ההזמנה, והפעולה לקופסה שנעוצה בראש הגיליון. */
+/* ── הבאנר "מחכה לך" ─────────────────────────────────────────────
+   שקף לכל רגע שהוזמנתי אליו ועוד לא הפקדתי בו, ומתחלף לבד כל 4.5
+   שניות. **הקרוסלה היא מה שנותן לבאנר גובה אחד**: הוא נעוץ מעל
+   הרשימה שהמסך באמת מציג, ורשימה שגדלה עם מספר ההזמנות דוחקת אותה
+   מטה בלי גבול.
 
-   שתי דרכים לדעת, כמו בכל שאר המוצר: לפי הישות כשיש מזהה, ולפי השם
-   כשאין (הדגמה, ושורות שנוצרו לפני 0061). */
-function plantTitle(p){
-  const nm=String((p&&p.name)||'');
-  const i=nm.indexOf(' של ');
-  if(i<0)return nm;
-  const self=p.kidId?isSelfRel(beneRel(p.kidId)):isSelfName(nm.slice(i+4));
-  return self?(nm.slice(0,i)+' שלך'):nm;
-}
-function ivCardHTML(p){
-  const mine=Number(p.mine==null?p.accrued:p.mine);
-  const mo=Number(p.myMonthly||0);
-  /* בעמודה ישבה ההפקדה החודשית, שהיא חזרה על מה שהשורה כבר אומרת:
-     מי שנטע 30 ₪ בהוראת קבע של 30 ₪ קרא את אותו מספר פעמיים. עכשיו
-     יושב שם הצפי — הכסף שלך בעוד שנים — כלומר הדבר היחיד בכרטיס
-     שאינו ידוע ממנו ממילא.
+   **הכפתור הירוק עוקב אחרי השקף הפעיל.** הוא היה מכוון תמיד לרגע
+   הקרוב ביותר, וזה נכון כל עוד יש באנר אחד; בקרוסלה זה כפתור
+   שנוקב בשם אחד מתחת לשקף שמראה שם אחר.
 
-     והוא הצפי שלך ולא של הרגע: כל מספר במסך הזה הוא שלך, ובנטיעה
-     שקרובים נוטעים בה גם הם, הצפי של הרגע גדול משלך. */
-  const pj=Number(p.myProjection||0);
-  /* "נטעת 0 ₪" הוא מספר שקיומו מודיע על היעדרו. במקומו נאמר מה כן
-     קרה. בכרטיס של רגע שהוזמנת אליו זה כבר לא "הוזמנת, עוד לא
-     נטעת" אלא **כמה כבר נצבר בו**: הסטטוס נאמר ממילא בכפתור
-     שצמוד לכרטיס ("להפקיד לרגע של X"), והסכום הוא מה שהופך את
-     הרגע למשהו אמיתי. הוא עבר לכאן משורת העובדות שמתחת למספר
-     הגדול, ששם הוא היה כסף של מישהו אחר מתחת למספר שמודד אותי. */
-  const acc=Number(p.accrued||0);
-  const waiting=p.joined&&!(mine>0);
-  /* ‏kidOf מחזיר '' לקופה שלא יועדה, ולכן היא לבדה נשארת עם
-     ריבוע האייקון. kidFace מעדיף את מה שנשמר בעמודה ונופל לגזירה
-     מהשם, בדיוק כמו ב"העתיד שלנו" — אותה נטיעה מציגה את אותו
-     פרצוף בשני המסכים. */
-  const kid=kidOf(p);
-  return plantCard({key:p.key,icon:p.icon,name:plantTitle(p),verb:'נטעת',
-                    amount:mine,face:kid?kidFace([p],kid):'',
-                    /* "הושקעו עד כה" ולא "כבר נצבר כאן", לבקשת אלון:
-                       מה שהמסך הזה צריך להגיד למי שהוזמנה ועוד לא
-                       הפקידה הוא שמישהו כבר שם כאן כסף, ו"נצבר"
-                       נקרא כאילו הוא צמח מעצמו. זה ההפך מהנימוק
-                       שבמספר הגדול של "העתיד שלנו", ששם "נצבר"
-                       נבחרה **כי** אין לה נושא אחד; כאן יש, וזו
-                       בדיוק הנקודה. */
-                    amountText:mine>0?''
-                      :(waiting&&acc>0
-                          ? 'הושקעו עד כה <b class="pcsum">'+shekel(acc)+'</b>'
-                          : 'הוזמנת, עוד לא נטעת'),
-                    capTop:mine>0&&pj>mine?shekel(pj):'',
-                    cap:mine<=0?(targetLine(p)||'')
-                       :pj>mine?'הצפי שלך':(mo>0?(shekel(mo)+' בחודש'):'ללא קבע'),
-                    /* מי פתח, ולא "עבור משפחה של קרוב": השאלה שהכרטיס
-                       מעורר היא למה הוא אצלי, והתשובה היא מי צירף אותי.
-                       ‏"נפתח על ידי" סביל ולכן אינו מנחש מגדר, וזו כבר
-                       השפה של plantCard. זה גם מה שהחליף את "X נוטע
-                       איתך" שישב בשורת העובדות בלשון זכר קשיחה. */
-                    by:waiting?(p.by||''):'',
-                    note:waiting&&p.by?''
-                        :p.familyMine?'עבור המשפחה שלי'
-                        :(p.familyName?('עבור המשפחה של '+p.familyName):'עבור משפחה של קרוב'),
-                    /* בלי תאריך: השורה כבר נושאת את מי שהרגע שייך לו,
-                       ושניהם יחד נשברו לשתי שורות. ובלי פנים — במסך
-                       הזה כל הפרצופים הם שלי, כלומר עמודה שלמה של רעש. */
-                    since:null,designated:p.designated,nofaces:true});
-}
-/* הכרטיס של רגע שהוזמנת אליו ועוד לא הפקדת בו, עם הפעולה צמודה לו.
-   ‏kind הוא 'btn' לרגע הקרוב ביותר ו-'row' לשאר; ראו paintInvestments. */
-function ivJoinHTML(p,kind){
-  const card=ivCardHTML(p);
-  if(!kind)return card;
-  const k=attrText(String(p.key||''));
-  /* שם הילד כשיש, ו"הרגע הזה" כשאין (קופה שלא יועדה). */
-  const nm=kidOf(p);
-  const lbl=nm?('להפקיד לרגע של '+nm):'להפקיד לרגע הזה';
-  /* ‏stopPropagation: הכרטיס עצמו פותח את מסך הרגע, והפעולה הזאת
-     מובילה אל ההפקדה. בלעדיו הלחיצה מגיעה לשניהם. */
-  const go='event.stopPropagation();investFromFuture(\''+k+'\')';
-  return kind==='btn'
-    ? '<div class="ivjoin">'+card+
-      '<button class="btn" onclick="'+go+'">'+lbl+'</button></div>'
-    : '<div class="ivjoin quiet">'+card+
-      '<div class="ivrow" onclick="'+go+'">'+lbl+' ›</div></div>';
+   **ונגיעה עוצרת את ההחלפה האוטומטית**, כמו בקרוסלת המכתבים בדף
+   הבית: מי שבחר שקף אינו רוצה שיוחלף מתחת לאצבע. אין כאן
+   ‏prefers-reduced-motion, וזו הכרעה של סבב ספטמבר 2026 שחלה על
+   כל התנועה במוצר. */
+let waitCar=null;
+function stopWaitCar(){ if(waitCar){clearInterval(waitCar);waitCar=null} }
+function paintWaitCar(waiting){
+  stopWaitCar();
+  const trk=document.getElementById('mi-invtrk'),
+        dots=document.getElementById('mi-invdots'),
+        cta=document.getElementById('mi-invcta');
+  if(!trk)return;
+  const n=waiting.length;
+  trk.innerHTML=waiting.map(function(p){
+    const kid=kidOf(p);
+    /* הפרצוף הוא של הנהנה, כמו בכל מקום אחר שהרגע מוצג בו, ורגע
+       בלי נהנה נשאר ריבוע מעוגל עם האייקון: עיגול הוא אדם. */
+    return '<div class="invrow">'+
+      '<span class="fc'+(kid?'':' sq')+'">'+
+      (kid?faceHTML(kidFace([p],kid),'av-kid1'):(p.icon||'🎁'))+
+      '</span><div style="min-width:0">'+
+      '<div class="t">'+attrText(momentNoun(p)+(kid?' של '+kid:''))+'</div>'+
+      /* "נפתח על ידי" ולא "X הזמין אותך": סביל, ולכן בלי ניחוש
+         מגדר, וזו כבר הלשון של הכרטיס שקדם לו. */
+      '<div class="s">'+
+        (p.by?('נפתח על ידי '+attrText(p.by)+' · '):'')+
+        shekel(Number(p.accrued||0))+' הושקעו עד כה</div></div></div>';
+  }).join('');
+  /* דבר אחד: באנר בלי נקודות ובלי מונה. שורת מצב שאומרת "1 מתוך 1"
+     היא מספר שקיומו מודיע על היעדרו. */
+  if(dots)dots.innerHTML=n>1?Array.from({length:n},function(){return '<i></i>'}).join(''):'';
+  txt('mi-invof',n>1?('1 מתוך '+n):'');
+  const slides=[].slice.call(trk.children),
+        dd=dots?[].slice.call(dots.children):[];
+  let i=0;
+  function show(k){
+    i=((k%n)+n)%n;
+    slides.forEach(function(el,j){el.classList.toggle('on',j===i)});
+    dd.forEach(function(el,j){el.classList.toggle('on',j===i)});
+    txt('mi-invof',n>1?((i+1)+' מתוך '+n):'');
+    const p=waiting[i],kid=kidOf(p);
+    if(cta){
+      cta.textContent='להפקיד לרגע'+(kid?' של '+kid:'');
+      cta.onclick=function(){investFromFuture(p.key)};
+    }
+  }
+  dd.forEach(function(el,j){el.onclick=function(){stopWaitCar();show(j)}});
+  show(0);
+  if(n>1)waitCar=setInterval(function(){
+    /* מסך אחר על המסך פירושו שאיש אינו רואה את זה, ואין טעם
+       להמשיך להחליף. */
+    if(!document.getElementById('mi-inv').offsetParent){stopWaitCar();return}
+    show(i+1);
+  },4500);
 }
 function paintInvestments(){
   /* הסינון היה "כסף שלי גדול מאפס", וזה השאיר את מי שהוזמנה לרגע של
      קרוב ועוד לא הפקידה בלי שום מסך שמראה לה אותו: בעתיד שלנו הוא
-     אינו, כי הוא של משפחה אחרת, וכאן הוא נשר על האפס. רגע שצירפו
-     אותי אליו הוא שלי גם לפני ההפקדה הראשונה, והכרטיס אומר את מצבו
-     במקום להציג "נטעת 0 ₪". */
+     אינו, כי הוא של משפחה אחרת, וכאן הוא נשר על האפס. */
   const rows=((lastModel&&lastModel.plantings)||[]).filter(function(p){
     return Number(p.mine==null?p.accrued:p.mine)>0||p.joined||p.familyMine===false;
   });
+  /* ‏isEmpty הוא מתג ההדגמה, ובחשבון חי הוא ממילא נגזר מהמסד
+     ב-buildHomeSummary. בלעדיו הציור הזה דרס את מה ש-setEmpty קבע,
+     כלומר כפתור "מצב ריק" לא עשה דבר במסך הזה. */
+  const any=rows.length>0&&!isEmpty;
   const full=document.getElementById('kin-full'),empty=document.getElementById('kin-empty');
-  const any=rows.length>0;
   if(full)full.style.display=any?'':'none';
   if(empty)empty.style.display=any?'none':'';
-  if(!any)return;
+
+  /* ── הראש הירוק ────────────────────────────────────────────────
+     הוא מצויר בשני המצבים, כי זה אותו ראש: מה שמתחלף הוא המילוי
+     שלו והגיליון שמתחתיו. */
+  txt('mi-greet',greetNow());
+  txt('mi-name',firstName(myName()||topbars[10][0]||''));
+  const fc=document.getElementById('mi-face');
+  if(fc)fc.innerHTML=faceHTML(myAvatarKey(),'av-parent');
+  /* "איך זה עובד" עד הנטיעה הראשונה בלבד. מי שכבר נטע יודע מה זה,
+     ולכן הגלולה יורדת ומפנה מקום לשני הכפתורים. */
+  const how=document.getElementById('mi-how');
+  if(how)how.style.display=any?'none':'';
+  paintNewDot();
+
   const mineOf=function(p){return Number(p.mine==null?p.accrued:p.mine)};
-  const total=rows.reduce(function(a,p){return a+mineOf(p)},0);
-  const monthly=rows.reduce(function(a,p){return a+Number(p.myMonthly||0)},0);
+  /* ‏any ולא rows: במצב ריק המספר הוא 0, גם כשיש שורות מאחור. בלי
+     זה מתג ההדגמה הציג "11,000 ₪" מעל הכותרת "כאן יצטברו ההשקעות
+     שלך", כלומר מסך שסותר את עצמו. */
+  const total=any?rows.reduce(function(a,p){return a+mineOf(p)},0):0;
   /* הצפי האישי חוזר מהשרת לכל רגע. כשהוא חסר — נטיעה ישנה, או מסלול
      בלי ריבית — מוותרים על השורה ולא ממציאים מספר. */
-  const proj=rows.reduce(function(a,p){return a+Number(p.myProjection||0)},0);
+  const proj=any?rows.reduce(function(a,p){return a+Number(p.myProjection||0)},0):0;
+
   /* ‏"0 ₪", ולא "·" ולא "עוד לא הפקדת" במילים. שתי הצורות ההן נוסו
      כאן ברצף, ומה שהכריע הוא שאלון הגדיר מחדש מה המסך מודד: כמה
-     השקעתי, והתשובה היא אפס.
-
-     ומה שזה קונה מעבר לדיוק: **צורת המסך נשארת זהה** לפני ההפקדה
-     הראשונה ואחריה, ורק הערך משתנה מ-0 ל-50. הגרסה במילים החליפה
-     את צורת המסך בדיוק ברגע שמישהי מפקידה.
-
-     וזה חריג מוצדק ל"מספר שקיומו מודיע על היעדרו אינו מידע": הכלל
-     נכתב על עובדה צדדית בשורת עובדות ("0 ₪ בכל חודש"), וכאן המספר
-     הוא כל נושא המסך. אפס שהוא התשובה לשאלה היחידה שהמסך שואל הוא
-     מידע. ‏.word ירד איתו, ולכן גם הכלל שב-CSS. */
+     השקעתי, והתשובה היא אפס. וזה גם מה ששומר על **צורת מסך אחת**
+     לפני ההפקדה הראשונה ואחריה, שזה כל הרעיון של הראש המשותף. */
   txt('mi-num',shekel(total));
 
-  /* מי פתח את הרגע וכמה כבר נצבר בו יושבים על הכרטיס של אותו רגע
-     (ראו ivCardHTML), **וחוזרים לשורה כשאין בה שום עובדה אחרת** —
-     כלומר אצל מי שהוזמנה ועוד לא הפקידה, שאין לה קצב ואין לה צפי.
-     בלי זה נשאר שם קו בלי כלום מתחתיו. */
-  const inv=rows.filter(function(p){return p.joined});
-  const pot=inv.reduce(function(a,p){return a+Number(p.accrued||0)},0);
-  const by=[];
-  inv.forEach(function(p){if(p.by&&by.indexOf(p.by)<0)by.push(p.by)});
-  const lonely=!(monthly>0)&&!(proj>total);
-  const potG=document.getElementById('mi-potgrp');
-  if(potG)potG.style.display=(lonely&&pot>0)?'':'none';
-  txt('mi-pot',shekel(pot));
-  txt('mi-potk',inv.length>1?'כבר הושקעו ברגעים':'כבר הושקעו ברגע');
-  const whoG=document.getElementById('mi-whogrp');
-  if(whoG)whoG.style.display=(lonely&&by.length)?'':'none';
-  /* "נפתח על ידי" ולא "X נוטע איתך": סביל, ולכן בלי ניחוש מגדר,
-     וזו כבר הלשון של הכרטיס. */
-  txt('mi-who',by.length===1?('נפתח על ידי '+by[0])
-             :by.length===2?('נפתח על ידי '+by[0]+' ו'+by[1])
-             :('נפתח על ידי '+by[0]+' ועוד '+(by.length-1)));
-  /* בלי הוראת קבע השורה כולה יורדת, ולא מודיעה על היעדרה. הכיתוב
-     "בכל חודש" יושב במבנה ולא בטקסט, ולכן כתיבת "אין הוראת קבע פעילה"
-     לתוך המספר הרכיבה "אין הוראת קבע פעילה בכל חודש". */
-  const mg=document.getElementById('mi-mongrp');
-  if(mg)mg.style.display=monthly>0?'':'none';
-  txt('mi-mon',monthly>0?shekel(monthly):'·');
-  const pr=document.getElementById('mi-projgrp');
-  if(pr)pr.style.display=proj>total?'':'none';
-  txt('mi-proj','כ-'+shekel(proj));
-  const cg=document.getElementById('mi-cntgrp');
-  if(cg){
-    cg.style.display=rows.length>1?'':'none';
-    /* ספרה ולא מילה, כאן בלבד: השורה היא רצף עובדות שכולן מספרים,
-       והמילה היא הפריט הארוך היחיד בה. "בחמישה" נשברת לשורה שנייה
-       בהגדלת טקסט ו"ב-5" מחזיקה. ‏hebCount נשארת במילים בכותרות של
-       "העתיד שלנו", ששם זו פרוזה. */
-    txt('mi-cnt','ב-'+rows.length+' רגעים');
-  }
-  /* הנקודה המפרידה שייכת למי שאינו ראשון בשורה. כשהראשון יורד, זו
-     שאחריו הייתה פותחת את השורה בנקודה תלויה. ‏.nodot כבר קיים
-     בגיליון בשביל אותו מקרה בהגדלת טקסט. */
-  const meta=document.querySelector('#kin-full .s-meta');
-  let shown=0;
-  if(meta){
-    let first=true;
-    [].slice.call(meta.children).forEach(function(el){
-      if(getComputedStyle(el).display==='none')return;
-      shown++;
-      el.classList.toggle('nodot',first);
-      first=false;
-    });
-    /* וכשלא נשארה בה אף עובדה נשאר הקו בלבד. הוא border-top של
-       השורה, ולכן בגרסה הראשונה הוא ירד יחד איתה — ואלון ראה
-       שהראש נגמר בלי כלום. **הקו אינו שייך לעובדות אלא מפריד בין
-       הראש לרשימה**, ולכן הוא נשאר גם כשאין מה לומר מתחתיו: זה
-       בדיוק המצב של מי שהוזמנה ולא הפקידה, שאין לה קצב ואין לה
-       צפי. ‏.bare מאפס את הריפוד והגובה ומשאיר את הקו. */
-    meta.classList.toggle('bare',!shown);
-  }
-  /* הספירה נוסתה בתווית שמעל הרשימה שהיא סופרת, ואלון החזיר אותה
-     לשורת העובדות. מה שהיה נכון בהעברה נשאר נכון ולא הכריע: ספירה
-     יושבת יפה מעל הרשימה שהיא סופרת, והיא גם עובדה על המסך הזה
-     כמו שתי האחרות. מה שהעברה כן פתרה, חמש עובדות בשורה גולשת,
-     נפתר ממילא בכך ששתיים מהן עברו לכרטיסים. */
-  /* ‏"הרגעים שהשקעת בהם" ולא "בעתיד של מי". **הרשימה היא רגעים ולא
-     אנשים** — שורה לכל נטיעה, בלי קיבוץ לפי ילד — ו"של מי" הבטיח
-     אנשים והציג רגעים. וזה החמיר מרגע שכל שורה נושאת פרצוף: "מי"
-     נענה בעין בכל שורה, ותווית שחוזרת עליו היא השכבה השלישית של
-     אותה עובדה.
-     **המחיר שנאמר ונבחר:** "השקעת" חוזרת מ-mi-meta שיושב 74
-     פיקסלים מעל ("זה מה שכבר השקעת בעתיד של היקרים שלך"). מה
-     שמחזיק את זה הוא שהמילה החוזרת היא הפועל ולא הנושא: שם
-     הוא אומר **כמה**, וכאן **במה**.
-     **ואורך אינו שיקול כאן:** נמדדו שבעה נוסחים בארבעה רוחבי
-     מכשיר, וכולם שורה אחת — גם נוסח בן 232 פיקסל מתוך 284
-     שיש ב-320. הרשימה נוחתת ב-281 בכולם, כי מה שקובע הוא
-     ה-margin של .eyebrow.big ולא הטקסט. */
-  const hd=document.getElementById('mi-head');
-  if(hd)hd.textContent='הרגעים שהשקעת בהם';
-  /* הכיתוב אומר עבור מי, וזו כל ההבדלה בין שני המסכים: במסך הבית
-     המספר הוא של הילד, וכאן הוא שלי. "הסכום שעד כה השקעת" ולא
-     "נטעת": זה סכום מצטבר ולא פעולה, והמילה "הסכום" אומרת את זה
-     במפורש. "עד כה" מחוברות ברווח קשיח, כי text-wrap:balance שבר
-     ביניהן ב-390 ושורה שנגמרת ב"שעד" נקראת כמו טעות.   מתחת לשורת העובדות ישבה הערה
-     שהצפי הוא הכסף שלך בלבד "ולא מה שאחרים נטעו לאותם רגעים": היא
-     הכניסה למסך אנשים שאינם בו, וברגע שהכיתוב עצמו אומר "אתה השקעת"
-     היא כבר לא הוסיפה דבר.
+  /* משפט אחד, תמיד, ובלי מגדר ובלי ספירה. העיצוב נוקב במספר הנהנים
+     ובפנייה ("כבר השקעת בעתיד של שלושה אנשים שאתה אוהב"), ואלון
+     ביקש כותרת אחידה — וגם חמה יותר מ"היקרים שלך" שהייתה כאן.
+     **"לך" ולא "שלך את/ה":** בכתיב חסר הוא זהה בשני המגדרים, ולכן
+     אפשר לשמור על פנייה ישירה בלי לנחש ובלי לוכסן. */
+  txt('mi-meta',any?'זה מה שכבר השקעת בעתיד של האנשים הכי יקרים לך'
+                   :'כאן יצטברו ההשקעות שלך בעתיד של האנשים הכי יקרים לך');
 
-     הספירה היא של אנשים ולא של רגעים. בר מצווה ולימודים של אותו ילד
-     הם עדיין ילד אחד, ולכן שמו נשאר. רק כשיש באמת יותר מאדם אחד,
-     כולל התערובת של ילדים שלי עם ילדים של אחרים שהמסך הזה מאחד,
-     הכיתוב עובר לצורה הכללית. */
-  /* משפט אחד, תמיד. הוא היה נגזר ממספר הנהנים ומשמותיהם ("בעתיד
-     של לניצקה", "בעתיד שלך", "עוד בלי לקבוע למי"), ואלון ביקש את
-     הכותרת האחידה. מה שמחזיק את זה הוא אותו נימוק שהכריע על המספר
-     שמעליו: השורה מתארת מה המספר מודד, וזה אינו משתנה לפי מי
-     ברשימה. הרשימה שמתחת כבר אומרת עבור מי, שם ושם.
-
-     ‏beneficiariesOf ירדה מכאן איתו; היא חיה ומשרתת מסכים אחרים. */
-  txt('mi-meta','זה מה שכבר השקעת בעתיד של היקרים שלך');
-  /* רגע שהוזמנת אליו ועוד לא הפקדת בו נושא את הפעולה שלו, צמודה
-     לכרטיס. רק הראשון ברשימה מקבל כפתור מלא והשאר שורה ירוקה, כי
-     שני כפתורים ירוקים על מסך אחד הם שתי פעולות ראשיות. הרשימה
-     ממוינת ממילא לפי מועד היעד, ולכן "הראשון" הוא הרגע הקרוב. */
-  let joinSeen=false;
-  document.getElementById('mi-list').innerHTML=rows.map(function(p){
-    const waiting=p.joined&&!(Number(p.mine==null?p.accrued:p.mine)>0);
-    if(!waiting)return ivCardHTML(p);
-    const kind=joinSeen?'row':'btn';
-    joinSeen=true;
-    return ivJoinHTML(p,kind);
-  }).join('');
-  /* וכשאין שום רגע שממתין להפקדה, "פתח נטיעה" חוזר להיות הכפתור
-     הראשי: אז הוא הפעולה היחידה במסך, ושורה מקווקוות לבדה על מסך
-     בלי כפתור היא בדיוק מה שתוקן במצבים הריקים. */
-  const gn=document.getElementById('garden-new');
-  if(gn){
-    gn.className=joinSeen?'reladd':'btn gap';
-    gn.style.width=joinSeen?'100%':'';
-    gn.style.marginTop=joinSeen?'':'2px';
-    gn.textContent=joinSeen?'+ פתח נטיעה משלך':'+ פתח נטיעה חדשה';
+  /* שורת הצפי והפרצופים. שורת שלוש העובדות שקדמה לה ירדה, ואיתה
+     הקצב החודשי והספירה: **המחיר נאמר ונבחר**, והקצב מפסיק להופיע
+     באפליקציה חוץ ממסך הרגע. */
+  const foot=document.getElementById('mi-foot');
+  if(any){
+    const show=proj>total;
+    if(foot)foot.style.display=show?'':'none';
+    txt('mi-projk','בקצב הזה ייצבר להם');
+    txt('mi-proj','כ-'+shekel(proj));
+  }else{
+    if(foot)foot.style.display='';
+    /* אותה הבטחה של הסימולטור שישבה במצב הריק, עכשיו בתוך הכרטיס:
+       היא מה שמסביר למה בכלל לפתוח נטיעה. */
+    txt('mi-projk','100 ₪ בחודש יהפכו בעוד 13 שנה');
+    txt('mi-proj','לכ-23,500 ₪');
   }
+
+  /* הפרצופים: הנהנים שיש להם כסף אצלי. שלושה, כמו בעיצוב, ומעבר
+     לזה הערימה מתחילה לכסות את המספר שלצידה. ובמצב הריק שלושה
+     עיגולים מקווקווים — אותה ערימה בדיוק, בלי ＋ ובלי פרצוף, כי
+     "אפשר להוסיף" הוא מה שהכפתור שבגיליון כבר אומר. */
+  const stk=document.getElementById('mi-faces');
+  if(stk){
+    if(!any){
+      stk.className='stk on-leaf dash';
+      stk.innerHTML='<span></span><span></span><span></span>';
+    }else{
+      stk.className='stk on-leaf';
+      const g=kidGroups(rows);
+      const faces=g.groups.slice(0,3).map(function(x){
+        return faceHTML(kidFace(x.rows,x.kid),'av-kid1');
+      });
+      /* קופה שלא יועדה אינה אדם, ולכן היא נכנסת לערימה רק כשאין
+         מספיק נהנים למלא אותה, וכריבוע מעוגל ולא כעיגול. */
+      g.loose.slice(0,Math.max(0,3-faces.length)).forEach(function(p){
+        faces.push('<span class="sq">'+(p.icon||'🎁')+'</span>');
+      });
+      stk.innerHTML=faces.map(function(h){
+        return h.indexOf('<span')===0?h:('<span>'+h+'</span>');
+      }).join('')||'<span></span>';
+    }
+  }
+
+  /* המצב הריק יוצא כאן, **אחרי** שההזמנה שממתינה הוסתרה: בלעדיה
+     הגוש היה שורד מציור קודם ונשאר על מסך שאומר שאין בו כלום. */
+  if(!any){
+    const ib=document.getElementById('mi-inv');
+    if(ib)ib.style.display='none';
+    return;
+  }
+
+  /* ── ההזמנה שממתינה להפקדה ─────────────────────────────────────
+     היא הייתה כפתור על כרטיס הרגע (ivJoinHTML), ומרגע שהרשימה
+     מקובצת לפי אדם אין כרטיס רגע להיצמד אליו: שורה אחת מחזיקה כמה
+     רגעים, ואחד מהם הוא זה שהוזמנתי אליו. עכשיו היא נעוצה בראש
+     הגיליון, כמו כל דבר אחר שממתין לתשובה שלי.
+     **מה שזה מוותר עליו:** "פעולה יושבת ליד הדבר שהיא משנה". מה
+     שמחזיק את זה הוא שהיא נמצאת גבוה יותר מאי פעם, כלומר הנימוק
+     של הקיפול שהכריע בזמנו נשמר ומשתפר. */
+  const waiting=rows.filter(function(p){return p.joined&&!(mineOf(p)>0)});
+  const box=document.getElementById('mi-inv');
+  if(box){
+    box.style.display=waiting.length?'':'none';
+    if(waiting.length)paintWaitCar(waiting);
+    else stopWaitCar();
+  }
+
+  /* ── הרשימה, מקובצת לפי אדם ─────────────────────────────────────
+     "למי נטעת" ולא "הרגעים שהשקעת בהם": עד כאן הייתה שורה לכל
+     נטיעה, ולכן התווית נאלצה לומר "רגעים". הקיבוץ הוא מה שהופך
+     אותה נכונה, והוא גם מה שמייתר את תג הרגע שהיה על הפרצוף —
+     התג נבנה כדי להבדיל בין שתי שורות של אותו ילד, ובקיבוץ אין
+     שתי שורות כאלה. */
+  const g=kidGroups(rows);
+  const item=function(face,name,sub,amount,go){
+    return '<button class="prow" onclick="'+go+'">'+
+      '<span class="fc'+(face.sq?' sq':'')+'">'+(face.sq?face.html:face.html)+'</span>'+
+      '<span class="grow" style="min-width:0">'+
+        '<span class="t" style="display:block">'+attrText(name)+'</span>'+
+        (sub?'<span class="s" style="display:block">'+attrText(sub)+'</span>':'')+
+      '</span>'+
+      '<span class="a">'+shekel(amount)+'</span>'+
+      '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>'+
+    '</button>';
+  };
+  const html=g.groups.map(function(x){
+    /* שורת המשנה היא הרגעים שלו, כי זה מה שהשורה מאחדת. כשיש רגע
+       אחד בלבד מצטרפת אליו הקרבה, שהיא מה שמבדיל בין שני ילדים
+       שהפרצוף שלהם דומה — בדיוק מאותה סיבה שהיא יושבת בבורר
+       "עבור מי". */
+    const occs=x.rows.map(momentNoun);
+    const rel=kinMe(beneRel(x.kidId));
+    const sub=(occs.length===1&&rel)?(rel+' · '+occs[0]):occs.join(', ');
+    return item({html:faceHTML(kidFace(x.rows,x.kid),'av-kid1')},x.kid,sub,x.mine,
+                'openKidMoments(\''+attrText(x.kidId||x.kid)+'\')');
+  }).concat(g.loose.map(function(p){
+    /* עיגול הוא אדם וריבוע מעוגל הוא רגע: לקופה שלא יועדה אין נהנה,
+       וצללית אנונימית שם היא אדם שאינו קיים. */
+    return item({sq:true,html:(p.icon||'🎁')},momentNoun(p),'עוד לא יועדה',
+                mineOf(p),'openDetail(\''+attrText(p.key)+'\')');
+  })).join('');
+  document.getElementById('mi-list').innerHTML=html;
+
 }
 /* מי הנהנים ברשימה, בלי כפילויות. שני מסכי הסיכום חייבים להסכים על
    מה זה "אדם אחד", אחרת אחד מהם יאמר שם והשני "קרוביך" על אותה
@@ -14854,6 +14946,20 @@ function momentNoun(p){
 /* מספרים קטנים במילים, כמו בשאר המסכים. מעל עשרה חוזרים לספרה. */
 const HEB_COUNT=['','אחד','שני','שלושה','ארבעה','חמישה','שישה','שבעה','שמונה','תשעה','עשרה'];
 function hebCount(n){return HEB_COUNT[n]||String(n)}
+/* שורת אדם ברשימה של "ההשקעות שלי". רגע אחד נפתח ישירות, וכמה מהם
+   מובילים ל"מה מחכה להם" עם אותו אדם נבחר — בדיוק אותה הכרעה של
+   שורת הילד ב"הקרובים שלי": כפתור מוביל לדבר עצמו, וכשיש כמה
+   "דברים" הוא מוביל למסך שמחזיק את כולם. */
+function openKidMoments(k){
+  const rows=((lastModel&&lastModel.plantings)||[]).filter(function(p){
+    return String(p.kidId||kidOf(p))===String(k);
+  });
+  if(rows.length===1){openDetail(rows[0].key);return}
+  fuPick='k:'+k;
+  /* ‏go אינו מצייר, ולכן קביעת fuPick לבדה אינה מזיזה את הבורר. */
+  buildHomeSummary();
+  openFuture();
+}
 function openInvestments(){ paintInvestments(); go(14); }
 /* שני יעדי הסרגל הראשונים. openHome הוא מסך 14 ו-openFuture הוא 0,
    כי המסכים החליפו תפקיד ולא מיקום: כל go(N) בקובץ נשען על המספר. */
