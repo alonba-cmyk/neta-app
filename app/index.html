@@ -2451,14 +2451,24 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    דבר אינו קופץ בהחלפה; זו אותה הכרעה של קרוסלת המכתבים בדף הבית
    (ltcar), ושם היא נמדדה. ‏touch-action:pan-y כדי שהחלקה אנכית
    תישאר גלילה של הדף. */
+/* ‏overflow:hidden כדי שהשקף המוזז (translateX 14) לא יגלוש
+   מהמסך: הוא שקוף, אבל גלישה אופקית נמדדת. */
 .invbox .trk{display:grid;border-radius:18px;overflow:hidden;touch-action:pan-y}
-.invbox .invrow{grid-area:1/1;display:flex;align-items:center;gap:12px;
+.invbox .invrow{grid-area:1/1;
   border:1.5px solid var(--leaf-line);border-radius:18px;padding:12px 14px;
   opacity:0;transform:translateX(14px);pointer-events:none;
   transition:opacity .35s,transform .35s}
 /* ‏translateX חיובי הוא ימינה במסמך RTL, ולכן השקף הנכנס מגיע מהצד
    שממנו קוראים. */
 .invbox .invrow.on{opacity:1;transform:none;pointer-events:auto}
+/* **והפעולה יושבת בתוך השקף ולא מתחת לקרוסלה.** היא הייתה כפתור
+   אחד מתחת לכולם שהחליף טקסט לפי השקף הפעיל, וזה נקרא כמו תקלה:
+   כפתור שמשנה את עצמו בלי שאיש נגע בו. עכשיו לכל שקף כפתור משלו
+   והוא נוסע איתו, כלומר אין יותר "לעקוב אחרי השקף" בכלל. זו גם
+   השפה של פעולה בתוך כרטיס בכל שאר האפליקציה: בתוך הריפוד שלו.
+   **ושני כפתורים ירוקים אינם על המסך**, כי רק שקף אחד גלוי. */
+.invbox .invrow .top{display:flex;align-items:center;gap:12px}
+.invbox .invrow .btn{margin-top:12px;font-size:13px;padding:11px}
 .invbox .fc.sq{border-radius:14px;background:var(--leaf-bg);display:grid;
   place-items:center;font-size:20px}
 .invbox .fc{width:44px;height:44px;border-radius:50%;overflow:hidden;flex:none;
@@ -2617,7 +2627,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '51f888f';
+window.NETA_BUILD = 'b57be5c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3933,12 +3943,12 @@ window.NETA_CONFIG = {
     <div id="mi-inv" style="display:none">
       <p class="eyebrow big invhd" id="mi-invh" style="margin-top:0">
         <span>מחכה לך</span><span class="of" id="mi-invof"></span></p>
-      <!-- קרוסלה כשיש כמה, באנר בודד כשיש אחד. הכפתור שמתחת עוקב
-           אחרי השקף הפעיל: כפתור שנוקב בשם אחד מתחת לבאנר שמראה
-           שם אחר הוא בדיוק מה שהקרוסלה מייצרת אם שוכחים אותו. -->
+      <!-- קרוסלה כשיש כמה, באנר בודד כשיש אחד. הפעולה נבנית בתוך
+           כל שקף (paintWaitCar) ולא יושבת כאן מתחת: כפתור חיצוני
+           היה מחליף את הטקסט שלו בלי שאיש נגע בו, והוא גם אינו
+           בתוך הכרטיס שהוא שייך לו. -->
       <div class="invbox" id="mi-invbox"><div class="trk" id="mi-invtrk"></div>
         <div class="invdots" id="mi-invdots"></div></div>
-      <button class="btn gap" id="mi-invcta">·</button>
     </div>
 
     <div id="kin-full">
@@ -14155,9 +14165,12 @@ function buildHomeSummary(){
    הרשימה שהמסך באמת מציג, ורשימה שגדלה עם מספר ההזמנות דוחקת אותה
    מטה בלי גבול.
 
-   **הכפתור הירוק עוקב אחרי השקף הפעיל.** הוא היה מכוון תמיד לרגע
-   הקרוב ביותר, וזה נכון כל עוד יש באנר אחד; בקרוסלה זה כפתור
-   שנוקב בשם אחד מתחת לשקף שמראה שם אחר.
+   **והפעולה יושבת בתוך השקף.** היא הייתה כפתור אחד מתחת לקרוסלה
+   שהחליף את הטקסט שלו לפי השקף הפעיל, כלומר כפתור שמשנה את עצמו
+   בלי שאיש נגע בו. עכשיו לכל שקף כפתור משלו, והוא נוסע איתו:
+   אין יותר "לעקוב אחרי השקף", ואי אפשר שהכפתור ינקוב בשם אחד
+   מתחת לשקף שמראה שם אחר. זו גם השפה של פעולה בתוך כרטיס בכל
+   שאר האפליקציה.
 
    **ונגיעה עוצרת את ההחלפה האוטומטית**, כמו בקרוסלת המכתבים בדף
    הבית: מי שבחר שקף אינו רוצה שיוחלף מתחת לאצבע. אין כאן
@@ -14168,15 +14181,14 @@ function stopWaitCar(){ if(waitCar){clearInterval(waitCar);waitCar=null} }
 function paintWaitCar(waiting){
   stopWaitCar();
   const trk=document.getElementById('mi-invtrk'),
-        dots=document.getElementById('mi-invdots'),
-        cta=document.getElementById('mi-invcta');
+        dots=document.getElementById('mi-invdots');
   if(!trk)return;
   const n=waiting.length;
   trk.innerHTML=waiting.map(function(p){
     const kid=kidOf(p);
     /* הפרצוף הוא של הנהנה, כמו בכל מקום אחר שהרגע מוצג בו, ורגע
        בלי נהנה נשאר ריבוע מעוגל עם האייקון: עיגול הוא אדם. */
-    return '<div class="invrow">'+
+    return '<div class="invrow"><div class="top">'+
       '<span class="fc'+(kid?'':' sq')+'">'+
       (kid?faceHTML(kidFace([p],kid),'av-kid1'):(p.icon||'🎁'))+
       '</span><div style="min-width:0">'+
@@ -14185,8 +14197,16 @@ function paintWaitCar(waiting){
          מגדר, וזו כבר הלשון של הכרטיס שקדם לו. */
       '<div class="s">'+
         (p.by?('נפתח על ידי '+attrText(p.by)+' · '):'')+
-        shekel(Number(p.accrued||0))+' הושקעו עד כה</div></div></div>';
+        shekel(Number(p.accrued||0))+' הושקעו עד כה</div></div></div>'+
+      /* הכפתור של השקף הזה, בתוך הכרטיס ובתוך הריפוד שלו. */
+      '<button class="btn ivcta">להפקיד לרגע'+
+        (kid?' של '+attrText(kid):' הזה')+'</button></div>';
   }).join('');
+  /* המאזין נקשר ואינו נכתב לתוך onclick: מפתח נטיעה הוא מחרוזת
+     מהשרת, והשחלה שלה לתוך תכונה דורשת בריחה שאין לה סיבה. */
+  [].slice.call(trk.querySelectorAll('.ivcta')).forEach(function(b,j){
+    b.onclick=function(){investFromFuture(waiting[j].key)};
+  });
   /* דבר אחד: באנר בלי נקודות ובלי מונה. שורת מצב שאומרת "1 מתוך 1"
      היא מספר שקיומו מודיע על היעדרו. */
   if(dots)dots.innerHTML=n>1?Array.from({length:n},function(){return '<i></i>'}).join(''):'';
@@ -14199,11 +14219,6 @@ function paintWaitCar(waiting){
     slides.forEach(function(el,j){el.classList.toggle('on',j===i)});
     dd.forEach(function(el,j){el.classList.toggle('on',j===i)});
     txt('mi-invof',n>1?((i+1)+' מתוך '+n):'');
-    const p=waiting[i],kid=kidOf(p);
-    if(cta){
-      cta.textContent='להפקיד לרגע'+(kid?' של '+kid:'');
-      cta.onclick=function(){investFromFuture(p.key)};
-    }
   }
   dd.forEach(function(el,j){el.onclick=function(){stopWaitCar();show(j)}});
   show(0);
