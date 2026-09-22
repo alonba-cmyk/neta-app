@@ -74,6 +74,7 @@ setTimeout(function(){
      שיושב על הכפתור הירוק, ובערכה בהירה הירוק כהה והטקסט חייב
      להתהפך ללבן. ערך שלא חולץ לכאן הוא כפתור בלתי קריא. */
   --on-leaf:#0E1A10;      /* טקסט על משטח ירוק מלא */
+  --on-sun:#241C10;       /* טקסט על משטח חול מלא · 9.5 */
   --on-rose:#2A1F22;      /* טקסט על משטח ורוד מלא */
   --leaf-txt:#8FB794;     /* טקסט ירקרק שקט על ערוגה */
   --leaf-ink:#EAF3EB;     /* טקסט בהיר על ערוגה */
@@ -173,6 +174,7 @@ setTimeout(function(){
   --rule:#EEE9DF;
 
   --on-leaf:#FFFFFF;
+  --on-sun:#FFFFFF;       /* טקסט על משטח חול מלא · 6.7 */
   --on-rose:#FFFFFF;
   --leaf-txt:#2C5846;
   --leaf-ink:#1F4D3A;
@@ -986,6 +988,8 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הוא הסיפא, והמועד שפותח את השורה הוא מה שהיא באמת אומרת. */
 .fu-dt{font-size:12px;color:var(--tx-3);margin-top:2px;line-height:1.35;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.invbox .invrow .btn{background:var(--sun-2);border-color:var(--sun-2);
+  color:var(--on-sun)}
 /* ‏**ירוק ולא חול: זה הנצבר ולא הצפי, וזו בקשה של אלון.**
    ‏`fuMomentHTML` נושא את ההיפוך במלואו; כאן מה שנגזר ממנו הוא
    הגוון — כסף שקיים הוא `--leaf`, וזה הכלל של המוצר כולו.
@@ -994,7 +998,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    **והתווית מעליו ולא לצידו**, כי "נצבר עד כה" ארוך מכדי לשבת
    בשורה אחת עם המספר בטור שנשאר אחרי האייקון והשם. שתיהן
    מיושרות לקצה החיצוני, כלומר לקו אחד מול ה-`‹` שאחריהן. */
-.fu-amt{flex-shrink:0;text-align:end;line-height:1.2}
+/* ‏**מיושר לימין ולא לשמאל, לבקשת אלון.** שתי השורות חולקות את
+   הקצה הימני, כלומר התווית נפתחת בדיוק מעל הספרה הראשונה של
+   המספר; ‏`end` הצמיד אותן ל-`‹` שאחריהן והתווית נקראה כשייכת לו. */
+.fu-amt{flex-shrink:0;text-align:start;line-height:1.2}
 .fu-amt .k{display:block;font-size:11px;font-weight:400;color:var(--tx-3);
   white-space:nowrap}
 .fu-amt .v{display:block;font-size:16px;font-weight:700;color:var(--leaf);
@@ -3522,6 +3529,22 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ‏translateX חיובי הוא ימינה במסמך RTL, ולכן השקף הנכנס מגיע מהצד
    שממנו קוראים. */
 .invbox .invrow.on{opacity:1;transform:none;pointer-events:auto}
+/* ‏**והכפתור הוא חול ולא ירוק, כי הוא יושב על משטח חול.**
+   ‏`.btn` הוא `--leaf` מלא, ואלון ראה שזה אינו יושב טוב על
+   ‏`--sun-bg`. **ומה שבאמת מתנגש הוא המסה ולא הגוון:** ירוק על
+   קרם הוא הזוג המרכזי של המוצר (`--leaf` על `--leaf-bg`), אבל
+   שם הוא כפתור על **דף**; כאן הוא סלע כהה שממלא את רוב כרטיס
+   קטן ובהיר, ולכן הכרטיס נקרא כמשטח שנושא כפתור ולא כשקף אחד.
+   עכשיו הוא הטון הכהה של אותה משפחה — `--sun-2` על `--sun-bg` —
+   כלומר אותו גוון בדיוק בשתי דרגות, וזו גם הדרגה שכבר נושאת את
+   שורת המשנה שמעליו.
+   **ו-`--on-sun` נפרד ולא `--on-leaf` מושאל:** שניהם מתהפכים
+   בין הערכות, אבל משטח שאינו ירוק שקורא לטוקן של הירוק הוא
+   בדיוק הסוג של השאלה שנשברת ביום שאחד מהם זז. זו אותה הכרעה
+   של `--on-head`, שנפרד כשהראש הירוק הפסיק להיות הכפתור.
+   **ומה שלא נלקח מהעיצוב, שוב:** שם הפעולה היא גלולה בת 34
+   בקצה השורה, וזה מוריד את המסה הירוקה בעוד יותר — המחיר הוא
+   שהכיתוב מתקצר ל"להפקיד" ושב-320 שורת המשנה נשברת לשלוש. */
 /* **והפעולה יושבת בתוך השקף ולא מתחת לקרוסלה.** היא הייתה כפתור
    אחד מתחת לכולם שהחליף טקסט לפי השקף הפעיל, וזה נקרא כמו תקלה:
    כפתור שמשנה את עצמו בלי שאיש נגע בו. עכשיו לכל שקף כפתור משלו
@@ -3693,7 +3716,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'e4bdac2';
+window.NETA_BUILD = 'd3f365e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6472,10 +6495,21 @@ function go(i){
   curScreen=i;
   screens.forEach((s,n)=>s.classList.toggle('on',n===i));
   /* הרצועה הלבנה שמעל הראש הירוק, ראו ההערה ב-CSS. נגזר מה-DOM
-     ולא מרשימה שנייה שצריך לסנכרן. */
-  const dv=document.querySelector('.device');
-  if(dv)dv.classList.toggle('gtop',!!screens[i]&&
-    !!screens[i].querySelector(':scope > .leafhead, :scope > .tabg, :scope > #splash, :scope > .how-story, :scope > .ahag'));
+     ולא מרשימה שנייה שצריך לסנכרן.
+     **ובאשף הראש אינו ילד של המסך, ולכן הסלקטור לבדו לא ראה אותו.**
+     ‏`#wizhead` הוא **אח** של המסכים בתוך `.stage`, כי ראש שיוצא אל
+     שלושת הקצוות חייב את המרווח השלילי של `.tabg` ו-`.stage` חותך
+     בקצה תיבת הריפוד שלו — כלומר הוא מוצג מעל ארבעה מסכים שונים
+     ואינו שייך לאף אחד מהם. התוצאה: ‏14 פיקסלים של רקע דף מעל
+     הירוק בכל שלבי האשף, ואלון ראה אותה במכשיר. זו אותה רצועה
+     שנסגרה כבר על הראש הירוק, על הדלת, על הסטורי ועל מסך "נטעת",
+     **והפעם מה שהחמיץ אותה אינו הרשימה אלא `:scope >`.**
+     ‏`wizSheet(i)` רצה שורות ספורות מעל וכבר קבעה את התצוגה שלו,
+     ולכן מה שנקרא כאן הוא המצב הסופי ולא הקודם. */
+  const dv=document.querySelector('.device'),wh=document.getElementById('wizhead');
+  if(dv)dv.classList.toggle('gtop',(!!screens[i]&&
+    !!screens[i].querySelector(':scope > .leafhead, :scope > .tabg, :scope > #splash, :scope > .how-story, :scope > .ahag'))
+    ||!!(wh&&wh.style.display!=='none'));
   [...nav.children].forEach((b,n)=>b.classList.toggle('on',n===i));
   /* ‏**הטאב המסומן הוא הטאב שממנו נכנסו**, ‏`FIX-moment` §5.
      מסך הרגע ושאר המסכים שאינם יעד בסרגל סימנו תמיד את הראשון,
@@ -7223,10 +7257,6 @@ function openGuardian(){
   txt('ga-who',r.opened_by||'·');
   txt('ga-yes',parent?('כן, '+kid+' הוא הילד שלי'):'כן, זה מוסכם עליי');
   go(27);
-}
-function monthYear(iso){
-  const d=new Date(iso+'T00:00:00');
-  return isNaN(d)?iso:(months[d.getMonth()]+' '+d.getFullYear());
 }
 function guardianAnswer(fn,msg){
   const r=guardQueue[0]; if(!r)return;
@@ -8457,7 +8487,11 @@ function wizCard(cur,total){
   /* הרגע והמועד הם שורה אחת, כמו בכרטיס המזכרת של מסך הרגע. */
   const t=cType==='custom'?((( document.getElementById('c-custom')||{}).value)||'').trim():cType;
   const occ=(hasOcc&&t)?plantingName(t,nm,true):'';
-  const when=(hasOcc&&cDate&&cDate.value)?monthYear(cDate.value):'';
+  /* ‏**החודש מקוצר כאן, לבקשת אלון.** השורה היא שם הרגע והמועד
+     יחד, ו"בת המצווה של אביב · ספטמבר 2036" נשברה לשתי שורות
+     ודחפה את הכרטיס; "ספט׳" מחזיר אותה לשורה אחת. ‏`monthsShort`
+     כבר קיים בקובץ, וזו גם הצורה שכבר יושבת בשאר המוצר. */
+  const when=(hasOcc&&cDate&&cDate.value)?monthYear(cDate.value,true):'';
   txt('wiz-occ',occ?(occ+(when?(' · '+when):'')):(desig?'לאיזה רגע?':''));
   /* הפרצוף: מקווקו עד שנבחר ילד, ותג הרגע עליו ברגע שיש רגע. */
   const av=document.getElementById('wiz-av');
@@ -8473,11 +8507,20 @@ function wizCard(cur,total){
   txt('wiz-projl','בקצב הזה ייצבר'+(yr?(' ב'+MQ+yr[0]):''));
   txt('wiz-proj',v?(APPROX+shekel(Math.round(fvCalc(v,mode==='keep'?0:rate))*100)):'\u00b7');
 }
-/* "ספטמבר 2036" מתאריך ISO. ‏`goal.dateLabel` נושא את אותה מחרוזת,
-   אבל הוא נכתב רק כשיוצאים מהשלב, והכרטיס צריך אותה בזמן שבוחרים. */
-function monthYear(iso){
-  const d=new Date(iso);
-  return isNaN(d)?'':(months[d.getMonth()]+' '+d.getFullYear());
+/* "ספטמבר 2036" מתאריך ISO, ו-`short` נותן "ספט׳ 2036".
+   ‏`goal.dateLabel` נושא את אותה מחרוזת, אבל הוא נכתב רק כשיוצאים
+   מהשלב, והכרטיס צריך אותה בזמן שבוחרים.
+   **והייתה לה הגדרה שנייה, זהה כמעט, כ-1,250 שורות מעליה.** שתי
+   הצהרות `function` באותו שם אינן שגיאה: המאוחרת פשוט מנצחת את
+   המוקדמת לכל הקוראים, ולכן הגרסה הראשונה — זו שנשאה את
+   ‏`+'T00:00:00'` ואת הנפילה האחורית ל-`iso` — **מעולם לא רצה**.
+   שתיהן אוחדו כאן, עם הגוף הבטוח יותר: בלי התוספת התאריך נקרא
+   כחצות UTC, וב-אזור שלילי זה חודש אחד אחורה ב-1 בחודש.
+   **הצהרה כפולה אינה נופלת על דבר, והיא בדיוק הסוג של מלכודת
+   שהמוצר כבר מתעד על מזהים ועל שמות קלאס.** */
+function monthYear(iso,short){
+  const d=new Date(iso+(/^\d{4}-\d{2}-\d{2}$/.test(iso||'')?'T00:00:00':''));
+  return isNaN(d)?(iso||''):((short?monthsShort:months)[d.getMonth()]+' '+d.getFullYear());
 }
 /* ‏**החץ שבראש הוא אחורה בתוך האשף, ו"ביטול" הוא היציאה.** שתי
    פעולות שונות, ולכן שני מקומות בשורה — בדיוק כמו בחבילה.
@@ -13740,6 +13783,15 @@ function prefillKid(name,av,sex,rel){
     return String(x.name||'').trim()===String(name||'').trim()})[0];
   cKidPick=b?String(b.id||b.name):'new';
   paintCKid();applyCKid();
+  /* ‏**וממשיכים מיד לשלב הרגע.** ‏`prefillKid` נקראת רק מכניסה
+     שנוקבת בילד בשמו ("להוסיף רגע לנועה", "צור השקעה עבור נועה",
+     ושורת הילד ב"הקרובים שלי"), כלומר השאלה "עבור מי" כבר
+     נענתה בלחיצה עצמה — ופאנל שאין בו מה לענות עליו הוא קליק
+     על כלום. זה בדיוק הכלל שכבר יושב על שורה ברשימה שבתוך השלב.
+     **ו-`startCreate` רצה לפני כן**, ולכן "חזרה" משלב הסכום
+     נוחתת על פאנל הרגע וממנו על הרשימה, בדיוק כמו במסלול
+     הרגיל: מי שרוצה בכל זאת להחליף ילד אינו אובד את הדרך. */
+  if(String(name||'').trim())toOccasion();
 }
 function apOpenMoment(){
   if(apKidSaved)prefillKid(apKidSaved.name,apKidSaved.av,apKidSexV,apKidSaved.rel);
