@@ -1441,9 +1441,58 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .subbd>.sub{font-size:13.5px;color:var(--tx-3);line-height:1.5;margin:0}
 .subbd .cta2{margin-top:auto;padding:14px 0 calc(4px + env(safe-area-inset-bottom))}
 .subbd .cta2 .btn{width:100%}
+/* ‏**ומתחת ל-780 הוא נדבק.** ‏`CHANGES.md` §0 קובע את זה לכל מסך,
+   וכאן הגוף הוא מה שגולל: בלי זה הכפתור נוסע עם התוכן ויוצא מהמסך
+   בדיוק במכשירים שבשבילם הכלל נכתב. זו אותה הכרעה של `.stickcta`
+   ושל `.fl-cta` שבקובץ העיצוב, ובאותו סף. */
+@media (max-height:780px){
+  .subbd .cta2{position:sticky;bottom:0;z-index:4;background:var(--s1);
+    box-shadow:0 -10px 14px -10px var(--shadow)}
+}
 [data-name="אמצעי תשלום"].screen.on,
 [data-name="המכתבים שלי"].screen.on,
 [data-name="כניסה ואבטחה"].screen.on{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+
+/* ── מסכי ההרשמה ───────────────────────────────────────────────────
+   ‏`CHANGES.md` §1 ו-`signup-flows/new-2-code.html`: חץ חזרה בשורה
+   משלו, כותרת של 22 בראש המסך, והפעולה בתחתית (`.cta2` עם
+   `margin-top:auto`). שלושת המסכים שאחרי הדלת היו `.screen.center-v`
+   — תוכן ממורכז אנכית, בלי חץ, והכפתור צמוד למה שמעליו.
+
+   **וזה אינו רכיב שני אלא `.subhd`/`.subbd` של מסכי המשנה של
+   הפרופיל.** שם החץ והכותרת חולקים שורה (‏18/700), וכאן הכותרת
+   מתחתיה וגדולה — זה ההבדל היחיד, ולכן הוא כיתה ולא עוד שני
+   רכיבים שצריך לסנכרן.
+
+   **ושורת החץ נשארת גם כשאין לאן לחזור.** ב"פתיחת חשבון" החץ
+   מופיע בשלב התמונה בלבד, ואם השורה הייתה יורדת איתו הכותרת
+   הייתה קופצת 46 פיקסלים בין שני הפאנלים — לכן `visibility` ולא
+   `display`. */
+.sform.screen.on{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+.sform .subhd{padding-bottom:0}
+/* ‏**ולא `>`:** הכותרת של "פתיחת חשבון" יושבת בתוך אחד משני
+   הפאנלים ולא ישירות בגוף, ובסלקטור ילד־ישיר היא נשארה 16/500
+   בזמן ששתי השכנות שלה היו 22/700. */
+.sform .subbd h2{font-size:22px;font-weight:700;color:var(--tx);margin:6px 0 0}
+/* ‏**והטקסט מיושר לתחילת השורה ולא ממורכז.** ‏`h2` ו-`.sub`
+   הגלובליים ממורכזים, וזה היה נכון כל עוד המסך היה `.center-v` —
+   גוש אחד באמצע. מרגע שהכותרת בראש והפעולה בתחתית, כותרת ממורכזת
+   מעל שדות שמיושרים לימין נקראת כמו שני מסכים. ‏`.center` ו-`.cta2`
+   מוחרגים: שם המרכוז הוא של הרכיב עצמו (התצוגה הגדולה של הדמות,
+   ושורת ההבטחה שמתחת לכפתור). */
+.sform .subbd{text-align:start}
+.sform .subbd .center,.sform .subbd .cta2{text-align:center}
+/* ‏18 מתחת, כמו `.fld{margin-top:18px}` שבקובץ העיצוב. ‏`.gap`
+   שהיה כאן נתן 14 והוא ירד עם `.center-v`; בלי תחליף השדה נצמד
+   למשפט, ‏0 פיקסלים. */
+.sform .subbd .sub{margin:6px 0 18px}
+/* ‏**וסימן המותג בתחילת השורה, כמו `.mk3` שבקובץ העיצוב.**
+   ‏`.brandmark svg` הוא `margin:0 auto` ו-`.scr-icon` הוא
+   `text-align:center`, וזה היה נכון כשהמסך היה גוש ממורכז אחד;
+   מעל כותרת שמיושרת לימין הוא נקרא כרכיב שנשאר ממסך אחר. */
+.sform .brandmark,.sform .scr-icon{margin-top:6px;margin-bottom:0;
+  line-height:0;text-align:start}
+.sform .brandmark svg,.sform .scr-icon svg{margin:0}
 
 /* כרטיס אמצעי תשלום: שם, תג מצב, מה הוא מממן, ופעולה אחת. */
 .pmx{border:1.5px solid var(--line);border-radius:16px;padding:13px 14px;margin-top:10px;background:var(--s1)}
@@ -1882,22 +1931,28 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .sexpick button.on{background:none;border-color:var(--leaf);
   box-shadow:inset 0 0 0 1px var(--leaf)}
 .sexpick button.on b{color:var(--leaf)}
-/* עיצוב "כניסה" ו"פתיחת חשבון" בלבד — לא הקלאסים הגלובליים, כדי לא
-   להזיז 25 מסכים אחרים ששותפים אותם קלאסים. */
-[data-name="כניסה"] h2,[data-name="כניסה"] .sub,[data-name="כניסה"] #lg-fine,
-[data-name="פתיחת חשבון"] h2,[data-name="פתיחת חשבון"] .sub{text-align:center}
+/* ‏**והמרכוז של שני המסכים נמחק ולא נדרס.** הוא נכתב כשהם היו
+   `.center-v` — גוש אחד באמצע המסך — ומרגע שהכותרת בראש והשדות
+   מיושרים לימין הוא היה כותרת ממורכזת מעל טופס שאינו. ‏`#lg-fine`
+   נשאר ממורכז דרך `.cta2`, שם הוא יושב. **כשערך חוזר לברירת המחדל
+   מוחקים את ההחרגה ולא מעדכנים אותה.** */
 /* סמל הנבט של האפליקציה (#sprout-art), לא אמוג'י — אותו סמל כמו במסך
    הפתיחה, בסרגל התחתון ובסיום ההרשמה. */
 .lg-err{font-size:12px;line-height:1.55;color:var(--rose);background:var(--rose-bg);
   border:1px solid var(--rose-line);border-radius:11px;padding:10px 12px;margin:0 0 14px;text-align:right}
-[data-name="כניסה"] .scr-icon{text-align:center;margin-bottom:10px;color:var(--leaf)}
-[data-name="כניסה"] .scr-icon svg{display:block;margin:0 auto}
+[data-name="כניסה"] .scr-icon{margin-bottom:10px;color:var(--leaf)}
+[data-name="כניסה"] .scr-icon svg{display:block}
 .brandmark{color:var(--leaf);line-height:0}
 .brandmark svg{display:block;margin:0 auto}
+/* ‏`.sform` מבטל את שניהם: סימן המותג יושב בתחילת השורה, כמו `.mk3`
+   שבקובץ העיצוב, ולא במרכז מעל כותרת שמיושרת לימין. */
 [data-name="כניסה"] .chips{justify-content:center;margin:2px 0 14px}
 [data-name="כניסה"] .chips button{border-radius:20px;font-size:10.5px;padding:6px 12px}
 [data-name="כניסה"] #lg-cta,[data-name="פתיחת חשבון"] #id-cta{margin-bottom:10px}
-[data-name="כניסה"] .backlink,[data-name="פתיחת חשבון"] .backlink{margin-top:2px}
+/* ‏**וכלל ה-`.backlink` של שני המסכים נמחק עם הכפתור.** "חזרה" היא
+   החץ שבראש, ולכן `.backlink` אינה קיימת בהם יותר — **וסלקטור
+   שאינו מצביע על דבר הוא בדיוק המלכודת שהפרק "כלל שהורחב ואז
+   מצטמצם" מתאר.** הקלאס עצמו חי בחמישה מסכים אחרים. */
 /* ‏**המועד הוא שורה אחת של גלולות, כמו בחבילה.** ברשת של שלוש
    עמודות חמישה צ'יפים הם שתי שורות ותא ריק, והגוש כולו יושב מתחת
    לשמונה אריחים — כלומר הוא מה שדוחף את "המשך" מתחת לקיפול. נמדד
@@ -3829,7 +3884,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'c683c44';
+window.NETA_BUILD = '15d68e7';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -5796,10 +5851,19 @@ window.NETA_CONFIG = {
 </section>
 
 <!-- 22 SIGN IN -->
-<section class="screen center-v" data-name="כניסה">
+<!-- ‏**המסך בשפה של `signup-flows/new-2-code.html`:** חץ חזרה בשורה
+     משלו, כותרת בראש, והפעולה בתחתית. ‏`.backlink` שהייתה בסוף המסך
+     ירדה — "חזרה" היא החץ, וכפתור שלישי מתחת לשני האחרים הוא אותה
+     פעולה בשפה שהסבב הוריד מכל מסך אחר. -->
+<section class="screen sform" data-name="כניסה">
+  <div class="subhd">
+    <button class="bk" onclick="loginBackOut()" aria-label="חזרה">
+      <svg width="22" height="22" aria-hidden="true"><use href="#chev"/></svg></button>
+  </div>
+  <div class="subbd">
   <div class="scr-icon"><svg width="40" height="47" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
-  <h2 class="gap-s">מה המספר שלך?</h2>
-  <p class="sub gap" id="lg-sub">אותו מספר משמש לכניסה ולהזמנות שתשלח. אין סיסמה.</p>
+  <h2>מה המספר שלך?</h2>
+  <p class="sub" id="lg-sub">אותו מספר משמש לכניסה ולהזמנות שתשלח. אין סיסמה.</p>
   <!-- כשהכניסה עם גוגל נכשלת, הספק מחזיר לכאן ?error=… והאפליקציה
        התעלמה מזה לגמרי: המשתמש נחת על מסך רגיל, בלי מילה, ועם שגיאה
        תלויה בשורת הכתובת. -->
@@ -5831,6 +5895,11 @@ window.NETA_CONFIG = {
       <button id="lg-pwout" onclick="usePassword()">להיכנס עם סיסמה</button>
     </p>
   </div>
+  <!-- ‏**הפעולה, ההזדהות וההבטחה הן גוש אחד בתחתית.** הכפתור לבדו
+       ב-`.cta2` היה נוחת מתחת לשורת "או" ולכפתור Google, כלומר סדר
+       הפוך; והשלושה יורדים ממילא יחד במצב הקוד (`loginAsVerify`),
+       ואז נשאר בתחתית הכפתור לבדו. -->
+  <div class="cta2">
   <button class="btn" id="lg-cta" onclick="loginNext()">שלח קוד</button>
   <!-- מי שמגיע דרך קישור מדלג על מסך הפתיחה ונוחת כאן ישר, ולכן עד
        עכשיו לא ראה בכלל שאפשר להיכנס עם גוגל. אותם כפתורים בדיוק,
@@ -5845,7 +5914,8 @@ window.NETA_CONFIG = {
   <p class="fine" id="lg-fine" style="margin-top:12px">אם כבר יש לך חשבון, תיכנס אליו. אם לא, ניצור אחד. אותו כפתור.</p>
   <!-- הסיסמה חיה כאן ולא בדלת: רק מי שהגדיר אחת בפרופיל מחפש אותה. -->
   <button class="link" id="lg-pwlink" style="display:none" onclick="usePassword()">יש לי סיסמה</button>
-  <button class="link backlink" onclick="loginBackOut()">חזרה</button>
+  </div><!-- /cta2 -->
+  </div><!-- /subbd -->
 </section>
 
 <!-- 23 HOW IT WORKS -->
@@ -5886,10 +5956,18 @@ window.NETA_CONFIG = {
      המסך ונקרא כשאלה הראשית, בזמן שהשם הוא מה שבאמת נשאל. ובנפרד
      התמונה מקבלת תצוגה גדולה של מה שנבחר, וזה מה שהיה חסר: בחרו
      פרצוף בגודל 60 וגילו אותו בגודל 88 במסך אחר. -->
-<section class="screen center-v" data-name="פתיחת חשבון">
+<section class="screen sform" data-name="פתיחת חשבון">
+  <!-- ‏**שורת החץ קיימת בשני הפאנלים והחץ עצמו רק בשני.** אין לאן
+       לחזור מהשלב הראשון (הוא מגיע מיד אחרי האימות), ושורה שיורדת
+       איתו הייתה מקפיצה את הכותרת בין הפאנלים — `visibility`. -->
+  <div class="subhd">
+    <button class="bk" id="id-back" style="visibility:hidden" onclick="idBack()" aria-label="חזרה">
+      <svg width="22" height="22" aria-hidden="true"><use href="#chev"/></svg></button>
+  </div>
+  <div class="subbd">
   <div id="id-p0">
-  <h2 class="gap-s">נעים להכיר</h2>
-  <p class="sub gap" id="id-sub">ככה יכירו אותך הקרובים שיוזמנו לנטוע איתך.</p>
+  <h2>נעים להכיר</h2>
+  <p class="sub" id="id-sub">ככה יכירו אותך הקרובים שיוזמנו לנטוע איתך.</p>
   <div class="field"><label>שם</label><input type="text" id="id-name"
     placeholder="השם שלך" oninput="idGate()"></div>
   <!-- לא בשביל זהות אלא בשביל פועל: בלי זה כל מסך שמדבר עליך כותב
@@ -5901,8 +5979,8 @@ window.NETA_CONFIG = {
   </div><!-- /id-p0 -->
 
   <div id="id-p1" style="display:none">
-  <h2 class="gap-s">איך יראו אותך?</h2>
-  <p class="sub gap">הפרצוף שיופיע ליד השם שלך אצל הקרובים.</p>
+  <h2>איך יראו אותך?</h2>
+  <p class="sub">הפרצוף שיופיע ליד השם שלך אצל הקרובים.</p>
   <div class="avbig" id="id-avbig" aria-hidden="true"></div>
   <p class="center" id="id-avname" style="font-weight:700;margin:-8px 0 16px">·</p>
   <div id="id-avpick"></div>
@@ -5914,28 +5992,11 @@ window.NETA_CONFIG = {
   <!-- שורת "המספר אומת" וההערה שלה ירדו, לבקשת אלון. היא חזרה על מה
        שהמסך שלפניה כבר עשה (הקוד הרגע הוקלד), והמשפט שמתחתיה הבטיח
        התראות על מסך שכל תפקידו לשאול שם ותמונה. -->
-  <!-- אין "חזרה": המסך הזה מגיע מיד אחרי אימות, ואין לאן לחזור ממנו.
-       (הכפתור הקודם הוביל למסך ההקמה — יעד שנשאר מהזרימה הישנה.) -->
-  <button class="btn off" id="id-cta" onclick="idNext()">המשך</button>
-  <button class="link backlink" id="id-back" style="display:none" onclick="idBack()">חזרה</button>
+  <div class="cta2"><button class="btn off" id="id-cta" onclick="idNext()">המשך</button></div>
+  </div><!-- /subbd -->
 </section>
 
 <!-- 21 ONBOARDING DONE -->
-<section class="screen center-v" data-name="סיום הרשמה">
-  <div class="center">
-    <svg width="112" height="132" viewBox="10 6 40 57" style="color:var(--leaf);margin:6px auto 0;display:block" aria-hidden="true"><use href="#sprout-art"/></svg>
-    <h2 style="margin:14px 0 6px">נטעת את הראשונה</h2>
-    <p class="sub" id="ob-sub">בר המצווה של דניאל · אוגוסט 2039</p>
-  </div>
-  <div class="card gap">
-    <div class="stat"><span class="k" id="ob-k">מופקד כל חודש</span><span class="v" id="ob-amt">100 ₪</span></div>
-    <div class="stat"><span class="k" id="ob-whenk">ההפקדה הראשונה</span><span class="v" id="ob-when">1 בספטמבר</span></div>
-    <div class="stat"><span class="k" id="ob-endk">בקצב הזה ייצבר</span><span class="v" style="color:var(--sun-soft)" id="ob-end">כ-23,500 ₪</span></div>
-  </div>
-  <div class="verified gap-s"><div class="vi">✓</div><div><b id="ob-okt">הוראת הקבע פעילה</b><p id="ob-okp">מכאן זה קורה מעצמו. אפשר לעצור או לשנות בכל רגע, מתוך הנטיעה.</p></div></div>
-  <button class="btn gap" id="ob-cta" onclick="onboDone()">לנטיעות שלי</button>
-</section>
-
 <!-- 24 REVIEW — the last screen before an irreversible commitment -->
 <section class="screen center-v" data-name="סיכום ואישור">
   <!-- ‏**הכותרת מתחלפת, והכרטיס יורד באשף.** ‏`#py-h` אומר "זה מה
@@ -6236,12 +6297,18 @@ window.NETA_CONFIG = {
      נוסף בסוף ה-stage בכוונה: המסכים ממוספרים לפי סדר ה-DOM, וכל
      go(N) בקובץ נשען על המספר. הוספה באמצע הייתה מזיזה 27 מסכים.
      ההפניה לכאן היא לפי שם, כמו SHARED_SCREEN. -->
-<section class="screen center-v" data-name="הצטרפות">
-  <div class="center gap">
-    <div class="brandmark"><svg width="40" height="47" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
-    <h2 style="margin:11px 0 5px" id="jo-h">·</h2>
-    <p class="sub" id="jo-sub">·</p>
+<!-- ‏**אותה שפה של `signup-flows/mail-3-verify.html`:** חץ, סימן מותג
+     קטן, כותרת בראש, והפעולה בתחתית. שם זה `.su`, וכאן `.subhd`
+     ו-`.subbd` שכבר משרתים את מסכי המשנה של הפרופיל. -->
+<section class="screen sform" data-name="הצטרפות">
+  <div class="subhd">
+    <button class="bk" onclick="joBack()" aria-label="חזרה">
+      <svg width="22" height="22" aria-hidden="true"><use href="#chev"/></svg></button>
   </div>
+  <div class="subbd">
+  <div class="brandmark"><svg width="40" height="47" viewBox="10 6 40 57" aria-hidden="true"><use href="#sprout-art"/></svg></div>
+  <h2 id="jo-h">·</h2>
+  <p class="sub" id="jo-sub">·</p>
 
   <!-- השם והתמונה ירדו מכאן, וזה לא קיצור אלא סדר. המסך הזה רץ לפני
        האימות, ולכן הוא אינו יכול לדעת אם מי שעומד מולו כבר רשום: לשאול
@@ -6290,8 +6357,8 @@ window.NETA_CONFIG = {
     <p class="otpout"><button onclick="joChangeMail()">לשנות כתובת</button></p>
   </div>
 
-  <button class="btn off" id="jo-cta" onclick="joNext()">שלח לי קוד</button>
-  <button class="link backlink" onclick="joBack()">חזרה</button>
+  <div class="cta2"><button class="btn off" id="jo-cta" onclick="joNext()">שלח לי קוד</button></div>
+  </div><!-- /subbd -->
 </section>
 
 <!-- ── הוספת אדם ────────────────────────────────────────────────
@@ -6515,7 +6582,7 @@ screens.forEach((s,i)=>{const b=document.createElement('button');b.textContent=(
    העליונה, ולכן אין לו טאב שנדלק. */
 const tabScreens={14:0,0:1,1:2,6:3,7:3,15:3,9:4};
 let lastTab=0;
-const ONBO={welcome:19,login:20,how:21,identity:22,done:23};
+const ONBO={welcome:19,login:20,how:21,identity:22};
 let onbo=false;
 /* השורה העליונה נשארה למסך אחד, הפרופיל, שהיא הכותרת שלו. בארבעת
    יעדי הסרגל היא ירדה יחד עם הפרצוף שבפינה — ראו ההערה בסרגל
@@ -6569,8 +6636,8 @@ function paintHeader(){}
    חמישה יעדים מתחת לכפתור "לכתוב מכתב חדש" הוא שלוש פעולות ברגע
    שכולו אחת. **והם אינם מבוי סתום**, כי החץ שבראש מחזיר לפרופיל.
    ‏`SEC_SCREEN` אינו קבוע, ולכן הוא נוסף כאן בזמן ריצה. */
-const NOCHROME=[4,16,17,19,20,21,22,23,25,26,27,29];
-const REVIEW=24;
+const NOCHROME=[4,16,17,19,20,21,22,24,25,26,28];
+const REVIEW=23;
 /* מסך הבית מסומן on כבר ב-HTML, ולכן הוא נצבע כל עוד לא ידוע מה
    להראות. ‏openShared ו-landSignedIn כבר מסתירים את הבמה בדיוק מהסיבה
    הזאת, וכל אחד מהם עושה זאת בעצמו; זה אותו דפוס, כפונקציה, כדי שגם
@@ -6660,7 +6727,7 @@ function go(i){
   else if(i===ONBO.identity)flowBar(stepNo('identity'),'פתיחת חשבון');
   else if(i===3)flowBar(stepNo('pay'),'תשלום');
   else if(i===REVIEW)flowBar(stepNo('review'),'סיכום ואישור');
-  else if(![1,REVIEW,ONBO.welcome,ONBO.login,ONBO.how,ONBO.done].includes(i)){
+  else if(![1,REVIEW,ONBO.welcome,ONBO.login,ONBO.how].includes(i)){
     /* leaving the flow ends it — otherwise a later deposit still lands on the signup screens */
     /* ‏`#flowbar` נמחק עם הסרגל הישן, והשורה שהסתירה אותו נשארה —
        כלומר כל יציאה מהאשף זרקה. ‏`wizSheet` שכבר רצה למעלה היא מה
@@ -7446,7 +7513,7 @@ function openGuardian(){
   txt('ga-when',r.target_date?monthYear(r.target_date):'·');
   txt('ga-who',r.opened_by||'·');
   txt('ga-yes',parent?('כן, '+kid+' הוא הילד שלי'):'כן, זה מוסכם עליי');
-  go(27);
+  go(26);
 }
 function guardianAnswer(fn,msg){
   const r=guardQueue[0]; if(!r)return;
@@ -7495,8 +7562,6 @@ function afterVerifiedNewUser(){
   if(onbo&&!idDone){go(ONBO.identity);return}
   onboStart();
 }
-function onboDone(){onboEnd()}
-function onboEnd(){onbo=false;setEmpty(false);document.getElementById('resume-card').style.display='none';goHome()}
 let mySex=null;
 /* אותה פעולה של pickMySex, בגיליון העריכה. לחיצה שנייה על מה
    שכבר דלוק מכבה, כי "לא נבחר" הוא מצב תקף ואין דרך אחרת לחזור
@@ -7541,7 +7606,9 @@ function idShow(){
   if(p0)p0.style.display=idStep?'none':'';
   if(p1)p1.style.display=idStep?'':'none';
   const bk=document.getElementById('id-back');
-  if(bk)bk.style.display=idStep?'':'none';
+  /* ‏`visibility` ולא `display`: השורה נשארת בשני הפאנלים כדי
+     שהכותרת לא תקפוץ. */
+  if(bk)bk.style.visibility=idStep?'visible':'hidden';
   if(idStep)idPaintBig();
   idGate();
   document.querySelector('.stage').scrollTo?.(0,0);
@@ -8707,8 +8774,13 @@ function flowCancel(){ if(apLive)apExit(); else if(joinLive)joinExit(); else can
    אותי אליו הוא המסלול הזה. `p.mine` הוא הדגל, וזה אותו דגל
    שכבר מכריע אם מוצג המתג "הסכום שלי גלוי". */
 let joinLive=false;
-const JOIN_SCREENS=[2,3,24];
-const JOIN_LBL={2:'כמה',3:'איך לשלם',24:'לאשר'};
+const JOIN_SCREENS=[2,3,23];
+/* ‏**והתוויות הן מערך מקביל ל-`JOIN_SCREENS` ולא טבלה לפי מספר
+   מסך.** היא הייתה `{2:…,3:…,24:…}`, ומחיקת "סיום הרשמה" הזיזה
+   את מסך הסיכום ל-23 — כלומר **השלב השלישי איבד את התווית שלו
+   בשקט**, והכריז "שלב 3 מתוך 3" בלי "לאשר". `join6.js` תפס את
+   זה. מעכשיו מקור אחד של מספרים, ומי שמזיז מסך מזיז רשימה אחת. */
+const JOIN_LBL=['כמה','איך לשלם','לאשר'];
 /* ‏**שלושה שלבים ולא שניים, ומה שנספר הוא מה שעונים עליו.** העיצוב
    מאחד את התשלום לתוך "לאשר ולנטוע" ומונה כשלב שני את "נעים להכיר",
    שאצלנו קורה לפני הכניסה בכלל — מסך ההצטרפות מאמת את הכתובת, וזה
@@ -8726,7 +8798,7 @@ function joinHead(i){
   const verb=me==='f'?'נוטעת ל':me==='m'?'נוטע ל':'נטיעה ל';
   txt('wiz-t',kid?(verb+kid):'נטיעה');
   txt('wiz-step','שלב '+n+' מתוך '+JOIN_SCREENS.length+
-    (JOIN_LBL[i]?(' · '+JOIN_LBL[i]):''));
+    (JOIN_LBL[n-1]?(' · '+JOIN_LBL[n-1]):''));
   const bar=document.getElementById('wiz-bar');
   if(bar)bar.innerHTML=Array.from({length:JOIN_SCREENS.length},function(_,k){
     return '<i class="'+(k<n?'on':'')+'"></i>'}).join('');
@@ -8823,7 +8895,7 @@ function wizSheet(at){
 /* ‏1 הקמה (שלושת הפאנלים), 2 הסכום, 3 התשלום, 24 הסיכום. מסך
    ההשקעה משרת גם הפקדה לרגע קיים, ולכן הקלאס תלוי ב-`creating`
    ולא במספר לבדו. */
-const WIZ_SCREENS=[1,2,3,24];
+const WIZ_SCREENS=[1,2,3,23];
 /* ‏**מה שהכרטיס יודע בכל רגע, ולא יותר.** כל שדה שעוד לא נענה
    נשאר "·" או שאלה, וזה מה שהופך אותו למד התקדמות ולא לסיכום
    שמופיע בסוף. */
@@ -10831,35 +10903,19 @@ function celebrate(){
   joinLive=false;
   const h2=document.getElementById('aha-h2');
   if(h2)h2.textContent=ahaTitle();
+  /* ‏**וסוף ההרשמה אינו מסך משלו.** הנטיעה הראשונה של חשבון חדש
+     נחתה עד כה על מסך "סיום הרשמה" — נבט מצויר, כרטיס של שלוש
+     שורות ו"הוראת הקבע פעילה" — בזמן שכל נטיעה אחרת נוחתת על
+     "רגע ההשקעה" של שלב 9. כלומר **ה"נטעת" הראשון בחיים היה
+     היחיד בשפה הישנה**, ושני מסכים אמרו את אותו אירוע.
+     המסך נמחק, והדגל בלבד נשאר: מה שהוא עשה מעבר לציור היה לכבות
+     את מצב ההרשמה ולהחזיר את הבית למצב מלא.
+     **המחיר שנאמר:** "הוראת הקבע פעילה" יורדת, ומה שאומר את זה
+     הוא שורת היום שבמסך עצמו. */
   if(onbo){
-    const v=freq==='m'?+amtM.value:+amtL.value;
-    const total=mode==='keep'?fvCalc(v,0):fvCalc(v,rate);
-    const rec=freq==='m';
-    /* ‏goal.type היא תווית הצ'יפ, כלומר שאלה שמוצגת למשתמש ("בר/בת
-       מצווה"), ולא שם. כשם היא נקראת כשגיאה, ובדיוק לשם כך קיימת
-       plantingName: היא פותרת את הלוכסן לפי המין שכבר נבחר במסע,
-       והיא זו שבונה את השם שנשמר במסד. השורה הזאת עקפה אותה, ולכן
-       המסך אמר "בר/בת מצווה של אביב" בזמן שהמסד והמסכים האחרים
-       אמרו "בת המצווה של אביב" על אותה נטיעה בדיוק. */
-    txt('ob-sub',plantingName(goal.type,goal.name,goal.desig!==false)+
-                 ' · '+goal.dateLabel);
-    txt('ob-k',rec?'מופקד כל חודש':'הפקדה חד פעמית');
-    txt('ob-amt',v.toLocaleString('he-IL')+' ₪');
-    txt('ob-whenk',rec?'ההפקדה הראשונה':'ההפקדה בוצעה');
-    /* "1 בספטמבר" היה מחרוזת קשיחה, כלומר אותו תאריך בכל חודש ולכל
-       חשבון. ומעבר לכך הוא תיאר עתיד שאינו קיים: createPlanting כותבת
-       שורת contributions מיד, בתוך אותה קריאה שיוצרת את הנטיעה, ורק
-       הקצב ממשיך ב-standing_orders. כלומר ההפקדה הראשונה כבר יצאה,
-       וזה גם מה ש"נצבר עד כה" סופר שנייה אחר כך. אם תיכנס סליקה
-       אמיתית שדוחה את החיוב, השורה הזאת הולכת אחרי החיוב. */
-    txt('ob-when','היום');
-    txt('ob-endk',rec?'בקצב הזה ייצבר':'ימשיך לגדול ל');
-    txt('ob-end','כ-'+Math.round(total).toLocaleString('he-IL')+' ₪');
-    txt('ob-okt',rec?'הוראת הקבע פעילה':'ההפקדה נקלטה');
-    txt('ob-okp',rec?'מכאן זה קורה מעצמו. אפשר לעצור או לשנות בכל רגע, מתוך הנטיעה.'
-      :('הכסף בדרכו לחשבון הנעול על '+(goal.desig===false?'שמך':bs('שמו','שמה'))+'. אפשר להוסיף הפקדה נוספת בכל זמן, או להגדיר הפקדה חודשית.'));
-    txt('ob-cta','לנטיעות שלי');
-    isNewPlant=false;go(ONBO.done);return;
+    onbo=false;setEmpty(false);
+    const rc=document.getElementById('resume-card');
+    if(rc)rc.style.display='none';
   }
   /* סוף ההקמה נוחת ברגע עצמו ולא במסך הבית. זו גם הנחיתה הנכונה
      ממילא — אתה רואה את מה שיצרת — וגם מה שמחליף את שלב הפתיחות
@@ -11346,7 +11402,7 @@ function openPerson(i){
   txt('pv-fine',isMe
     ? 'הצפי מניח שההפקדה החודשית נמשכת עד המועד. הוא שלך בלבד ואינו מחובר לאף אחד אחר.'
     : 'זה מה ש'+w[1]+' נטע כאן, והצפי הוא שלו בלבד. מי שעוצר או משנה, המספר משתנה איתו.');
-  go(28);
+  go(27);
 }
 /* שורת הפעולות מצוירת בנפרד: myStandingOrder חוזרת אחרי שהמסך כבר
    נפתח, וקודם לכן "עצור או שנה" היה מופיע רק אם במקרה הספיקה. */
@@ -11627,8 +11683,9 @@ function paintDetail(key,p){
    שנכתב** — "חתונה" הוא "חתונה של נועה", כי מה שהמשתמש הקליד אינו
    שלנו ליידע, וגם זה כבר מה ששמור.
    **ולכן אין כאן טבלה שנייה.** טבלה שנייה שגוזרת שם מאנום הייתה
-   נפרדת מהשם שבמסד ביום שמישהו עורך רגע, וזו בדיוק התקלה של
-   `ob-sub` שהרכיב כותרת מתווית הצ'יפ. הנפילה האחורית היא לשם
+   נפרדת מהשם שבמסד ביום שמישהו עורך רגע, וזו בדיוק התקלה שהייתה
+   ב-`ob-sub` שבמסך "סיום הרשמה" — הוא הרכיב כותרת מתווית הצ'יפ,
+   ושניהם כבר אינם קיימים. הנפילה האחורית היא לשם
    הרגע ועוד הילד, למקרה שהשם נשמר בלי "של". */
 function momCardTitle(p,kid){
   /* ‏**וגם כאן ה"א הידיעה על שם חופשי.** ‏`FIX-moment` §3א נוקב
@@ -18850,7 +18907,7 @@ function openPartnerInvite(key,name){
   txt('pi-meta','המועד המיוחל: '+p.date+' · נצבר עד כה '+p.now.toLocaleString('he-IL')+' ₪');
   document.getElementById('pi-done').style.display='none';
   document.querySelector('.screen[data-name="הזמנה לשותפות"] .two').style.display='';
-  go(25);
+  go(24);
 }
 function acceptPartner(){
   document.querySelector('.screen[data-name="הזמנה לשותפות"] .two').style.display='none';
