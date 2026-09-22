@@ -284,6 +284,10 @@ h2{font-size:16px;font-weight:500;line-height:1.4}
 .sub{font-size:12.5px;color:var(--tx-2);line-height:1.55}
 .eyebrow{font-size:10px;letter-spacing:.12em;color:var(--tx-3);margin-bottom:8px}
 .fine{font-size:10.5px;color:var(--tx-3);line-height:1.5}
+/* קישור בתוך משפט, ולא `.link` שיושב בשורה משלו: הקו התחתון הוא
+   הדבר היחיד שאומר ששתי המילים האלה נלחצות, ובלעדיו שורת התנאים
+   בדלת נראית בדיוק כפי שנראתה כשהיא הייתה טקסט. */
+.fine a{color:var(--tx-2);text-decoration:underline;text-underline-offset:2px}
 .gap{margin-bottom:14px}.gap-s{margin-bottom:8px}.gap-x{margin-bottom:3px}.center{text-align:center}
 
 .card{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:9px}
@@ -1281,6 +1285,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .prefbox .setrow .st b{font-size:14.5px;font-weight:600;color:var(--tx)}
 .prefbox .setrow .st p{font-size:12px;margin-top:3px}
 .prefbox .fine{margin-top:12px;text-align:start}
+/* גיליון "מסמכים ותנאים". שלוש שורות שכולן יוצאות מהאפליקציה, ולכן
+   אין בהן `#chev`: החץ אומר "פנימה", וכאן נפתח טאב חדש. מה שאומר
+   את זה הוא הכיתוב, והחיצוניות נשמרת ב-`target`. */
+.docbox a{display:block;padding:13px 0;border-bottom:1px solid var(--line);
+  text-decoration:none;color:inherit}
+.docbox a:last-of-type{border-bottom:none}
+.docbox a .t{display:block;font-size:14.5px;font-weight:600;color:var(--tx)}
+.docbox a .s{display:block;font-size:12px;color:var(--tx-3);margin-top:3px}
+.docbox .fine{margin-top:12px;text-align:start}
 .person{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
 .person:last-child{border-bottom:none}
 .person .pa{width:30px;height:30px;border-radius:9px;overflow:hidden;flex-shrink:0;background:var(--s2)}
@@ -3591,7 +3604,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'af0f856';
+window.NETA_BUILD = '222041b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3759,6 +3772,14 @@ window.NETA_CONFIG = {
        זה שבקובץ העיצוב ואינו המצאה. -->
   <g id="ic-lock" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+  </g>
+  <!-- ‏`ic-doc`: מסמך עם פינה מקופלת ושלוש שורות. ‏`ic-shield` כבר
+       תפוס בשורת "פרטיות" שתי שורות מעליו, ואותו אייקון פעמיים
+       באותו מסך על שני דברים שונים הוא בדיוק מה ש-`ic-lock` נוסף
+       כדי למנוע. הפינה המקופלת היא מה שאומר "מסמך" ולא "כרטיס". -->
+  <g id="ic-doc" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/>
+    <path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/>
   </g>
   <g id="ic-shield" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 3 L19.4 6 V11.9 C19.4 16.1 16.2 19.2 12 20.7 C7.8 19.2 4.6 16.1 4.6 11.9 V6 Z"/>
@@ -4901,13 +4922,18 @@ window.NETA_CONFIG = {
 
     <!-- ‏**וזו הכניסה הרביעית לסטורי**, שחסרה: ‏`CHANGES.md` §10
          נוקב בארבע ורק שלוש היו קיימות.
-         ‏**ו"מסמכים ותנאים" אינו כאן**, מאותו טעם של השתיים שלמעלה:
-         שני הדפים לא נכתבו, ואין גוף מנהל (§18). -->
+         ‏**ו"מסמכים ותנאים" נכנס**, אחרי ששני הדפים נכתבו. מה שנדחה
+         בשלב 9 היה "שני הדפים לא נכתבו", והנימוק נפתר ולא בוטל:
+         ‏`legal.html` יושב ליד דף הבית ונושא את שניהם. -->
     <p class="p2-k">עוד</p>
     <div class="p2-card">
       <button class="p2-row" onclick="howOpen(true)">
         <span class="ic"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-path"/></svg></span>
         <span class="gr"><span class="t">איך זה עובד</span><span class="s">חמש שקופיות, חצי דקה</span></span>
+        <span class="ch"><svg width="7" height="12" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg></span></button>
+      <button class="p2-row" onclick="openDocsSheet()">
+        <span class="ic"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-doc"/></svg></span>
+        <span class="gr"><span class="t">מסמכים ותנאים</span><span class="s">תנאי שימוש, פרטיות, מי שומר על הכסף</span></span>
         <span class="ch"><svg width="7" height="12" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg></span></button>
     </div>
 
@@ -5434,9 +5460,14 @@ window.NETA_CONFIG = {
            כבר רשום?"), ולכן מקומו כאן ולא במסך שאחרי הלחיצה. -->
       <p class="fine" id="w-same">יש חשבון? נכנסים אליו. אין? נפתח אחד. אותו כפתור.</p>
       <!-- "מאשרים" ולא "אתה מאשר": הפנייה נשאלת במסך שאחרי הקוד,
-           ובדלת היא עוד לא ידועה. השורה אינה קישור, כמו בפוטר של
-           דף הבית, כי הדפים עצמם עוד לא נכתבו. -->
-      <p class="fine" id="w-terms">בהמשך מאשרים את תנאי השימוש ואת מדיניות הפרטיות</p>
+           ובדלת היא עוד לא ידועה.
+           **והשורה היא קישור מעכשיו**, בשני המקומות שבהם היא נאמרת:
+           כאן ובפוטר של דף הבית. היא נכתבה כטקסט כי שני הדפים לא
+           היו קיימים, ועכשיו הם `legal.html` שיושב ליד דף הבית,
+           כלומר `../` מכאן. `target` חדש ולא ניווט: מי שקורא תנאים
+           באמצע פתיחת חשבון חוזר למקום שבו היה, ובאפליקציה שכל
+           המסכים שלה בקובץ אחד אין לאן לחזור אליו. -->
+      <p class="fine" id="w-terms">בהמשך מאשרים את <a href="../legal.html#terms" target="_blank" rel="noopener">תנאי השימוש</a> ואת <a href="../legal.html#privacy" target="_blank" rel="noopener">מדיניות הפרטיות</a></p>
     </div>
   </div>
 </section>
@@ -13795,7 +13826,28 @@ function openPrivacySheet(){
       prefRow('amounts_visible','סכומים גלויים כברירת מחדל',
               'המתג במסך התשלום ייפתח כך. מי שנוטע איתך לאותו רגע יראה כמה הפקדת, ואפשר לשנות לכל הפקדה בנפרד.') +
       '<p class="fine">מי שפתח את הרגע רואה את הסכום שלך כך או כך, כבעל הרגע.'+
-      ' הורדת המידע שלך ומחיקת החשבון עוד לא נבנו.</p>'+
+      ' הורדת המידע ומחיקת החשבון עוד לא נבנו כמסך, ואפשר לבקש אותן'+
+      ' בפנייה אלינו. הפירוט המלא במדיניות הפרטיות.</p>'+
+    '</div>');
+}
+/* ‏**"מסמכים ותנאים", והוא גיליון ולא מסך.** שלוש השורות שבו
+   יוצאות מהאפליקציה אל `legal.html`, שיושב ליד דף הבית: שני
+   המסמכים הם דף אחד עם שני עוגנים, כי קובץ שני היה עותק שני של
+   הפלטה ושל הפוטר. השורה השלישית אינה מסמך אלא סקשן "מי שומר על
+   הכסף" שכבר קיים בדף הבית, ולכן אין כאן טקסט שלישי שצריך
+   לסנכרן איתו. */
+function openDocsSheet(){
+  const row=function(href,t,sub){
+    return '<a href="'+href+'" target="_blank" rel="noopener">'+
+      '<span class="t">'+t+'</span><span class="s">'+sub+'</span></a>';
+  };
+  sheetPick('מסמכים ותנאים','נפתחים בטאב חדש.',
+    '<div class="docbox">'+
+      row('../legal.html#terms','תנאי שימוש','מה נטע עושה, ומה היא אינה') +
+      row('../legal.html#privacy','מדיניות פרטיות','איזה מידע נשמר, ומי רואה אותו') +
+      row('../#trust','מי שומר על הכסף','שבע שאלות והתשובות שלהן, בדף הבית') +
+      '<p class="fine">נטע אינה מחזיקה בכסף ואינה נותנת ייעוץ השקעות.'+
+      ' כל סכום עתידי שמוצג כאן הוא צפי ולא הבטחה.</p>'+
     '</div>');
 }
 /* גיליון התצוגה. ‏`#th-pick` עבר לכאן מהמסך עצמו, והוא נשאר
