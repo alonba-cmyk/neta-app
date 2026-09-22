@@ -986,15 +986,19 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הוא הסיפא, והמועד שפותח את השורה הוא מה שהיא באמת אומרת. */
 .fu-dt{font-size:12px;color:var(--tx-3);margin-top:2px;line-height:1.35;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-/* חול ולא ירוק: זה הצפי ולא הנצבר. ראו fuMomentHTML.
-   **‏16 ולא 17, ו-`--sun-soft` ולא `--sun-big`.** העיצוב נוקב
-   בשניהם, ובטוקן יש סתירה: בחבילה יש חול אחד (`--sun-big`,
-   ‏`#9C865C`), ובאפליקציה הוא פוצל לשניים כי 3.5:1 עובר את הסף
-   של טקסט גדול בלבד. ‏16/700 אינו טקסט גדול (הסף הוא 18.66 מודגש),
-   ולכן `--sun-big` כאן הוא 3.5:1 על הגיליון הלבן ו-`contrast.js`
-   היה מדווח עליו. המידה של העיצוב נלקחה, הגוון נשאר הנגיש. */
-.fu-amt{font-size:16px;font-weight:700;color:var(--sun-soft);
-  font-variant-numeric:tabular-nums;flex-shrink:0;white-space:nowrap}
+/* ‏**ירוק ולא חול: זה הנצבר ולא הצפי, וזו בקשה של אלון.**
+   ‏`fuMomentHTML` נושא את ההיפוך במלואו; כאן מה שנגזר ממנו הוא
+   הגוון — כסף שקיים הוא `--leaf`, וזה הכלל של המוצר כולו.
+   **‏16 ולא 17**, כי הסכום שמשמאל היה דוחק את שורת המועד ושובר
+   אותה; זו המידה שכבר נמדדה ב-`FIX-waiting-v3`.
+   **והתווית מעליו ולא לצידו**, כי "נצבר עד כה" ארוך מכדי לשבת
+   בשורה אחת עם המספר בטור שנשאר אחרי האייקון והשם. שתיהן
+   מיושרות לקצה החיצוני, כלומר לקו אחד מול ה-`‹` שאחריהן. */
+.fu-amt{flex-shrink:0;text-align:end;line-height:1.2}
+.fu-amt .k{display:block;font-size:11px;font-weight:400;color:var(--tx-3);
+  white-space:nowrap}
+.fu-amt .v{display:block;font-size:16px;font-weight:700;color:var(--leaf);
+  font-variant-numeric:tabular-nums;white-space:nowrap;margin-top:1px}
 /* ברשימת הנוטעים הסכום הוא כסף שקיים, ולכן ירוק ובמשקל של שורה
    ולא של כותרת. ‏17/700 שייכים לצפי, שהוא מה שהשורות שמעליו
    מרכיבות. */
@@ -3501,9 +3505,18 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    תישאר גלילה של הדף. */
 /* ‏overflow:hidden כדי שהשקף המוזז (translateX 14) לא יגלוש
    מהמסך: הוא שקוף, אבל גלישה אופקית נמדדת. */
-.invbox .trk{display:grid;border-radius:18px;overflow:hidden;touch-action:pan-y}
+.invbox .trk{display:grid;border-radius:16px;overflow:hidden;touch-action:pan-y}
+/* ‏**השקף הוא משטח חול מלא ולא כרטיס מתואר.** הוא נבנה כאן תחילה
+   כקו של `--leaf-line` על הגיליון הלבן, ואלון ראה שזה אינו העיצוב:
+   ‏`FIX-activity.md` §3 נוקב ב-`--sun-bg` ו-16, וכך גם `.pin`
+   שב-`neta-11-activity.html` ו-`.ban` שב-`neta-27-tabs-final.html`.
+   **והחול הוא מה שאומר "פתוח":** הוא כבר הגוון של "ממתינה"
+   ב"הקרובים שלי" ושל גלולת ההצטרפות בפיד, ובאנר שכל עניינו שמשהו
+   מחכה לתשובה שלי שייך לאותה משפחה. משטח נפרד גם עושה את מה שהקו
+   ניסה לעשות — מבדיל אותו מהרשימה שמתחתיו — בלי להיקרא ככרטיס
+   נוסף ברשימה. */
 .invbox .invrow{grid-area:1/1;
-  border:1.5px solid var(--leaf-line);border-radius:18px;padding:12px 14px;
+  background:var(--sun-bg);border-radius:16px;padding:12px 14px;
   opacity:0;transform:translateX(14px);pointer-events:none;
   transition:opacity .35s,transform .35s}
 /* ‏translateX חיובי הוא ימינה במסמך RTL, ולכן השקף הנכנס מגיע מהצד
@@ -3517,13 +3530,18 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    **ושני כפתורים ירוקים אינם על המסך**, כי רק שקף אחד גלוי. */
 .invbox .invrow .top{display:flex;align-items:center;gap:12px}
 .invbox .invrow .btn{margin-top:12px;font-size:13px;padding:11px}
-.invbox .fc.sq{border-radius:14px;background:var(--leaf-bg);display:grid;
+/* הריבוע של רגע בלי נהנה יושב כאן על חול ולא על לבן, ולכן הוא
+   `--s1` ולא `--leaf-bg`: ערוגה על חול היא 1.07:1, כלומר משבצת
+   שאינה נראית. אותה מלכודת של "ערוגה בתוך ערוגה". */
+.invbox .fc.sq{border-radius:14px;background:var(--s1);display:grid;
   place-items:center;font-size:20px}
 .invbox .fc{width:44px;height:44px;border-radius:50%;overflow:hidden;flex:none;
   background:var(--face-fill)}
 .invbox .fc svg,.invbox .fc img{display:block;width:100%;height:100%;object-fit:cover}
 .invbox .t{font-size:15px;font-weight:600;color:var(--tx);line-height:1.35}
-.invbox .s{font-size:12.5px;color:var(--tx-3);margin-top:2px}
+/* ‏`--sun-2` ולא `--tx-3`, כמו בעיצוב: שורת משנה אפורה על משטח חול
+   נקראת כטקסט שנשאר מרקע אחר. */
+.invbox .s{font-size:12.5px;color:var(--sun-2);margin-top:2px}
 /* הנקודות. הפעילה מתארכת ל-16 במקום להחליף צבע בלבד, כי שש נקודות
    בשני גוונים של חול נקראות כרעש. */
 .invbox{margin-bottom:14px}
@@ -3675,7 +3693,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4eecca8';
+window.NETA_BUILD = 'e4bdac2';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4839,6 +4857,29 @@ window.NETA_CONFIG = {
        ירוקות כאן ובבית כאחד: בשני המקומות הן עומדות בין דברים סגורים,
        והצבע הוא מה שאומר שזה עוד פתוח. -->
   <div id="pend-act" class="gap" style="display:none"></div>
+
+  <!-- ── "מחכה לך", בפעם השנייה ─────────────────────────────────
+       ‏`FIX-activity.md` §3 מציב את הקרוסלה בראש הגיליון הזה, וזה
+       נדחה כאן בסבב הקודם בנימוק שהיא כבר נמדדת בטאב השכן ושמה
+       שיושב כאן בראש הוא `pend-act`. **אלון ביקש אותה, ובצדק:**
+       שני הטאבים שואלים שתי שאלות שונות, ורגע שהוזמנתי אליו ועוד
+       לא הפקדתי בו פתוח בשניהם.
+
+       **וזה מוּנט ולא עותק.** ‏`paintWaiting` היא המקום היחיד
+       שמכריע מה ממתין, והיא מציירת את שני המסכים באותה קריאה —
+       שני פיינטרים שמחליטים בנפרד על אותה עובדה הם בדיוק המלכודת
+       שכבר מתועדת כאן פעמיים. מה שנפרד הוא תחילית המזהה בלבד,
+       כמו ב-`otpCountdown`.
+
+       **ומתחת ל-`pend-act` ולא מעליו:** שם יושבת בקשה שממתינה
+       לתשובה שלי, וכאן הזמנה להפקיד. משימה קודמת להזדמנות. -->
+  <div id="ac-inv" style="display:none">
+    <p class="tablbl" id="ac-invh">
+      <span>מחכה לך</span><span class="of" id="ac-invof"></span></p>
+    <div class="invbox" id="ac-invbox"><div class="trk" id="ac-invtrk"></div>
+      <div class="invdots" id="ac-invdots"></div></div>
+  </div>
+
   <!-- ומה שכבר קרה שם. מסך הפעילות של מי שעוד לא הצטרפה היה ריק, ומה
        שמילא אותו היה שקרי: "הכסף עובד גם כשלא קורה כלום" נאמר למי שאין
        לה כסף שעובד, ומתחתיו דגם ההדגמה של משפחה אחרת לגמרי.
@@ -5002,7 +5043,7 @@ window.NETA_CONFIG = {
          ‏`legal.html` יושב ליד דף הבית ונושא את שניהם. -->
     <p class="p2-k">עוד</p>
     <div class="p2-card">
-      <button class="p2-row" onclick="howOpen(true)">
+      <button class="p2-row" onclick="howOpen()">
         <span class="ic"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-path"/></svg></span>
         <span class="gr"><span class="t">איך זה עובד</span><span class="s">חמש שקופיות, חצי דקה</span></span>
         <span class="ch"><svg width="7" height="12" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg></span></button>
@@ -5516,7 +5557,7 @@ window.NETA_CONFIG = {
              בכל האפליקציה. -->
         <p class="claim-sub">משקיעים קצת בכל חודש בעתיד של היקרים שלכם, והם קוצרים את הפירות במועד המיוחל.</p>
         <!-- גלולה ולא שורה שקטה: זו הפעולה השנייה של המסך. -->
-        <button class="dhow" onclick="howOpen(true)">
+        <button class="dhow" onclick="howOpen()">
           <svg width="9" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"/></svg>איך זה עובד</button>
       </div>
     </div>
@@ -5794,7 +5835,7 @@ window.NETA_CONFIG = {
       <h2 id="sl-h">·</h2>
       <!-- מתחת לכותרת ולא בתחתית: מי שהגיע לכאן אינו מכיר את נטע, והוא
            צריך את ההסבר לפני שהוא מחליט, לא אחרי. -->
-      <button class="what" onclick="howOpen(true)">מה זה נטע, ואיך זה עובד ›</button>
+      <button class="what" onclick="howOpen()">מה זה נטע, ואיך זה עובד ›</button>
 
       <div class="leafcard">
         <div class="row">
@@ -5852,7 +5893,7 @@ window.NETA_CONFIG = {
     </div>
     <button class="btn gap-s" onclick="joinLaterSignup()">פתח חשבון משלך</button>
     <button class="link" style="display:block;width:100%;text-align:center"
-      onclick="howOpen(true)">מה זה נטע, ואיך זה עובד</button>
+      onclick="howOpen()">מה זה נטע, ואיך זה עובד</button>
   </div>
 
   <!-- הבקשה עלתה לבעל הנטיעה. לא נחסמנו — הועברנו. -->
@@ -7106,6 +7147,10 @@ function syncActEmpty(){
      שמתחלף הוא מה שבתוך הגיליון. זו אותה הכרעה של שני הטאבים
      השכנים. */
   paintActCard();
+  /* ‏**והקרוסלה נצבעת כאן ולא רק ב-`paintInvestments`**, כי
+     `buildFeed` יכולה להגיע ראשונה: הגוש חי מחוץ ל-`act-full`
+     בדיוק כדי שיישאר גם כשאין פעילות. */
+  paintWaiting();
   if(empty)paintActEmpty(!noPlantings);
 }
 /* ‏**"אין לו נטיעה" נשאל בשלושה מקומות, ולכן הוא פונקציה אחת.**
@@ -7846,7 +7891,7 @@ function howRender(){
      הגובה קבוע ב-CSS, ולכן שום דבר אינו קופץ בהחלפה. */
   const f=document.getElementById('how-foot');
   if(f)f.innerHTML=(howIdx===HOW_SLIDES.length-1)
-    ? '<button class="btn" onclick="howFinish()">להתחיל</button>'+
+    ? '<button class="btn" onclick="howFinish()">'+howCta()+'</button>'+
       '<button class="lnk" onclick="howSet(0)">לראות שוב</button>'
     : '<div class="lnk">הקשה בצד שמאל, הבא</div>';
   howBars().forEach(function(b,i){
@@ -7911,6 +7956,14 @@ function howPrev(){howSet(howIdx-1<0?0:howIdx-1)}
    עד כה "להתחיל" הוביל תמיד למסך הכניסה, כלומר מי שפתח את הסטורי
    מהבית או מהפרופיל נזרק ממנו. ‏`FIX-splash-story.md` §2ד. */
 function howFinish(){howClose()}
+/* ‏**והכיתוב נגזר מאותו יעד.** "להתחיל" נכון מהדלת, שם הסטורי הוא
+   מה שמקדים את פתיחת החשבון והסגירה מחזירה אל השדה עצמו. מהבית
+   ומהפרופיל הוא נאמר למי שכבר התחיל, וממסכי ההזמנה למי שיש לו
+   הזמנה פתוחה שהכפתור שלה יושב מאחורי הסטורי; בשלושתם הכפתור
+   סוגר, ולכן הוא אומר את זה. */
+function howCta(){
+  return (howBack==null||howBack===ONBO.welcome)?'להתחיל':'לסגור';
+}
 /* עד כה הסגירה החזירה תמיד למסך הפתיחה. משנפתח המסך גם מתוך קישור
    שיתוף, סגירה כזו הייתה זורקת את האורחת אל מחוץ להזמנה שקיבלה. */
 let howBack=null;
@@ -7919,11 +7972,19 @@ function howClose(){
   const to=howBack;howBack=null;
   go(to==null?ONBO.welcome:to);
 }
-/* back=true פירושו "החזר לאן שאני עכשיו", ולא מספר מסך כתוב ביד:
-   מספר כזה נשבר בשקט ביום שבו מסך נוסף באמצע. */
+/* ‏**היעד נגזר מהמסך שעל המסך, תמיד, ואינו דגל שאפשר לשכוח.**
+   ‏`howOpen` קיבלה `back=true` מארבע מתוך חמש נקודות הכניסה,
+   **והגלולה שבראש הבית לא העבירה אותו** — כלומר מי שפתח את הסטורי
+   משם וסיים אותו נחת על **מסך פתיחת החשבון**, בחשבון שכבר יש לו.
+   אלון ראה את זה במכשיר.
+   **וזה אותו שורש שההערה כאן כבר תיארה** ("מספר מסך כתוב ביד נשבר
+   בשקט"), בגרסה שלו: ארגומנט שכל קורא צריך לזכור נשכח בדיוק ביום
+   שנוספת נקודת כניסה. עכשיו אין מה לזכור, ו-`ONBO.welcome` הוא
+   נפילה אחורה בלבד. */
 howSwipe(document.getElementById('how-story'));
-function howOpen(back){
-  howBack=back?screens.findIndex(function(x){return x.classList.contains('on')}):null;
+function howOpen(){
+  const cur=screens.findIndex(function(x){return x.classList.contains('on')});
+  howBack=cur<0?null:cur;
   go(ONBO.how);howSet(0);
 }
 document.querySelector('[data-how-nav="next"]').addEventListener('click',howNext);
@@ -16786,12 +16847,20 @@ function buildHomeSummary(fast){
    הבית: מי שבחר שקף אינו רוצה שיוחלף מתחת לאצבע. אין כאן
    ‏prefers-reduced-motion, וזו הכרעה של סבב ספטמבר 2026 שחלה על
    כל התנועה במוצר. */
-let waitCar=null;
-function stopWaitCar(){ if(waitCar){clearInterval(waitCar);waitCar=null} }
-function paintWaitCar(waiting){
-  stopWaitCar();
-  const trk=document.getElementById('mi-invtrk'),
-        dots=document.getElementById('mi-invdots');
+/* **והוא יושב בשני מסכים, ולכן הוא מקבל תחילית.** ‏`FIX-activity.md`
+   §3 מציב את אותה קרוסלה בראש הגיליון של "פעילות", ו-`ac-` הוא כל
+   ההבדל בין השניים — אותה הכרעה בדיוק של `otpCountdown`, שכתב תמיד
+   ל-`lg-resend` ולכן השעון של ההצטרפות נשאר על "·" לנצח.
+   **והשעון הוא לכל תחילית**, כי `stopWaitCar` גלובלי היה מכבה את
+   הקרוסלה של הטאב האחד ברגע שהשני נצבע. */
+const waitCar={};
+function stopWaitCar(pfx){
+  if(waitCar[pfx]){clearInterval(waitCar[pfx]);waitCar[pfx]=null}
+}
+function paintWaitCar(waiting,pfx){
+  stopWaitCar(pfx);
+  const trk=document.getElementById(pfx+'-invtrk'),
+        dots=document.getElementById(pfx+'-invdots');
   if(!trk)return;
   const n=waiting.length;
   trk.innerHTML=waiting.map(function(p){
@@ -16820,7 +16889,7 @@ function paintWaitCar(waiting){
   /* דבר אחד: באנר בלי נקודות ובלי מונה. שורת מצב שאומרת "1 מתוך 1"
      היא מספר שקיומו מודיע על היעדרו. */
   if(dots)dots.innerHTML=n>1?Array.from({length:n},function(){return '<i></i>'}).join(''):'';
-  txt('mi-invof',n>1?('1 מתוך '+n):'');
+  txt(pfx+'-invof',n>1?('1 מתוך '+n):'');
   const slides=[].slice.call(trk.children),
         dd=dots?[].slice.call(dots.children):[];
   let i=0;
@@ -16828,16 +16897,36 @@ function paintWaitCar(waiting){
     i=((k%n)+n)%n;
     slides.forEach(function(el,j){el.classList.toggle('on',j===i)});
     dd.forEach(function(el,j){el.classList.toggle('on',j===i)});
-    txt('mi-invof',n>1?((i+1)+' מתוך '+n):'');
+    txt(pfx+'-invof',n>1?((i+1)+' מתוך '+n):'');
   }
-  dd.forEach(function(el,j){el.onclick=function(){stopWaitCar();show(j)}});
+  dd.forEach(function(el,j){el.onclick=function(){stopWaitCar(pfx);show(j)}});
   show(0);
-  if(n>1)waitCar=setInterval(function(){
+  if(n>1)waitCar[pfx]=setInterval(function(){
     /* מסך אחר על המסך פירושו שאיש אינו רואה את זה, ואין טעם
        להמשיך להחליף. */
-    if(!document.getElementById('mi-inv').offsetParent){stopWaitCar();return}
+    const box=document.getElementById(pfx+'-inv');
+    if(!box||!box.offsetParent){stopWaitCar(pfx);return}
     show(i+1);
   },4500);
+}
+/* ‏**מי שממתין להפקדה שלי, ומי שמצייר אותו.** הרגעים שצורפתי אליהם
+   ועוד לא שמתי בהם שקל הם עובדה אחת על החשבון, והיא מוצגת בשני
+   טאבים: בראש "ההשקעות שלי" ובראש "פעילות". לכן זו פונקציה אחת
+   שמציירת את שניהם, ולא שני פיינטרים שכל אחד מחליט בנפרד — זו
+   בדיוק המלכודת של שתי נקודות ה"מה חדש" שכבר מתועדת כאן. */
+function waitingMoments(){
+  const inv=myInvested();
+  if(!inv.any)return [];
+  return inv.rows.filter(function(p){return p.joined&&!(inv.mineOf(p)>0)});
+}
+function paintWaiting(){
+  const waiting=waitingMoments();
+  ['mi','ac'].forEach(function(pfx){
+    const box=document.getElementById(pfx+'-inv');
+    if(!box)return;
+    box.style.display=waiting.length?'':'none';
+    if(waiting.length)paintWaitCar(waiting,pfx); else stopWaitCar(pfx);
+  });
 }
 /* מה ש"ההשקעות שלי" מודד: הרגעים שאני בהם, וכמה אני הפקדתי בהם.
    הסינון היה "כסף שלי גדול מאפס", וזה השאיר את מי שהוזמנה לרגע של
@@ -16948,11 +17037,7 @@ function paintInvestments(){
 
   /* המצב הריק יוצא כאן, **אחרי** שההזמנה שממתינה הוסתרה: בלעדיה
      הגוש היה שורד מציור קודם ונשאר על מסך שאומר שאין בו כלום. */
-  if(!any){
-    const ib=document.getElementById('mi-inv');
-    if(ib)ib.style.display='none';
-    return;
-  }
+  if(!any){ paintWaiting(); return; }
 
   /* ── ההזמנה שממתינה להפקדה ─────────────────────────────────────
      היא הייתה כפתור על כרטיס הרגע (ivJoinHTML), ומרגע שהרשימה
@@ -16962,13 +17047,7 @@ function paintInvestments(){
      **מה שזה מוותר עליו:** "פעולה יושבת ליד הדבר שהיא משנה". מה
      שמחזיק את זה הוא שהיא נמצאת גבוה יותר מאי פעם, כלומר הנימוק
      של הקיפול שהכריע בזמנו נשמר ומשתפר. */
-  const waiting=rows.filter(function(p){return p.joined&&!(mineOf(p)>0)});
-  const box=document.getElementById('mi-inv');
-  if(box){
-    box.style.display=waiting.length?'':'none';
-    if(waiting.length)paintWaitCar(waiting);
-    else stopWaitCar();
-  }
+  paintWaiting();
 
   /* ── הרשימה, מקובצת לפי אדם ─────────────────────────────────────
      "למי נטעת" ולא "הרגעים שהשקעת בהם": עד כאן הייתה שורה לכל
@@ -17845,23 +17924,31 @@ function fuMomentHTML(p){
   const by=p.joined&&p.by?(' · נפתח בידי '+p.by):'';
   const when=(targetLine(p)||'').replace(/^עד /,'')+
              (p.targetYear?(' · עוד '+yrs+yrWord(yrs)):'')+by;
-  /* ‏**הסכום הוא הצפי ולא הנצבר, והוא בחול.** עד סבב ספטמבר 2026 הוא
-     היה הנצבר בירוק, כי אז הראש נשא מספר אחד והשורות היו מה שמרכיב
-     אותו. מרגע שהראש נושא שניים — "השקעתם עד היום" ו"בקצב הזה ייצבר"
-     — הכלל עדיין מתקיים, והשורות מרכיבות את השני: הטאב שואל מה מחכה
-     להם, והתשובה לכל רגע היא הצפי שלו.
-     **המחיר שנאמר ונבחר:** הנצבר לכל רגע בנפרד יורד מהמסך הזה, והוא
-     נשאר לחיצה אחת פנימה — במסך הרגע הוא המספר הגדול. */
-  const amt=Number(p.projection||0);
+  /* ‏**הסכום הוא הנצבר ולא הצפי, והוא ירוק — וזו בקשה של אלון
+     שהופכת את מה שנבחר בסבב ספטמבר 2026.** שם השורה עברה מהנצבר
+     בירוק אל הצפי בחול, בנימוק שהראש נושא שני מספרים והשורות
+     מרכיבות את השני.
+     **מה שמחזיק את ההיפוך:** הצפי בשורה הוא מספר עצום (‏68,080
+     על רגע שנצברו בו 570) ליד מספר קטן בראש, ושני מספרים שאינם
+     מאותו סדר גודל באותו מסך נקראים כאילו אחד מהם שגוי; ובנוסף
+     הנצבר הוא היחיד כאן שיש מאחוריו כסף, והכלל של המוצר הוא
+     שירוק הוא מה שקיים. עכשיו השורות מרכיבות שוב את המספר
+     שבראש — ‏`השקעתם עד היום` — וסכומן שווה לו בדיוק.
+     **והתווית נאמרת בשורה, "נצבר עד כה", ומעל המספר.** בלעדיה
+     המספר הקטן ליד רגע רחוק נקרא כצפי נמוך; היא מה שאומרת שזה
+     מה שכבר יש. **ובלי `APPROX`**, כי נצבר אינו הערכה.
+     **המחיר שנאמר:** הצפי לכל רגע בנפרד יורד מהמסך הזה, והוא
+     נשאר לחיצה אחת פנימה — במסך הרגע הוא בשורה התחתונה של
+     הכרטיס. */
+  const amt=Number(p.accrued||0);
   return '<div class="fu-mrow" onclick="openDetail(\''+p.key+'\')">'+
     '<div class="fu-mic">'+occIcon(p.occasion,21,p.name)+'</div>'+
     '<div style="flex:1;min-width:0"><div class="fu-nm">'+momentNoun(p)+'</div>'+
       (when?'<div class="fu-dt">'+when+'</div>':'')+'</div>'+
-    /* **"כ־" במקף עברי, ולא מקף רגיל.** הסכום בשורה הוא צפי, והכרטיס
-       שמעליו כבר ויתר על ה-"כ" כי הכיתוב שלו אומר "בקצב הזה"; כאן
-       אין כיתוב כזה, ולכן ההסתייגות חייבת להיות בסכום עצמו.
-       ‏U+05BE ולא ‎"-"‎: מקף רגיל בין אות עברית למספר נקרא כמינוס. */
-    (amt>0?'<span class="fu-amt">'+APPROX+shekel(amt)+'</span>':'')+
+    /* ‏"·" ולא היעדר, כשעוד לא נצבר דבר: זו המוסכמת של המוצר לערך
+       שאין לו עדיין, והתווית שמעליו היא מה שאומרת מה הוא מודד. */
+    '<span class="fu-amt"><span class="k">נצבר עד כה</span>'+
+      '<span class="v">'+(amt>0?shekel(amt):'·')+'</span></span>'+
     '<span class="chev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>'+
   '</div>';
 }
