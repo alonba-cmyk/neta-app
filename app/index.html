@@ -424,14 +424,22 @@ input:focus,select:focus,textarea:focus{outline:1px solid var(--leaf);outline-of
    או בהגדלת גופן, כשתיאור נשבר לשתי שורות. */
 .stack{display:flex;flex-direction:column;gap:7px}
 #mode-block{display:grid;grid-auto-rows:1fr}
-#trk-row{display:flex;align-items:center;gap:9px;width:100%;font-family:inherit;color:var(--tx);
+#trk-row,#wiz-trk{display:flex;align-items:center;gap:9px;width:100%;font-family:inherit;color:var(--tx);
   text-align:right;border:1px solid var(--line);border-radius:11px;padding:12px 13px;
   background:var(--s1);cursor:pointer;transition:.15s}
-#trk-row:hover{border-color:var(--line-2)}
-#trk-row .tt{flex:1;min-width:0}
-#trk-row .tt b{font-size:13px;font-weight:500}
-#trk-row .tt i{font-style:normal;font-size:11.5px;color:var(--tx-3);margin-right:7px}
-#trk-row .tch{flex:0 0 auto;font-size:11.5px;color:var(--leaf)}
+#trk-row:hover,#wiz-trk:hover{border-color:var(--line-2)}
+#trk-row .tt,#wiz-trk .tt{flex:1;min-width:0}
+#trk-row .tt b,#wiz-trk .tt b{font-size:13px;font-weight:500}
+#trk-row .tt i,#wiz-trk .tt i{font-style:normal;font-size:11.5px;color:var(--tx-3);margin-right:7px}
+#trk-row .tch,#wiz-trk .tch{flex:0 0 auto;font-size:11.5px;color:var(--leaf)}
+/* ‏**שורת המסלול של האשף היא שורה אחת לשתי שאלות.** "מה יקרה לכסף"
+   ו"באיזה מסלול" תפסו יחד שלושה כרטיסים ועוד רשימה, כלומר כ-260
+   פיקסלים שדחפו את "המשך" הרחק מתחת לקיפול; בחבילה הן שורה אחת עם
+   "להחליף", שפותחת גיליון בשתי רמות. שתי השאלות עצמן לא ירדו —
+   מה שירד הוא ההנחה שצריך לענות עליהן במסך. */
+#wiz-trk{margin-top:8px}
+#wiz-trk .tt i{display:block;margin:2px 0 0}
+#wiz-trk .tag{font-size:9.5px;margin-inline-start:6px}
 #sh-acts .trkpick{display:block;width:100%;font-family:inherit;color:var(--tx);
   text-align:right;margin-bottom:7px}
 #sh-acts .trkpick+.btn{margin-top:7px}
@@ -1734,7 +1742,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="כניסה"] .chips button{border-radius:20px;font-size:10.5px;padding:6px 12px}
 [data-name="כניסה"] #lg-cta,[data-name="פתיחת חשבון"] #id-cta{margin-bottom:10px}
 [data-name="כניסה"] .backlink,[data-name="פתיחת חשבון"] .backlink{margin-top:2px}
-#c-terms{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+/* ‏**המועד הוא שורה אחת של גלולות, כמו בחבילה.** ברשת של שלוש
+   עמודות חמישה צ'יפים הם שתי שורות ותא ריק, והגוש כולו יושב מתחת
+   לשמונה אריחים — כלומר הוא מה שדוחף את "המשך" מתחת לקיפול. נמדד
+   ב-390: חמש גלולות תופסות 291 מתוך 354. ב-320 הן נשברות לשתיים,
+   ולכן `wrap` ולא `nowrap` על המכל. */
+#c-terms{display:flex;flex-wrap:wrap;gap:6px}
 /* ── הוספת אדם ─────────────────────────────────────────────────── */
 /* בחירת הרגעים: שורה ברוחב מלא ולא צ'יפ. צ'יפ נושא שם בלבד, ושני
    רגעים של אותו ילד נראים בו כמעט זהים; השורה נושאת גם את המועד וגם
@@ -1837,7 +1850,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   height:clamp(48px,15.5vw,62px);border-radius:17px}
 [data-name="הקמה"] .kgrid button.span2{grid-column:span 2}
 [data-name="הקמה"] .kgrid .cam{width:22px;height:22px;font-size:11px}
-[data-name="הקמה"] .occgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+/* ‏**ארבע עמודות ולא שלוש.** שמונה אריחים בשלוש עמודות הם שלוש
+   שורות עם תא ריק, ובארבע הם 4+4 מלאות — אותה הכרעה בדיוק שכבר
+   יושבת על רשת הקרבה, ומאותו נימוק: השורה השלישית היא מה שדוחף
+   את "המשך" מתחת לקיפול. */
+[data-name="הקמה"] .occgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 [data-name="הקמה"] .occgrid button{border:1px solid var(--line);background:var(--s1);
   border-radius:12px;padding:13px 5px 11px;cursor:pointer;font-family:inherit;color:var(--tx-2);
   display:grid;gap:7px;justify-items:center;transition:.15s;line-height:1.3}
@@ -1852,7 +1869,8 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="הקמה"] .occgrid .lb{font-size:11px;text-align:center;
   min-height:calc(11px * 1.3 * 2);display:grid;align-content:center}
 
-#c-terms button{text-align:center;padding:9px 4px;font-size:11px;white-space:nowrap}
+#c-terms button{text-align:center;padding:9px 13px;font-size:12px;white-space:nowrap;
+  border-radius:99px;flex:none}
 .chk{display:flex;align-items:flex-start;gap:9px;margin-top:11px;cursor:pointer;font-size:12px;
   color:var(--tx-2);line-height:1.5}
 .chk input{width:17px;height:17px;accent-color:var(--leaf);flex-shrink:0;margin-top:1px}
@@ -2112,10 +2130,122 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   border-radius:13px;padding:12px 13px;text-align:right}
 .es .strip b{display:block;font-size:11.5px;font-weight:500}
 .es .strip span{display:block;font-size:10.5px;color:var(--tx-2);margin-top:3px;line-height:1.5}
-.steps{display:flex;gap:5px;padding:0 2px 14px}
-.steps i{flex:1;height:3px;border-radius:2px;background:var(--s2);font-style:normal}
-.steps i.on{background:var(--leaf)}
-.steplbl{font-size:10.5px;letter-spacing:.04em;color:var(--tx-3);margin:8px 0 0}
+/* ‏`.steps` ו-`.steplbl` נמחקו עם `#flowbar`: הסרגל הוא היום
+   `.wizbar` בתוך הראש הירוק, והתווית היא שורת "שלב X מתוך N"
+   שיושבת מתחת לכותרת. */
+
+/* ── הראש של האשף ────────────────────────────────────────────────
+   ‏`.wizg` הוא `.tabg` עם ריפוד תחתון קטן יותר: אין כאן מתג ואין
+   מסילה, והכרטיס הוא הדבר האחרון. */
+.tabg.wizg{padding-bottom:30px}
+/* השורה העליונה: חץ, כותרת בשתי שורות, ו"ביטול" בקצה השני. הסדר
+   בתוך `.tx` הפוך מזה של הטאבים — הכותרת מעל ומספר השלב מתחת, כי
+   כאן המשנה היא מצב ולא זהות. */
+.tabhd.wizhd .nm{font-size:16px;font-weight:700;color:var(--on-head)}
+.tabhd.wizhd .hi{margin-top:1px}
+.tabhd .wizx{background:none;border:0;padding:0 2px;font-family:inherit;
+  font-size:13.5px;color:var(--sun-on-leaf);cursor:pointer;flex:none}
+/* סרגל השלבים: מקטע לכל שלב, והצבוע בחול כי הוא על הירוק. */
+.wizbar{display:flex;gap:5px;margin:14px 0 16px}
+.wizbar i{flex:1;height:3px;border-radius:2px;background:var(--leaf-tile-line);
+  font-style:normal}
+.wizbar i.on{background:var(--sun-on-leaf)}
+/* ‏**הכרטיס אינו 224 כאן, וזה מכוון.** השלד של ארבעת הטאבים מגן על
+   מעבר בין מסכים שהעין משווה ביניהם; האשף הוא רצף אחד שאיש אינו
+   משווה לטאב, ומה שחשוב בו הוא ש**הכרטיס עצמו אינו קופץ בין
+   שלביו** — ולכן גובה קבוע משלו. */
+.card-main.wizc{min-height:150px;height:auto}
+.card-main.wizc .utop{display:flex;align-items:center;gap:13px}
+.card-main.wizc .utop .tx{flex:1;min-width:0}
+.card-main.wizc .tbhero{font-size:clamp(24px,8.4vw,32px)}
+/* ‏**הפרצוף ריק ומקווקו עד שנבחר ילד**, כי זה מה שהכרטיס אומר:
+   עוד לא ידוע למי. ‏56 כמו ב-`.kidc`, ותג הרגע עליו כשיש רגע. */
+.card-main.wizc .ph{width:56px;height:56px;border-radius:50%;flex:none;display:block;
+  overflow:hidden;background:var(--face-fill);position:relative;
+  box-shadow:0 0 0 2px var(--sun-on-leaf)}
+.card-main.wizc .ph.empty{background:none;border:1.5px dashed var(--leaf-tile-line);
+  box-shadow:none}
+.card-main.wizc .ph svg,.card-main.wizc .ph img{display:block;width:100%;height:100%;
+  object-fit:cover}
+/* תג הרגע על הפרצוף, כמו בשורת הפיד: עיגול בצבע הראש עם קו. */
+.card-main.wizc .ph i{position:absolute;bottom:-2px;left:-2px;width:24px;height:24px;
+  border-radius:50%;background:var(--leaf-head);border:1px solid var(--leaf-tile-line);
+  display:grid;place-items:center;color:var(--sun-on-leaf)}
+.card-main.wizc .ph i svg{width:14px;height:14px}
+/* ‏**הגיליון הלבן של האשף.** הראש יושב מעליו כאח בבמה, ולכן
+   ההיצמדות היא מרווח שלילי על המסך עצמו — אותם 28 של `.sheet-main`.
+   ‏`.wiz` נוסף למסכי האשף ב-`wizHead`, ויורד כשהאשף נסגר. */
+.screen.wiz{background:var(--s1);border-radius:28px 28px 0 0;
+  margin:-28px -18px 0;padding:22px 20px 0;position:relative;z-index:1}
+.screen.wiz>h2{margin-top:0}
+/* ‏`.center-v` ממרכזת אנכית והיא נכונה למסך דליל שעומד לבדו; מתחת
+   לראש שתופס שליש מהמסך היא משאירה חור. הגיליון פותח בכותרת, כמו
+   בחבילה. */
+/* ‏`.on` בסלקטור, ולא רק `.wiz`: בלעדיו הכלל גובר על
+   `.screen{display:none}` ומסך שהקלאס נשאר עליו בטעות נשאר על
+   המסך — וזה בדיוק מה שקרה. */
+.screen.on.center-v.wiz{display:block}
+.screen.center-v.wiz>*{margin-top:0}
+.screen.center-v.wiz>*+*{margin-top:revert-layer}
+/* ‏**הכותרת של השלב היא של הגיליון ולא של המסך.** ‏20/700 ומתחתיה
+   שורה שקטה, בדיוק כמו `.sheet-main` של הטאבים. */
+.screen.wiz>h2{font-size:20px;font-weight:700}
+.screen.wiz>h2+.sub{font-size:13.5px;color:var(--tx-3);margin:4px 0 0}
+/* ‏**רשימת "עבור מי" היא שורות עם קו מפריד ולא כרטיסים.** זו שפת
+   הרשימות של הסבב (`.tabrow`), והיא גם מה שמאפשר לשורה לשאת חץ:
+   כרטיס אומר "אפשרות", שורה עם חץ אומרת "אפשר להיכנס". */
+/* ‏**ממוקד ל-`#c-kidpick` ולא ל-`.pick` של המסך.** אותו רכיב משרת
+   גם את "מי יקבל את הכסף", ושם הבחירה נשארת על המסך וצריכה להיראות:
+   שורה שנלחצת וממשיכה מיד היא ניווט, ושורה שנשארת מסומנת היא רדיו.
+   הכלל הראשון נכתב על `.pick` והוריד את הסימון משם, בלי שום שגיאה. */
+#c-kidpick{gap:0;margin-top:2px}
+#c-kidpick button{border:0;border-radius:0;background:none;padding:12px 0;
+  border-bottom:1px solid var(--s2)}
+#c-kidpick button:hover{border-color:var(--s2)}
+#c-kidpick button.on{background:none;border-color:var(--s2)}
+#c-kidpick .fc{width:46px;height:46px;border-radius:50%}
+#c-kidpick .fc.plus{border-radius:50%;border-style:dashed}
+#c-kidpick .nm b{font-size:15.5px;font-weight:600}
+#c-kidpick .nm>span{font-size:12.5px}
+/* החץ נגזר מהשורה ואינו נכתב בכל אחת. ‏`#chev` מצויר שמאלה בקובץ,
+   וב-RTL "להיכנס" מצביע שמאלה — כלומר בלי היפוך, בניגוד ל"חזרה". */
+#c-kidpick .ch{width:9px;height:15px;flex:none;color:var(--line-2)}
+/* ‏**"עוד לא החלטתי" היא שורה שקטה בתחתית הגיליון ולא תיבת סימון.**
+   היא תשובה שלישית לאותה שאלה, ולא הגדרה על מה שמעליה: תיבה שיושבת
+   מתחת לרשימה של אנשים נקראת כמתג על מי שנבחר. */
+.screen.wiz .quietl{display:block;width:100%;background:none;border:0;
+  font-family:inherit;font-size:13.5px;color:var(--tx-3);text-align:center;
+  text-decoration:underline;text-underline-offset:3px;padding:16px 0 0;cursor:pointer}
+/* ‏**כפתור אחד ברוחב מלא בתחתית הגיליון, ו"חזרה" אינה כפתור.**
+   החץ שבראש הוא החזרה, וכפתור שני שאומר את אותו דבר הוא בדיוק מה
+   שספר העיצוב פוסל. ‏`.two` בתוך גיליון אשף מציג את הראשי בלבד. */
+.screen.wiz .two{display:block}
+.screen.wiz .two>.btn.ghost,.screen.wiz .backlink{display:none}
+/* ‏**שני חריצים הפוכים על אותו מסך.** מסך הסכום משרת גם הפקדה לרגע
+   קיים, ושם אין ראש ירוק ואין כרטיס — ולכן מה שיורד באשף חייב
+   לעלות שם, ולא להימחק. */
+.wizonly{display:none}
+.screen.wiz .wizonly{display:block}
+/* ‏**רשת הקרבה מתכווצת בתוך גיליון האשף.** ‏62 הפיקסלים נבחרו בזמנו
+   כשהרשת ירשה את המקום שתפס בורר הדמויות שירד, והמסך התחיל בראש
+   הבמה; מרגע שמעליו יושב ראש ירוק בן 302 היא דוחפת את "המשך"
+   ל-859 מתוך 844 — כלומר הפעולה היחידה בפאנל יורדת מתחת לקיפול.
+   בחבילה התא הוא 36, וכאן 44: הפשרה שמחזירה את הכפתור ל-740 ועדיין
+   נקראת כבחירה ולא כשורת אייקונים. נמדד בארבעה רוחבים. */
+.screen.wiz .kgrid .f{width:clamp(38px,11.5vw,44px);height:clamp(38px,11.5vw,44px);
+  border-radius:13px}
+.screen.wiz .kgrid.five .f{width:clamp(34px,9.6vw,40px);height:clamp(34px,9.6vw,40px)}
+.screen.wiz .kgrid button{padding:8px 4px 7px;gap:5px}
+/* בגיליון האשף הכותרת והתווית שמתחתיה צמודות: הכותרת כבר יושבת
+   בראש הגיליון, והמרווח של `.eyebrow` נכתב למסך שאין מעליו כותרת. */
+.screen.wiz #py-detk{margin-top:12px}
+/* ‏**‏`!important`, וזה לא קישוט.** ‏`setMode` ו-`preselectTrack`
+   כותבות `style.display` על שני גושי המסלול בזמן ריצה, והצהרה
+   inline מנצחת כל כלל של קלאס — כלומר הגושים שהשורה באה להחליף היו
+   חוזרים למסך ברגע שנבחר מסלול. הם נשארים ב-DOM כי הגיליון נבנה
+   מהם (מקור אחד ולא עותק שני), ומשרתים כפי שהם את מי שמפקיד לרגע
+   קיים. */
+.screen.wiz .nowiz{display:none!important}
 .wel{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 4px 0}
 /* סימן המותג במסך הפתיחה. 800 ו-letter-spacing שלילי כדי ששלוש
    האותיות ייקראו כגוש אחד ולא כשלוש; הנבט יושב מעל האות האחרונה
@@ -3161,7 +3291,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '8762add';
+window.NETA_BUILD = '46394e3';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -3461,10 +3591,7 @@ window.NETA_CONFIG = {
   <div class="tt"><h1 id="tb-t">שלום אלון</h1><div class="sub" id="tb-s">הכסף גדל בזמן שהם גדלים</div></div>
 </div>
 
-<div id="flowbar" style="display:none;padding:2px 18px 10px">
-  <div class="steps" id="steps-top"></div>
-  <p class="steplbl" id="flowlbl"></p>
-</div>
+
 <!-- ‏visibility:hidden מהפיקסל הראשון, כמו בסרגל שמעל. מסך 0 מסומן
      on כבר כאן, כלומר הדפדפן מצייר אותו לפני ששורה אחת של האפליקציה
      רצה, והמספרים שנראים הם הערכים הקשיחים של ה-HTML: אלון ראה
@@ -3478,6 +3605,51 @@ window.NETA_CONFIG = {
      ‏releaseStage מסיר את זה ב-go(), ובראש הקובץ יושב טיימר של
      ארבע שניות למקרה ששום go() לא יקרה. -->
 <div class="stage" id="stage" style="visibility:hidden">
+
+<!-- ‏**הראש של האשף, והרעיון שהחבילה בנויה עליו: כרטיס שמתמלא.**
+     ‏`neta-06-create.html` — "המסלול המלא: עבור מי, לאיזה רגע ומתי,
+     כמה, ובאיזה מסלול, ולאשר. את השלבים והכללים לקחתי מהאשף שלך,
+     בלי שורה מסותרת מראש". הכרטיס יושב למעלה ריק, ומתמלא בכל
+     תשובה: קודם פרצוף ושם, אחר כך הרגע והמועד, אחר כך הסכום והצפי
+     בחול. בשלב האחרון הכותרת שלו הופכת ל"זה מה שייפתח".
+
+     **והוא יושב בתוך הבמה ולפני המסכים, ולא מחוצה לה.** ‏`#flowbar`
+     ישב מעל `.stage`, וסרגל שלבים לבדו הוא מה שהיה שם; ראש ירוק
+     שיוצא אל שלושת הקצוות חייב את המרווח השלילי של `.tabg`, ו-
+     ‏`.stage` חותך בקצה תיבת הריפוד שלו. כאן הוא אח של המסכים,
+     ולכן `margin:-8px -18px 0` עובד בדיוק כמו בארבעת הטאבים.
+
+     ‏`wizHead()` הוא המקום היחיד שכותב אותו, והוא נקרא מכל שלב
+     דרך `flowBar()` — הפונקציה שכבר נקראה בכולם. -->
+<div class="tabg wizg" id="wizhead" style="display:none">
+  <div class="tabhd wizhd">
+    <button class="bk" onclick="wizBack()" aria-label="חזרה">
+      <svg width="8" height="13" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg></button>
+    <div class="tx">
+      <div class="nm" id="wiz-t">נטיעה חדשה</div>
+      <div class="hi" id="wiz-step">שלב 1 מתוך 5</div>
+    </div>
+    <button class="wizx" onclick="cancelCreate()">ביטול</button>
+  </div>
+  <div class="wizbar" id="wiz-bar"></div>
+
+  <div class="card-main wizc">
+    <div class="utop">
+      <span class="ph" id="wiz-av" aria-hidden="true"></span>
+      <div class="tx">
+        <p class="eb" id="wiz-eb">נטיעה חדשה</p>
+        <p class="tbhero" id="wiz-name">למי?</p>
+        <p class="usub" id="wiz-occ">לאיזה רגע?</p>
+      </div>
+    </div>
+    <div class="bot">
+      <div><p class="l">כמה</p><p class="v" id="wiz-amt">·</p></div>
+      <div style="text-align:start"><p class="l" id="wiz-projl">בקצב הזה ייצבר</p>
+        <p class="v f" id="wiz-proj">·</p></div>
+    </div>
+  </div>
+</div>
+
 
 <!-- 0 HOME -->
 <section class="screen on" data-name="העתיד שלנו">
@@ -3680,8 +3852,8 @@ window.NETA_CONFIG = {
        כביטול בחירה בתוכו. -->
   <button type="button" class="link" id="c-kidback" style="display:none"
     onclick="pickCKid(null,'')">‹ חזרה לרשימה</button>
-  <h2 class="gap-x">עבור מי הנטיעה?</h2>
-  <p class="sub gap">בעוד כמה שנים מישהו ייהנה ממה שנטעת היום</p>
+  <h2 class="gap-x" id="cp0-h">עבור מי הנטיעה?</h2>
+  <p class="sub gap" id="cp0-sub">בעוד כמה שנים מישהו ייהנה ממה שנטעת היום</p>
   <!-- מי שכבר יש לו נהנים בוחר מהם, ולא מקליד שם מחדש. עד כה
        הכפתור המרכזי בסרגל תמיד פתח שדה ריק, אף ש-prefillKid כבר
        עשתה בדיוק את זה משלוש כניסות אחרות ("פתח רגע" בשורת הילד,
@@ -3712,7 +3884,7 @@ window.NETA_CONFIG = {
        "+ הוסף קרוב" ב"הקרובים שלי": אנשים ברשימה, פעולה בשורה. -->
   <div class="field" id="c-kidfield" style="display:none">
     <div class="pick" id="c-kidpick"></div>
-    <div class="reladd" id="c-kidnew" onclick="pickCKid(null,'new')">+ מישהו חדש</div></div>
+  </div>
   <!-- השם לבדו בשורה. בן/בת ישבו כאן וירדו עם בורר הדמויות: הקרבה
        שבשאלה הבאה כבר נושאת מגדר, והצ'יפים חוזרים רק אחרי "אחר". -->
   <div class="field" id="c-namefield"><label id="c-namelbl">איך קוראים לו?</label>
@@ -3745,9 +3917,13 @@ window.NETA_CONFIG = {
       <button class="on" onclick="setSex(this,'m')">בן</button>
       <button onclick="setSex(this,'f')">בת</button>
     </div></div>
-  <label class="chk" id="c-undecidedbox"><input type="checkbox" id="c-undecided" onchange="toggleDesig(this)">
-    <span>עוד לא החלטתי עבור מי, אני רק רוצה לשים כסף ליום עתידי</span></label>
   <button class="btn gap" id="c-cta" style="margin-top:16px" onclick="toOccasion()">המשך</button>
+  <!-- ‏**"עוד לא החלטתי" היא תשובה שלישית ולא הגדרה על מה שמעליה.**
+       היא הייתה תיבת סימון מתחת לרשימת האנשים, כלומר נקראה כמתג על
+       מי שנבחר; כאן היא שורה שקטה בתחתית הגיליון, ולחיצה עליה
+       ממשיכה בדיוק כמו לחיצה על שורה. -->
+  <button type="button" class="quietl" id="c-undecidedlink"
+    onclick="pickUndecided()">עוד לא החלטתי עבור מי</button>
   </div><!-- /cp-0 -->
 
   <!-- ── שלב 2: לאיזה רגע ──────────────────────────────────────
@@ -3773,6 +3949,26 @@ window.NETA_CONFIG = {
     </div>
     <input type="text" id="c-custom" placeholder="למשל: טיול גדול, רכב ראשון" style="margin-top:8px;display:none">
   </div>
+
+  <!-- ‏**המועד עבר לכאן ממסך הסכום, וזו החבילה.** השאלה היא "לאיזה
+       רגע ומתי", ושתי החצאים שלה הן אותה עובדה: רגע בחיים יש לו
+       תאריך. במסך הסכום הוא ישב מתחת למספר ונקרא כהגדרה עליו,
+       והכרטיס שבראש ממילא נוקב בו ("הלימודים שלה · ספטמבר 2038").
+
+       הגוש כולו יורד בהפקדה לרגע קיים (`showTermStep`), כי שם
+       המועד נקבע כשהרגע נפתח. -->
+  <p class="eyebrow" id="eb-term" style="margin-top:20px">מתי תרצה לקצור את הפירות?</p>
+  <div class="chips" id="c-terms">
+    <button onclick="setTerm(this,5)">בעוד 5 שנים</button>
+    <button onclick="setTerm(this,10)">10</button>
+    <button onclick="setTerm(this,15)">15</button>
+    <button onclick="setTerm(this,20)">20</button>
+    <button onclick="openExactDate(this)">תאריך אחר</button>
+  </div>
+  <div class="field" id="c-datefield" style="display:none;margin-top:10px">
+    <input type="date" id="c-date" value="2032-08-01" oninput="dateTouched=true;onExactDate()">
+  </div>
+  <p class="fine" id="c-datehint" style="margin:8px 0 16px"></p>
 
   <!-- כרטיס "כך זה ייראה אצלך" ירד מכאן. הוא נולד כשהשם והרגע נשאלו
        באותו מסך, ואז הוא באמת חיבר שתי תשובות לדבר אחד. אחרי הפיצול
@@ -3852,7 +4048,7 @@ window.NETA_CONFIG = {
 
   </div><!-- /c-benefields -->
 
-  <button class="fold" onclick="toggleSafe()" style="margin-top:6px" id="c-safebtn">מה מגן על זה ›</button>
+  <button class="fold" onclick="toggleSafe()" style="margin-top:14px" id="c-safebtn">מה מגן על זה ›</button>
   <div id="c-safe" style="display:none">
     <div class="card">
       <div class="stat"><span class="k">גם אתה לא יכול למשוך לפני המועד</span><span class="v" style="font-size:11.5px;font-weight:400;color:var(--tx-2)">זו הנעילה שמבטיחה שהכסף יגיע</span></div>
@@ -3871,8 +4067,14 @@ window.NETA_CONFIG = {
 
 <!-- 2 CONTRIBUTE -->
 <section class="screen" data-name="השקעה">
-  <div class="row gap"><div class="dot g" id="ct-icon"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div><div><div class="title" id="ct-title">השקע עבור דניאל</div><div class="meta" id="ct-meta">בר מצווה · המועד המיוחל אוגוסט 2032</div></div></div>
-  <p class="sticky-sum" id="amt-sticky"><span id="amt-sticky-txt"></span></p>
+  <!-- ‏**הכותרת של השלב, והיא באשף בלבד.** בהפקדה לרגע קיים אין ראש
+       ירוק, ולכן השורה שמתחת (אייקון, "השקע עבור X", הרגע) היא מה
+       שאומר על מה המסך — ושם היא נשארת. באשף הכרטיס שבראש כבר אומר
+       את שניהם, ושורה שחוזרת עליו 100 פיקסלים מתחתיו היא אמירה
+       כפולה. -->
+  <h2 class="wizonly" id="amt-h">כמה להשקיע?</h2>
+  <div class="row gap nowiz"><div class="dot g" id="ct-icon"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div><div><div class="title" id="ct-title">השקע עבור דניאל</div><div class="meta" id="ct-meta">בר מצווה · המועד המיוחל אוגוסט 2032</div></div></div>
+  <p class="sticky-sum nowiz" id="amt-sticky"><span id="amt-sticky-txt"></span></p>
   <p class="eyebrow" id="eb-freq">כל חודש או פעם אחת</p>
   <div class="two gap"><button class="pill" data-f="m" onclick="setFreq('m')">כל חודש</button><button class="pill" data-f="l" onclick="setFreq('l')">סכום חד פעמי</button></div>
   <p class="hint" id="freq-stop-hint" style="margin:-2px 0 10px">אפשר לעצור את ההפקדה בכל רגע.</p>
@@ -3892,28 +4094,27 @@ window.NETA_CONFIG = {
       <span class="amtsub">פעם אחת</span></div>
     <button type="button" class="amtstep" onclick="amtStep('l',1)" aria-label="עוד">＋</button>
   </div><div class="row"><input type="range" id="amt-l" min="100" max="30000" step="100" value="1000"></div></div>
-  <div class="hero" id="hero"><p class="hero-label" id="hero-label">בחר למטה מה יקרה לכסף עד אז</p><p class="hero-label" id="hero-mid" style="display:none"></p><p class="hero-num" id="hero-num">·</p><p class="hero-sub" id="hero-sub"></p></div>
+  <!-- שורת המסלול של האשף. היא יושבת כאן ולא בסוף המסך, כי אחריה
+       אין יותר שאלות והכפתור בא מיד. -->
+  <p class="eyebrow wizonly" style="margin-top:18px">מה יקרה לכסף עד אז</p>
+  <button class="wizonly" id="wiz-trk" onclick="openMoneySheet()">
+    <span class="tt"><b id="wiz-trkn">·</b><i id="wiz-trks"></i></span>
+    <span class="tch">להחליף</span>
+  </button>
+  <!-- ‏**גוש הצפי יורד באשף.** הכרטיס שבראש נושא את אותו מספר בדיוק
+       ("בקצב הזה ייצבר ב־2038 · כ־17,900 ₪") ומתעדכן באותה תנועה,
+       ולכן שני מספרים באותו מסך הם אותה תשובה פעמיים — וזה גם מה
+       שדחף את המסלול והכפתור מתחת לקיפול. בהפקדה לרגע קיים הוא
+       המספר הגדול היחיד ונשאר. -->
+  <div class="hero nowiz" id="hero"><p class="hero-label" id="hero-label">בחר למטה מה יקרה לכסף עד אז</p><p class="hero-label" id="hero-mid" style="display:none"></p><p class="hero-num" id="hero-num">·</p><p class="hero-sub" id="hero-sub"></p></div>
 
-  <p class="eyebrow" id="eb-term" style="margin-top:20px">מתי תרצה לקצור את הפירות?</p>
-  <div class="chips" id="c-terms">
-    <button onclick="setTerm(this,5)">5 שנים</button>
-    <button onclick="setTerm(this,10)">10 שנים</button>
-    <button onclick="setTerm(this,15)">15 שנים</button>
-    <button onclick="setTerm(this,20)">20 שנה</button>
-    <button onclick="openExactDate(this)">תאריך מדויק</button>
-  </div>
-  <div class="field" id="c-datefield" style="display:none;margin-top:10px">
-    <input type="date" id="c-date" value="2032-08-01" oninput="dateTouched=true;onExactDate()">
-  </div>
-  <p class="fine" id="c-datehint" style="margin:8px 0 16px"></p>
-
-  <p class="eyebrow" id="eb-mode">מה יקרה לכסף עד אז</p>
+  <p class="eyebrow nowiz" id="eb-mode">מה יקרה לכסף עד אז</p>
   <!-- בהפקדה לרגע קיים: המסלול שנבחר כשהרגע נפתח הוא ברירת המחדל, ולא
        הכלל. הכסף של כל נוטע גדל לפי מה שהוא בחר (0066). -->
   <p class="fine" id="amt-track" style="display:none;margin:-4px 0 11px"></p>
   <!-- ברירת המחדל ראשונה. הבחירה נעשית לפי data-m ולא לפי מיקום,
        ולכן הסדר כאן הוא החלטת עיצוב בלבד. -->
-  <div class="stack gap" id="mode-block">
+  <div class="stack gap nowiz" id="mode-block">
     <div class="opt" data-m="safe"><div class="row" style="gap:6px"><b>שיצבור ריבית מובטחת</b><span class="tag">מתאים לרוב</span></div><p>הסכום רק גדל. הריבית ידועה מראש ואינה יורדת.</p></div>
     <div class="opt" data-m="market"><b>שיושקע בשוק ההון</b><p>צמיחה גבוהה יותר, אך הערך אינו מובטח.</p></div>
     <div class="opt" data-m="keep"><b>שיישמר כמו שהוא</b><p id="keep-desc">כל מה שתפקיד יחכה במלואו למועד המיוחל.</p></div>
@@ -3922,7 +4123,7 @@ window.NETA_CONFIG = {
        מובטחים, ומי שבוחר בגמיש עושה זאת כי אין לו את סכום הפתיחה.
        לכן שורה עם "שנה מסלול" ולא שני כרטיסים. בשוק ההון, למטה, ההבדל הוא
        הבחירה עצמה ולכן הכרטיסים נשארים כפי שהם. -->
-  <div id="safe-block" style="display:none">
+  <div id="safe-block" class="nowiz" style="display:none">
     <p class="eyebrow" id="eb-trk1">באיזה מסלול</p>
     <button class="gap" id="trk-row" onclick="openTrackSheet()">
       <span class="tt"><b id="trk-row-n">·</b><i id="trk-row-r"></i></span>
@@ -3936,7 +4137,7 @@ window.NETA_CONFIG = {
       <div class="opt trk" data-r="0.02"><div class="row" style="justify-content:space-between"><b>פיקדון גמיש</b><span class="rate">כ-2% בשנה</span></div><p>ללא סכום מינימלי. הריבית עשויה להשתנות בין תקופות.</p></div>
     </div>
   </div>
-  <div id="market-block" style="display:none">
+  <div id="market-block" class="nowiz" style="display:none">
     <p class="eyebrow" id="eb-trk2">באיזה קצב</p>
     <div class="stack gap">
       <div class="opt trk" data-r="0.06"><div class="row" style="justify-content:space-between"><b>מאוזן</b><span class="rate">כ-6% בשנה</span></div><p>איזון בין צמיחה ליציבות.</p></div>
@@ -3950,7 +4151,8 @@ window.NETA_CONFIG = {
 
 <!-- 3 PAYMENT -->
 <section class="screen center-v" data-name="תשלום">
-  <div class="row gap"><div class="dot g" id="pay-icon"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div><div><div class="title">איך תעביר את ההפקדה?</div><div class="meta" id="pay-meta">הפקדה חודשית · עבור דניאל</div></div></div>
+  <h2 class="wizonly">איך לשלם?</h2>
+  <div class="row gap nowiz"><div class="dot g" id="pay-icon"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div><div><div class="title">איך תעביר את ההפקדה?</div><div class="meta" id="pay-meta">הפקדה חודשית · עבור דניאל</div></div></div>
 
   <!-- נטע אינה מבקשת מספר כרטיס ואינה מבקשת מספר חשבון. כל אמצעי נגבה
        אצל מי שגובה אותו: ההרשאה לחיוב חשבון נחתמת מול הבנק, כרטיס נקלט
@@ -4937,8 +5139,14 @@ window.NETA_CONFIG = {
 
 <!-- 24 REVIEW — the last screen before an irreversible commitment -->
 <section class="screen center-v" data-name="סיכום ואישור">
-  <h2 class="gap-x" id="py-h">זה מה שייפתח</h2>
-  <p class="sub gap" id="py-sub">כך תיראה הנטיעה במסך ההשקעות שלי, ומכאן היא צפויה לגדול עד הרגע המיוחל.</p>
+  <!-- ‏**הכותרת מתחלפת, והכרטיס יורד באשף.** ‏`#py-h` אומר "זה מה
+       שייפתח" מעל כרטיס שמצייר את הנטיעה — וזו בדיוק מה שהכרטיס
+       שבראש האשף כבר עושה, שלב אחרי שלב, ובאותן מילים (`wiz-eb`
+       הופך ל"זה מה שייפתח" בשלב האחרון). בהפקדה לרגע קיים אין ראש,
+       ולכן שם שניהם נשארים. -->
+  <h2 class="wizonly">לאשר ולנטוע</h2>
+  <h2 class="gap-x nowiz" id="py-h">זה מה שייפתח</h2>
+  <p class="sub gap nowiz" id="py-sub">כך תיראה הנטיעה במסך ההשקעות שלי, ומכאן היא צפויה לגדול עד הרגע המיוחל.</p>
 
   <!-- הכרטיס שייווצר, ולא טבלה של מה שהוזן. שבע שורות באותו משקל לא
        אמרו מה נסגר כאן, והדבר היחיד שבאמת נסגר — הסכום והמועד — ישב
@@ -4946,7 +5154,7 @@ window.NETA_CONFIG = {
 
        זה גם אותו כרטיס שיופיע ברשימה בעוד רגע, ולכן המסך מפסיק להיות
        טופס והופך לתצוגה מקדימה של מה שנוצר. -->
-  <div class="pyc">
+  <div class="pyc nowiz">
     <div class="dot g" id="py-icon"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div>
     <div class="pyc-x">
       <div class="pyc-nm" id="py-title">בר/בת מצווה של דניאל</div>
@@ -4978,7 +5186,7 @@ window.NETA_CONFIG = {
 
   <p class="fine gap" id="pay-fine">ההפקדה עוברת ישירות לחשבון הנעול על שם דניאל, אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.</p>
 
-  <div class="two"><button class="btn" onclick="finishDeposit()">אשר את ההפקדה</button><button class="btn ghost" onclick="go(3)">חזרה</button></div>
+  <div class="two"><button class="btn" id="py-cta" onclick="finishDeposit()">אשר את ההפקדה</button><button class="btn ghost" onclick="go(3)">חזרה</button></div>
 </section>
 
 <!-- 25 PARTNER INVITE (the receiving side — what a co-owner sees when they open the link) -->
@@ -5553,7 +5761,17 @@ function navBack(){
 function go(i){
   releaseStage();
   if(i===ONBO.welcome)playSplash();
-  document.getElementById('tabbar').style.display=NOCHROME.includes(i)?'none':'';
+  /* ‏**והאשף אינו נושא סרגל תחתון.** הוא רצף סגור עם "ביטול"
+     משלו, וטאב באמצעו הוא יציאה שאינה מנקה דבר. ‏`creating` ולא
+     רשימה קשיחה, כי מסך הסכום (2) משרת גם הפקדה לרגע קיים ושם
+     הסרגל נכון. */
+  document.getElementById('tabbar').style.display=
+    (NOCHROME.includes(i)||(creating&&WIZ_SCREENS.indexOf(i)>=0))?'none':'';
+  /* ‏**הגיליון הלבן נקבע כאן ולא ב-`flowBar`.** ‏`cStepGo` קורא
+     ל-`flowBar` לפני `go()` בכמה מסלולים, ואז `.screen.on` הוא עדיין
+     המסך הקודם — הקלאס נחת על מי שיוצא. **ו-`i` ולא `curScreen`**,
+     כי הוא נקבע כמה שורות מתחת. */
+  wizSheet(i);
   /* כפתור החזרה מוצג בשני המסלולים. הוא היה מותנה ב-creating, ולכן
      מי שהפקיד לרגע קיים נחת במסך בלי שום דרך חזרה — לא באשף, ולכן
      גם בלי סרגל שלבים, וכל המסך הוא כפתור ירוק אחד. */
@@ -5565,8 +5783,11 @@ function go(i){
   else if(i===REVIEW)flowBar(stepNo('review'),'סיכום ואישור');
   else if(![1,REVIEW,ONBO.welcome,ONBO.login,ONBO.how,ONBO.done].includes(i)){
     /* leaving the flow ends it — otherwise a later deposit still lands on the signup screens */
+    /* ‏`#flowbar` נמחק עם הסרגל הישן, והשורה שהסתירה אותו נשארה —
+       כלומר כל יציאה מהאשף זרקה. ‏`wizSheet` שכבר רצה למעלה היא מה
+       שמוריד את הראש החדש. */
     creating=false;onbo=false;
-    document.getElementById('flowbar').style.display='none';
+    wizSheet(i);
   }
   paintHeader(i);
   const tb=topbars[i],bar=document.getElementById('topbar');
@@ -5855,6 +6076,10 @@ function prev(){
   const n=cName.value.trim()||'הילד',t=cType==='custom'?(cCustom.value.trim()||'המטרה'):cType;
   preview.title=designated?(t+' של '+n):t;
   preview.icon=cIcon;
+  /* ‏**הכרטיס שבראש האשף מתעדכן מכאן.** ‏`prev` היא המקום היחיד
+     שרצה על כל שינוי בשם, ברגע, בטקסט החופשי ובתאריך, ולכן קריאה
+     אחת כאן מכסה את ארבעתם — במקום ארבעה מאזינים שצריך לסנכרן. */
+  wizRefresh();
 }
 [cName,cCustom,cDate].forEach(el=>el.addEventListener('input',function(){prev();checkBene();render()}));prev();
 /* שורת ההעלאה נושאת את השם ("התמונה של דניאל"), ולכן היא נצבעת
@@ -7077,12 +7302,14 @@ function commitGoal(){
     const f=document.getElementById('c-name'); if(f)f.focus();
     return;
   }
-  showTermStep(true);
-  trackNote('');
-  if(!cDate.value){ // arrive with a working projection rather than an empty one
+  /* המועד נענה בשלב שלפני, ולכן ההדלקה וברירת המחדל יושבות ב-
+     `toOccasion`. כאן נשארת רשת הביטחון בלבד: "עוד לא החלטתי" מדלג
+     על הפאנל ההוא לגמרי, ואז אין מי שיקבע תאריך. */
+  if(!cDate.value){
     const def=document.querySelectorAll('#c-terms button')[1];
     if(def)setTerm(def,10);
   }
+  trackNote('');
   updateGoal();
   /* ברירת מחדל גלויה: "שיצבור ריבית מובטחת", שכבר נושאת את התג "מתאים
      לרוב". בלעדיה המסך נפתח עם קופסה ירוקה ריקה ונקודה — אין מספר,
@@ -7105,7 +7332,7 @@ function setFreq(f){freq=f;document.querySelectorAll('.pill[data-f]').forEach(b=
    הכריעה גם את שאלת הריבית, ומי שהמשיך משם קיבל מסלול פיננסי שלא בחר.
    השאלה נשאלת בשלב 3 ונענית שם בלבד. */
 function setMode(m){mode=m;document.querySelectorAll('.opt[data-m]').forEach(el=>el.classList.toggle('on',el.dataset.m===m));document.getElementById('safe-block').style.display=m==='safe'?'block':'none';document.getElementById('market-block').style.display=m==='market'?'block':'none';if(m==='safe'){setTrack(document.querySelector('.trk[data-r="0.035"]'));return}if(m==='market'){setTrack(document.querySelector('.trk[data-r="0.06"]'));return}render()}
-function setTrack(el){rate=parseFloat(el.dataset.r);document.querySelectorAll('.trk').forEach(t=>t.classList.toggle('on',t===el));paintTrackRow();render()}
+function setTrack(el){rate=parseFloat(el.dataset.r);document.querySelectorAll('.trk').forEach(t=>t.classList.toggle('on',t===el));paintTrackRow();paintWizTrack();render()}
 /* השורה נקראת מהאפשרות המסומנת ולא ממשתנה משלה. כשהקצב אינו אחד
    משניהם (הפקדה לרגע שנפתח במסלול אחר) אין מה לסמן, והשורה אומרת את
    הקצב עצמו במקום שם שאינו נכון. */
@@ -7116,17 +7343,61 @@ function paintTrackRow(){
   if(el){n.textContent=el.querySelector('b').textContent;r.textContent=el.querySelector('.rate').textContent}
   else{n.textContent='מסלול הרגע';r.textContent='כ-'+(Math.round(rate*1000)/10).toLocaleString('he-IL')+'% בשנה'}
 }
-function openTrackSheet(){
-  const html=[...document.querySelectorAll('#safe-opts .trk')].map(function(el){
+/* ‏**גיליון בשתי רמות: מה יקרה לכסף, ואז באיזה מסלול.** זו הצורה
+   שבחבילה, והיא מה שמאפשר לשתי השאלות לרדת מהמסך בלי לרדת מהמוצר.
+   שתי הרמות נבנות מהצמתים שבמסך עצמו (`.opt[data-m]` ו-`.trk`),
+   ולכן אין כאן עותק שני של הטקסטים שצריך לסנכרן. */
+function openMoneySheet(){
+  const html=[].slice.call(document.querySelectorAll('.opt[data-m]')).map(function(el){
+    return '<button class="opt trkpick'+(el.dataset.m===mode?' on':'')+'" '+
+      'onclick="pickMoney(\''+el.dataset.m+'\')">'+el.innerHTML+'</button>';
+  }).join('');
+  sheetPick('מה יקרה לכסף עד אז','אפשר לשנות גם אחרי שהנטיעה נפתחה.',html);
+}
+/* ‏"שיישמר כמו שהוא" אינו מוביל לרמה שנייה: אין לו מסלולים, וגיליון
+   שנפתח על רשימה בת פריט אחד הוא קליק שאינו שואל דבר. */
+function pickMoney(m){
+  modeTouched=true;setMode(m);
+  if(m==='keep'){sheetClose();paintWizTrack();return}
+  openTrackSheet(m);
+}
+function openTrackSheet(m){
+  /* בלי ארגומנט זו הקריאה הישנה, משורת המסלול של מסך ההפקדה, ושם
+     תמיד מדובר במסלול הבטוח. */
+  const kind=m||'safe';
+  const sel=kind==='market'?'#market-block .trk':'#safe-opts .trk';
+  const html=[].slice.call(document.querySelectorAll(sel)).map(function(el){
     return '<button class="opt trkpick'+(el.classList.contains('on')?' on':'')+'" '+
       'data-r="'+el.dataset.r+'" onclick="pickTrack(this.dataset.r)">'+el.innerHTML+'</button>';
   }).join('');
-  sheetPick('באיזה מסלול','שני המסלולים מובטחים. ההבדל הוא סכום הפתיחה.',html);
+  sheetPick(kind==='market'?'באיזה קצב':'באיזה מסלול',
+    kind==='market'?'התשואות להמחשה בלבד ומבוססות על נתוני עבר.'
+                   :'שני המסלולים מובטחים. ההבדל הוא סכום הפתיחה.',
+    html,m?'openMoneySheet()':'');
 }
 function pickTrack(r){
-  const el=document.querySelector('#safe-opts .trk[data-r="'+r+'"]');
+  const el=document.querySelector('.trk[data-r="'+r+'"]');
   if(el)setTrack(el);
   sheetClose();
+  paintWizTrack();
+}
+/* ‏**השורה נקראת מהמסך ולא ממשתנים.** ‏`mode` ו-`rate` הם מספרים,
+   והמילים שמתארות אותם כתובות בכרטיסים — לכתוב אותן כאן שוב פירושו
+   שתי גרסאות שצריך לסנכרן ביום שמישהו מנסח מחדש כרטיס. */
+function paintWizTrack(){
+  const n=document.getElementById('wiz-trkn'),r=document.getElementById('wiz-trks');
+  if(!n||!r)return;
+  const md=document.querySelector('.opt[data-m="'+mode+'"]');
+  const trk=document.querySelector((mode==='market'?'#market-block':'#safe-opts')+' .trk.on');
+  const tag=mode==='safe'?'<span class="tag">מתאים לרוב</span>':'';
+  if(mode==='keep'||!trk){
+    n.innerHTML=md?attrText(md.querySelector('b').textContent):'·';
+    r.textContent=md?md.querySelector('p').textContent:'';
+    return;
+  }
+  n.innerHTML=attrText(trk.querySelector('b').textContent)+tag;
+  r.textContent=(md?md.querySelector('b').textContent+' · ':'')+
+    trk.querySelector('.rate').textContent;
 }
 /* המסד מכיר keep/guaranteed/market, והטופס מדבר keep/safe/market. בלי
    התרגום הזה "guaranteed" נפל לענף האחרון בכל מקום שבודק mode, כלומר
@@ -7153,7 +7424,12 @@ function trackNote(t){
   el.style.display=t?'':'none';
 }
 function fvCalc(v,r){const y=goal.years;if(r===0)return freq==='m'?v*y*12:v;if(freq==='m'){const m=r/12,n=y*12;return v*((Math.pow(1+m,n)-1)/m)}return v*Math.pow(1+r,y)}
-function render(){const v=freq==='m'?+amtM.value:+amtL.value;amtShow(freq,v);const label=document.getElementById('hero-label'),mid=document.getElementById('hero-mid'),num=document.getElementById('hero-num'),sub=document.getElementById('hero-sub'),fine=document.getElementById('fine');if(mode===null){label.textContent='בחרו למטה מה יקרה לכסף עד אז';mid.style.display='none';num.textContent='·';num.classList.add('idle');sub.textContent='';fine.textContent='';
+/* ‏**הכרטיס שבראש האשף מתעדכן חי.** ‏`render` רצה בכל תנועה של
+   הסליידר, בכל החלפת תדירות ובכל בחירת מסלול, והיא המקום היחיד
+   שיודע שהמספר השתנה; בלעדיה הכרטיס היה נשאר על הערך שבו נכנסנו
+   לשלב, בזמן שהמסך שמתחתיו כבר מראה אחר. */
+function render(){renderMoney();wizRefresh();}
+function renderMoney(){const v=freq==='m'?+amtM.value:+amtL.value;amtShow(freq,v);const label=document.getElementById('hero-label'),mid=document.getElementById('hero-mid'),num=document.getElementById('hero-num'),sub=document.getElementById('hero-sub'),fine=document.getElementById('fine');if(mode===null){label.textContent='בחרו למטה מה יקרה לכסף עד אז';mid.style.display='none';num.textContent='·';num.classList.add('idle');sub.textContent='';fine.textContent='';
     /* הסכום ידוע כבר עכשיו, והצפי עוד לא. הסרגל הדביק היה ריק עד
        שנבחר מסלול — כלומר קו מפריד ריק מתחת לכותרת לאורך כל החלק
        הראשון של המסך, בדיוק כשגוללים ורוצים לזכור כמה בחרת. */
@@ -7389,13 +7665,131 @@ function stepNo(key){
   if(key==='pay')return 4+d+o+(onbo?1:0);
   return 5+d+o+(onbo?1:0); // review
 }
+/* ‏**הראש של האשף, והוא מקום אחד ולא שישה.** ‏`flowBar` נקראה
+   ממילא מכל שלב, ולכן היא מה שמצייר עכשיו גם את הכרטיס שמתמלא,
+   את סרגל השלבים ואת "שלב X מתוך N" — ומי שמוסיף שלב אינו צריך
+   לזכור מסך שני. */
+let wizStep=1;
+/* ציור חוזר של הכרטיס בלבד, בלי לגעת בסרגל ובכותרת: מה שמשתנה
+   באמצע שלב הוא התוכן ולא המספר שלו.
+
+   ‏**והמבחן הוא הראש שעל המסך ולא `creating`.** ‏`render` נקראת גם
+   בטעינה, לפני ש-`let creating` הורץ, ותנאי שנוגע במשתנה בתוך
+   ה-TDZ זורק ומפיל את כל שאר הסקריפט — כלומר האפליקציה כולה, בלי
+   שדבר במסך רומז על כך. */
+function wizRefresh(){
+  const box=document.getElementById('wizhead');
+  if(!box||box.style.display==='none')return;
+  wizCard(wizStep,flowSteps());
+}
 function flowBar(cur,label){
-  const box=document.getElementById('flowbar'),bar=document.getElementById('steps-top');
-  if(!creating){box.style.display='none';return}
-  box.style.display='block';
+  const box=document.getElementById('wizhead');
+  if(!box)return;
+  /* ‏**‏`wizSheet` נקראת מ-`go()` בלבד.** היא ישבה גם כאן, ו-`go`
+     קוראת ל-`flowBar` אחרי `wizSheet(i)` אבל **לפני** ש-`curScreen`
+     מתעדכן — כלומר הקריאה השנייה, בלי ארגומנט, החזירה את הקלאס אל
+     המסך היוצא. הוא נשאר גלוי מעל הנכנס, בלי שום שגיאה. */
+  if(!creating)return;
+  wizStep=cur;
   const t=flowSteps();
-  bar.innerHTML=Array.from({length:t},function(_,i){return '<i class="'+(i<cur?'on':'')+'"></i>'}).join('');
-  txt('flowlbl','שלב '+cur+' מתוך '+t+' · '+label);
+  txt('wiz-step','שלב '+cur+' מתוך '+t+(label?(' · '+label):''));
+  const bar=document.getElementById('wiz-bar');
+  if(bar)bar.innerHTML=Array.from({length:t},function(_,i){
+    return '<i class="'+(i<cur?'on':'')+'"></i>'}).join('');
+  wizCard(cur,t);
+}
+/* ‏**הגיליון הלבן הוא קלאס על המסך שמוצג, ולא עטיפה חדשה.** מסכי
+   האשף הם שישה, והוספת `<div>` לכל אחד מהם הייתה שישה מקומות
+   לסנכרן; הקלאס נוסע עם `go()` ויורד ברגע שהאשף נסגר. */
+function wizSheet(at){
+  const n=at==null?curScreen:at;
+  const on=creating&&WIZ_SCREENS.indexOf(n)>=0;
+  /* ‏**המסך נבחר לפי המספר ולא לפי `.screen.on`.** ‏`go()` קוראת לכאן
+     לפני שהיא מסמנת את הנכנס, ולכן `.on` הוא עדיין מי שיוצא: הקלאס
+     היה נוחת על המסך הקודם ומי שנכנס נשאר בלי גיליון. */
+  const scr=screens[n];
+  document.querySelectorAll('.screen.wiz').forEach(function(x){
+    if(x!==scr)x.classList.remove('wiz')});
+  if(scr)scr.classList.toggle('wiz',on);
+  const box=document.getElementById('wizhead');
+  if(box)box.style.display=on?'':'none';
+}
+/* ‏1 הקמה (שלושת הפאנלים), 2 הסכום, 3 התשלום, 24 הסיכום. מסך
+   ההשקעה משרת גם הפקדה לרגע קיים, ולכן הקלאס תלוי ב-`creating`
+   ולא במספר לבדו. */
+const WIZ_SCREENS=[1,2,3,24];
+/* ‏**מה שהכרטיס יודע בכל רגע, ולא יותר.** כל שדה שעוד לא נענה
+   נשאר "·" או שאלה, וזה מה שהופך אותו למד התקדמות ולא לסיכום
+   שמופיע בסוף. */
+function wizCard(cur,total){
+  /* ‏**מה שכבר נענה, ולא מה ששמור במשתנים.** ‏`goal` מחזיק את
+     הערכים של הנטיעה הקודמת עד שהשלב נענה, ולכן כרטיס שקורא ממנו
+     ישירות נפתח מלא — "בר המצווה של דניאל · 100 ₪ בחודש" על מסך
+     ששואל עבור מי. השלב הוא מה שקובע מה כבר ידוע. */
+  const last=cur>=total;
+  /* ‏**‏`>=` ולא `>`, והמקור הוא הטופס ולא `goal`.** התשובה נכנסת
+     לכרטיס באותו שלב שבו עונים עליה ולא בשלב שאחריו — זו כל הנקודה
+     בכרטיס שמתמלא. ו-`goal` נכתב רק ב-`updateGoal`, כלומר הוא מחזיק
+     את הערכים של הנטיעה הקודמת עד שיוצאים מהשלב: כרטיס שקורא ממנו
+     נפתח מלא, "בר המצווה של דניאל" על מסך ששואל עבור מי. */
+  const hasWho=cur>=stepNo('who');
+  const hasOcc=cur>=stepNo('occ')&&designated;
+  const hasAmt=cur>=stepNo('amount');
+  const desig=designated;
+  const nm=(desig&&hasWho)?(((document.getElementById('c-name')||{}).value)||'').trim():'';
+  txt('wiz-eb',last?'זה מה שייפתח':'נטיעה חדשה');
+  txt('wiz-name',nm||(!desig?'קופה שלא יועדה':'למי?'));
+  /* הרגע והמועד הם שורה אחת, כמו בכרטיס המזכרת של מסך הרגע. */
+  const t=cType==='custom'?((( document.getElementById('c-custom')||{}).value)||'').trim():cType;
+  const occ=(hasOcc&&t)?plantingName(t,nm,true):'';
+  const when=(hasOcc&&cDate&&cDate.value)?monthYear(cDate.value):'';
+  txt('wiz-occ',occ?(occ+(when?(' · '+when):'')):(desig?'לאיזה רגע?':''));
+  /* הפרצוף: מקווקו עד שנבחר ילד, ותג הרגע עליו ברגע שיש רגע. */
+  const av=document.getElementById('wiz-av');
+  if(av){
+    const face=desig&&nm?kidFaceHTML(cAvatar||kidAvatar(nm,beneSex),56):'';
+    av.className='ph'+(face?'':' empty');
+    av.innerHTML=face+(occ&&face?('<i>'+occIcon(occasionEnum(t),14,t)+'</i>'):'');
+  }
+  /* הסכום והצפי נכנסים בשלב 3 ומתעדכנים חי עם הסליידר. */
+  const v=hasAmt?(freq==='m'?+((amtM||{}).value||0):+((amtL||{}).value||0)):0;
+  txt('wiz-amt',v?(shekel(v*100)+(freq==='m'?' בחודש':'')):'\u00b7');
+  const yr=when?when.match(/\d{4}/):null;
+  txt('wiz-projl','בקצב הזה ייצבר'+(yr?(' ב'+MQ+yr[0]):''));
+  txt('wiz-proj',v?(APPROX+shekel(Math.round(fvCalc(v,mode==='keep'?0:rate))*100)):'\u00b7');
+}
+/* "ספטמבר 2036" מתאריך ISO. ‏`goal.dateLabel` נושא את אותה מחרוזת,
+   אבל הוא נכתב רק כשיוצאים מהשלב, והכרטיס צריך אותה בזמן שבוחרים. */
+function monthYear(iso){
+  const d=new Date(iso);
+  return isNaN(d)?'':(months[d.getMonth()]+' '+d.getFullYear());
+}
+/* ‏**החץ שבראש הוא אחורה בתוך האשף, ו"ביטול" הוא היציאה.** שתי
+   פעולות שונות, ולכן שני מקומות בשורה — בדיוק כמו בחבילה.
+   **והוא נגזר מהמסך ומהפאנל, ולא מטבלה שנייה:** לכל שלב כבר יש
+   "חזרה" משלו, והראש קורא להן. ‏`prev` תפוס בקובץ כפונקציה
+   שמעדכנת את התצוגה המקדימה, ולכן השם כאן אחר. */
+function wizBack(){
+  /* מחוץ לאשף אין "שלב קודם". החץ יורד יחד עם הראש, ולכן זו רשת
+     ביטחון בלבד. */
+  if(!creating){navBack();return}
+  if(curScreen===1){
+    if(cStep===0){cancelCreate();return}
+    if(cStep===1){cStepGo(0);return}
+    /* מ"מי יקבל את הכסף" חזרה היא מסך הסכום. */
+    go(2);return;
+  }
+  if(curScreen===2){backFromAmount();return}
+  if(curScreen===3){backFromPay();return}
+  navBack();
+}
+/* ‏**"ביטול" יוצא מהאשף ואינו יוצר דבר.** עד כה לא הייתה במסכים
+   האלה יציאה כלל מלבד "חזרה" שלב אחר שלב, ומי שנכנס בטעות היה
+   צריך ללחוץ חמש פעמים. */
+function cancelCreate(){
+  creating=false;onbo=false;
+  flowBar(0,'');
+  goHome();
 }
 function startCreate(){
   creating=true;dateTouched=false;beneSex='m';sexTouched=false;modeTouched=false;
@@ -7451,8 +7845,7 @@ function startCreate(){
   document.getElementById('c-datefield').style.display='none';
   txt('c-datehint','');
   /* every new planting starts from a clean sheet, including the designation choice */
-  const u=document.getElementById('c-undecided');
-  if(u){u.checked=false;toggleDesig(u);}
+  toggleDesig({checked:false});
   whoMode='me';beneMode='guardian';famMode='mine';
   /* לפי data-w ולא לפי מיקום. הסימון נקבע כאן לפי i===0, כלומר הוא
      נשען על כך שברירת המחדל היא האפשרות הראשונה — ומרגע ש"אני, עבורו"
@@ -7498,6 +7891,15 @@ function toOccasion(){
   }
   /* ראו flowSteps: בלי נהנה אין רגע לשאול עליו. */
   if(!designated){setOccasion('קופת הפתעות');commitGoal();return}
+  /* ‏**ברירת המחדל של המועד נקבעת כאן ולא ב-`commitGoal`.** הצ'יפים
+     עברו אל הפאנל הזה, ולכן הם צריכים להיות דלוקים כשנכנסים אליו:
+     ב-`commitGoal` זה היה קורה אחרי שכבר יצאנו ממנו, כלומר הפאנל היה
+     נפתח בלי שום צ'יפ דלוק ובלי תאריך. */
+  showTermStep(true);
+  if(!cDate.value){
+    const def=document.querySelectorAll('#c-terms button')[1];
+    if(def)setTerm(def,10);
+  }
   cStepGo(1);
 }
 /* order: עבור מי -> לאיזה רגע -> כמה תשקיע -> [מי יקבל את הכסף, רק אם יש נהנה] -> תשלום.
@@ -8813,11 +9215,15 @@ function sheetForm(title,html,okLabel,fn){
 /* גיליון שבו האפשרויות עצמן הן הפעולה. אין "אישור", כי אין מה לאשר
    מעבר ללחיצה, ו"סגור" הוא קישור שקט ולא בחירה שקולה. האפשרויות
    נכנסות ל-#sh-acts שהוא div, ולא ל-#sh-b שהוא p. */
-function sheetPick(title,body,html){
+/* ‏`back` הוא קריאה שמחזירה לרמה הקודמת. גיליון בשתי רמות צריך דרך
+   חזרה שאינה סגירה, אחרת מי שנכנס לרמה השנייה ורוצה לשנות את
+   הראשונה יוצא ומתחיל מחדש. */
+function sheetPick(title,body,html,back){
   txt('sh-t',title);txt('sh-b',body);
   sheetFn=null;sheetAlt=null;
   document.getElementById('sh-acts').innerHTML=
-    html+'<button class="btn ghost" onclick="sheetClose()">סגור</button>';
+    html+'<button class="btn ghost" onclick="'+(back?attrText(back):'sheetClose()')+'">'+
+    (back?'חזרה':'סגור')+'</button>';
   sheetShow();
 }
 function sheetClose(){document.getElementById('scrim').classList.remove('on');sheetFn=null;sheetAlt=null}
@@ -9080,10 +9486,21 @@ function methodLabel(){
 /* ‏pendingPay נשאר null: אמצעי תשלום נשמר כשיש ממנו מה לשמור — ארבע
    ספרות אחרונות שמחזירה הסליקה — ולא משדות שהמסך הזה כבר אינו מבקש.
    רשומה בשם "כרטיס ····" שנבנתה ממה שהוקלד לא תיארה אמצעי קיים. */
+/* ‏**הכפתור נוקב במה שהוא עושה: "לנטוע 100 ₪ לדניאל".** זו הצורה
+   שבחבילה, והיא גם מה שמבדיל בין נטיעה חדשה להפקדה לרגע קיים —
+   "אשר את ההפקדה" נכון לשנייה ומתאר את המסך ולא את הפעולה. בלי
+   נהנה אין למי, ואז הסכום לבדו. */
+function reviewCta(){
+  if(!creating)return 'אשר את ההפקדה';
+  const v=freq==='m'?+amtM.value:+amtL.value;
+  const nm=designated?(((document.getElementById('c-name')||{}).value)||'').trim():'';
+  return 'לנטוע '+shekel(v*100)+(nm?(' ל'+nm):'');
+}
 function toReview(){
   pendingPay=null;
   paySummary();
   txt('py-method',methodLabel());
+  txt('py-cta',reviewCta());
   go(REVIEW);
 }
 /* אוסף את מה שהמסע צבר לצורה אחת, שגם המסד וגם ההדגמה מקבלים.
@@ -9151,7 +9568,7 @@ function finishDeposit(){
   /* ‏pendingPay ריק מאז שמסך התשלום הפסיק לאסוף מספרים. הענף נשאר בתור
      המקום שבו ייכנסו ארבע הספרות שהסליקה תחזיר, כשתחובר. */
   if(pendingPay){pays.push(pendingPay);pendingPay=null;buildPays();}
-  creating=false;document.getElementById('flowbar').style.display='none';
+  creating=false;wizSheet();
 
   /* נטיעה חדשה נשמרת כאן ולא קודם: עד לרגע הזה אין הפקדה, ונטיעה בלי
      הפקדה היא רשומה ריקה — אין מה להראות ואין מה לחשב.
@@ -9192,11 +9609,11 @@ function finishDeposit(){
     })
     .then(function(){return isNewPlant?null:refreshDetail(cur)})
     .then(function(){
-      if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='אשר את ההפקדה'}
+      if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent=reviewCta()}
       celebrate();
     })
     .catch(function(e){
-      if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent='אשר את ההפקדה'}
+      if(btn){btn.disabled=false;btn.style.opacity='';btn.textContent=reviewCta()}
       /* נשארים במסך התשלום. גיליון ולא toast — לפעולה שנכשלה יש
          השלכה, ו-toast נעלם לפני שהספיקו לקרוא אותו. */
       const f=netaServer&&netaServer.lastFailure&&netaServer.lastFailure();
@@ -10678,9 +11095,6 @@ function invRowHTML(x){
    נוטעים שאינם שם. מי שהזמין **אותי** נספר גם הוא, כי הוא נוטע
    איתי בדיוק כמו מי שהזמנתי.
 
-   **ו"ועוד אחת בדרך" נוקב בהזמנה ולא באדם.** בעיצוב כתוב "אחת",
-   והוא מניח נקבה; מה שממתין הוא ההזמנה, והיא נקבה בלי לנחש דבר.
-
    **והמצב הריק נושא את הבטחת הסימולטור בשני טורים**, "לבד" מול
    "עם עוד קרוב", כי זה מה שהמסך הזה בא לומר. שני המספרים נגזרים
    מאותו קבוע: ערך עתידי של הפקדה חודשית הוא ליניארי בסכום החודשי,
@@ -10691,16 +11105,11 @@ function paintRelCard(){
   const inv=relInviteKey?[]:relInviters();
   const ins=relatives.filter(function(r){return r.status==='in'});
   const joined=ins.length+inv.length;
-  const wait=relatives.length-ins.length;
   const foot=document.getElementById('rl-foot');
   const fine=document.getElementById('rl-fine');
   txt('rl-num',joined?(joined===1?'קרוב אחד':joined+' קרובים'):'0 קרובים');
   if(!joined){
-    /* ‏**"ועוד אחת בדרך" נאמר גם על אפס.** בלעדיו הכרטיס הכריז
-       "0 קרובים" מעל רשימה שיש בה מרים שהוזמנה ולא ענתה — שתי
-       הצהרות סותרות על מסך אחד, וזה מה שאלון ראה בחשבון שלו. */
-    txt('rl-sub',wait?(wait===1?'ועוד אחת בדרך':'ועוד '+countWord(wait)+' הזמנות בדרך')
-                    :'סבתא, אח או דוד נוטעים מהכיס שלהם');
+    txt('rl-sub','סבתא, אח או דוד נוטעים מהכיס שלהם');
     /* ‏**הפרצוף יושב מעל המספר שהוא מתאר**, כמו בחבילה: משמאל אני
        לבד, ומימין אני ועוד עיגול מקווקו. זה מה שהופך את ההשוואה
        לשני מצבים של אותו אדם ולא לשני מספרים. */
@@ -10724,8 +11133,11 @@ function paintRelCard(){
   }
   if(fine)fine.style.display='none';
   if(foot)foot.className='bot';
-  txt('rl-sub',wait?(wait===1?'ועוד אחת בדרך':'ועוד '+countWord(wait)+' הזמנות בדרך')
-                  :'מהכיס שלהם, לעתיד של מי שיקר לכם');
+  /* ‏**"ועוד אחת בדרך" ירדה, לבקשת אלון.** היא נוספה כדי שהכרטיס
+     לא יכריז "0 קרובים" מעל רשימה שיש בה מי שהוזמנה ולא ענתה,
+     **ומה שאומר את זה עכשיו הוא השורה עצמה** ("הוזמנה, טרם
+     הצטרפה") — כלומר הסתירה נפתרת ברשימה ולא בכותרת שמעליה. */
+  txt('rl-sub','מהכיס שלהם, לעתיד של מי שיקר לכם');
   /* "יחד נטעתם" הוא מה שנצבר ברגעים של המשפחה שלי, כולל הכסף של
      הקרובים — זה בדיוק מה שהמילה "יחד" אומרת, ואותו מספר שהראש של
      "מה מחכה להם" מציג. לא הסכום שלי בלבד, שהוא נושא הטאב השכן. */
@@ -10775,8 +11187,8 @@ function relSub(r){
   const kin=kinMe(r.rel);
   if(r.status==='invited'){
     const nTo=(r.invitedTo||[]).length;
-    /* ‏**מה שממתין הוא ההזמנה, והיא נקבה בלי לנחש דבר.** אותה הכרעה
-       של "ועוד אחת בדרך" שבכרטיס. */
+    /* ‏**מה שממתין הוא ההזמנה, והיא נקבה בלי לנחש דבר.** "הוזמנה"
+       ולא "הוזמן": מה שממתין אינו האדם אלא ההזמנה שיצאה אליו. */
     return kin+' · '+(nTo>1?('הוזמנה ל'+countWord(nTo)+' רגעים')
       :r.plant?('הוזמנה ל'+nameOfPlanting(r.plant))
       :'הוזמנה, טרם הצטרפה');
@@ -12231,9 +12643,20 @@ function kidPickHTML(){
       ' onclick="pickCKid(this,\''+attrText(k).replace(/'/g,"\\'")+'\')">'+
       '<span class="fc">'+kidFaceHTML(b.avatar||kidAvatar(b.name,b.sex),38)+'</span>'+
       '<span class="nm"><b>'+attrText(b.name)+'</b>'+
-      (sub?'<span>'+attrText(sub)+'</span>':'')+'</span></button>';
-  }).join('');
+      (sub?'<span>'+attrText(sub)+'</span>':'')+'</span>'+CHEV_IN+'</button>';
+  }).join('')+
+  /* ‏**"מישהו חדש" הוא שורה ברשימה ולא פעולה מתחתיה.** הוא נפלט
+     כאן ולא יושב במרקאפ, כי `paintCKid` כותבת את `innerHTML` של
+     המכל — שורה סטטית בתוכו הייתה נמחקת בכל ציור. */
+  '<button type="button" data-k="new"'+(cKidPick==='new'?' class="on"':'')+
+  ' onclick="pickCKid(this,\'new\')">'+
+  '<span class="fc plus">\uFF0B</span>'+
+  '<span class="nm"><b>מישהו חדש</b><span>ילד, נכד, אחיין, או עבורי</span></span>'+
+  CHEV_IN+'</button>';
 }
+/* החץ של שורה שנכנסים אליה. ‏`#chev` מצויר שמאלה, וזה הכיוון של
+   "פנימה" ב-RTL; "חזרה" היא ההיפוך שלו. */
+const CHEV_IN='<svg class="ch" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg>';
 function paintCKid(){
   const box=document.getElementById('c-kidpick');
   const fld=document.getElementById('c-kidfield');
@@ -12281,10 +12704,32 @@ function applyCKid(){
   /* "המשך" יורד עד שנבחר משהו: אין מה להמשיך אליו, והודעת שגיאה על
      שדה שאינו על המסך אינה אומרת דבר. */
   if(cta)cta.style.display=(has&&!cKidPick&&designated)?'none':'';
+  /* ‏**הכותרת אומרת באיזה משני הפאנלים אנחנו.** "עבור מי הנטיעה?"
+     מעל שדה שם ורשת קרבה היא שאלה שכבר נענתה; בחבילה הפאנל השני
+     נקרא "מישהו חדש". */
+  const h=document.getElementById('cp0-h'),sb=document.getElementById('cp0-sub');
+  if(h)h.textContent=(has&&fresh)?'מישהו חדש':'עבור מי הנטיעה?';
+  if(sb)sb.style.display=(has&&fresh)?'none':'';
+  /* ‏**ו"עוד לא החלטתי" היא תשובה לרשימה ולא לפאנל השני.** מי שכבר
+     בחר "מישהו חדש" ענה על השאלה, ושורה שמבטלת את מה שהוא ממלא
+     עכשיו נקראת כמו ביטול ולא כמו אפשרות. */
+  const ql=document.getElementById('c-undecidedlink');
+  if(ql)ql.style.display=(has&&fresh)?'none':'';
+}
+/* ‏**"עוד לא החלטתי" ממשיכה, כמו שורה.** ‏`toggleDesig` נשארת המקום
+   היחיד שמכריע על `designated`, ולכן היא מקבלת את הצורה שהיא כבר
+   יודעת לקרוא ולא נכתב לידה תנאי שני. */
+function pickUndecided(){
+  toggleDesig({checked:true});
+  toOccasion();
 }
 /* ‏el היא השורה שנלחצה, ו-null כשהקריאה באה מ"+ מישהו חדש" או
    מ"בחר מהרשימה". */
 function pickCKid(el,k){
+  /* ‏**בחירה באדם מבטלת את "עוד לא החלטתי".** מרגע שהיא שורה ולא
+     תיבה, אין מה לבטל בסימון — מה שמבטל אותה הוא תשובה אחרת לאותה
+     שאלה. */
+  if(!designated)toggleDesig({checked:false});
   cKidPick=k;
   if(el)[].slice.call(el.parentNode.children).forEach(function(b){
     b.classList.toggle('on',b===el)});
@@ -13900,8 +14345,12 @@ const demoSource={
       const p=plants[k];
       if(p.designated===false||!p.kid||seen[p.kid])return;
       seen[p.kid]=1;
+      /* ‏**והקרבה איתם.** ברשימת "עבור מי" היא השורה השנייה, והיא מה
+         שמבדיל בין שני ילדים שהפרצוף שלהם דומה; בלעדיה ההדגמה
+         מציגה שם לבדו בזמן שחשבון חי מציג שם וקרבה. */
       out.push({id:'b-'+p.kid,name:p.kid,sex:p.sex||'',
-                avatar:kidAvatar(p.kid,p.sex||''),relation:''});
+                avatar:kidAvatar(p.kid,p.sex||''),
+                relation:p.sex==='f'?'daughter':'son'});
     });
     return Promise.resolve(out);
   }
