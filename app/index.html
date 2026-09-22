@@ -1257,7 +1257,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הוא תכונה של השורה, והאייקון הוא רכיב שחוזר בכל השורות. */
 
 /* ===== edit screen ===== */
+/* ‏**‏`padding:0` ו-`appearance:none` אינם ייתור.** הרכיב נכתב
+   ל-`<div>` במסך העריכה, ובגיליונות ההעדפות הוא `<button>` —
+   ולכפתור יש ריפוד ברירת מחדל של הדפדפן, וה-`::after` ממוקם
+   ביחס לתיבת הריפוד, כלומר הידית זזה פיקסל. זו אותה משפחה של
+   ‏`.reladd` שעבר מ-`<div>` ל-`<button>`. */
 .sw{position:relative;width:38px;height:22px;border-radius:11px;background:var(--s2);border:1px solid var(--line-2);
+  padding:0;appearance:none;-webkit-appearance:none;font-family:inherit;
   cursor:pointer;transition:.18s;flex-shrink:0}
 .sw::after{content:"";position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;
   background:var(--tx-3);transition:.18s}
@@ -1268,6 +1274,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .setrow .st{flex:1;min-width:0}
 .setrow .st b{display:block;font-size:12.5px;font-weight:500}
 .setrow .st p{font-size:10.5px;color:var(--tx-3);line-height:1.5;margin-top:2px}
+/* ‏**גיליון ולא מסך עריכה.** ‏`.setrow` נכתב לרשימה צפופה
+   (‏12.5 ו-10.5), ובגיליון שכל תוכנו שלוש שורות זה נקרא כהערת
+   שוליים. אותו רכיב, אותו מתג, וטיפוגרפיה של גיליון. */
+.prefbox .setrow{padding:14px 0}
+.prefbox .setrow .st b{font-size:14.5px;font-weight:600;color:var(--tx)}
+.prefbox .setrow .st p{font-size:12px;margin-top:3px}
+.prefbox .fine{margin-top:12px;text-align:start}
 .person{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
 .person:last-child{border-bottom:none}
 .person .pa{width:30px;height:30px;border-radius:9px;overflow:hidden;flex-shrink:0;background:var(--s2)}
@@ -2156,13 +2169,21 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .card-main.wizc .tbhero{font-size:clamp(24px,8.4vw,32px)}
 /* ‏**הפרצוף ריק ומקווקו עד שנבחר ילד**, כי זה מה שהכרטיס אומר:
    עוד לא ידוע למי. ‏56 כמו ב-`.kidc`, ותג הרגע עליו כשיש רגע. */
+/* ‏**והחיתוך יושב על הציור ולא על העטיפה.** התג הוא ילד של `.ph`
+   ויוצא ממנה ב-2 פיקסלים בכל כיוון, ו-`overflow:hidden` על העטיפה
+   חתך בדיוק את החלק שאמור לבלוט — אלון ראה את כובע הסיום חצוי.
+   זו הצורה של `.bigfav`, שהיא אותו רכיב בדיוק (פרצוף עם תג הרגע):
+   העטיפה `position:relative` ואינה חותכת, והעיגול הוא `border-radius`
+   עם `overflow` **על ה-svg שבפנים**.
+   ‏**ומדידה של הרדיוס כאן היא על הציור ולא על העטיפה**, אותה
+   מלכודת שכבר מתועדת על `.fav`. */
 .card-main.wizc .ph{width:56px;height:56px;border-radius:50%;flex:none;display:block;
-  overflow:hidden;background:var(--face-fill);position:relative;
+  background:var(--face-fill);position:relative;
   box-shadow:0 0 0 2px var(--sun-on-leaf)}
 .card-main.wizc .ph.empty{background:none;border:1.5px dashed var(--leaf-tile-line);
   box-shadow:none}
 .card-main.wizc .ph svg,.card-main.wizc .ph img{display:block;width:100%;height:100%;
-  object-fit:cover}
+  object-fit:cover;border-radius:50%;overflow:hidden}
 /* תג הרגע על הפרצוף, כמו בשורת הפיד: עיגול בצבע הראש עם קו. */
 .card-main.wizc .ph i{position:absolute;bottom:-2px;left:-2px;width:24px;height:24px;
   border-radius:50%;background:var(--leaf-head);border:1px solid var(--leaf-tile-line);
@@ -2730,8 +2751,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   margin-inline-start:6px;vertical-align:4px;white-space:nowrap}
 
 /* ── הגיליון הלבן ───────────────────────────────────────────────── */
+/* ‏**‏22 מלמטה, וזה תיקון.** הריפוד התחתון היה 0, ולכן השורה
+   האחרונה בכל גיליון נגמרה **בדיוק** בקצה שלו: נמדד שהיא נוחתת
+   על אותו פיקסל כמו תחתית הגיליון בארבעת הטאבים, ומתחתיה 14
+   של הבמה ואז הסרגל. אלון דיווח שהוא "לא מצליח לרדת לחלק
+   התחתון", וזה מה שזה היה — לא גלילה חסומה אלא שורה שנצמדת
+   לסרגל ונקראת כנחתכת.
+   **ו-`.scroll` מאפס אותו**, כי שם הפעולות דביקות בתחתית
+   הגיליון: ריפוד מתחתיהן הוא שטח גלילה ריק מתחת לכפתור. */
 .sheet-main{flex:1 1 auto;background:var(--s1);border-radius:28px 28px 0 0;
-  margin:-28px -18px 0;padding:18px 20px 0;min-height:0;position:relative;
+  margin:-28px -18px 0;padding:18px 20px 22px;min-height:0;position:relative;
   display:flex;flex-direction:column}
 /* ‏**תווית אחת לכל הגיליונות, בקשה של אלון.** היו שתיים:
    ‏`.tablbl` ב-12.5px בלי ריווח אותיות ובלי אוויר מעל, ו-`.eyebrow.big`
@@ -2798,9 +2827,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ‏`CHANGES.md` §9. הראש הוא `.tabg` רגיל, ולכן הוא מקבל את הריפוד
    של `gtop` בלי שורה נוספת. מה ששונה בו הוא שאין בו כרטיס בן 224
    אלא גוש ממורכז ואריחים, ולכן הוא נמוך יותר ונגמר בגיליון.
-   ‏`pb` קטן מ-36, כי הרווח של 28 שהגיליון חופף עליו ממילא
-   נספר פעמיים כשהאריחים כבר נגמרים בקו. */
-.tabg.pfg{padding-bottom:26px;text-align:center}
+   **והריפוד התחתון הוא 36 כמו בכל `.tabg`, וזה תיקון.** הוא נכתב
+   כאן 26 בנימוק שהחפיפה של 28 "נספרת פעמיים", **וזה הפוך**:
+   הגיליון עולה 28 למעלה, כלומר **אוכל** מהריפוד ולא מוסיף לו.
+   ‏26 פחות 28 הם מינוס 2, והאריחים יצאו **חתוכים** בשני פיקסלים
+   מתחת לקצה הגיליון — אלון ראה את זה במכשיר. ‏36 מחזירים את
+   אותם 8 פיקסלים שיש בארבעת הטאבים בין תחתית הכרטיס (294)
+   לראש הגיליון (302), כלומר השלד הזה בדיוק ולא מספר משלו. */
+.tabg.pfg{text-align:center}
 .tabg.pfg .tabhd{text-align:start}
 .pa-id{display:flex;flex-direction:column;align-items:center;margin-top:2px}
 /* הפרצוף הוא הכפתור. הטבעת היא שתי שכבות `box-shadow`: הפנימית
@@ -2854,20 +2888,27 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ‏`--s2` ו-`--s1` הם אותו יחס בדיוק כמו `#F4F2ED` ו-`#fff` שבעיצוב
    (‏1.07:1), ובשתי הערכות. ומה שמפריד באמת הוא הקו, כי בבהירה
    ‏`--s1` הוא לבן והדף לבן איתו. */
-/* המסך תופס בדיוק את גובה הבמה, כמו מסך הרגע: בלעדיו הגיליון
-   גדל עם התוכן, הרצועה הקרם נגמרת באמצע המסך ומתחתיה נשאר רקע
-   דף לבן. ‏`min-height:0` חובה, אחרת פריט flex אינו מתכווץ
-   מתחת לתוכנו והגיליון גולש אל מתחת לסרגל. */
+/* ‏**מי גולל כאן, וזה התהפך.** המסך נכתב תחילה כמו מסך הרגע:
+   הוא תפס בדיוק את גובה הבמה והגיליון לבדו נגלל בתוכו. שם זה
+   נכון, כי הפעולות דביקות בתחתית הגיליון וחייבות להישאר גלויות;
+   **כאן אין פעולה דביקה, ויש ראש ירוק בן 388** — כלומר כמעט חצי
+   מהמסך אינו גולל, ומי שמניח אצבע עליו ומושך לא קורה דבר. אלון
+   דיווח בדיוק על זה. עכשיו הבמה היא שגוללת, כמו בארבעת הטאבים,
+   ומשיכה בכל מקום במסך מורידה אותו.
+   ‏`min-height:100%` הוא מה ששומר על מה שהכלל הקודם קנה: כשהתוכן
+   קצר הגיליון עדיין מגיע לתחתית, ואין רצועת דף לבן מתחת לקרם.
+   ‏`flex:0 0 auto` כדי שהמסך לא יתכווץ מתחת לתוכנו בבמה שהיא
+   עמודת flex — בלעדיו הוא נחתך במקום לגלול. */
 [data-name="פרופיל"].screen.on{display:flex;flex-direction:column;
-  flex:1 1 auto;min-height:0}
+  flex:0 0 auto;min-height:100%}
 /* ‏-14 מלמטה, כמו ה--18 שבצדדים: הגיליון כאן קרם והדף לבן,
    ולכן ריפוד הבמה שמתחתיו הוא רצועה לבנה שנראית. בארבעת הטאבים
-   הוא לבן על לבן ואיש אינו רואה אותו. */
-.sheet-main.pfsh{background:var(--sheet-2);overflow-y:auto;min-height:0;
-  margin-bottom:-14px;
-  scrollbar-width:none;overscroll-behavior:contain;
-  padding-bottom:calc(22px + env(safe-area-inset-bottom))}
-.sheet-main.pfsh::-webkit-scrollbar{display:none}
+   הוא לבן על לבן ואיש אינו רואה אותו.
+   **ואין כאן `env()`:** הסרגל התחתון כבר נושא את
+   ‏`env(safe-area-inset-bottom)` בריפוד שלו, והוא מתחת לגיליון —
+   מי שמוסיף אותו גם כאן סופר את אותו שוליים פעמיים. */
+.sheet-main.pfsh{background:var(--sheet-2);flex:1 1 auto;
+  margin-bottom:-14px}
 .p2-k{font-size:12.5px;font-weight:600;color:var(--tx-3);margin:16px 6px 7px}
 .p2-k:first-child{margin-top:2px}
 .p2-card{background:var(--s1);border:1px solid var(--line);border-radius:20px;padding:0 14px}
@@ -2892,7 +2933,8 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הקודם הקטין שם את השם ל-36 ואת המספר ל-34, כלומר השלד היה
    מבטיח 224 ומקיים פחות, וזו בדיוק הקפיצה שהסבב הזה בא לסגור.
    מה שמתכווץ הוא הגיליון, והכפתורים נשארים גלויים. */
-.sheet-main.scroll{overflow-y:auto;scrollbar-width:none;overscroll-behavior:contain}
+.sheet-main.scroll{overflow-y:auto;scrollbar-width:none;overscroll-behavior:contain;
+  padding-bottom:0}
 .sheet-main.scroll::-webkit-scrollbar{display:none}
 .sheet-main.scroll>.cta-main{position:sticky;bottom:0;background:var(--s1)}
 
@@ -3463,7 +3505,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '0395cc6';
+window.NETA_BUILD = 'ce56f42';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4743,13 +4785,21 @@ window.NETA_CONFIG = {
         <span class="ch"><svg width="7" height="12" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg></span></button>
     </div>
 
-    <!-- ‏**"התראות" ו"פרטיות" אינן כאן, והעיצוב נוקב בשתיהן.**
-         שתיהן מסכי מתגים, ולאף מתג בהן אין מה לכתוב: אין במסד
-         העדפות התראה, ו-`visible_to_others` הוא דגל פר-הפקדה
-         שנקבע במסך התשלום. מתג שאינו נשמר הוא בדיוק "מסך שנראה
-         עובד ואינו שומר", ולכן הן נדחות עד שיהיה להן מנגנון. -->
+    <!-- ‏**"התראות" ו"פרטיות" נפתחו ב-0077.** הן נדחו בשלב 9 בנימוק
+         שאין במסד מה לכתוב, ולכן מתג בהן הוא "מסך שנראה עובד ואינו
+         שומר"; הנימוק לא בוטל אלא נפתר — ארבע עמודות ב-`profiles`,
+         ‏`enqueue_notification` שקוראת שלוש מהן, והמסך מציג בדיוק
+         אותן ולא את מה שבעיצוב ואין לו מנגנון. -->
     <p class="p2-k">העדפות</p>
     <div class="p2-card">
+      <button class="p2-row" onclick="openNotifySheet()">
+        <span class="ic"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-bell"/></svg></span>
+        <span class="gr"><span class="t">התראות</span><span class="s" id="pf-noti">·</span></span>
+        <span class="ch"><svg width="7" height="12" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg></span></button>
+      <button class="p2-row" onclick="openPrivacySheet()">
+        <span class="ic"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-shield"/></svg></span>
+        <span class="gr"><span class="t">פרטיות</span><span class="s" id="pf-priv">·</span></span>
+        <span class="ch"><svg width="7" height="12" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg></span></button>
       <button class="p2-row" onclick="openThemeSheet()">
         <span class="ic"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-theme"/></svg></span>
         <span class="gr"><span class="t">תצוגה</span><span class="s" id="pf-theme">·</span></span>
@@ -4762,7 +4812,7 @@ window.NETA_CONFIG = {
          שני הדפים לא נכתבו, ואין גוף מנהל (§18). -->
     <p class="p2-k">עוד</p>
     <div class="p2-card">
-      <button class="p2-row" onclick="openHow()">
+      <button class="p2-row" onclick="howOpen(true)">
         <span class="ic"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-path"/></svg></span>
         <span class="gr"><span class="t">איך זה עובד</span><span class="s">חמש שקופיות, חצי דקה</span></span>
         <span class="ch"><svg width="7" height="12" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg></span></button>
@@ -8381,11 +8431,14 @@ function paySummaryBody(){
     const p=plantAt(cur),guest=!!(p&&p.live&&!p.mine);
     const vis=document.getElementById('py-visrow');
     if(vis)vis.style.display=guest?'':'none';
-    /* דלוק בכל כניסה. בלי זה מי שכיבה פעם אחת היה מפקיד מוסתר לנצח
-       בלי לשים לב, כי המתג יורד מהמסך ברגע שהוא לא רלוונטי וחוזר
-       במצב שבו הושאר. */
+    /* ‏**נפתח לפי ההעדפה, לא דלוק תמיד.** הוא נכתב `add('on')`
+       קשיח כדי שמי שכיבה פעם אחת לא יפקיד מוסתר לנצח בלי לשים לב,
+       והנימוק הזה נכון ונשאר — מה שהתחלף הוא שמאז 0077 יש מקום
+       שבו אפשר **לבקש** את זה במפורש, ובקשה מפורשת אינה שכחה.
+       ‏`amounts_visible` הוא ברירת המחדל של המתג הזה ותו לא;
+       ההפקדות עצמן נושאות `visible_to_others` משלהן. */
     const sw=document.getElementById('py-vis');
-    if(sw&&guest)sw.classList.add('on');
+    if(sw&&guest)sw.classList.toggle('on',prefs().amounts_visible);
     document.getElementById('py-ownrow').style.display='none';
     document.getElementById('py-trackrow').style.display='flex';
     txt('py-track',trackLabel());
@@ -13444,6 +13497,87 @@ function buildProfile(){
      על המסך כהבטחה. */
   const pw=document.getElementById('pf-pwrow');
   if(pw)pw.style.display=liveAccount()?'':'none';
+  /* ‏**השורה אומרת את המצב ולא "נהל".** שורה שכתוב בה "התראות"
+     לבדה מחייבת להיכנס כדי לדעת אם משהו כבוי, וזו בדיוק הכניסה
+     שהיא אמורה לחסוך. */
+  const pr=prefs(),on=NOTI_KEYS.filter(function(k){return pr[k]}).length;
+  txt('pf-noti',on===NOTI_KEYS.length?'הכול דולק'
+              :on===0?'הכול כבוי':on+' מתוך '+NOTI_KEYS.length+' דולקות');
+  txt('pf-priv',pr.amounts_visible?'הסכומים שלך גלויים לנוטעים איתך'
+                                  :'הסכומים שלך מוסתרים');
+}
+/* ── ההעדפות: התראות ופרטיות ─────────────────────────────────────
+   ‏**שני מסכי המשנה שנדחו בשלב 9, ועכשיו יש להם מקום להישמר בו**
+   (‏0077). הכלל שדחה אותם לא השתנה: מתג שאינו נשמר הוא "מסך שנראה
+   עובד ואינו שומר", ולכן מה שעל המסך הוא בדיוק מה שיש במסד — לא
+   "יום לפני חיוב" ולא "סיכום חודשי" שבעיצוב, שאין להם מנגנון, ולא
+   בורר ערוץ, כי מייל הוא הערוץ היחיד.
+
+   ‏**וגיליונות ולא מסכים.** מסך חדש מזיז את כל `go(N)` שאחריו
+   ואת `NOCHROME` איתו, וזו מלכודת מתועדת; וזו גם הצורה שכבר נבחרה
+   ל"תצוגה" באותו גיליון עצמו. */
+const PREF_DEFAULT={notify_joined:true,notify_contribution:true,
+                    notify_suggestion:true,amounts_visible:true};
+/* שלוש ההתראות בנפרד מהפרטיות, כי השורה בפרופיל סופרת אותן. */
+const NOTI_KEYS=['notify_contribution','notify_joined','notify_suggestion'];
+/* בהדגמה אין שרת, ולכן ההעדפות יושבות בקובץ כמו שאר הפנקסים. */
+let demoPrefs=Object.assign({},PREF_DEFAULT);
+function prefs(){
+  const p=liveAccount()&&netaServer.profile;
+  if(!p)return demoPrefs;
+  const out={};
+  Object.keys(PREF_DEFAULT).forEach(function(k){
+    out[k]=p[k]==null?PREF_DEFAULT[k]:!!p[k]});
+  return out;
+}
+/* נשמר ברגע הנגיעה ולא ב"שמור": לגיליון של מתגים אין מה לאשר,
+   וכפתור אישור על מתג שכבר זז הוא שאלה על מה שכבר נענה. */
+function setPref(k,v){
+  demoPrefs[k]=v;
+  const patch={};patch[k]=v;
+  if(liveAccount())netaServer.updatePrefs(patch).catch(function(){});
+  buildProfile();
+}
+function prefRow(k,title,sub){
+  return '<div class="setrow"><div class="st"><b>'+title+'</b><p>'+sub+'</p></div>'+
+    '<button class="sw'+(prefs()[k]?' on':'')+'" role="switch" '+
+    'aria-checked="'+(prefs()[k]?'true':'false')+'" '+
+    'data-pref="'+k+'" onclick="togglePref(this)"></button></div>';
+}
+function togglePref(el){
+  const on=!el.classList.contains('on');
+  el.classList.toggle('on',on);
+  el.setAttribute('aria-checked',on?'true':'false');
+  setPref(el.getAttribute('data-pref'),on);
+}
+/* ‏**שלוש שורות, ובדיוק שלושת הערכים של `notify_kind`.** כל מייל
+   שהמוצר שולח על משהו שקרה עובר ב-`enqueue_notification`, והעדפה
+   היא תנאי אחד שם; מה שאין שם אינו כאן. */
+function openNotifySheet(){
+  sheetPick('התראות','מה נשלח אליך במייל, וממה אפשר לוותר.',
+    '<div class="prefbox">'+
+      prefRow('notify_contribution','כשקרוב מפקיד',
+              'מישהו הוסיף כסף לרגע שפתחת') +
+      prefRow('notify_joined','כשקרוב מצטרף',
+              'מישהו שהזמנת נכנס לרגע בפעם הראשונה') +
+      prefRow('notify_suggestion','כשקרוב מציע רגע',
+              'מישהו הציע רגע חדש לאחד מהיקרים שלך') +
+      '<p class="fine">מייל הוא הערוץ היחיד כרגע, ואין התראות באפליקציה.'+
+      ' בקשת אישור מהורה נשלחת תמיד, כי היא ממתינה לתשובה שלו.</p>'+
+    '</div>');
+}
+/* ‏**מתג אחד, והוא ברירת מחדל ולא מצב.** ‏`visible_to_others` הוא
+   דגל פר-הפקדה שנקבע במסך התשלום, ולכן מה שנשמר כאן הוא במה ייפתח
+   המתג שם בפעם הבאה. כתיבה חזרה לכל ההפקדות הקיימות הייתה משנה
+   שורות שנקבעו אחת אחת בלי שאיש ביקש. */
+function openPrivacySheet(){
+  sheetPick('פרטיות','מה קרובים רואים עליך.',
+    '<div class="prefbox">'+
+      prefRow('amounts_visible','סכומים גלויים כברירת מחדל',
+              'המתג במסך התשלום ייפתח כך. מי שנוטע איתך לאותו רגע יראה כמה הפקדת, ואפשר לשנות לכל הפקדה בנפרד.') +
+      '<p class="fine">מי שפתח את הרגע רואה את הסכום שלך כך או כך, כבעל הרגע.'+
+      ' הורדת המידע שלך ומחיקת החשבון עוד לא נבנו.</p>'+
+    '</div>');
 }
 /* גיליון התצוגה. ‏`#th-pick` עבר לכאן מהמסך עצמו, והוא נשאר
    אותו רכיב ואותה `paintTheme` — מה שהתחלף הוא איפה הוא יושב. */
@@ -14061,7 +14195,8 @@ function netaBackend(cfg){
       if(!uid())return whoami().then(function(u){
         return u&&u.id?self.loadProfile():null;
       });
-      return call('/rest/v1/profiles?select=id,name,avatar_key,sex&id=eq.'+uid(),{method:'GET'})
+      return call('/rest/v1/profiles?select=id,name,avatar_key,sex,notify_joined,'+
+                  'notify_contribution,notify_suggestion,amounts_visible&id=eq.'+uid(),{method:'GET'})
         .then(function(r){self.profile=(r&&r[0])||null;return self.profile});
     },
 
@@ -14077,6 +14212,18 @@ function netaBackend(cfg){
       return call('/rest/v1/profiles?id=eq.'+uid(),{method:'PATCH',
         headers:{Prefer:'return=representation'},
         body:JSON.stringify({sex:x||null})})
+        .then(function(rows){
+          if(rows&&rows[0])self.profile=rows[0];
+          return self.profile;
+        }).catch(remember);
+    },
+    /* ארבע העמודות של 0077, באותו PATCH של השם והמין. \u200f`patch`
+       ולא ארבעה ארגומנטים, כי כל מתג נשמר לבדו ברגע שנוגעים בו. */
+    updatePrefs:function(patch){
+      const self=this;
+      return call('/rest/v1/profiles?id=eq.'+uid(),{method:'PATCH',
+        headers:{Prefer:'return=representation'},
+        body:JSON.stringify(patch)})
         .then(function(rows){
           if(rows&&rows[0])self.profile=rows[0];
           return self.profile;
