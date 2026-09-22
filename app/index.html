@@ -1877,21 +1877,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .gsample .ncard{margin-bottom:9px;cursor:default}
 /* הדגם של הקרובים אינו לחיץ: שורה ברשימה האמיתית פותחת עריכה, וכאן
    אין את מי לערוך. */
-/* ‏20 מלמעלה כמו .gsample, ולא 16: הדגם הזה יושב מחוץ ל-.es ולכן
-   קיבל בזמנו מרווח משלו. התחתון נשאר, כי אחריו בא טקסט ולא סוף מסך. */
-/* ‏12 ולא 20: הכפתור שמעליו נושא gap-s עם 8 פיקסלים מלמטה, ובעמודת
-   flex מרווחים אינם מתמוטטים, כלומר 8+20 היו 28 ודוחפים את הדגם
-   שמונה פיקסלים נמוך יותר מבשאר המסכים. 8+12 הם 20 בדיוק כמו שם. */
-#rel-ghost{pointer-events:none;margin:12px 0 6px}
-/* סקשן הילדים יורד מתחת לכפתור ולדגם הדוהה, ולכן הוא צריך אוויר
-   משלו: בלעדיו התווית "מי שאני נוטע עבורו" נוחתת שישה פיקסלים אחרי
-   הזנב הדוהה של הדגם ונקראת כחלק ממנו. ממוקד למזהה ולא ל-.eyebrow,
-   שמשרת תוויות שיושבות אחרי כרטיס ואינן צריכות אותו. */
-#kid-head{margin-top:24px}
-#rel-ghost .rel{cursor:default}
-/* פרצוף מלא צבע ב-.34 ובסטורציה של 45 אחוז יוצא כתם אפור, ולא פנים.
-   שאר הדגמים מחזיקים טקסט ואמוג'י ושורדים את זה; כאן צריך קצת יותר. */
-#rel-ghost>*{opacity:var(--ghost-2);filter:saturate(var(--ghost-sat-2))}
 .gsample .feed:last-child{border-bottom:0}
 /* הדגם כאן הוא שני כרטיסי 05ג — 86 פיקסל כל אחד ועוד 9 מרווח, בדיוק
    כמו הכרטיס האמיתי, כך שמה שיופיע כאן יופיע במקום שהוא מסמן. הראשון
@@ -1949,7 +1934,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שיושב בעמודת flex ושם 8+20 אכן היו 28.
    **‏0 כשהיא ראשונה בגיליון**, כי הריפוד של 24 הוא כל האוויר שיש
    שם — אותה הכרעה של `.hdr-row` ב"מה מחכה להם". */
-#rel-eyebrow{margin-top:24px}
+/* ‏24 בין הרשימות, כמו בין כל שני סקשנים בגיליון. ‏`#rel-eyebrow`
+   הוא הראשון ולכן אינו צריך אותו; `#kid-head` בא אחרי רשימה. */
+#kid-head{margin-top:24px}
+#rel-eyebrow{margin-top:8px}
 .sheet-main>#rel-eyebrow:first-child{margin-top:0}
 /* ‏**הראש של "העתיד שלנו" הוא היום .leafhead, ושלושת הכללים שהיו
    כאן נמחקו.** הוא היה גוש ממורכז על רקע הדף (`text-align:center`,
@@ -2536,6 +2524,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   justify-content:space-between;gap:12px;padding-top:12px;
   border-top:1px solid var(--leaf-tile-line)}
 .card-main .bot .l{font-size:12px;color:var(--mist)}
+/* ‏**הצביר יושב מעל המספר שהוא מתאר ולא לצידו**, כמו בחבילה: כך
+   "לבד" ו"עם עוד קרוב אחד" הם שני מצבים של אותו אדם ולא שני
+   מספרים. ‏32 ולא 40, כי שני טורים בשורה אחת ב-320. */
+/* ‏**‏24 ובלי מרווח, וזה נגזר מ-224 ולא נבחר.** הכרטיס קבוע, ומה
+   שיושב בו במצב הריק הוא שתי שורות יותר מאשר במצב המלא: צביר מעל
+   כל טור, ושורת ההנחה מתחת לשניהם. ‏28 עם מרווח הוציא את המשפט
+   מהכרטיס — נמדד 5 פיקסלים במקום 20 — כלומר הוא נדחק החוצה בשקט
+   במקום להישבר. ‏`.bot` מקבל כאן 10 ולא 12 מאותה סיבה. */
+.card-main .bot.solo{padding-top:10px}
+.card-main .bot .solo-stk{--stk-sz:24px;margin-bottom:2px}
 /* **‏5.9vw ולא 22 קבוע, וזה נגזר ממדידה.** ‏`nowrap` גולש מהתא
    החוצה בלי שום שגיאה — אותה מלכודת של `.duo` — וב-320 שני
    המספרים הארוכים אינם נכנסים ב-22. התקרה היא מה שהעיצוב נוקב בו. */
@@ -2585,6 +2583,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .tabrow .ad{width:44px;height:44px;border-radius:50%;border:1.5px dashed var(--line-2);
   color:var(--leaf);display:grid;place-items:center;font-size:22px;flex:none}
 .tabrow .ad.sqr{border-radius:14px}
+.tabrow .ad.mute{color:var(--line-2)}
 .tabrow .num{width:44px;height:44px;border-radius:50%;background:var(--leaf-bg);
   color:var(--leaf);font-weight:800;display:grid;place-items:center;flex:none}
 .tabrow .gr{flex:1;min-width:0}
@@ -3162,7 +3161,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '1693e15';
+window.NETA_BUILD = '8762add';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4587,17 +4586,17 @@ window.NETA_CONFIG = {
        הרשימה השנייה, וזו הייתה החלטה פתוחה. -->
   <div class="tabg" id="rel-hd">
     <div class="tabhd">
-      <!-- הפרצוף פותח את "השם והתמונה שלי", כמו בשני הטאבים
-           השכנים: מי שלוחץ על התמונה שלו רוצה להחליף אותה. -->
-      <button class="c" id="rel-face" onclick="editMyIdentity()" title="השם והתמונה שלי"></button>
+      <!-- ‏**כותרת בלבד, כמו בחבילה.** ישבו כאן פרצוף (שפתח את "השם
+           והתמונה שלי") ו-＋ (שהוסיף קרוב), ושניהם היו כפילויות:
+           לפרופיל נכנסים מהפרצוף שב"ההשקעות שלי", ו-＋ אומר בדיוק את
+           מה ששתי שורות ההוספה שבגיליון אומרות, כל אחת לרשימה שלה.
+           **המחיר שנאמר ונבחר:** לעריכת השם והתמונה עוברים לטאב
+           הראשון. ‏`.tabhd` מחזיק 60 גם בלי עיגול ובלי פעולה, ולכן
+           הכרטיס נשאר ב-70 והגיליון ב-302. -->
       <div class="tx">
         <div class="hi">נוטעים יחד</div>
         <div class="nm">הקרובים שלי</div>
       </div>
-      <!-- פעולה אחת בלבד, והיא ＋. ‏"+ הוסף קרוב" נשאר גם בסוף
-           הרשימה, כי שם הוא יושב ליד מה שהוא משנה; כאן הוא מה
-           שאומר שאפשר להוסיף גם כשהרשימה ארוכה מהמסך. -->
-      <button class="act ps" id="rel-plus" onclick="openAddPerson('with')" aria-label="להוסיף קרוב">+</button>
     </div>
 
     <!-- הכרטיס. ‏`paintRelCard` כותב את ארבעת החריצים, ושורת
@@ -4608,6 +4607,7 @@ window.NETA_CONFIG = {
       <p class="tbhero" id="rl-num">·</p>
       <p class="usub" id="rl-sub">·</p>
       <div class="bot" id="rl-foot"></div>
+      <p class="fine" id="rl-fine" style="display:none;margin:2px 0 0;color:var(--mist)"></p>
     </div>
   </div>
 
@@ -4626,50 +4626,27 @@ window.NETA_CONFIG = {
   </div>
   <p class="eyebrow" id="req-head" style="display:none">בקשות הצטרפות שממתינות לך</p>
   <div id="req-list"></div>
-  <!-- "נוטעים איתך" ירדה: היא חזרה על תת-הכותרת שבשורה העליונה, ובמצב
-       הריק ישבה ממש מעל "מי עוד נוטע איתך?" ואמרה את אותו הדבר. הרשימה
-       הראשונה היא נושא המסך וממילא אינה צריכה תווית; "רגעים שהזמינו
-       אותך אליהם" נשארה, כי היא הכיוון האחר וכן צריכה שם. -->
-  <!-- אין כאן בורר רגע. למסך הזה מגיעים משני מקומות, ובשניהם השאלה
-       כבר נענתה: מי שנכנס מתוך רגע הביא אותו איתו, והכותרת אומרת את
-       שמו; ומי שנכנס מהטאב אינו במצב הזמנה כלל, והרגע נבחר בגיליון
-       של inviteRelative לאדם שהוא בוחר. בורר כאן היה שואל שאלה
-       שהתשובה עליה כבר על המסך. -->
-  <!-- הראש המאויר שישב כאן ירד יחד עם השלד החדש. ראו ההערה שבראש
-       המסך: מה שמחליף אותו אינו איור אחר אלא השורה העליונה והכרטיס,
-       ולכן גם `paintInviteMode` כבר אינה צריכה להוריד אותו במצב
-       הזמנה — הראש הירוק נכון בשני המצבים. -->
-  <!-- תווית לרשימה, כמו זו של הילדים מתחתיה: שתי רשימות במסך אחד,
-       ואחת מהן בלי שם היא רשימה שצריך להסיק מה יש בה. היא עולה ויורדת
-       יחד עם הראש, כלומר רק כשיש רשימה: במצב הריק היא ריחפה בראש המסך
-       26 פיקסלים מעל האיור ונקראה כשורה יתומה, ושם ממילא הכותרת
-       המאוירת אומרת את מה שהיא אומרת. -->
-  <!-- הילדים ראשונים, לבקשת אלון. הפעולה על שורה של ילד אינה "הזמן"
-       אלא הרגעים שלו, וזה מה שהצדיק רשימה נפרדת ולא ערבוב; במצב
-       הזמנה הסקשן יורד, כי שם הרשימה היא בחירה מרובה של נמענים.
 
-       **ומה שההחלפה עולה:** הראש המאויר שמעליו הוא של הקרובים
-       ("מי כבר נוטע איתך? הזמן את סבתא, אח או דוד קרוב"), והוא
-       יושב עכשיו מעל רשימת הילדים. הוא נשאר בראש המסך כי שם הוא
-       מיושר עם שלושת הטאבים האחרים (align.js), ולכן ההוראה שבו
-       מצביעה על הרשימה השנייה ולא על הראשונה. נאמר ונבחר.
+  <!-- ‏**שתי רשימות, וסדרן הוא של החבילה: קרובים ואז ילדים.**
+       הילדים ישבו ראשונים מסבב קודם, לבקשת אלון, והנימוק שלה היה
+       שהראש המאויר של הקרובים ישב מעליהם ודיבר על מישהו אחר. הראש
+       ההוא ירד עם השלד החדש, והשם של הטאב הוא "הקרובים שלי" —
+       כלומר הרשימה הראשונה חייבת להיות הם. ‏`neta-09-relatives`.
 
-       **וכשאין קרובים הסקשן חוזר למקומו הישן**, אחרי המצב הריק:
-       ראו placeKidSection. המיקום כאן הוא זה שיש בו רשימה. -->
-  <p class="eyebrow" id="kid-head" style="display:none">מי שאני נוטע עבורו</p>
-  <div class="card" id="kid-list" style="display:none"></div>
+       **ושתיהן שורות חשופות על הגיליון ולא כרטיס.** ‏`.tabrow` הוא
+       מה שמצייר שורה בשלושת הטאבים האחרים ובמסך הרגע, ו-`.card`
+       סביב רשימה הוא שתי שכבות אוויר סביב כל שורה. ‏`.tablbl` היא
+       התווית, והמספר שבקצה השני הוא של החבילה. -->
+  <p class="tablbl" id="rel-eyebrow" style="display:none">
+    <span>נוטעים איתי</span><span id="rel-cnt"></span></p>
+  <div id="rel-list"></div>
 
-  <p class="eyebrow" id="rel-eyebrow" style="display:none">מי שנוטע איתי</p>
-  <div class="card" id="rel-list"></div>
+  <p class="tablbl" id="kid-head" style="display:none">
+    <span>נוטעים עבורם</span><span id="kid-cnt"></span></p>
+  <div id="kid-list" style="display:none"></div>
+
   <button class="btn gap-s" id="rel-send" style="display:none"
           onclick="invPreview()">המשך</button>
-  <button class="btn gap-s" id="rel-add" onclick="openAddPerson('with')">+ הוסף קרוב</button>
-  <!-- כך זה ייראה כשקרובים יצטרפו. אותו דגם דוהה שיש בשלושת המצבים
-       הריקים האחרים, ומאותו מקור: שורות אמיתיות של הרשימה עם שמות
-       ההדגמה, ולא ציור שלהן. -->
-  <!-- שתי האפשרויות האחרות, כשהמסך נפתח כדי לבחור למי לשלוח: הקישור
-       הפתוח למי שאינו רוצה לנקוב בשם, וההצצה למי שרוצה לראות מה
-       הנמענת תקבל. שתיהן שקטות, כי הפעולה הראשית היא השם ברשימה. -->
   <div id="rel-invite" style="display:none">
     <!-- האזהרה שהייתה בגיליון האישור. מוצגת רק כשהנטיעה עדיין סגורה,
          כלומר לפני ההזמנה הראשונה, וכאן היא נקראת לפני הלחיצה. -->
@@ -4683,7 +4660,6 @@ window.NETA_CONFIG = {
     <button class="link" id="rel-copy"
             onclick="copyInviteLink(this)">או העתק קישור והעבר לקרובים</button>
   </div>
-  <div class="gsample" id="rel-ghost" style="display:none" aria-hidden="true"></div>
   <!-- "רגעים שהזמינו אותך אליהם" ירדה מכאן. המסך הזה הוא על אנשים,
        ומאז שמסך הבית מחזיק סקשן "נטיעות עבור אחרים" אותו רגע בדיוק
        הופיע פעמיים, בשני טאבים.
@@ -10278,11 +10254,6 @@ const relatives=[
   {av:'av-friend',name:'מיכל, אמא של נועה',rel:'friend_f',g:'f',status:'invited',chan:'mail',contact:'michal@mail.com'},
   {av:'av-grandpa',name:'סבא משה',rel:'father_law',g:'m',status:'none',chan:'wa',contact:''}
 ];
-/* הדגם הדוהה שמתחת למצב הריק נגזר מהמערכת עצמה ואינו מועתק לצידה:
-   שינוי בשמות ההדגמה מגיע גם אליו, ואין כאן עותק שני שיישאר מאחור. */
-const REL_SAMPLE=relatives.slice(0,3).map(function(r){
-  return {av:r.av,name:r.name,rel:r.rel,contact:r.contact,status:r.status};
-});
 const CHAN={wa:'וואטסאפ',mail:'אימייל'};
 let pickedPlant='';
 /* the channel is read from the value itself — asking for it separately was a second
@@ -10717,23 +10688,43 @@ function invRowHTML(x){
    שאחד מהם משתנה. */
 const SOLO_13Y=2350000;
 function paintRelCard(){
-  const fc=document.getElementById('rel-face');
-  if(fc)fc.innerHTML=faceHTML(myAvatarKey(),'av-parent');
   const inv=relInviteKey?[]:relInviters();
   const ins=relatives.filter(function(r){return r.status==='in'});
   const joined=ins.length+inv.length;
   const wait=relatives.length-ins.length;
   const foot=document.getElementById('rl-foot');
+  const fine=document.getElementById('rl-fine');
   txt('rl-num',joined?(joined===1?'קרוב אחד':joined+' קרובים'):'0 קרובים');
   if(!joined){
-    txt('rl-sub','כל קרוב שמצטרף נוטע מהכיס שלו');
+    /* ‏**"ועוד אחת בדרך" נאמר גם על אפס.** בלעדיו הכרטיס הכריז
+       "0 קרובים" מעל רשימה שיש בה מרים שהוזמנה ולא ענתה — שתי
+       הצהרות סותרות על מסך אחד, וזה מה שאלון ראה בחשבון שלו. */
+    txt('rl-sub',wait?(wait===1?'ועוד אחת בדרך':'ועוד '+countWord(wait)+' הזמנות בדרך')
+                    :'סבתא, אח או דוד נוטעים מהכיס שלהם');
+    /* ‏**הפרצוף יושב מעל המספר שהוא מתאר**, כמו בחבילה: משמאל אני
+       לבד, ומימין אני ועוד עיגול מקווקו. זה מה שהופך את ההשוואה
+       לשני מצבים של אותו אדם ולא לשני מספרים. */
+    const my=faceHTML(myAvatarKey(),'av-parent');
+    if(foot)foot.className='bot solo';
     if(foot)foot.innerHTML=
-      '<div><p class="l">לבד</p><p class="v f">'+APPROX+shekel(SOLO_13Y)+'</p></div>'+
-      '<div><p class="l">עם עוד קרוב</p><p class="v f">'+
-        APPROX+shekel(Math.round(SOLO_13Y*1.5))+'</p></div>';
+      '<div><span class="stk on-leaf solo-stk"><span>'+my+'</span></span>'+
+        '<p class="l">לבד</p><p class="v f">'+APPROX+shekel(SOLO_13Y)+'</p></div>'+
+      '<div><span class="stk on-leaf solo-stk"><span>'+my+'</span>'+
+        '<span class="emptydot">\uFF0B</span></span>'+
+        '<p class="l">עם עוד קרוב אחד</p><p class="v f">'+
+        APPROX+shekel(SOLO_13Y*2)+'</p></div>';
+    /* ‏**פי 2 ולא פי 1.5, ושורה שאומרת על מה זה נשען.** ערך עתידי
+       של הפקדה חודשית הוא ליניארי בסכום, ולכן קרוב שני שמפקיד את
+       אותם 100 ₪ מכפיל. ‏1.5 היה מספר שאיש לא יכול היה לגזור.
+       והשורה נוקבת בהנחה כי בלעדיה "עם עוד קרוב אחד" הוא מספר
+       שאין מאחוריו מנגנון — בדיוק מה שהמוצר אוסר על עצמו. */
+    if(fine){fine.style.display='';
+      fine.textContent='הערכה: 100 ₪ בחודש כל אחד, 13 שנים, '+APPROX+'6% בשנה.';}
     return;
   }
-  txt('rl-sub',wait?(wait===1?'ועוד הזמנה אחת בדרך':'ועוד '+wait+' הזמנות בדרך')
+  if(fine)fine.style.display='none';
+  if(foot)foot.className='bot';
+  txt('rl-sub',wait?(wait===1?'ועוד אחת בדרך':'ועוד '+countWord(wait)+' הזמנות בדרך')
                   :'מהכיס שלהם, לעתיד של מי שיקר לכם');
   /* "יחד נטעתם" הוא מה שנצבר ברגעים של המשפחה שלי, כולל הכסף של
      הקרובים — זה בדיוק מה שהמילה "יחד" אומרת, ואותו מספר שהראש של
@@ -10752,48 +10743,83 @@ function paintRelCard(){
         return h.indexOf('<span')===0?h:('<span>'+h+'</span>')}).join('')
        :'<span></span>')+'</span>';
 }
+/* ‏**למי הקרוב הזה נוטע.** ‏`invitedTo` מחזיק מפתחות נטיעה, ומה
+   שהשורה אומרת הוא שמות הילדים שמאחוריהן — "נוטעת לנועה ולדניאל",
+   כמו בחבילה. **והפועל נגזר מ-`KIN[rel].g` ואינו ניחוש**: הקרבה
+   נבחרה בידי מי שהוסיף אותו, ו"אמא" היא נקבה בהגדרה. בקרבה חופשית
+   ("אחר") אין `g`, ואז שם עצם במקום פועל — אותה צורה של "העתיד של"
+   כשמגדר הנהנה אינו ידוע. */
+function relPlantsLine(r){
+  const kids=[],add=function(nm){if(nm&&kids.indexOf(nm)<0)kids.push(nm)};
+  (r.invitedTo||[]).forEach(function(k){const pl=plantAt(k);if(pl)add(kidOf(pl))});
+  /* ‏**ומי שכבר הצטרף אינו בהכרח ב-`invitedTo`.** הוא יכול היה לפתוח
+     את הרגע בעצמו או להצטרף מקישור, ואז הפנקס שלי אינו יודע עליו
+     דבר. המודל הוא המקור: סבתא רחל ודוד יוסי הופיעו כ"עוד לא
+     הוזמנה" בזמן ששניהם נוטעים, כי חיפשתי רק בעמודה אחת. */
+  ((lastModel&&lastModel.plantings)||[]).forEach(function(pl){
+    const ppl=(pl.participants||[]).map(function(x){return x&&x.name});
+    if(ppl.indexOf(r.name)>=0||pl.by===r.name)add(kidOf(pl));
+  });
+  if(!kids.length)return '';
+  const g=(KIN[r.rel]||{}).g;
+  /* ‏ה-ל' על כל שם ולא על הראשון בלבד: "לנועה ודניאל" קורא את השני
+     כשם פרטי שצמוד לוו' החיבור, ומה שנכון הוא "לנועה ולדניאל". */
+  const to=listNames(kids.map(function(n){return 'ל'+n}));
+  /* ‏**הפועל נגזר מ-`KIN[rel].g` ואינו ניחוש**: הקרבה נבחרה בידי מי
+     שהוסיף אותו, ו"אמא" היא נקבה בהגדרה. בקרבה חופשית ("אחר") אין
+     `g`, ואז שם עצם במקום פועל — אותה צורה של "העתיד של" כשמגדר
+     הנהנה אינו ידוע. */
+  return g?((g==='f'?'נוטעת ':'נוטע ')+to):('ברגעים ש'+to);
+}
+function relSub(r){
+  const kin=kinMe(r.rel);
+  if(r.status==='invited'){
+    const nTo=(r.invitedTo||[]).length;
+    /* ‏**מה שממתין הוא ההזמנה, והיא נקבה בלי לנחש דבר.** אותה הכרעה
+       של "ועוד אחת בדרך" שבכרטיס. */
+    return kin+' · '+(nTo>1?('הוזמנה ל'+countWord(nTo)+' רגעים')
+      :r.plant?('הוזמנה ל'+nameOfPlanting(r.plant))
+      :'הוזמנה, טרם הצטרפה');
+  }
+  const pl=relPlantsLine(r);
+  if(pl)return kin+' · '+pl;
+  /* ‏**מי שכבר נוטע ואיננו יודעים במה — הקרבה לבדה.** "עוד לא
+     הוזמנה" נכון רק למי שבפנקס ולא נשלחה אליו הזמנה. */
+  return r.status==='in'?kin:(kin+' · עוד לא נשלחה הזמנה');
+}
+/* שורה אחת בשפה של `.tabrow`: פרצוף 44, שם, שורת משנה, ובקצה השני
+   גלולה. **פרטי הקשר ירדו מהשורה** — אלון ראה את כתובת המייל שלו
+   עצמו מתחת לשמה של מרים, וכתובת היא לא מה שהרשימה הזאת מודדת;
+   היא חיה בגיליון העריכה, שהשורה פותחת. */
+function relTabRow(r,right,open){
+  return '<div class="tabrow"'+(open||'')+'>'+
+    '<span class="fc">'+faceHTML(r.av,'av-someone')+'</span>'+
+    '<span class="gr"><span class="t">'+attrText(r.name)+'</span>'+
+    '<span class="s">'+attrText(relSub(r))+'</span></span>'+(right||'')+'</div>';
+}
+function relAddRow(kind,title,sub){
+  return '<div class="tabrow" onclick="openAddPerson(&quot;'+kind+'&quot;)">'+
+    '<span class="ad">+</span>'+
+    '<span class="gr"><span class="t" style="color:var(--leaf)">'+title+'</span>'+
+    '<span class="s">'+sub+'</span></span></div>';
+}
 function buildRelatives(){
   const box=document.getElementById('rel-list');
-  /* התווית חיה הפוך למצב הריק: היא מוצגת כשיש קרובים ויורדת כשאין.
-     ‏`rel-head`, הראש המאויר שישב כאן, ירד עם השלד החדש. */
   const eb=document.getElementById('rel-eyebrow');
   paintRelCard();
   /* שני מקורות לרשימה אחת: הפנקס שלי ומי שהזמין אותי. מי שיש לו
      מזמין ואין לו פנקס אינו במצב ריק — וזה כל התיקון. */
   const invs=relInviteKey?[]:relInviters();
-  const anyRel=!!(relatives.length||invs.length);
-  const withRel=!!(anyRel&&!relInviteKey);
-  if(eb)eb.style.display=withRel?'':'none';
+  /* ‏**התווית מוצגת תמיד מחוץ למצב הזמנה, גם על רשימה ריקה.** היא
+     ירדה פעם כי מתחתיה ישב מצב ריק שלם עם איור וכותרת שאמרו את אותו
+     דבר; מרגע שהמצב הריק הוא שורה אחת בתוך אותה רשימה, תווית בלעדיה
+     הופכת את השורה ליתומה. */
+  if(eb)eb.style.display=relInviteKey?'none':'';
+  txt('rel-cnt',relInviteKey?'':String(relatives.length+invs.length));
   /* בראש ולא בכל ענף: לפונקציה שלושה מסלולי יציאה, ומי שנשכח בהם
      השאיר את הכיתוב של מצב ההזמנה על מסך שאינו במצב הזמנה. */
   paintInvSend();
-  /* בראש ולא בכל ענף, מאותה סיבה שמעל: לפונקציה שלושה מסלולי יציאה. */
   paintKidSection();
-  if(!anyRel){
-    box.style.border='none';box.style.background='none';box.style.padding='0';
-    /* הכפתור "הוסף קרוב" יושב אחרי הקופסה ולא בתוך המצב הריק, ולכן
-       המרווח שמעליו הוא הריפוד התחתון של ה-.es ועוד ה-margin של הכרטיס:
-       26 ועוד 9, בעוד ששאר המסכים הריקים נותנים לכפתור שלהם 18 בדיוק.
-       כך הוא נחת 17 פיקסלים נמוך יותר מזה של הטאבים השכנים. */
-    box.style.marginBottom='0';
-    /* אותו איור ואותם גדלים כמו בשאר המצבים הריקים: פנים, כי זו רשימת
-       אנשים. קודם ישב כאן אייקון קווי ב-52 פיקסל ובכותרת מוקטנת, ולכן
-       החלק העליון של המסך נראה כמו משפחה עיצובית אחרת. */
-    box.innerHTML='<div class="es" style="min-height:0;padding:26px 4px 18px">'+
-      '<div class="art"><span class="esfaces plus" aria-hidden="true">'+
-      ['av-granny','av-uncle','av-friend'].map(function(a){
-        return '<span><span class="fc"><svg class="avsvg" viewBox="0 0 40 40">'+
-               '<use href="#'+a+'"/></svg></span><i>\uFF0B</i></span>';
-      }).join('')+'</span></div>'+
-      /* שתי שורות בכותרת: השאלה וההוראה הן משפט אחד, ומשפט נפרד
-         מתחתיהן הפך אותן לשתי אמירות. הפסקה נשארת ואומרת משהו אחר. */
-      '<h3>מי עוד נוטע איתך?<br>הזמן את סבתא, אח או דוד קרוב</h3>'+
-      '<p>מזמינים את הקרובים להשקיע<br>בעתיד של היקרים לך מכל</p></div>';
-    relGhost(true);
-    relMeta();return;
-  }
-  box.style.border='';box.style.background='';box.style.padding='';box.style.marginBottom='';
-  relGhost(false);
   /* מצב הזמנה: הרשימה היא בחירה מרובה ולא כפתור לכל שורה. מי שכבר
      הוזמן לרגע הנבחר מסומן ככזה ואינו ניתן לסימון, כי הזמנה שנייה
      לאותו רגע אינה עושה דבר. */
@@ -10801,130 +10827,93 @@ function buildRelatives(){
     box.innerHTML=relatives.map(function(r,i){
       const already=(r.invitedTo||[]).indexOf(relInviteKey)>=0;
       const cant=!r.contact;
-      /* "הוזמן" הוא תג ולא פעולה, והוא ישב בדיוק במקום שבו שאר
-         השורות מציעות כפתור. מי שכבר הוזמן — מה שחסר לו הוא דחיפה
-         נוספת, וזו הפעולה שיושבת שם עכשיו. */
       const right=already
         ?(canResend(r,relInviteKey)
-           ?'<button class="rx" onclick="event.stopPropagation();resendInvite('+i+',\''+relInviteKey+'\')">שלח שוב</button>'
-           :'<span class="rx done">הוזמן</span>')
-        :cant?'<span class="rx done">אין פרטי קשר</span>'
+           ?'<button class="tbpill" onclick="event.stopPropagation();resendInvite('+i+',\''+relInviteKey+'\')">שלח שוב</button>'
+           :'<span class="tbpill wait">הוזמן</span>')
+        :cant?'<span class="tbpill wait">אין פרטי קשר</span>'
         :'<span class="relbox'+(invSel[i]?' on':'')+'">'+(invSel[i]?TICK:'')+'</span>';
-      return relRowHTML(r,right,(already||cant)?'':' onclick="toggleInvSel('+i+')"');
+      return relTabRow(r,right,(already||cant)?'':' onclick="toggleInvSel('+i+')"');
     }).join('')+
-    /* ההוספה היא פעולת רשימה: היא מוסיפה שורה, ולכן מקומה בסוף
-       הרשימה ולא בשורת הפעולות שמתחתיה. שם היא גם נקראה כאלטרנטיבה
-       שקולה לשליחה, שאינה. */
-    '<div class="reladd" onclick="openAddPerson(&quot;with&quot;)">+ הזמן מישהו שאינו ברשימה</div>';
+    relAddRow('with','להזמין מישהו שאינו ברשימה','סבתא, דוד, חבר');
     relMeta();return;
   }
-  /* המזמינים ראשונים, ואחריהם הפנקס שלי. שורת "+ הוסף קרוב" שבסוף
-     נוגעת בפנקס בלבד, ולכן היא יושבת מיד אחריו ולא אחרי שורות שאי
-     אפשר לערוך. */
-  box.innerHTML=invs.map(invRowHTML).join('')+
+  /* ‏**המצב הריק הוא אותו מבנה, לא מסך אחר.** ישב כאן גוש `.es`
+     שלם עם צביר פרצופים, כותרת ומשפט, ומתחתיו כפתור ירוק ודגם
+     דוהה. בחבילה זו שורה אחת עם עיגול מקווקו, ומיד אחריה שורת
+     ההוספה — בדיוק המבנה שאליו עברו "ההשקעות שלי" ו"מה מחכה להם".
+     **המחיר שנאמר:** המסך אינו מסביר יותר למה כדאי להזמין, ומה
+     שנשאר לומר את זה הוא הכרטיס שמעליו ("לבד" מול "עם עוד קרוב"). */
+  const rows=invs.map(invTabRow).join('')+
     relatives.map(function(r,i){
-    let right;
-    /* "באפליקציה" ירד. הוא היה תג ולא פעולה, ישב במקום שבו שאר השורות
-       מציעות כפתור, ותיאר את נטע ולא את הקשר איתך: יש לו חשבון אינו
-       אומר שהוא ברגע שלך. עכשיו כל שורה מציעה את אותה פעולה — להזמין
-       אותו לרגע — וזה בדיוק מה שהמסך מבטיח בכיתוב שלו. */
-    /* מי שכבר הוזמן — מה שחסר לו הוא הקישור עצמו, לא הזמנה נוספת.
-       הזמנות שנוצרו לפני שהקישור האישי נוסף אין להן טוקן, ולכן לא הייתה
-       שום דרך באפליקציה לקבל אותו בדיעבד. */
-    /* כתובת מייל — "שלח שוב", כי יש מה לשלוח. טלפון — "העתק קישור",
-       כי ההודעה עוברת ביד ממילא. הקישור של מי שהוזמן במייל לא אבד:
-       הוא בגיליון שנפתח בלחיצה על השורה. */
-    if(r.status==='invited')right=canResend(r,'')
-      ? '<button class="rx" onclick="event.stopPropagation();resendInvite('+i+',\'\')">שלח שוב</button>'
-      : liveAccount()
-      ? '<button class="rx" onclick="event.stopPropagation();copyRelativeLink('+i+')">העתק קישור</button>'
-      : '<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">שלח שוב</button>';
-    else right='<button class="rx" onclick="event.stopPropagation();inviteRelative('+i+')">הזמן</button>';
-    return relRowHTML(r,right,' onclick="editRelative('+i+')"');
-  }).join('')+
-    /* ההוספה היא שורה בסוף הרשימה, בדיוק כמו ברשימת הילדים ובמצב
-       ההזמנה: היא מוסיפה שורה, ולכן מקומה בתוך מה שהיא משנה. הכפתור
-       הירוק נשאר רק במצב הריק, כי מצב ריק בלי פעולה הוא בדיוק מה
-       שתוקן כאן קודם. */
-    '<div class="reladd" onclick="openAddPerson(&quot;with&quot;)">+ הוסף קרוב</div>';
+      let right;
+      /* כתובת מייל — "שלח שוב", כי יש מה לשלוח. טלפון — "העתק קישור",
+         כי ההודעה עוברת ביד ממילא. הקישור של מי שהוזמן במייל לא אבד:
+         הוא בגיליון שנפתח בלחיצה על השורה. */
+      if(r.status==='invited')right=canResend(r,'')
+        ? '<button class="tbpill" onclick="event.stopPropagation();resendInvite('+i+',\'\')">שלח שוב</button>'
+        : liveAccount()
+        ? '<button class="tbpill" onclick="event.stopPropagation();copyRelativeLink('+i+')">העתק קישור</button>'
+        : '<button class="tbpill" onclick="event.stopPropagation();inviteRelative('+i+')">שלח שוב</button>';
+      else right='<button class="tbpill" onclick="event.stopPropagation();inviteRelative('+i+')">להזמין</button>';
+      return relTabRow(r,right,' onclick="editRelative('+i+')"');
+    }).join('');
+  box.innerHTML=(rows||
+      /* ‏`.mute` ולא `.ad` חשוף: העיגול הזה אומר "אין כאן איש" ואינו
+         פעולה, ובלעדיו ספירה של שורות ההוספה במסך מחזירה שתיים. */
+      '<div class="tabrow" style="cursor:default"><span class="ad mute"></span>'+
+      '<span class="gr"><span class="s">עוד אף אחד לא נוטע איתך</span></span></div>')+
+    relAddRow('with','להוסיף קרוב','סבתא, דוד, חבר. מישהו להזמין לנטוע איתך');
   relMeta();
 }
-/* שורה אחת, שני שימושים: הרשימה האמיתית והדגם הדוהה שמתחת למצב הריק.
-   בלי זה הדגם היה עותק שני של אותו מבנה, והוא היה נשאר מאחור בכל
-   שינוי בשורה. */
-/* הילדים שלי, מהישות ולא מהנטיעות: מי שעוד אין לו רגע קיים רק שם.
-   ‏benes היא אותה רשימה שממנה נבנה הבורר ב"העתיד שלנו", ולכן שני
-   המסכים אינם יכולים לחלוק. */
-/* הילדים ראשונים כשיש קרובים, ואחרי המצב הריק כשאין.
-
-   ההחלפה עצמה היא בקשה של אלון, אבל היא שברה את המקרה הריק: המצב
-   הריק של הקרובים הוא מסך שלם עם איור, כותרת וכפתור, והוא מיושר
-   לפיקסל עם שלושת הטאבים האחרים (`btnpos.js`, `align.js`). כשסקשן
-   הילדים עלה מעליו הוא ירד ב-97 פיקסלים, כלומר הטאב הזה לבדו נחת
-   במקום אחר — וזה נמדד ולא נראה בעין, כי בהדגמה יש קרובים.
-
-   ולכן המיקום נגזר מהנתונים: יש רשימה, הילדים מעליה; אין, והמצב
-   הריק חוזר לפתוח את המסך. ‏insertBefore מזיז צומת קיים, ולכן
-   הקריאה אידמפוטנטית. */
-function placeKidSection(){
-  const head=document.getElementById('kid-head'),box=document.getElementById('kid-list');
-  const eb=document.getElementById('rel-eyebrow'),fine=document.getElementById('rel-fine');
-  if(!head||!box||!eb||!fine)return;
-  const at=relListCount()?eb:fine;
-  at.parentNode.insertBefore(head,at);
-  at.parentNode.insertBefore(box,at);
+function invTabRow(x){
+  const n=x.items.length;
+  const one=n===1?x.items[0]:null;
+  const sub=one?one.name:(countWord(n)+' רגעים יחד');
+  /* כפתור מוביל לדבר עצמו: רגע אחד נפתח, וכמה מהם מובילים למסך
+     שמחזיק אותם. אותה הכרעה בדיוק כמו בשורה של ילד. */
+  const act=one
+    ? '<button class="tbpill" onclick="openDetail(\''+attrText(one.key)+'\')">הרגע</button>'
+    : '<button class="tbpill" onclick="openInvestments()">ההשקעות שלי</button>';
+  return '<div class="tabrow">'+
+    '<span class="fc">'+faceHTML(x.av,'av-someone')+'</span>'+
+    '<span class="gr"><span class="t">'+attrText(x.name)+'</span>'+
+    '<span class="s">'+attrText(sub)+'</span></span>'+act+'</div>';
 }
+/* ‏`placeKidSection` נמחקה. היא הזיזה את סקשן הילדים מעל המצב הריק
+   של הקרובים או מתחתיו, כי אז הוא ישב ראשון והמצב הריק היה מסך שלם;
+   מרגע שהסדר הוא של החבילה (קרובים ואז ילדים) והמצב הריק הוא שורה
+   בתוך אותה רשימה, הסדר קבוע ב-DOM ואין מה להזיז. */
 function paintKidSection(){
   const head=document.getElementById('kid-head'),box=document.getElementById('kid-list');
   if(!head||!box)return;
-  placeKidSection();
   /* במצב הזמנה הרשימה שמעל היא בחירה מרובה של נמענים, וילד אינו
      נמען. סקשן שלישי שם היה רעש על מסך שיש בו משימה אחת. */
   const rows=relInviteKey?[]:(benes||[]).filter(function(b){return b&&b.name});
   head.style.display=relInviteKey?'none':'';
   box.style.display=relInviteKey?'none':'';
   if(relInviteKey)return;
-  /* הסקשן נשאר על המסך גם בלי ילדים, בשורה אחת במקום בכרטיס. הכפתור
-     שמתחתיו הוא הדרך היחידה להוסיף ילד בלי לפתוח לו רגע, וכפתור בלי
-     התווית שמעליו נקרא כשייך לרשימה הקודמת. */
-  /* ההוספה היא שורה מקווקוות בתוך הרשימה ולא כפתור מלא מתחתיה, בדיוק
-     כמו ברשימה שמעל. שני כפתורים ירוקים על מסך אחד הם שתי פעולות
-     ראשיות, וכאן זו פעולה אחת שיש לה שתי כניסות. הכיתוב זהה בשתיהן
-     ("+ הוסף קרוב"), וההבחנה בין מי שנוטע איתי לבין מי שאני נוטע
-     עבורו נעשית בפאנל הראשון של האשף. */
-  if(!rows.length){
-    box.style.border='none';box.style.background='none';box.style.padding='0';
-    box.innerHTML='<div class="reladd" style="margin-top:0" onclick="openAddPerson(&quot;for&quot;)">+ הוסף קרוב</div>';
-    return;
-  }
-  box.style.border='';box.style.background='';box.style.padding='';
+  txt('kid-cnt',String(rows.length));
   box.innerHTML=rows.map(function(b){
     const n=kidMomentsAll(b).length;
     const key=b.id||b.name;
-    /* הפעולה מובילה לדבר עצמו: מי שאין לו רגע נפתח לו אחד, ומי שיש
-       לו נכנסים אליהם. לחיצה על השורה עורכת, בדיוק כמו בשורה של
-       קרוב שמעליה. */
     /* הכפתור נוקב ביעד ולא בתוכן: הוא פותח את "העתיד שלנו" על הילד
-       הזה, ולכן הוא נושא את שם הטאב. "הרגעים" תיאר את מה שיש שם
-       ולא לאן הוא מוביל, ואיש לא ניחש. */
-    /* שני מצבים ולא שלושה. היה כאן מצב שלישי, "רגע אחד, במשפחה
-       אחרת", שנועד לרגע שקיים אבל אינו מוצג ב"העתיד שלנו" — ומרגע
-       שהמסך מציג כל רגע שאני נוטע בו, אין רגע כזה. שתי הספירות
-       התלכדו, ולכן kidMoments ירדה ו-kidMomentsAll נשארה אחת. */
+       הזה, ולכן הוא נושא את שם הטאב. בחבילה כתוב "לפתוח רגע" גם על
+       ילד שיש לו רגעים, וזה מבטיח יצירה במקום כניסה. */
     const act=n
-      ? '<button class="rx" onclick="event.stopPropagation();kidMomentsGo(\''+attrText(key)+'\')">'+
-          (b.sex==='f'?'העתיד שלה':'העתיד שלו')+'</button>'
-      : '<button class="rx" onclick="event.stopPropagation();kidOpenMoment(\''+attrText(key)+'\')">פתח רגע</button>';
+      ? '<button class="tbpill" onclick="event.stopPropagation();kidMomentsGo(\''+attrText(key)+'\')">'+
+          (b.sex==='f'?'העתיד שלה':b.sex==='m'?'העתיד שלו':'הרגעים')+'</button>'
+      : '<button class="tbpill" onclick="event.stopPropagation();kidOpenMoment(\''+attrText(key)+'\')">לפתוח רגע</button>';
     const sub=[kinMe(b.relation),
                n ? (n===1?'רגע אחד':countWord(n)+' רגעים')
                  : 'עוד לא נפתח רגע']
       .filter(Boolean).join(' · ');
-    return '<div class="rel" onclick="editKid(\''+attrText(key)+'\')">'+
-      '<div class="ra">'+kidFaceHTML(b.avatar||kidAvatar(b.name,b.sex),34)+'</div>'+
-      '<span class="rn"><b>'+attrText(b.name)+'</b><i>'+attrText(sub)+'</i></span>'+
-      act+'</div>';
+    return '<div class="tabrow" onclick="editKid(\''+attrText(key)+'\')">'+
+      '<span class="fc">'+kidFaceHTML(b.avatar||kidAvatar(b.name,b.sex),44)+'</span>'+
+      '<span class="gr"><span class="t">'+attrText(b.name)+'</span>'+
+      '<span class="s">'+attrText(sub)+'</span></span>'+act+'</div>';
   }).join('')+
-    '<div class="reladd" onclick="openAddPerson(&quot;for&quot;)">+ הוסף קרוב</div>';
+    relAddRow('for','להוסיף קרוב','ילד, נכד, אחיין, או ילד של חברים');
 }
 /* הרגעים שהמסכים של הילדים שלי מציגים, וזו הרשימה כולה.
 
@@ -10995,22 +10984,6 @@ function kidMomentsGo(key){
 function kidOpenMoment(key){
   const b=kidOf_(key); if(!b)return;
   prefillKid(b.name,b.avatar||kidAvatar(b.name,b.sex),b.sex,b.relation);
-}
-function relGhost(on){
-  const g=document.getElementById('rel-ghost');
-  if(g)g.style.display=on?'':'none';
-}
-function relRowHTML(r,right,open){
-  const nTo=(r.invitedTo||[]).length;
-  const sub=r.status==='invited'
-    ? (nTo>1?('הוזמנה ל'+countWord(nTo)+' רגעים · ממתינה לקוד')
-       :r.plant?'הוזמנה ל'+nameOfPlanting(r.plant)+' · ממתינה לקוד'
-             :kinMe(r.rel)+' · הוזמנה, טרם הצטרפה')
-    : (r.contact?kinMe(r.rel)+' · '+r.contact
-                :kinMe(r.rel)+' · חסרים פרטי קשר');
-  return '<div class="rel"'+(open||'')+'>'+
-    '<div class="ra">'+faceHTML(r.av,'av-someone')+'</div>'+
-    '<span class="rn"><b>'+r.name+'</b><i>'+sub+'</i></span>'+right+'</div>';
 }
 /* payment methods — the standing order is what actually funds the monthly deposits */
 const pays=[
@@ -11173,22 +11146,10 @@ function toggleInvSel(i){
    כשאיש לא סומן הוא עדיין מוצג, מכובה, כי כפתור שנעלם ומופיע מזיז
    את כל מה שמתחתיו בכל סימון. */
 function paintInvSend(){
-  const b=document.getElementById('rel-send'),add=document.getElementById('rel-add');
-  /* במצב הזמנה ההוספה יושבת בסוף הרשימה, ולכן הכפתור שמתחתיה יורד.
-     מחוץ למצב הזמנה הוא הפעולה הראשית של המסך ונשאר. */
-  if(add){
-    /* הכפתור הירוק הוא של המצב הריק בלבד. ברשימה מלאה ההוספה יושבת
-       בסוף הרשימה, ובמצב הזמנה הפעולה היא "המשך" ולא הוספה. */
-    add.style.display=(relInviteKey||relListCount())?'none':'';
-    add.className='btn gap-s';
-    /* "קרוב" ולא "אדם", לבקשת אלון. הנימוק שנשמע לפני השינוי: הפאנל
-       הראשון שואל "את מי תרצה להוסיף" ומציע שתי דרכים, וילד אינו
-       קרוב שנוטע איתי, ולכן שם שמבטיח אחת מהשתיים הוא נקודת ההתחלה
-       של הבלבול. מה שמקזז: מרגע שהכפתור עלה אל מתחת לרשימת הקרובים
-       הוא קורא ליד הרשימה שהוא שייך לה. אם סקשן הילדים יקבל כפתור
-       משלו, זו הנקודה שבה שני השמות ייפרדו. */
-    add.textContent='+ הוסף קרוב';
-  }
+  const b=document.getElementById('rel-send');
+  /* ‏`#rel-add`, הכפתור הירוק שהיה מתחת לרשימה, ירד: ההוספה היא
+     שורה מקווקוות בתוך כל אחת משתי הרשימות, ולכן אין במסך הזה ולו
+     כפתור ירוק מלא אחד — בדיוק כמו במסך של בעלים ב"מה מחכה להם". */
   if(!b)return;
   if(!relInviteKey){b.style.display='none';return}
   const idx=invSelIdx();
@@ -13926,6 +13887,23 @@ const demoSource={
       recurring:p.recurring,monthly:p.recurring?p.amount:0,
       hasStandingOrder:p.recurring,participants:[]});
     return Promise.resolve(demoExtra[demoExtra.length-1].key);
+  },
+  /* ‏**ההדגמה מחזירה נהנים, כי בלעדיהם היא מציירת מסך אחר.** ‏`benes`
+     נטענת מ-`listBeneficiaries`, ולהדגמה לא הייתה כזאת: הסקשן
+     "נוטעים עבורם" יצא "0" ורשימת הילדים ריקה, בזמן שבחשבון חי יש
+     בו שורה לכל ילד. אותו נתיב־שונה־בשקט שכבר מתועד כאן שלוש פעמים.
+     הרשימה נגזרת מ-`plants{}` עצמו, כלומר מאותו מקור שמצייר את
+     שאר המסכים, ואינה עותק שני שצריך לסנכרן. */
+  listBeneficiaries:function(){
+    const out=[],seen={};
+    Object.keys(plants).forEach(function(k){
+      const p=plants[k];
+      if(p.designated===false||!p.kid||seen[p.kid])return;
+      seen[p.kid]=1;
+      out.push({id:'b-'+p.kid,name:p.kid,sex:p.sex||'',
+                avatar:kidAvatar(p.kid,p.sex||''),relation:''});
+    });
+    return Promise.resolve(out);
   }
 };
 const demoExtra=[];
@@ -14266,18 +14244,10 @@ function buildGhosts(){
      שני של המבנה נשאר מאחור בכל שינוי. שלושת הדגמים האחרים עדיין
      עובדים כך. */
 
-  /* הדגם של הקרובים נבנה כאן ומוצג רק במצב הריק, כמו שאר הדגמים.
-     הוא יושב אחרי "הוסף קרוב" ולא לפניו: הפעולה קודמת, והדגם אומר
-     "כך זה ייראה" אחריה. */
-  const rel=document.getElementById('rel-ghost');
-  /* אותו כרטיס בדיוק כמו בדגם של "העתיד שלנו": ריפוד של 6/12 ובלי
-     מרווח תחתון. ‏.card ברירת המחדל הוא 14 מכל צד, וזה מרווח של
-     כרטיס שמחזיק תוכן; כרטיס שמחזיק שורות נותן להן את הריפוד שלהן
-     והוא עצמו נשאר צר, אחרת יש שתי שכבות של אוויר סביב כל שורה. */
-  if(rel)rel.innerHTML='<div class="card" style="padding:6px 12px;margin:0">'+REL_SAMPLE.map(function(r){
-    return relRowHTML(r,'<span class="rx">'+
-      (r.status==='invited'?'שלח שוב':'הזמן')+'</span>');
-  }).join('')+'</div>';
+  /* ‏**והדגם של "הקרובים שלי" ירד באותו סבב ומאותה סיבה בדיוק.**
+     המצב הריק שם הוא היום שורה מקווקוות בתוך הרשימה עצמה, כלומר
+     המבנה האמיתי במקומו האמיתי, ודגם דוהה שמצייר את אותו דבר
+     מתחתיו היה אומר "כך זה ייראה" על מה שכבר נראה. */
 
   /* ‏avatar ו-icon בכל שורה, ולא רק שם וסכום. feedRowHTML נופלת
      לנבט כשאין icon ולאייקון כשאין avatar, ולכן דגם שנבנה מהרכיב
