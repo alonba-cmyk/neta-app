@@ -2365,6 +2365,42 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   background:var(--sun-on-leaf);border-radius:99px;padding:2px 9px;flex:none}
 .screen.apdone .fine:empty{display:none}
 .screen.apdone .fine{color:var(--mist);margin-top:10px}
+/* ‏**כרטיס ההצטרפות.** שני מצבים באותו כרטיס, וכל אחד מהם עמודה
+   בפני עצמה כדי ש-`margin-top:auto` של `.bot` יצמיד לתחתית
+   הכרטיס ולא לתחתית העטיפה — אותה מלכודת של `#ap-5`, ומאותה
+   סיבה ההצגה היא `display:''` ולא `'block'`. */
+.card-main.wizc.jnc{padding-top:16px}
+.card-main.wizc .jnp{display:flex;flex-direction:column;flex:1;min-height:0}
+/* ‏**הרגע קטן והצפי גדול, וזה היפוך מול כרטיס האשף.** שם השאלה
+   היא למי ולאיזה רגע, וכאן הרגע כבר ידוע והשאלה היחידה היא כמה. */
+.card-main.wizc .jnp .nm{font-size:16px;font-weight:700;color:var(--on-head);
+  line-height:1.3;overflow-wrap:anywhere}
+.card-main.wizc .jnp .usub{margin-top:3px;font-size:12.5px}
+/* ‏**ריבוע מעוגל ולא עיגול**, כי הנושא כאן הוא הרגע ולא אדם —
+   אותו כלל של `.momc` ושל שורות הפיד. ‏44 ולא 56, כי הוא כבר
+   אינו הגיבור של הכרטיס. */
+.card-main.wizc .jnp .ph.sq{width:44px;height:44px;border-radius:14px;
+  display:grid;place-items:center;background:var(--leaf-tile);
+  color:var(--sun-on-leaf);box-shadow:0 0 0 1px var(--leaf-gold-line)}
+.card-main.wizc .jnp .ph.sq svg{width:22px;height:22px}
+.card-main.wizc .jnp .bot .v{font-size:clamp(26px,9vw,34px)}
+/* התצוגה המקדימה של השורה שלי ברשימת הנוטעים. */
+.card-main.wizc .jnrow{display:flex;align-items:center;gap:11px;margin-top:12px}
+.card-main.wizc .jnrow .fc{width:38px;height:38px;border-radius:50%;flex:none;
+  display:block;overflow:hidden;background:var(--face-fill);
+  box-shadow:0 0 0 2px var(--leaf-gold-line)}
+.card-main.wizc .jnrow .fc svg,.card-main.wizc .jnrow .fc img{display:block;
+  width:100%;height:100%;object-fit:cover}
+.card-main.wizc .jnrow .tx{flex:1;min-width:0}
+.card-main.wizc .jnrow .n{font-size:15.5px;font-weight:700;color:var(--on-head);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-main.wizc .jnrow .s{font-size:12.5px;color:var(--mist);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-main.wizc .jnrow .fv{flex:none;text-align:left}
+.card-main.wizc .jnrow .fv b{display:block;font-size:17px;font-weight:800;
+  color:var(--sun-on-leaf);white-space:nowrap}
+.card-main.wizc .jnrow .fv span{display:block;font-size:11.5px;color:var(--mist);
+  margin-top:2px;white-space:nowrap}
 .card-main.wizc .utop{display:flex;align-items:center;gap:13px}
 .card-main.wizc .utop .tx{flex:1;min-width:0}
 .card-main.wizc .tbhero{font-size:clamp(24px,8.4vw,32px)}
@@ -3793,7 +3829,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd138138';
+window.NETA_BUILD = 'c683c44';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4188,6 +4224,41 @@ window.NETA_CONFIG = {
     <div class="apfoot">
       <span class="sqs" id="ap-csq" aria-hidden="true"></span>
       <span class="l" id="ap-cl">·</span>
+    </div>
+  </div>
+
+  <!-- ‏**הכרטיס השלישי: מסלול המוזמנת.** ‏`neta-05-join.html` בונה
+       את שלושת השלבים מאותו ראש — שורה עליונה, סרגל, וכרטיס —
+       ולכן גם הוא נכנס לכאן ולא פותח ראש רביעי. **ומה שהוא אומר
+       אינו מה שהאשף אומר:** באשף הכרטיס נושא את הזהות והמספר הגדול
+       הוא התשובה שמתגבשת; כאן הרגע כבר קיים והשאלה היחידה היא כמה,
+       ולכן **הרגע קטן והצפי הוא הגיבור** — היפוך היררכיה, ולכן
+       מבנה משלו ולא אותם צמתים שנכתבים בשתי צורות.
+
+       **ושני מצבים ולא שניים שנכתבים ב-innerHTML:** בשלבי הסכום
+       והתשלום הוא הצפי, ובשלב האישור הוא התצוגה המקדימה של השורה
+       שלי ברשימת הנוטעים. הכרטיס נצבע בכל תנועה של הסליידר, והחלפת
+       `innerHTML` הייתה מפענחת את הפרצוף מחדש בכל פריים. -->
+  <div class="card-main wizc jnc" id="jn-card" style="display:none">
+    <div class="jnp" id="jn-a">
+      <div class="utop">
+        <span class="ph sq" id="jn-ic" aria-hidden="true"></span>
+        <div class="tx">
+          <p class="nm" id="jn-nm">·</p>
+          <p class="usub" id="jn-when">·</p>
+        </div>
+      </div>
+      <div class="bot">
+        <div><p class="l" id="jn-projl">·</p><p class="v f" id="jn-proj">·</p></div>
+      </div>
+    </div>
+    <div class="jnp" id="jn-b" style="display:none">
+      <p class="eb" id="jn-prevk">·</p>
+      <div class="jnrow">
+        <span class="fc" id="jn-face" aria-hidden="true"></span>
+        <div class="tx"><p class="n" id="jn-me">·</p><p class="s" id="jn-terms">·</p></div>
+        <div class="fv"><b id="jn-fv">·</b><span id="jn-fvw">·</span></div>
+      </div>
     </div>
   </div>
 </div>
@@ -4660,7 +4731,7 @@ window.NETA_CONFIG = {
   <p class="eyebrow nowiz" id="eb-mode">מה יקרה לכסף עד אז</p>
   <!-- בהפקדה לרגע קיים: המסלול שנבחר כשהרגע נפתח הוא ברירת המחדל, ולא
        הכלל. הכסף של כל נוטע גדל לפי מה שהוא בחר (0066). -->
-  <p class="fine" id="amt-track" style="display:none;margin:-4px 0 11px"></p>
+  <p class="fine nowiz" id="amt-track" style="display:none;margin:-4px 0 11px"></p>
   <!-- ברירת המחדל ראשונה. הבחירה נעשית לפי data-m ולא לפי מיקום,
        ולכן הסדר כאן הוא החלטת עיצוב בלבד. -->
   <div class="stack gap nowiz" id="mode-block">
@@ -6568,7 +6639,8 @@ function go(i){
      הסרגל נכון. */
   document.getElementById('tabbar').style.display=
     (NOCHROME.includes(i)||(creating&&WIZ_SCREENS.indexOf(i)>=0)
-     ||(apLive&&i===AP_SCREEN()))?'none':'';
+     ||(apLive&&i===AP_SCREEN())
+     ||(joinLive&&JOIN_SCREENS.indexOf(i)>=0))?'none':'';
   /* ‏**הגיליון הלבן נקבע כאן ולא ב-`flowBar`.** ‏`cStepGo` קורא
      ל-`flowBar` לפני `go()` בכמה מסלולים, ואז `.screen.on` הוא עדיין
      המסך הקודם — הקלאס נחת על מי שיוצא. **ו-`i` ולא `curScreen`**,
@@ -6577,9 +6649,14 @@ function go(i){
   /* כפתור החזרה מוצג בשני המסלולים. הוא היה מותנה ב-creating, ולכן
      מי שהפקיד לרגע קיים נחת במסך בלי שום דרך חזרה — לא באשף, ולכן
      גם בלי סרגל שלבים, וכל המסך הוא כפתור ירוק אחד. */
+  /* ‏**הראש של מסלול המוזמנת נכתב כאן ולא ב-`flowBar`**, שהיא
+     של האשף ויוצאת מיד על `!creating`. */
+  if(joinLive&&JOIN_SCREENS.indexOf(i)>=0)joinHead(i);
   if(i===2){flowBar(stepNo('amount'),'כמה תשקיע');
-    document.getElementById('amt-back').style.display='';
-    txt('amt-cta',creating?'המשך':'השקע עכשיו');}
+    /* ‏**"חזרה" יורד כשיש ראש.** החץ שבשורה העליונה הוא החזרה,
+       וכפתור שני מתחת לכפתור הראשי הוא אותה פעולה פעמיים. */
+    document.getElementById('amt-back').style.display=joinLive?'none':'';
+    txt('amt-cta',creating?'המשך':joinLive?'להמשיך':'השקע עכשיו');}
   else if(i===ONBO.identity)flowBar(stepNo('identity'),'פתיחת חשבון');
   else if(i===3)flowBar(stepNo('pay'),'תשלום');
   else if(i===REVIEW)flowBar(stepNo('review'),'סיכום ואישור');
@@ -8256,8 +8333,50 @@ function paintWizTrack(){
     return;
   }
   n.innerHTML=attrText(trk.querySelector('b').textContent)+tag;
-  r.textContent=(md?md.querySelector('b').textContent+' · ':'')+
-    trk.querySelector('.rate').textContent;
+  /* המפריד נגזר ממה שיש לפניו ואינו נכתב תמיד: בלי תחילית
+     הוא היה משאיר " · " פותח בלי מה שמימינו. */
+  const lead=joinAs()||(md?md.querySelector('b').textContent:'');
+  r.textContent=(lead?(lead+' · '):'')+trk.querySelector('.rate').textContent;
+}
+/* ‏**"כמו שבחר אלון", כל עוד לא נגעו.** זה מה שהשורה אומרת בעיצוב,
+   והיא מה שמחליפה את `#amt-track` שירד במסלול הזה — המסלול של הרגע
+   הוא ברירת המחדל שלי ולא הכלוב שלי (0066). מרגע שבחרתי אחרת היא
+   חוזרת לומר מה בחרתי, כי "כמו שבחר" כבר אינו נכון. */
+/* שם המסלול כפי שהוא כתוב בכרטיס שנבחר, ולא ניסוח שני שלו —
+   אותו נימוק של `paintWizTrack`. */
+function trackName(){
+  if(mode==='keep')return 'יישמר כמו שהוא';
+  const t=document.querySelector((mode==='market'?'#market-block':'#safe-opts')+' .trk.on b');
+  return t?t.textContent.trim():'';
+}
+function joinAs(){
+  if(!joinLive||!joinTrack)return '';
+  if(mode!==joinTrack.mode||rate!==joinTrack.rate)return '';
+  /* ‏**שם עצם ולא פועל.** בעיצוב כתוב "כמו שבחר אלון", ולמי שפתח
+     את הרגע אין מגדר ידוע כאן — `participants` מחזירה שם ודמות,
+     ו"סבתא רחל" אינה "שבחר". זו אותה הכרעה של "נפתחה על ידי אלון"
+     ושל הפועל בפיד. **ובלי `firstName`**, כי "סבתא רחל" מתקצרת
+     שם ל"סבתא". */
+  const by=(joinTrack.by||'').trim();
+  return by?('המסלול של '+by):'המסלול של הרגע';
+}
+let joinTrack=null;
+/* מי פתח את הרגע. ‏`liveDetail` נותנת `initiator`, ובשורה
+   ‏`who` הפותח הוא זה שנושא את הדגל — ובהדגמה הוא הראשון.
+   ‏`plantAt` מחזיר את השורה הגולמית ולא את זו ש-`demoPlanting`
+   מעצבת, ולכן `p.by` לבדו אינו קיים שם. */
+/* המסלול מהקצב, כשהוא לא נשמר. הכרטיסים עצמם מחזיקים את החלוקה
+   (`.trk[data-r]`), ולכן הסף אינו נבחר אלא נקרא מהם: 0.02 ו-0.035
+   בטוחים, 0.06 ומעלה שוק. */
+function rateMode(r){
+  if(r==null)return null;
+  return r<=0?'keep':r>=.06?'market':'safe';
+}
+function plantBy(p){
+  if(!p)return '';
+  if(p.initiator)return p.initiator;
+  const w=(p.who||[]).filter(function(x){return x&&x[4]})[0]||(p.who||[])[0];
+  return (w&&w[1])||p.by||'';
 }
 /* המסד מכיר keep/guaranteed/market, והטופס מדבר keep/safe/market. בלי
    התרגום הזה "guaranteed" נפל לענף האחרון בכל מקום שבודק mode, כלומר
@@ -8275,6 +8394,12 @@ function preselectTrack(m,r){
   document.querySelectorAll('.trk').forEach(function(el){
     el.classList.toggle('on',Math.abs(parseFloat(el.dataset.r)-r)<1e-9)});
   paintTrackRow();
+  /* ‏**וגם השורה שבאשף.** היא נצבעה עד כה רק כשמישהו בוחר,
+     וזה נכון בנטיעה חדשה — שם אין מה להציג עד שבוחרים. בהפקדה
+     לרגע קיים המסלול **מגיע מהרגע**, והשורה היא המקום היחיד
+     שאומר מה הוא: בלי הקריאה הזאת היא נשארה "·" על הדבר היחיד
+     שעונה על "מה יקרה לכסף". */
+  paintWizTrack();
 }
 /* השורה שמעל הבורר, כשהמסלול של הרגע הוא ברירת המחדל ולא הכלל. */
 function trackNote(t){
@@ -8538,6 +8663,9 @@ let wizStep=1;
 function wizRefresh(){
   const box=document.getElementById('wizhead');
   if(!box||box.style.display==='none')return;
+  /* ‏`render` רצה בכל תנועה של הסליידר, ובמסלול המוזמנת הכרטיס
+     נושא את הצפי — כלומר הוא מתעדכן מאותה קריאה בדיוק. */
+  if(joinLive){joinCard(curScreen);return}
   wizCard(wizStep,flowSteps());
 }
 function flowBar(cur,label){
@@ -8563,8 +8691,104 @@ function flowBar(cur,label){
    (שורה עליונה וסרגל שלבים), ולכן הכפתורים שבו אינם יכולים
    לקרוא לפונקציה של אחד מהם. ‏`apLive` הוא המקור היחיד
    שמכריע באיזה אשף אנחנו. */
-function flowBack(){ if(apLive)apBack(); else wizBack(); }
-function flowCancel(){ if(apLive)apExit(); else cancelCreate(); }
+function flowBack(){ if(apLive)apBack(); else if(joinLive)joinBack(); else wizBack(); }
+function flowCancel(){ if(apLive)apExit(); else if(joinLive)joinExit(); else cancelCreate(); }
+/* ── מסלול המוזמנת ───────────────────────────────────────────────
+   ‏`CHANGES.md` §6 ו-`design/neta-05-join.html`. שלושת המסכים
+   שהאשף כבר משתמש בהם (הסכום, התשלום והאישור) משרתים גם הפקדה
+   לרגע שקרוב פתח, ושם עד כה לא היה להם ראש כלל: מסך חשוף עם
+   סרגל תחתון, בדיוק הקפיצה שהסבב בא לסגור.
+
+   **וזה אשף שלישי באותו ראש ולא ראש שלישי**, בדיוק כמו "להוסיף
+   קרוב": מה שמתחלף הוא הכרטיס.
+
+   **ומה שמבדיל הוא מי פתח את הרגע ולא מי מפקיד.** נטיעה שאני
+   פתחתי ואני מוסיף לה היא ההפקדה הרגילה; רגע שקרוב פתח והזמין
+   אותי אליו הוא המסלול הזה. `p.mine` הוא הדגל, וזה אותו דגל
+   שכבר מכריע אם מוצג המתג "הסכום שלי גלוי". */
+let joinLive=false;
+const JOIN_SCREENS=[2,3,24];
+const JOIN_LBL={2:'כמה',3:'איך לשלם',24:'לאשר'};
+/* ‏**שלושה שלבים ולא שניים, ומה שנספר הוא מה שעונים עליו.** העיצוב
+   מאחד את התשלום לתוך "לאשר ולנטוע" ומונה כשלב שני את "נעים להכיר",
+   שאצלנו קורה לפני הכניסה בכלל — מסך ההצטרפות מאמת את הכתובת, וזה
+   מה שמאפשר לקרוא את הרגע. **המחיר שנאמר:** התשלום הוא מסך משלו,
+   ולכן שלושת השלבים הם הסכום, התשלום והאישור. איחודם היה מוחק מסך
+   ומזיז 28 קריאות `go(N)`, בדיוק החשבון שנדחה בשלב 8. */
+function joinStep(i){return JOIN_SCREENS.indexOf(i)+1}
+function joinHead(i){
+  const p=plantAt(cur)||{},n=joinStep(i);
+  if(n<1)return;
+  /* ‏**הכותרת נוקבת במגדר שלי כשהוא ידוע, ובלי לוכסן כשאינו.**
+     ‏"נטיעה ל" הוא שם עצם, אותה צורה של "העתיד של" ושל "הזמנה
+     לנטוע יחד עם" — שתיהן נבחרו בדיוק כשאין ממה לגזור פועל. */
+  const me=myPronoun(),kid=p.kid||goal.name||'';
+  const verb=me==='f'?'נוטעת ל':me==='m'?'נוטע ל':'נטיעה ל';
+  txt('wiz-t',kid?(verb+kid):'נטיעה');
+  txt('wiz-step','שלב '+n+' מתוך '+JOIN_SCREENS.length+
+    (JOIN_LBL[i]?(' · '+JOIN_LBL[i]):''));
+  const bar=document.getElementById('wiz-bar');
+  if(bar)bar.innerHTML=Array.from({length:JOIN_SCREENS.length},function(_,k){
+    return '<i class="'+(k<n?'on':'')+'"></i>'}).join('');
+  joinCard(i);
+}
+/* ‏**הכרטיס הוא הצפי עד שלב האישור, ואז התצוגה המקדימה.** שני
+   בלוקים ב-DOM ולא `innerHTML` שמוחלף: הוא נצבע בכל תנועה של
+   הסליידר, ופרצוף שנבנה מחדש בכל פריים מפוענח מחדש בכל פריים. */
+function joinCard(i){
+  const box=document.getElementById('jn-card');
+  if(!box||box.style.display==='none')return;
+  const p=plantAt(cur)||{};
+  const last=joinStep(i)===JOIN_SCREENS.length;
+  const a=document.getElementById('jn-a'),b=document.getElementById('jn-b');
+  if(a)a.style.display=last?'none':'';
+  if(b)b.style.display=last?'':'none';
+  const v=freq==='m'?+amtM.value:+amtL.value;
+  const total=mode==='keep'?fvCalc(v,0):fvCalc(v,rate);
+  const money=(mode==='market'?APPROX:'')+shekel(Math.round(total)*100);
+  /* ‏**שם המסלול ולא הקצב שלו.** "100 ₪ בכל חודש · מאוזן" היא
+     הצורה שבעיצוב, ושלושה מקטעים נכנסים בשורה אחת ב-320; עם
+     "כ-3.5% בשנה" היא נחתכת. הקצב ממילא נאמר בשורת המסלול. */
+  const terms=shekel(v*100)+' '+(freq==='m'?'בכל חודש':'פעם אחת')+
+    (trackName()?(' · '+trackName()):'');
+  if(last){
+    /* ‏`lNoun` ולא 'ל'+ ידני: "הדירה של נועה" מאבדת את ה' כשמוסיפים
+       ל', אחרת יוצא "להדירה". אותה מלכודת בדיוק של כרטיס ההוספה. */
+    txt('jn-prevk','זה מה שייפתח, ברשימת הנוטעים '+lNoun(p.name||''));
+    htm('jn-face',faceHTML(myAvatarKey(),'av-someone'));
+    /* ‏**השם שלי ולא "את".** הרשימה היא רשימת שמות, ולכן מה שנכון
+       בה הוא השם שבחרתי לעצמי — אותה הכרעה בדיוק של שורת המוזמנת
+       ב"מה מחכה להם", ומאותו נימוק: "את" מניח נקבה. */
+    txt('jn-me',selfName()||'אני');
+    txt('jn-terms',terms);
+    txt('jn-fv',money);
+    txt('jn-fvw',p.date?('ב'+p.date):'');
+    return;
+  }
+  htm('jn-ic',occIcon(p.occasion,22,p.name));
+  txt('jn-nm',p.name||'');
+  /* המועד ועוד כמה שנים, שורה אחת — אותה צורה של שורת הרגע
+     ב"מה מחכה להם". */
+  const yrs=p.yl==null?null:Math.max(0,Math.round(p.yl));
+  txt('jn-when',(p.date||'')+(yrs==null?'':(' · עוד '+yrs+yrWord(yrs))));
+  txt('jn-projl','ב'+(p.date||'מועד היעד')+' יחכו '+
+    (p.kid?('ל'+p.kid+' '):'')+'ממך');
+  txt('jn-proj',money);
+}
+function joinBack(){
+  const i=curScreen;
+  if(i===REVIEW){go(3);return}
+  if(i===3){go(2);return}
+  joinExit();
+}
+/* היציאה מחזירה למסך שממנו נכנסנו, בדיוק כמו "חזרה" של מסך
+   הסכום — ‏`investFrom` כבר נושא אותו. */
+function joinExit(){
+  joinLive=false;
+  if(investFrom!=null){const i=investFrom;investFrom=null;go(i);return}
+  if(cur&&plantAt(cur)){openDetail(cur);return}
+  goHome();
+}
 function wizSheet(at){
   const n=at==null?curScreen:at;
   /* ‏**מסך הסיום של הוספת אדם אינו גיליון לבן ואין לו ראש.**
@@ -8575,7 +8799,11 @@ function wizSheet(at){
   const apEnd=apOn&&apDone;
   const apScr=screens[apN];
   if(apScr)apScr.classList.toggle('apdone',!!apEnd);
-  const on=(creating&&WIZ_SCREENS.indexOf(n)>=0)||(apOn&&!apEnd);
+  /* ‏**שלושה אשפים ואותו ראש.** ‏`joinLive` הוא מסלול המוזמנת
+     (§6), והוא חל על אותם שלושה מסכים של האשף — אלא שהוא נדלק
+     דווקא כש-`creating` כבוי. */
+  const jnOn=joinLive&&JOIN_SCREENS.indexOf(n)>=0;
+  const on=(creating&&WIZ_SCREENS.indexOf(n)>=0)||(apOn&&!apEnd)||jnOn;
   /* ‏**המסך נבחר לפי המספר ולא לפי `.screen.on`.** ‏`go()` קוראת לכאן
      לפני שהיא מסמנת את הנכנס, ולכן `.on` הוא עדיין מי שיוצא: הקלאס
      היה נוחת על המסך הקודם ומי שנכנס נשאר בלי גיליון. */
@@ -8585,10 +8813,12 @@ function wizSheet(at){
   if(scr)scr.classList.toggle('wiz',on);
   const box=document.getElementById('wizhead');
   if(box)box.style.display=on?'':'none';
-  /* כרטיס אחד מתוך השניים, לפי האשף שעל המסך. */
-  const wc=document.getElementById('wiz-card'),ac=document.getElementById('ap-card');
-  if(wc)wc.style.display=apOn?'none':'';
+  /* כרטיס אחד מתוך השלושה, לפי האשף שעל המסך. */
+  const wc=document.getElementById('wiz-card'),ac=document.getElementById('ap-card'),
+        jc=document.getElementById('jn-card');
+  if(wc)wc.style.display=(apOn||jnOn)?'none':'';
   if(ac)ac.style.display=apOn?'':'none';
+  if(jc)jc.style.display=jnOn?'':'none';
 }
 /* ‏1 הקמה (שלושת הפאנלים), 2 הסכום, 3 התשלום, 24 הסיכום. מסך
    ההשקעה משרת גם הפקדה לרגע קיים, ולכן הקלאס תלוי ב-`creating`
@@ -8949,7 +9179,10 @@ function paySummaryBody(){
     document.getElementById('py-benerow').style.display='none';
     document.getElementById('py-relrow').style.display='none';
     /* השאלה נשאלת רק כשיש למי להיחשף: בנטיעה שלך אתה רואה הכל ממילא. */
-    const p=plantAt(cur),guest=!!(p&&p.live&&!p.mine);
+    /* ‏**‏`!p.mine` ולא `p.live&&!p.mine`.** התנאי הישן כיבה את
+       המתג בהדגמה לגמרי, כלומר המסלול שבו הוא היחיד שנשאל לא
+       נראה שם מעולם — וזה אותו דגל שמדליק את מסלול המוזמנת. */
+    const p=plantAt(cur),guest=!!(p&&!p.mine);
     const vis=document.getElementById('py-visrow');
     if(vis)vis.style.display=guest?'':'none';
     /* ‏**נפתח לפי ההעדפה, לא דלוק תמיד.** הוא נכתב `add('on')`
@@ -10264,6 +10497,17 @@ function ahaCopy(){
     ? 'הכסף יישמר כמו שהוא, בלי ריבית.'
     : ('הדמיה לפי מסלול '+trackLabel().split(' · ')[0]+'. אינה מהווה הבטחת תשואה.'));
 }
+/* הכיתוב של היציאה. בנטיעה חדשה "הרגע שנטעת" נכון והוא מה שכבר
+   היה; בהפקדה לרגע קיים לא נטעת אותו עכשיו, ולכן הוא נקוב בשמו,
+   כמו בעיצוב ("לראות את הלימודים של נועה"). הקניין נגזר מהנהנה
+   ואינו ניחוש: כשהוא אני זה "שלך", וכשאין נהנה נשאר שם הרגע לבדו. */
+function ahaSeeLabel(){
+  if(isNewPlant)return 'לראות את הרגע שנטעת';
+  const m=ahaMoment();
+  if(!m.noun)return 'לראות את הרגע';
+  if(!m.kid)return 'לראות את '+m.noun;
+  return 'לראות את '+m.noun+((beneIsMe()||isSelfName(m.kid))?' שלך':(' של '+m.kid));
+}
 /* הפקדה לרגע שכבר קיים: שורת היום מתארת פתיחה
    ("X עוד לא יודע, אבל…"), וכאן הוא כבר יודע שיש רגע. מה
    שנכון בהפקדה חוזרת הוא מי כבר נוטע שם. */
@@ -10408,6 +10652,14 @@ function methodLabel(){
    "אשר את ההפקדה" נכון לשנייה ומתאר את המסך ולא את הפעולה. בלי
    נהנה אין למי, ואז הסכום לבדו. */
 function reviewCta(){
+  /* ‏**הכפתור נוקב במה שהוא עושה גם כאן.** "אשר את ההפקדה" מתאר
+     את המסך; במסלול המוזמנת הפעולה היא לנטוע לילד, וזו הצורה
+     שבעיצוב ("לנטוע 100 ₪ לנועה"). */
+  if(joinLive){
+    const v=freq==='m'?+amtM.value:+amtL.value;
+    const kid=(plantAt(cur)||{}).kid||'';
+    return 'לנטוע '+shekel(v*100)+(kid?(' ל'+kid):'');
+  }
   if(!creating)return 'אשר את ההפקדה';
   const v=freq==='m'?+amtM.value:+amtL.value;
   const nm=designated?(((document.getElementById('c-name')||{}).value)||'').trim():'';
@@ -10573,6 +10825,10 @@ function ahaTitle(){
   return (isNewPlant?'נטעת ל':'הוספת ל')+nm;
 }
 function celebrate(){
+  /* ‏**והמסלול נגמר כאן.** מסך "נטעת" אינו אחד משלושת המסכים,
+     ולכן הראש יורד ממנו ממילא ב-`wizSheet`; הדגל נכבה כדי
+     ששורת המסלול והכפתור לא ימשיכו לדבר בשם מסלול שנגמר. */
+  joinLive=false;
   const h2=document.getElementById('aha-h2');
   if(h2)h2.textContent=ahaTitle();
   if(onbo){
@@ -10608,7 +10864,14 @@ function celebrate(){
   /* סוף ההקמה נוחת ברגע עצמו ולא במסך הבית. זו גם הנחיתה הנכונה
      ממילא — אתה רואה את מה שיצרת — וגם מה שמחליף את שלב הפתיחות
      שירד: שם, ולא באשף, "פתח לקרובים" הוא הכפתור הראשי. */
-  ahaToDetail=!!(isNewPlant&&cur);
+  /* ‏**והיציאה מובילה לרגע גם בהפקדה, ולא רק בנטיעה חדשה.**
+     ‏`CHANGES.md` §6.4 נוקב בכך שההמשך של מי שהצטרפה הוא "לראות את
+     הלימודים של נועה", והיא בדיוק מי שהכפתור שלח עד כה אל
+     "ההשקעות שלי" — כלומר הרחק מהרגע שאליו הצטרפה שנייה קודם.
+     ומה שמחזיק את זה כתנאי אחד ולא שניים: לכל נתיב ההפקדה נכנסים
+     מתוך הרגע (`השקע עוד`, הכפתור שבכרטיס, ו-`investFromFuture`),
+     ולכן "חזרה" משמעה חזרה אליו. */
+  ahaToDetail=!!cur;
   /* ‏**שני הערכים שבכרטיס**, באותם מקורות של `wizCard`:
      מה שהפקדת היום, ומה שייצבר בקצב הזה עד המועד.
      ‏`APPROX` ו-`MQ` ולא מקף רגיל, כמו בכרטיס של האשף. */
@@ -10620,7 +10883,7 @@ function celebrate(){
   const yr=(goal.dateLabel||'').match(/\d{4}/);
   txt('aha-k2',(mode==='keep'?'יישמר עד':'בקצב הזה ייצבר')+(yr?(' ב'+MQ+yr[0]):''));
   txt('aha-v2',v?(APPROX+shekel(Math.round(fvCalc(v,mode==='keep'?0:rate))*100)):'·');
-  txt('a-next',ahaToDetail?'לראות את הרגע שנטעת':'חזרה לנטיעות שלי');
+  txt('a-next',ahaToDetail?ahaSeeLabel():'חזרה לנטיעות שלי');
   ahaCopy();
   /* השיתוף מוצע רק כשיש מה לשתף: רגע חדש ומיועד. לקופה שעדיין לא
      יועדה אי אפשר לפתוח לקרובים בכלל — הם לא יכולים להפקיד לתוכה —
@@ -10628,7 +10891,11 @@ function celebrate(){
 
      כשיש הזמנה היא הכפתור, והיציאה היא קישור מתחתיה. כשאין, היציאה
      היא הכפתור ואין קישור: כפתור רפאים בודד היה נראה כמו חצי פעולה. */
-  const canShare=ahaToDetail&&goal.desig!==false;
+  /* ‏`ahaToDetail` כבר אינו "רגע חדש", ולכן ההזמנה נשענת על
+     ‏`isNewPlant` במפורש: בהפקדה ההצעה כבר יושבת במסך הרגע,
+     **ולמי שהוזמנה אין בכלל רשות להזמין** — `invitations_send`
+     דורשת `app.is_initiator`, כלומר השרת היה דוחה את הלחיצה. */
+  const canShare=isNewPlant&&!!cur&&goal.desig!==false;
   /* ‏**שתי פעולות ולא שלוש.** ‏"לא כרגע" היה קישור שלישי
      מתחת לשניים, והכפתור השני כבר אומר את אותו דבר:
      לראות את מה שנטעת בלי להזמין איש. **וכשאין מה לשתף
@@ -18737,6 +19004,10 @@ function investFromFuture(key){
 let investFrom=null;
 function investIn(key){
   const p=plantAt(key);cur=key;
+  /* ‏**מסלול המוזמנת נדלק כאן, והוא נגזר ממי פתח את הרגע.**
+     רגע שאני פתחתי ואני מוסיף לו הוא הפקדה רגילה; רגע שקרוב
+     פתח והזמין אותי אליו הוא §6. */
+  joinLive=!creating&&!!p&&!p.mine;
   if(!creating){
     const on=document.querySelector('.screen.on');
     const i=on?screens.indexOf(on):-1;
@@ -18748,10 +19019,18 @@ function investIn(key){
      זו קופה אחת, לא שני חשבונות. לכן המשתנים הגלובליים, שמשרתים את
      זרימת הפתיחה, נטענים כאן מהנטיעה עצמה. בלי זה שורת "מסלול" במסך
      האישור הציגה את ברירת המחדל של פתיחת נטיעה חדשה. */
-  if(p.live){
-    mode=MODE_FROM_DB[p.mode]||p.mode||(p.rate?null:'keep');
+  /* ‏**והתנאי אינו `p.live`.** שורת ההדגמה נושאת `rate` ואינה
+     נושאת `mode`, ולכן המסלול נשאר ריק שם — ובמסלול המוזמנת
+     בורר המסלול אינו על המסך והשורה שבראש היא כל מה שיש, כלומר
+     "·" על הדבר היחיד שאומר מה יקרה לכסף. **דגם נמדד לפי מה
+     שהוא מצייר**, וזה אותו נתיב־שונה־בשקט שכבר מתועד כאן. */
+  if(p.mode!=null||p.rate!=null){
+    mode=MODE_FROM_DB[p.mode]||p.mode||rateMode(p.rate);
     rate=p.rate==null?rate:p.rate;
   }
+  /* מה שהרגע נפתח בו, כדי שהשורה תדע לומר "כמו שבחר X" ותדע
+     להפסיק לומר את זה ברגע שנגעו בה. */
+  joinTrack=joinLive?{mode:mode,rate:rate,by:plantBy(p)}:null;
   /* המסלול של הרגע הוא ברירת המחדל שלי, לא הכלוב שלי: הכסף שכל נוטע
      מכניס גדל לפי המסלול שהוא בחר (0066). הבורר נפתח על מה שהרגע
      נפתח בו, והשורה אומרת שאפשר אחרת. */
