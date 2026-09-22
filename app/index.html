@@ -1931,6 +1931,17 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="הוספת אדם"] .pick .fc{width:38px;height:38px;border-radius:11px;overflow:hidden;
   flex-shrink:0;background:var(--s2);display:grid;place-items:center}
 [data-name="הוספת אדם"] .pick .fc svg{display:block;width:100%;height:100%}
+/* ‏**שלושה פרצופים בכל אפשרות, כמו בעיצוב.** פרצוף אחד
+   נקרא כאדם מסוים, והשורה מונה שלושה ("סבתא, דוד, חבר");
+   צביר אומר קבוצה. ‏`:first-child` הוא הימני ב-RTL, ולכן
+   המרווח השלילי של השאר מושך אותם אל הראשון. */
+[data-name="הוספת אדם"] .pick .kf{display:flex;flex:none;align-items:center}
+[data-name="הוספת אדם"] .pick .kf>span{width:34px;height:34px;border-radius:50%;
+  overflow:hidden;display:block;background:var(--s2);
+  box-shadow:0 0 0 2px var(--s1)}
+[data-name="הוספת אדם"] .pick .kf>span+span{margin-inline-start:-11px}
+[data-name="הוספת אדם"] .pick .kf svg{display:block;width:100%;height:100%}
+[data-name="הוספת אדם"] .pick button.on .kf>span{box-shadow:0 0 0 2px var(--leaf-bg)}
 [data-name="הוספת אדם"] .pick .nm{flex:1;min-width:0}
 [data-name="הוספת אדם"] .pick .nm b{display:block;font-size:13px;font-weight:500;color:var(--tx)}
 /* שתי שורות קבועות לכל שורת משנה. אחת מהן נשברת לשתיים והשנייה לא,
@@ -2296,6 +2307,64 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    משווה לטאב, ומה שחשוב בו הוא ש**הכרטיס עצמו אינו קופץ בין
    שלביו** — ולכן גובה קבוע משלו. */
 .card-main.wizc{min-height:150px;height:auto}
+/* ‏**שורת התחתית של כרטיס הקרוב.** באשף הנטיעה זה `.bot`,
+   שני טורי מספר; כאן אין מספר ויש ריבועי רגע ומשפט.
+   ‏`margin-top:auto` מצמיד אותה לתחתית כמו `.bot`, ולכן הכרטיס
+   אינו קופץ כשהשורה האמצעית מתארכת. */
+.card-main.wizc .apfoot{margin-top:auto;display:flex;align-items:center;gap:9px;
+  border-top:1px solid var(--leaf-tile-line);padding-top:11px}
+.card-main.wizc .apfoot .sqs{display:flex;gap:5px;flex:none}
+/* ‏ריבוע רגע קטן, ומקווקו כשעוד לא נבחר אף רגע — אותה
+   מוסכמה של "אין ערך עדיין" שכבר יושבת על הפרצוף שלידה. */
+.card-main.wizc .apfoot .sq{width:26px;height:26px;border-radius:8px;flex:none;
+  background:var(--leaf-tile);display:grid;place-items:center;color:var(--sun-on-leaf)}
+.card-main.wizc .apfoot .sq.empty{background:none;
+  border:1px dashed var(--leaf-tile-line)}
+.card-main.wizc .apfoot .l{font-size:12.5px;color:var(--mist);flex:1;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ‏**מסך הסיום של האשף הוא ירוק מלא ולא גיליון לבן**, כמו
+   מסך "נטעת" וכמו בעיצוב: הראש יורד איתו, כי אין יותר שלב
+   לספור ואין כרטיס שמתמלא. ‏**והוא בסלקטור של `gtop`**, אחרת
+   נשארת מעליו הרצועה הלבנה של 14 הפיקסלים — זה כבר קרה
+   בדיוק כך שלוש פעמים. */
+.screen.apdone{background:var(--leaf-head);color:var(--on-head);
+  margin:-8px -18px -14px;padding:calc(64px + env(safe-area-inset-top)) 18px 22px;
+  min-height:calc(100% + 22px);display:flex;flex-direction:column}
+.screen.apdone .es{min-height:0;padding:0;margin-top:0}
+/* ‏הרווח הוא `flex:1` על רווחן ולא `margin-top:auto` על התוכן:
+   מרווח auto בולע את כל השטח הפנוי **לפני** ש-`flex-grow`
+   מתחלק, ולכן שניהם יחד דוחפים את התוכן אל הכפתורים. */
+.screen.apdone h3{color:var(--on-head);font-size:26px;font-weight:800}
+.screen.apdone .sub{color:var(--mist)}
+.screen.apdone .btn{background:var(--sun-on-leaf);border-color:var(--sun-on-leaf);
+  color:var(--leaf)}
+.screen.apdone .link{color:var(--mist)}
+/* ‏**הפאנל עצמו הוא העמודה, והרווחן דוחף את הכפתורים
+   לתחתית.** ‏`apShow` מציגה פאנל עם `display:''` ולא `'block'`,
+   כלומר הערך בא מה-CSS — אחרת הצהרה inline היתה מנצחת
+   והילדים לא היו פריטי flex. */
+.screen.apdone #ap-5{display:flex;flex-direction:column;flex:1;min-height:0}
+.screen.apdone .apsp{flex:1}
+/* ‏**רשימת הרגעים שאליהם הוזמן.** שורה של 36 בתוך משטח
+   שקוף על הירוק, ולא כרטיס לבן: כרטיס לבן על ראש ירוק הוא
+   הגיליון, וכאן אין גיליון. התג הוא חול על ירוק, אותו זוג
+   של `--sun-on-leaf` שכבר נושא את שורת המשנה. */
+.screen.apdone .apdl:empty{display:none}
+.screen.apdone .apdl{margin-top:22px;border-radius:18px;padding:2px 14px;
+  background:rgba(0,0,0,.08)}
+.screen.apdone .apdl .r{display:flex;align-items:center;gap:12px;padding:10px 0}
+.screen.apdone .apdl .r+.r{border-top:1px solid var(--leaf-tile-line)}
+.screen.apdone .apdl .sq{width:36px;height:36px;border-radius:11px;flex:none;
+  background:var(--leaf-tile);display:grid;place-items:center;color:var(--sun-on-leaf)}
+.screen.apdone .apdl .tx{flex:1;min-width:0}
+.screen.apdone .apdl .t{display:block;font-size:15px;font-weight:600;
+  color:var(--on-head);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.screen.apdone .apdl .s{display:block;font-size:12px;color:var(--mist);
+  font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.screen.apdone .apdl .tg{font-size:11px;font-weight:700;color:var(--leaf);
+  background:var(--sun-on-leaf);border-radius:99px;padding:2px 9px;flex:none}
+.screen.apdone .fine:empty{display:none}
+.screen.apdone .fine{color:var(--mist);margin-top:10px}
 .card-main.wizc .utop{display:flex;align-items:center;gap:13px}
 .card-main.wizc .utop .tx{flex:1;min-width:0}
 .card-main.wizc .tbhero{font-size:clamp(24px,8.4vw,32px)}
@@ -3724,7 +3793,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '9c0e047';
+window.NETA_BUILD = 'd138138';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4071,17 +4140,17 @@ window.NETA_CONFIG = {
      דרך `flowBar()` — הפונקציה שכבר נקראה בכולם. -->
 <div class="tabg wizg" id="wizhead" style="display:none">
   <div class="tabhd wizhd">
-    <button class="bk" onclick="wizBack()" aria-label="חזרה">
+    <button class="bk" onclick="flowBack()" aria-label="חזרה">
       <svg width="8" height="13" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg></button>
     <div class="tx">
       <div class="nm" id="wiz-t">נטיעה חדשה</div>
       <div class="hi" id="wiz-step">שלב 1 מתוך 5</div>
     </div>
-    <button class="wizx" onclick="cancelCreate()">ביטול</button>
+    <button class="wizx" onclick="flowCancel()">ביטול</button>
   </div>
   <div class="wizbar" id="wiz-bar"></div>
 
-  <div class="card-main wizc">
+  <div class="card-main wizc" id="wiz-card">
     <div class="utop">
       <span class="ph" id="wiz-av" aria-hidden="true"></span>
       <div class="tx">
@@ -4094,6 +4163,31 @@ window.NETA_CONFIG = {
       <div><p class="l">כמה</p><p class="v" id="wiz-amt">·</p></div>
       <div style="text-align:start"><p class="l" id="wiz-projl">בקצב הזה ייצבר</p>
         <p class="v f" id="wiz-proj">·</p></div>
+    </div>
+  </div>
+
+  <!-- ‏**הכרטיס השני של אותו ראש, לאשף הוספת הקרוב.**
+       ‏`neta-08-add-person-proto.html` בונה את המסך מאותם שלושה
+       חלקים של אשף הנטיעה: שורה עליונה, סרגל שלבים, וכרטיס
+       שמתמלא בכל תשובה. **ולכן הראש אחד והכרטיס שניים**:
+       שתי שורות עליונות ושני סרגלים היו שני מקומות שצריך
+       לסנכרן, ומה שבאמת שונה בין שני האשפים הוא מה שהכרטיס
+       אומר: שם ורגע וסכום מול שם, קרבה ורגעים שהוא מוזמן
+       אליהם. ‏`.bot` של האשף הוא שני טורי מספר, וכאן הוא שורה
+       של ריבועי רגע ומשפט — מבנה אחר, ולא אותם צמתים שנכתבים
+       בשתי צורות. -->
+  <div class="card-main wizc apc" id="ap-card" style="display:none">
+    <div class="utop">
+      <span class="ph" id="ap-cav" aria-hidden="true"></span>
+      <div class="tx">
+        <p class="eb" id="ap-ceb">קרוב חדש</p>
+        <p class="tbhero" id="ap-cnm">מי?</p>
+        <p class="usub" id="ap-crel"></p>
+      </div>
+    </div>
+    <div class="apfoot">
+      <span class="sqs" id="ap-csq" aria-hidden="true"></span>
+      <span class="l" id="ap-cl">·</span>
     </div>
   </div>
 </div>
@@ -6137,18 +6231,15 @@ window.NETA_CONFIG = {
      והוא ממשיך לשלושה; "עבורו" הוא מי שנוטעים לו, והוא ממשיך
      לשניים. שתי התשובות נבדלות במילה אחת, וזו בדיוק ההבחנה. -->
 <section class="screen center-v" data-name="הוספת אדם">
-  <div class="steps" id="ap-steps"></div>
-  <p class="steplbl" id="ap-lbl"></p>
-
   <div id="ap-0">
   <h2 class="gap" style="margin-bottom:18px">את מי תרצה להוסיף?</h2>
   <div class="pick" id="ap-kind">
     <button type="button" class="on" data-k="with" onclick="apKind(this,'with')">
-      <span class="fc"><svg viewBox="0 0 40 40"><use href="#av-granny"/></svg></span>
+      <span class="kf" aria-hidden="true"><span><svg viewBox="0 0 40 40"><use href="#av-granny"/></svg></span><span><svg viewBox="0 0 40 40"><use href="#av-uncle"/></svg></span><span><svg viewBox="0 0 40 40"><use href="#av-sister"/></svg></span></span>
       <span class="nm"><b>מישהו שאני נוטע איתו</b>
         <span>סבתא, דוד, חבר, אח, מישהו שארצה להזמין להשקיע איתי</span></span></button>
     <button type="button" data-k="for" onclick="apKind(this,'for')">
-      <span class="fc"><svg viewBox="0 0 40 40"><use href="#av-kid1"/></svg></span>
+      <span class="kf" aria-hidden="true"><span><svg viewBox="0 0 40 40"><use href="#av-kid2"/></svg></span><span><svg viewBox="0 0 40 40"><use href="#av-kid5"/></svg></span><span><svg viewBox="0 0 40 40"><use href="#av-kid4"/></svg></span></span>
       <span class="nm"><b>מישהו שאני נוטע עבורו</b>
         <span>הילדים שלי, נכד, אחיין, וגם ילד של חברים, מישהו שארצה להשקיע בעתיד שלו</span></span></button>
   </div>
@@ -6223,14 +6314,24 @@ window.NETA_CONFIG = {
   <button class="link backlink" onclick="apBack()">חזרה</button>
   </div><!-- /ap-4 -->
 
+  <!-- ‏**מסך הסיום, ירוק מלא.** העיצוב מחליף כאן את כל
+       המסך ולא רק את הגיליון: אין מה לספור בסרגל ואין
+       כרטיס שמתמלא, ולכן הראש יורד. זו אותה צורה של
+       מסך "נטעת". -->
   <div id="ap-5" style="display:none">
-  <div class="es" style="min-height:0;padding:10px 4px 0">
-    <div class="art"><span class="esfaces one" aria-hidden="true"><span id="ap-doneav"></span></span></div>
-    <h3 id="ap-doneh">·</h3>
-    <p class="sub" style="margin:10px 0 20px">עוד לא נפתח לו רגע. אפשר עכשיו, ואפשר מתי שתרצה.</p>
-    <button class="btn" id="ap-doneb" onclick="apOpenMoment()">·</button>
-    <button class="link" onclick="apExit()">לא עכשיו</button>
-  </div>
+    <div class="es" style="min-height:0;padding:0">
+      <div class="art"><span class="esfaces one" aria-hidden="true"><span id="ap-doneav"></span></span></div>
+      <h3 id="ap-doneh">·</h3>
+      <p class="sub" id="ap-dones" style="margin:10px 0 0">·</p>
+    </div>
+    <!-- ‏**לאילו רגעים הוזמן, שורה לכל אחד.** זו העובדה היחידה
+         במסך הזה שאי אפשר לראות בשום מקום אחר: הרשימה של הקרובים
+         מציגה "ממתינה" ואינה נוקבת ברגעים. ריק במסלול "עבורו". -->
+    <div class="apdl" id="ap-donel"></div>
+    <p class="fine" id="ap-donef"></p>
+    <div class="apsp"></div>
+    <button class="btn" id="ap-doneb" onclick="apDoneGo()">·</button>
+    <button class="link" id="ap-donelk" onclick="apDoneAlt()">לא עכשיו</button>
   </div><!-- /ap-5 -->
 </section>
 
@@ -6466,7 +6567,8 @@ function go(i){
      רשימה קשיחה, כי מסך הסכום (2) משרת גם הפקדה לרגע קיים ושם
      הסרגל נכון. */
   document.getElementById('tabbar').style.display=
-    (NOCHROME.includes(i)||(creating&&WIZ_SCREENS.indexOf(i)>=0))?'none':'';
+    (NOCHROME.includes(i)||(creating&&WIZ_SCREENS.indexOf(i)>=0)
+     ||(apLive&&i===AP_SCREEN()))?'none':'';
   /* ‏**הגיליון הלבן נקבע כאן ולא ב-`flowBar`.** ‏`cStepGo` קורא
      ל-`flowBar` לפני `go()` בכמה מסלולים, ואז `.screen.on` הוא עדיין
      המסך הקודם — הקלאס נחת על מי שיוצא. **ו-`i` ולא `curScreen`**,
@@ -6515,8 +6617,11 @@ function go(i){
      ‏`wizSheet(i)` רצה שורות ספורות מעל וכבר קבעה את התצוגה שלו,
      ולכן מה שנקרא כאן הוא המצב הסופי ולא הקודם. */
   const dv=document.querySelector('.device'),wh=document.getElementById('wizhead');
+  /* ‏**ומסך הסיום של הוספת אדם הוא ירוק מלא בלי ראש**, ולכן
+     הקלאס שלו ברשימה: בלעדיו הרצועה הלבנה חוזרת שם. */
   if(dv)dv.classList.toggle('gtop',(!!screens[i]&&
-    !!screens[i].querySelector(':scope > .leafhead, :scope > .tabg, :scope > #splash, :scope > .how-story, :scope > .ahag'))
+    (!!screens[i].querySelector(':scope > .leafhead, :scope > .tabg, :scope > #splash, :scope > .how-story, :scope > .ahag')
+     ||screens[i].classList.contains('apdone')))
     ||!!(wh&&wh.style.display!=='none'));
   [...nav.children].forEach((b,n)=>b.classList.toggle('on',n===i));
   /* ‏**הטאב המסומן הוא הטאב שממנו נכנסו**, ‏`FIX-moment` §5.
@@ -8454,9 +8559,23 @@ function flowBar(cur,label){
 /* ‏**הגיליון הלבן הוא קלאס על המסך שמוצג, ולא עטיפה חדשה.** מסכי
    האשף הם שישה, והוספת `<div>` לכל אחד מהם הייתה שישה מקומות
    לסנכרן; הקלאס נוסע עם `go()` ויורד ברגע שהאשף נסגר. */
+/* ‏**שתי הפעולות שבראש משרתות שני אשפים.** הראש אחד
+   (שורה עליונה וסרגל שלבים), ולכן הכפתורים שבו אינם יכולים
+   לקרוא לפונקציה של אחד מהם. ‏`apLive` הוא המקור היחיד
+   שמכריע באיזה אשף אנחנו. */
+function flowBack(){ if(apLive)apBack(); else wizBack(); }
+function flowCancel(){ if(apLive)apExit(); else cancelCreate(); }
 function wizSheet(at){
   const n=at==null?curScreen:at;
-  const on=creating&&WIZ_SCREENS.indexOf(n)>=0;
+  /* ‏**מסך הסיום של הוספת אדם אינו גיליון לבן ואין לו ראש.**
+     הוא ירוק מלא, כמו מסך "נטעת", ולכן הוא מקבל קלאס
+     אחר והראש יורד איתו. */
+  const apN=AP_SCREEN();
+  const apOn=apLive&&n===apN;
+  const apEnd=apOn&&apDone;
+  const apScr=screens[apN];
+  if(apScr)apScr.classList.toggle('apdone',!!apEnd);
+  const on=(creating&&WIZ_SCREENS.indexOf(n)>=0)||(apOn&&!apEnd);
   /* ‏**המסך נבחר לפי המספר ולא לפי `.screen.on`.** ‏`go()` קוראת לכאן
      לפני שהיא מסמנת את הנכנס, ולכן `.on` הוא עדיין מי שיוצא: הקלאס
      היה נוחת על המסך הקודם ומי שנכנס נשאר בלי גיליון. */
@@ -8466,6 +8585,10 @@ function wizSheet(at){
   if(scr)scr.classList.toggle('wiz',on);
   const box=document.getElementById('wizhead');
   if(box)box.style.display=on?'':'none';
+  /* כרטיס אחד מתוך השניים, לפי האשף שעל המסך. */
+  const wc=document.getElementById('wiz-card'),ac=document.getElementById('ap-card');
+  if(wc)wc.style.display=apOn?'none':'';
+  if(ac)ac.style.display=apOn?'':'none';
 }
 /* ‏1 הקמה (שלושת הפאנלים), 2 הסכום, 3 התשלום, 24 הסיכום. מסך
    ההשקעה משרת גם הפקדה לרגע קיים, ולכן הקלאס תלוי ב-`creating`
@@ -11725,7 +11848,12 @@ function sentSheet(k,r){
     'כש'+r.name+' תפתח את הקישור, יישלח קוד אימות חד-פעמי ל'+r.contact+', ורק מי ששולט בו יוכל להצטרף ל'+nameOfPlanting(k)+'. אין קוד שאתה צריך למסור.\n\nאם מישהו אחר ינסה להיכנס דרך הקישור, הבקשה תגיע אליך לאישור עם שמו.',
     'הבנתי');
 }
-function sendInvite(r){
+/* ‏`done` אופציונלי, ומחליף את הגיליון. הוא נמסר מ-`apSave` בלבד:
+   שם ההזמנה היא השלב האחרון של אשף שכבר נמצא על מסך שלם, ולכן
+   הסיום הוא מסך ולא גיליון מעל גיליון. שלוש נקודות הכניסה האחרות
+   (הזמנה מתוך רגע, "שלח שוב", והזמנה לכמה אנשים) אינן באשף ואין
+   להן מסך לנחות בו, ולכן שם הגיליון נשאר. */
+function sendInvite(r,done){
   if(!r.contact){toast('חסרים פרטי קשר ל'+r.name);return false}
   /* ההזמנה הראשונה היא גם מה שפותח את הנטיעה לקרובים. ראו openToCircle. */
   if(pickedPlant)openForRelatives(pickedPlant);
@@ -11750,17 +11878,26 @@ function sendInvite(r){
       })
       .then(function(token){
         const url=shareUrl(token);
-        if(r.chan!=='mail'||!invId){personalInviteSheet(key,r,url,false);return}
+        lastInvLinks=[{name:nameOfPlanting(key),chan:r.chan,url:url,id:invId,key:key}];
+        if(r.chan!=='mail'||!invId){
+          if(done)return done(r,[key],false);
+          personalInviteSheet(key,r,url,false);return}
         /* המייל בפועל תלוי במפתח Resend שמוגדר בשרת — כשאין כזה, ה-Edge
            Function מחזירה sent:false בלי שגיאה, והגיליון פשוט חוזר להציע
            העברה ידנית של הקישור. */
         return netaServer.sendInvitationEmail(invId)
-          .then(function(res){personalInviteSheet(key,r,url,!!(res&&res.sent))});
+          .then(function(res){
+            const sent=!!(res&&res.sent);
+            if(done)return done(r,[key],sent);
+            personalInviteSheet(key,r,url,sent)});
       })
       .catch(function(e){ask('ההזמנה לא נרשמה',inviteErr(e),'הבנתי')});
     return;
   }
-  if(pickedPlant){sentSheet(pickedPlant,r);return}
+  if(pickedPlant){
+    lastInvLinks=[{name:nameOfPlanting(pickedPlant),chan:r.chan,url:''}];
+    if(done)return done(r,[pickedPlant],false);
+    sentSheet(pickedPlant,r);return}
   /* בלי רגע לא נשלח דבר: אין שורה ב-invitations, אין מייל ואין
      קישור. הטוסט שהיה כאן הכריז על שליחה שלא קרתה. הסימון בזיכרון
      נסוג, אחרת השורה הייתה מציגה "העתק קישור" על הזמנה שאינה. */
@@ -11836,7 +11973,7 @@ function personalInviteSheet(key,r,url,emailed){
 /* הזמנה אחת לכמה רגעים. במסד נרשמת הזמנה לכל רגע, כי הקישור האישי
    הוא מה שמצרף לנטיעה מסוימת ואין קישור שפותח שתיים — אבל יוצא מייל
    אחד, ובו קישור לכל אחת. ה-Edge Function מקבלת את כל המזהים יחד. */
-function sendInviteMulti(r,keys){
+function sendInviteMulti(r,keys,done){
   if(!r.contact){toast('חסרים פרטי קשר ל'+r.name);return}
   keys.forEach(openForRelatives);
   r.chan=chanOf(r.contact)||'wa';
@@ -11845,6 +11982,7 @@ function sendInviteMulti(r,keys){
   buildRelatives();
   if(!liveAccount()){
     lastInvLinks=keys.map(function(k){return {name:nameOfPlanting(k),chan:r.chan,url:''}});
+    if(done)return done(r,keys,false);
     apSentSheet(r,keys,false);return;
   }
   toast('שולח…');
@@ -11870,10 +12008,13 @@ function sendInviteMulti(r,keys){
       .map(function(o){return {id:o.id,pl:o.key,at:now}}));
     buildRelatives();
     const ids=out.map(function(o){return o.id}).filter(Boolean);
-    if(r.chan!=='mail'||!ids.length){apSentSheet(r,keys,false);return}
+    if(r.chan!=='mail'||!ids.length){
+      if(done)return done(r,keys,false);
+      apSentSheet(r,keys,false);return}
     netaServer.sendInvitationEmail(ids).then(function(res){
       const sent=!!(res&&res.sent);
       out.forEach(function(o){o.sent=sent&&(res.ids||[]).indexOf(o.id)>=0});
+      if(done)return done(r,keys,sent);
       apSentSheet(r,keys,sent);
     });
   });
@@ -12964,9 +13105,9 @@ const AP_SCREEN=function(){
   return screens.findIndex(function(x){return x.dataset.name==='הוספת אדם'});
 };
 const AP_WITH=['ap-0','ap-1','ap-3','ap-2'];
-const AP_FOR=['ap-0','ap-4','ap-5'];
+const AP_FOR=['ap-0','ap-4'];
 const AP_LBL_WITH=['את מי','מי זה','לאיזה רגע','לאן'];
-const AP_LBL_FOR=['את מי','עבור מי','נוסף'];
+const AP_LBL_FOR=['את מי','עבור מי'];
 /* ── קרבה: עובדה אחת, כמה תצוגות (0068) ──────────────────────
    מה שנשמר הוא הקשר אלי, ותו לא. הכיתוב בכל מסך והמגדר נגזרים
    ממנו בזמן הצגה. עד כה נשמרה מחרוזת מוכנה, כלומר תצוגה אחת
@@ -13141,6 +13282,17 @@ let apRelPhoto=null;
    שולחים הזמנה) ו"לאיזה רגע" (הרגע שממנו נכנסתי). אשף ששואל שאלה
    שהתשובה עליה כבר על המסך הקודם הוא שני מסכים מיותרים. */
 let apFrom='';
+/* ‏**הדגל שאומר שהאשף פתוח.** הראש הירוק, הכרטיס, הגיליון
+   הלבן והסרגל התחתון נגזרים ממנו ולא ממספר המסך לבדו:
+   אפשר לנחות על המסך הזה בחזרה מהיסטוריה, ואז האשף אינו
+   פתוח. זו אותה הבחנה של `creating` מול `WIZ_SCREENS`. */
+let apLive=false;
+/* ‏**מסך הסיום הוא דגל ולא פאנל ברשימה.** הרשימות סופרות את
+   השלבים שיש **לענות** עליהם, ומסך שאין בו שאלה אינו אחד מהם:
+   עד כה `AP_FOR` נשא את `ap-5` ולכן המסלול הכריז "מתוך 3" על
+   שתי שאלות, בזמן ש"איתי" הכריז "מתוך 4" על ארבע. שתי דרכים
+   לספור באותו אשף. */
+let apDone=false;
 /* "לאיזה רגע" לפני "לאן לשלוח", כי הרגע הוא מה שההזמנה אומרת והכתובת
    היא רק איך היא מגיעה. השאלה האחרונה היא גם זו שהכפתור שלה שולח.
 
@@ -13163,15 +13315,102 @@ function apLabels(){
 }
 function apShow(){
   const list=apPanels();
+  const cur=apDone?'ap-5':list[apStep];
   ['ap-0','ap-1','ap-2','ap-3','ap-4','ap-5'].forEach(function(id){
     const el=document.getElementById(id);
-    if(el)el.style.display=(list[apStep]===id)?'block':'none';
+    /* ‏`''` ולא `'block'`: מסך הסיום צריך להיות עמודת flex
+       שממלאת את המסך, והצהרה inline היתה מנצחת את ה-CSS. */
+    if(el)el.style.display=(cur===id)?'':'none';
   });
-  const lbls=apLabels();
-  document.getElementById('ap-steps').innerHTML=
-    list.map(function(_,i){return '<i class="'+(i<=apStep?'on':'')+'"></i>'}).join('');
-  txt('ap-lbl','שלב '+(apStep+1)+' מתוך '+list.length+' · '+lbls[apStep]);
+  /* ‏**הראש הירוק והגיליון נקבעים ב-`wizSheet`**, כי השלב
+     האחרון מחליף את שניהם — ולכן הקריאה קודמת לצביעה. */
+  wizSheet(AP_SCREEN());
+  apHead();
   document.querySelector('.stage').scrollTo?.(0,0);
+}
+/* ‏**הראש של האשף: שורה, סרגל, וכרטיס שמתמלא.** אותם
+   צמתים של אשף הנטיעה, כי זה אותו רכיב. */
+function apHead(){
+  const list=apPanels(),lbls=apLabels();
+  if(apDone)return;
+  txt('wiz-t',apFrom?('להזמין את '+(apName()||'הקרוב')):'להוסיף קרוב');
+  /* ‏**"מתוך ·" כל עוד לא נבחר מסלול**, כמו בעיצוב: שני
+     המסלולים אינם באותו אורך, ומספר שמשתנה בלחיצה
+     הראשונה נקרא כתקלה. */
+  const open=(list[apStep]==='ap-0');
+  /* ‏וכשהסך הוא "·" גם התווית יורדת: "מתוך · · את מי"
+     קורא שני מפרידים ברצף, והשאלה עצמה ממילא על המסך. */
+  txt('wiz-step','שלב '+(apStep+1)+' מתוך '+(open?'·':list.length)+
+    ((!open&&lbls[apStep])?(' · '+lbls[apStep]):''));
+  const bar=document.getElementById('wiz-bar');
+  if(bar)bar.innerHTML=Array.from({length:list.length},function(_,i){
+    return '<i class="'+(i<=apStep?'on':'')+'"></i>'}).join('');
+  apCard();
+}
+/* השם שעל המסך ברגע זה: שני המסלולים מקלידים אותו
+   בשני שדות, והכרטיס קורא מהטופס ולא ממשתנה שנכתב
+   רק במעבר — אחרת הוא מתמלא שלב מאוחר מדי. */
+function apName(){
+  return ((apKindMode==='for'?fieldVal('ap-kidname'):fieldVal('ap-name'))||'').trim();
+}
+/* המין של מי שמוסף, מהקרבה ולא מניחוש לפי השם. בקרבה
+   חופשית אין מה לגזור, ואז הצורה הניטרלית היא שנאמרת. */
+function apSex(){
+  return apKindMode==='for'?apKidSexV:(kinSex(apRelValue())||'');
+}
+function apCard(){
+  /* כמו `wizRefresh`: פונקציות הציור של הפאנלים נקראות גם
+     מחוץ לאשף (למשל בפתיחה), וכתיבה לכרטיס שאינו מוצג
+     היא עבודה על מסך אחר. */
+  const box=document.getElementById('ap-card');
+  if(!box||box.style.display==='none')return;
+  const nm=apName(),sx=apSex(),f=function(a,b){return sx==='f'?a:(sx==='m'?b:'')};
+  const kid=apKindMode==='for';
+  const av=kid?apKidAvNow():apRelAvNow();
+  txt('ap-ceb',apFrom?'הזמנה':(kid?'נהנה חדש':'קרוב חדש'));
+  txt('ap-cnm',nm||(apStep===0&&!apFrom?'מי?':'מה השם?'));
+  /* השורה השלישית היא הקרבה כשהיא נבחרה, ועד אז מה
+     שהמסלול אומר עליה — "נוטע איתי" או "נוטעים עבורה". */
+  const relk=kid?apKidRel:apRel;
+  const rel=(apStep>0||apFrom)
+    ? (relk==='other'?(kid?apKidRelValue():apRelValue())
+       :(kinMe(relk)||''))
+    : '';
+  txt('ap-crel',rel||(apStep>0?(kid?('נוטעים עבור'+f('ה','ו')):'נוטע איתי'):''));
+  const ph=document.getElementById('ap-cav');
+  if(ph){
+    const face=av?kidFaceHTML(av,56):'';
+    ph.className='ph'+(face?'':' empty');
+    ph.innerHTML=face;
+  }
+  /* שורת התחתית: ריבוע לכל רגע שסומן, ומשפט שאומר
+     למה. במסלול הילד אין מה לסמן, והשורה אומרת את זה. */
+  const sq=document.getElementById('ap-csq');
+  const opts=invitablePlantings();
+  const picked=opts.filter(function(o){return apPlants.indexOf(o.key)>=0});
+  if(sq)sq.innerHTML=picked.length
+    ? picked.slice(0,3).map(function(o){
+        return '<span class="sq">'+occIcon(o.occasion,15,o.name)+'</span>'}).join('')
+    : '<span class="sq empty"></span>';
+  let line;
+  /* ‏`lNoun` ולא 'ל'+ ידני: "הלימודים" מאבד את ה' כשמוסיפים ל',
+     אחרת יוצא "להלימודים". ובלי מגדר ידוע שם עצם ולא בינוני,
+     כי "מוזמנ" אינו מילה ולוכסן נפסל בכל שאר המוצר. */
+  if(kid)line=nm?('עוד אין '+(f('לה','לו')||'ל'+nm)+' רגעים'):'·';
+  else if(picked.length)line=(sx?('מוזמנ'+f('ת','')):'הזמנה')+' '+
+    picked.map(function(o){return lNoun(momOccNoun(o))}).join(' ו');
+  else line=(apStep>0||apFrom)?'לאילו רגעים?':'·';
+  txt('ap-cl',line);
+}
+/* הפרצוף שעל הכרטיס: תמונה שהועלתה אם היא הנבחרת,
+   אחרת הדמות של הקרבה, וריק כל עוד לא נבחרה קרבה. */
+function apRelAvNow(){
+  if(apRelPhotoOn&&apRelPhoto&&apRelPhoto.url)return apRelPhoto.url;
+  return (apStep>0||apFrom)?kinAv(apRelValue()):'';
+}
+function apKidAvNow(){
+  if(apPhotoOn&&apPhoto&&apPhoto.url)return apPhoto.url;
+  return apStep>0?apKidAv:'';
 }
 function openAddPerson(kind){
   /* מצב הזמנה: הרגע ידוע, ולכן גם הסוג. relInviteKey הוא המקור
@@ -13192,6 +13431,7 @@ function openAddPerson(kind){
      הכריז "לא סימנת רגע" ונשא כפתור "הוסף לרשימה" על מסלול שכל כולו
      הזמנה לרגע מסוים. */
   apPlants=apFrom?[apFrom]:[];
+  apDone=false;
   /* לפי data-k ולא לפי אינדקס: אינדקס קשיח מסמן תמיד את הראשון,
      וזה בדיוק מה שהיה כאן. */
   document.querySelectorAll('#ap-kind button').forEach(function(x){
@@ -13208,11 +13448,18 @@ function openAddPerson(kind){
   apRelHint();
   document.querySelectorAll('#ap-kidsex button').forEach(function(x,i){
     x.classList.toggle('on',i===0)});
-  apShow();go(AP_SCREEN());
+  apLive=true;
+  /* ‏`go` לפני `apShow`: ‏`go()` קוראת ל-`wizSheet` בעצמה,
+     ובסדר ההפוך היא היתה מורידה את הראש שהרגע נצבע. */
+  go(AP_SCREEN());apShow();
 }
 function apKind(el,k){
   apKindMode=k;
   [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+  /* הסרגל והכרטיס נגזרים מהמסלול, ושני המסלולים אינם
+     באותו אורך: בלי זה הסרגל מכריז את אורכו של המסלול
+     שלא נבחר. */
+  apHead();
 }
 /* ציור מחדש ולא החלפת קלאס: התמונה יושבת בתוך התא הנבחר, ולכן
    מעבר לתא אחר מזיז אותה. סימון בלבד היה משאיר אותה בתא הישן. */
@@ -13285,6 +13532,7 @@ function apRelHint(){
      כי "יראו אותו כסבא" בלי שם אינו משפט. */
   txt('ap-relhint',nm+' יופיע ברשימה שלך כ"'+kinMe(apRelValue())+'"'+
     (k&&kids.length?(', ולצד הרגעים של '+kidsPhrase(kids)+' כ"'+k+'"'):'')+'.');
+  apCard();
 }
 /* שמות הילדים של המשפחה שלי, עד שלושה. משמש לכיתוב בלבד. */
 function myKidNames(){
@@ -13297,6 +13545,7 @@ function kidsPhrase(kids){
 function apKidSex(el,x){
   apKidSexV=x;
   [].slice.call(el.parentNode.children).forEach(function(b){b.classList.toggle('on',b===el)});
+  apCard();
 }
 /* הקרבה גוזרת את המין, ולכן הצ'יפים נשארים מוסתרים. "אחר" הוא
    טקסט חופשי שאין ממנו מה לגזור, ורק שם הם חוזרים. */
@@ -13340,6 +13589,7 @@ function apPaintKidUp(){
       '</i></span><span class="rm" data-rm="1">חזרה לדמות</span>'
     : '<span class="ic">\uFF0B</span>'+
       '<span class="t"><b>העלה תמונה'+of+'</b><i>במקום הדמות שנבחרה</i></span>';
+  apCard();
 }
 function apKidPhotoTap(ev){
   const t=ev&&ev.target;
@@ -13386,6 +13636,13 @@ function apBack(){if(apStep>0){apStep--;apShow()}else apExit()}
    הוא יושב בבורר של "העתיד שלנו", ולשם היציאה מחזירה. עד כה "לא
    עכשיו" החזיר לקרובים, כלומר לרשימה שהילד שהרגע נוסף אינו בה. */
 function apExit(){
+  /* הדגל נכבה לפני כל ניווט, אחרת `wizSheet` של המסך
+     הבא עדיין חושבת שהאשף פתוח. */
+  apLive=false;apDone=false;
+  const sc=screens[AP_SCREEN()];
+  if(sc){sc.classList.remove('wiz');sc.classList.remove('apdone')}
+  const box=document.getElementById('wizhead');
+  if(box&&!creating)box.style.display='none';
   /* נכנסנו מתוך רגע, ולכן היציאה חוזרת לרשימה של אותו רגע ולא לטאב
      הקרובים, שבו ההקשר מתאפס. */
   if(apFrom&&apKindMode!=='for'){openRelatives(relBack,apFrom);return}
@@ -13476,6 +13733,7 @@ function apTogglePlant(el,k){
   const box=el.querySelector('.relbox');
   if(box){box.classList.toggle('on',on);box.innerHTML=on?TICK:''}
   apPlantsLbl();
+  apCard();
 }
 /* הכפתור סופר, כי אחרי המסך הזה יש עוד שלב ומי שסימן שניים צריך לדעת
    שהם נספרו. בלי סימון בכלל הוא אומר שאין הזמנה, ולא סתם "המשך". */
@@ -13522,16 +13780,17 @@ function apSave(){
     relatives.push(r);
     /* רגע אחד עובר בנתיב הקיים בדיוק; כמה רגעים הם הזמנה אחת עם כמה
        קישורים, ולכן פונקציה משלהם. */
-    if(apPlants.length>1){sendInviteMulti(r,apPlants.slice());return}
+    if(apPlants.length>1){sendInviteMulti(r,apPlants.slice(),apDoneWith);return}
     /* בלי רגע אין מה לשלוח, ו-sendInvite הייתה משאירה את האשף פתוח
        אחרי הטוסט. היציאה שייכת למי שקרא, לא לשליחה. */
     if(!apPlants.length){
-      buildRelatives();openPeople();
-      toast(r.name+' נוסף לקרובים שלך. ההזמנה נשלחת מתוך רגע.');return;
+      /* בלי רגע אין מה לשלוח, ולכן אין גם מה לספר: מסך הסיום אומר
+         שהוא נוסף לרשימה, והטוסט שהיה כאן הכריז על שליחה שלא קרתה. */
+      buildRelatives();lastInvLinks=[];apDoneWith(r,[],false);return;
     }
     pickedPlant=apPlants[0];
     inviteFromPlanting=!!apFrom;
-    sendInvite(r);
+    sendInvite(r,apDoneWith);
   };
   if(liveAccount()){
     netaServer.addRelative({name:r.name,relation:r.rel,avatar:r.av,
@@ -13565,9 +13824,20 @@ function apSaveKid(){
         String(b.name||'').trim()===nm}))
       benes.push({id:id||null,name:nm,sex:apKidSexV,avatar:av||apKidAv,relation:rel});
     document.getElementById('ap-doneav').innerHTML=kidFaceHTML(apKidSaved.av,64);
-    txt('ap-doneh',nm+' נוסף');
-    txt('ap-doneb','פתח ל'+nm+' רגע');
-    apStep=2;apShow();
+    /* ‏**"נוספה" ולא "נוסף" תמיד.** הקרבה נבחרה ברשת
+       ומגדרה ידוע (`kinSex`), וב"אחר" נשאלו בן/בת במפורש —
+       כלומר אין כאן ניחוש ואין לוכסן. זה העיצוב
+       (`neta-08-add-person-proto`), וזה גם הכלל שכבר יושב
+       בפיד, במיילים ובכרטיס של "מה מחכה להם". */
+    const f=apKidSexV==='f';
+    txt('ap-doneh',nm+(f?' נוספה':' נוסף'));
+    txt('ap-dones','עוד לא נפתח '+(f?'לה':'לו')+
+      ' רגע. אפשר עכשיו, ואפשר מתי שתרצה.');
+    txt('ap-doneb','לפתוח ל'+nm+' רגע');
+    txt('ap-donelk','לא עכשיו');
+    txt('ap-donel','');txt('ap-donef','');
+    apDoneFn=apOpenMoment;apDoneAltFn=apExit;
+    apDone=true;apShow();
   };
   if(!src.addBeneficiary){finish(apKidAv);return}
   const btn=document.querySelector('#ap-4 .btn');
@@ -13804,6 +14074,73 @@ function prefillKid(name,av,sex,rel){
 function apOpenMoment(){
   if(apKidSaved)prefillKid(apKidSaved.name,apKidSaved.av,apKidSexV,apKidSaved.rel);
   else startCreate();
+}
+/* ‏**שני המסלולים נגמרים באותו מסך.** עד כה "עבורו" נחת על
+   מסך ירוק מלא ו"איתי" על גיליון מעל הגיליון הלבן של האשף,
+   כלומר אותו אשף בדיוק נגמר בשתי צורות — וזו בדיוק הקפיצה
+   שהסבב כולו בא לסגור. הפעולות נשמרות במשתנים ולא נכתבות
+   ב-`onclick`, כי מה שהכפתור עושה משתנה בין המסלולים. */
+let apDoneFn=null,apDoneAltFn=null;
+function apDoneGo(){if(apDoneFn)apDoneFn(); else apOpenMoment()}
+function apDoneAlt(){if(apDoneAltFn)apDoneAltFn(); else apExit()}
+/* מסך הסיום של "איתי". הרשימה היא הרגעים שההזמנה נושאת, והשורה
+   השקטה היא מה שקורה למי שיפתח את הקישור מכתובת אחרת — שתיהן
+   עובדות שאינן נראות בשום מקום אחר במוצר.
+
+   **ו"נשלחה" נאמר רק כשבאמת יצא מייל.** בוואטסאפ השרת אינו
+   שולח דבר ויש רק קישור להעביר, ולכן שם ההעתקה היא הפעולה
+   הראשית — אותה הבחנה בדיוק שכבר יושבת בגיליונות, ומאותה
+   סיבה: הכרזה על שליחה שלא קרתה היא ההבטחה הגרועה מכולן. */
+function apDoneWith(r,keys,emailed){
+  const nm=firstName(r.name)||r.name;
+  const f=kinSex(r.rel)==='f';
+  const none=!keys||!keys.length;
+  document.getElementById('ap-doneav').innerHTML=faceHTML(r.av,'av-someone');
+  /* ‏`lastInvLinks` נושא את הקישורים גם כשיצא מייל, ולכן ההעתקה
+     זמינה בשני המצבים — היא רק אינה הפעולה הראשית. וכשאין קישור
+     כלל (הטוקן נכשל, או חשבון הדגמה) אין מה להבטיח: ההזמנה
+     נרשמה, ו"שלח שוב" שבשורה שלה הוא מה שיוציא אותה. */
+  const all=(lastInvLinks||[]).filter(function(l){return l.url})
+    .map(function(l){return l.name+': '+l.url}).join('\n');
+  /* ‏"בדרך" רק כשבאמת יצא מייל. בכל מצב אחר "נרשמה", אותה
+     מילה בדיוק שהגיליונות כבר אומרים ומאותה סיבה. */
+  txt('ap-doneh',none?(nm+(f?' נוספה':' נוסף')+' לרשימה')
+    :emailed?('ההזמנה בדרך ל'+nm):('ההזמנה ל'+nm+' נרשמה'));
+  txt('ap-dones',none?('אפשר להזמין '+(f?'אותה':'אותו')+' לרגע מתי שתרצה')
+    :emailed?('נשלחה באימייל. נעדכן אותך כש'+nm+(f?' תצטרף':' יצטרף')+'.')
+    :all?('הקישור האישי מוכן. אפשר להעביר אותו ב'+CHAN[r.chan]+'.')
+        :('אפשר לשלוח אותה שוב מהשורה של '+nm+' ברשימה.'));
+  const box=document.getElementById('ap-donel');
+  /* ‏`invitablePlantings` ולא `plantAt`: היא כבר מרכיבה את השם ואת
+     שורת המועד, והיא המקור שהפאנל עצמו צויר ממנו. */
+  const opts=invitablePlantings();
+  if(box)box.innerHTML=none?'':(keys||[]).map(function(k){
+    const o=opts.filter(function(x){return x.key===k})[0];
+    if(!o)return '';
+    return '<div class="r"><span class="sq" aria-hidden="true">'+
+      occIcon(o.occasion,17,o.name)+'</span>'+
+      '<span class="tx"><b class="t">'+attrText(o.name)+'</b>'+
+      (o.sub?'<i class="s">'+o.sub+'</i>':'')+'</span>'+
+      '<span class="tg">הוזמנ'+(f?'ה':'')+'</span></div>';
+  }).join('');
+  /* השורה מתארת את הקישור, ולכן היא יורדת כשאין קישור ולא יצא מייל. */
+  txt('ap-donef',(none||(!emailed&&!all))?''
+    :'מי שיפתח את הקישור מכתובת אחרת יגיע אליך לאישור, בשמו.');
+  const copy=function(){
+    if(all)copyText(all).then(function(){toast('הקישור הועתק')},function(){});
+  };
+  if(!none&&!emailed&&all){
+    txt('ap-doneb','העתק ושלח ב'+CHAN[r.chan]);
+    txt('ap-donelk','לחזור לקרובים שלי');
+    apDoneFn=function(){copy();apExit()};
+    apDoneAltFn=apExit;
+  }else{
+    txt('ap-doneb','לחזור לקרובים שלי');
+    txt('ap-donelk','להוסיף עוד מישהו');
+    apDoneFn=apExit;
+    apDoneAltFn=function(){apExit();openAddPerson('with')};
+  }
+  apDone=true;apShow();
 }
 /* הסרה מתוך "העתיד שלנו": הילד הנבחר הוא מה שעל המסך, ואין צורך
    להעביר מזהה. מוצעת רק כשאין לו רגע, ולכן confirmRemoveKid אינה
