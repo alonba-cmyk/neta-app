@@ -3041,9 +3041,17 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    פרצוף לכל ילד, אחריהם הקופות ואז ＋. **לכולם אותו גודל ואותו
    עובי טבעת, ורק הצבע משתנה** — הבדל בגודל או בשקיפות מעקם את
    השורה, וזה נאמר בעיצוב במפורש. אזור הלחיצה 44 דרך ריפוד שקוף. */
+/* ‏**והריפוד הוא בשני הצירים ולא רק באנכי.** הטבעת היא
+   `box-shadow` שחורגת 4 מקופסת הפרצוף, והשורה היא **מכל גלילה**
+   (`overflow-x:auto`) — ומכל גלילה חותך בקצה תיבת הריפוד שלו.
+   ‏`padding-block:5` נתן לטבעת מקום למעלה ולמטה, והציר השני נשכח:
+   הפריט הראשון ב-RTL, שהוא גם הנבחר, יצא עם טבעת **שטוחה מימין**.
+   אלון ראה את זה במכשיר. ‏`margin-inline-end` שלילי מחזיר את הדיו
+   בדיוק למקום שבו היה, ולכן שום דבר אחר בשורה אינו זז. */
 .tabpick{margin-inline-start:auto;display:flex;align-items:center;gap:10px;
   overflow-x:auto;scrollbar-width:none;flex:0 1 auto;min-width:0;
-  padding-block:5px;touch-action:pan-x}
+  padding-block:5px;padding-inline:4px;margin-inline-end:-4px;
+  touch-action:pan-x}
 .tabpick::-webkit-scrollbar{display:none}
 .tabpick>*{flex:none;border:0;background:none;padding:0;cursor:pointer;display:block}
 /* ‏**‏`display:block` מפורש, וזה לא ייתור.** ‏`.f` הוא `<span>` בתוך
@@ -3079,11 +3087,22 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ואין לו שם שיתיישר אליו. */
 .card-main.kidc .utop .tx{min-width:0}
 .card-main.kidc .nmrow{display:flex;align-items:center;gap:10px;min-width:0}
-.card-main.kidc .tbhero{font-size:clamp(28px,10.8vw,42px);margin-top:0;
+/* ‏**ואין כאן `font-size` משלו, וזו הנקודה.** הוא היה
+   `clamp(28px,10.8vw,42px)`, כלומר 42 מ-390 ומעלה ופחות מזה
+   מתחת: ‏38.9 ב-360 ו-34.6 ב-320. אלון ראה את זה במכשיר שלו
+   מול המספר הגדול של "ההשקעות שלי", שהוא 42 בכל רוחב, וביקש
+   שהשניים יהיו זהים. **שני גיבורים שהעין עוברת ביניהם בלחיצה
+   אחת חייבים לקרוא מאותה הצהרה** ולא משתי נוסחאות שמסכימות
+   ברוחב אחד. הקיצוץ לא היה נחוץ ממילא: השורה `nowrap` עם שלוש
+   נקודות, ולכן שם ארוך נחתך ואינו דוחף דבר. */
+.card-main.kidc .tbhero{margin-top:0;
   line-height:1.05;min-width:0;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-/* הטבעת דקה מזו של הבורר (3.5 ולא 4), כי הפרצוף קטן ממנה בחצי. */
-.card-main.kidc .ph{width:38px;height:38px;border-radius:50%;overflow:hidden;flex:none;
+/* ‏**והפרצוף הוא 42, כלומר גובה הגופן של הגיבור שלצידו**, לבקשת
+   אלון. הוא היה 38, ו-`box-shadow` אינו תופס מקום, ולכן גובה
+   השורה נשאר 44 (‏42 כפול 1.05) והשלד אינו זז ולו פיקסל.
+   הטבעת דקה מזו של הבורר (3.5 ולא 4), כי הפרצוף עדיין קטן ממנו. */
+.card-main.kidc .ph{width:42px;height:42px;border-radius:50%;overflow:hidden;flex:none;
   display:block;background:var(--face-fill);
   box-shadow:0 0 0 2px var(--leaf-head),0 0 0 3.5px var(--sun-on-leaf)}
 .card-main.kidc .ph svg,.card-main.kidc .ph img{display:block;width:100%;height:100%;object-fit:cover}
@@ -3604,7 +3623,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '222041b';
+window.NETA_BUILD = '2e44ea6';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4733,7 +4752,7 @@ window.NETA_CONFIG = {
     <div class="tabhd">
       <button class="c" id="ac-face" onclick="editMyIdentity()" title="השם והתמונה שלי"></button>
       <div class="tx">
-        <div class="hi" id="ac-hi">מה קרה מאז שנטעת</div>
+        <div class="hi" id="ac-hi">מה קרה מאז שנטעת ב</div>
         <!-- החודש הנוכחי. הוא מה שהכרטיס מודד, ולכן הוא הכותרת. -->
         <div class="nm" id="ac-mon">·</div>
       </div>
@@ -4742,7 +4761,11 @@ window.NETA_CONFIG = {
     <!-- הכרטיס. ‏`paintActCard` כותב את הגיבור ואת שני הערכים
          שמרכיבים אותו: ממך ומהקרובים. -->
     <div class="card-main">
-      <p class="eb">נכנסו החודש לקופות של הילדים</p>
+      <!-- ‏**"הושקעו" ו"בעתיד של הקרובים"**, לבקשת אלון: "נכנסו"
+           נקרא כאילו הכסף הגיע מעצמו, וזה בדיוק הנימוק שהחליף
+           "נצבר" ב"הושקעו" בכרטיס של מי שהוזמנה. ו"הקרובים" ולא
+           "הילדים", כי הפיד מונה גם רגעים של אחיין ושל נכד. -->
+      <p class="eb">הושקעו החודש בעתיד של הקרובים</p>
       <p class="tbhero" id="ac-num">·</p>
       <p class="usub" id="ac-sub">·</p>
       <!-- שני טורים ולא שלושה. העיצוב מבקש גם "צמיחה", ולמספר הזה
@@ -6981,7 +7004,11 @@ function paintActCard(){
   if(fc)fc.innerHTML=faceHTML(myAvatarKey(),'av-parent');
   txt('ac-mon',months[new Date().getMonth()]);
   const any=(feedRows||[]).length>0;
-  txt('ac-hi',any?'מה קרה מאז שנטעת':'פעילות');
+  /* ‏**השורה נגמרת ב-"ב", והחודש שמתחתיה משלים אותה**, לבקשת אלון:
+     שתי השורות נקראות כמשפט אחד ("מה קרה מאז שנטעת ב / ספטמבר")
+     ולא כתווית וכותרת שאין ביניהן קשר. בלי פיד אין חודש להשלים,
+     ולכן שם נשאר "פעילות" בלי הזנב. */
+  txt('ac-hi',any?'מה קרה מאז שנטעת ב':'פעילות');
   const f=actMonthSums();
   /* ‏"+" רק כשיש מה להוסיף. ‏"+0 ₪" הוא בדיוק מספר שקיומו מודיע על
      היעדרו, והצורה הנכונה לו היא "·" שכבר משרתת את כל המוצר. */
@@ -14629,6 +14656,13 @@ function netaBackend(cfg){
                   /* מי הוזמן, או שם המורשה בשלוש שורות בקשת האישור
                      (0063, 0073). null בכל שאר הסוגים. */
                   subject:r.subject_name||null,
+                  /* ‏**`occ` ולא `icon` הוא מה שמצייר את האייקון**, ו-0075
+                     הוסיפה את העמודה ל-RPC בעוד שהשורה הזאת לא קראה
+                     אותה מעולם: `occIcon(undefined)` נופל ל-`other`,
+                     כלומר **כוכב על כל שורה בפיד** בחשבון חי. בהדגמה
+                     זה לא נראה, כי `demoSource.feed` כותבת `occ` ביד
+                     על כל שורה — אותו נתיב־שונה־בשקט שכבר מתועד כאן. */
+                  occ:r.planting_occasion||null,
                   icon:r.planting_icon,isMe:r.is_me,years:r.years,
                   amount:r.amount_agorot==null?null:Number(r.amount_agorot),
                   contribKind:r.contrib_kind,
@@ -15724,7 +15758,10 @@ function relAvatar(name){
 }
 function feedRowHTML(e){
   const mine=!!e.isMe;
-  let sub='',amount='',cls='',glyph=occIcon(e.occ,18),title=e.name;
+  /* השם נמסר כארגומנט שלישי, כי רגע שנפתח דרך "משהו אחר" מחזיק
+     שם חופשי והאנום שלו הוא `other`: ‏`OCC_WORD` גוזרת ממנו אייקון
+     כשהאנום אינו אומר דבר. המפתח נשאר האנום. */
+  let sub='',amount='',cls='',glyph=occIcon(e.occ,18,e.name),title=e.name;
   /* חלוקה קבועה בכל סוגי השורות: הכותרת אומרת לאן, השורה מתחתיה אומרת
      מי, והעמודה בקצה אומרת מה. כך אפשר לסרוק כל עמודה בנפרד, ואף שורה
      אינה חוזרת על עצמה בשני מקומות.
