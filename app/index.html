@@ -2044,28 +2044,57 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    עכשיו כל אחד מהם אמר אותו בגודל אחר: h2 הוא 16px/500 מול h3 שהוא
    17px/600, ו-.sub הוא 1.55 בלי רוחב מרבי מול .es p שהוא 1.65 ב-290.
    ההבדלים קטנים בנפרד, וביחד הם שני מסכים משתי משפחות. */
-[data-name="רגע ההשקעה"] .center{padding:0 4px}
-[data-name="רגע ההשקעה"] .center>svg{margin:0 auto 16px}
-[data-name="רגע ההשקעה"] #aha-h2{font-size:17px;font-weight:600;line-height:1.35;
-  text-wrap:balance;margin:0}
-[data-name="רגע ההשקעה"] #aha-sub{font-size:12.5px;line-height:1.65;
-  margin:10px auto 0;max-width:290px}
-/* מספר לבדו הוא עדיין סיכום, גם כשהוא אחד. מה שמסך הסיכום אינו יכול
-   לומר הוא היום שאליו הכסף הולך, ולכן הוא זה שיושב כאן, והסכום נשאר
-   כשורה מתחתיו. זהב, כי זה כסף שיהיה ולא כסף שיש. */
-[data-name="רגע ההשקעה"] .aha-day{margin-top:20px;background:var(--s1);
-  border:1px solid var(--line);border-radius:14px;padding:17px 15px;text-align:center}
-[data-name="רגע ההשקעה"] .ad-when{font-size:10.5px;letter-spacing:.11em;color:var(--sun)}
-[data-name="רגע ההשקעה"] .ad-line{font-size:14.5px;line-height:1.6;margin-top:9px;text-wrap:balance}
-[data-name="רגע ההשקעה"] .ad-line b{font-weight:500}
-[data-name="רגע ההשקעה"] .ad-amt{margin-top:12px;padding-top:11px;border-top:1px solid var(--rule);
-  font-size:11px;color:var(--tx-3)}
-[data-name="רגע ההשקעה"] .ad-amt b{color:var(--sun-soft);font-weight:500;font-size:14px}
-/* "לא כרגע" אינו בחירה שקולה להזמנה, ולכן קישור שקט ולא כפתור שני. */
-[data-name="רגע ההשקעה"] #a-acts .btn{margin-top:20px}
-[data-name="רגע ההשקעה"] .alink{display:block;width:100%;margin-top:13px;background:none;
-  border:0;font-family:inherit;font-size:12.5px;color:var(--tx-2);cursor:pointer}
-[data-name="רגע ההשקעה"] .alink span{border-bottom:1px solid var(--line-2);padding-bottom:2px}
+/* ‏── מסך "נטעת": ירוק מלא ──────────────────────────
+   ‏`CHANGES.md` §5.6. אותה צורה של הדלת ושל הסטורי: מרווח
+   שלילי שבולע את הריפוד של `.stage`, ו-`gtop` שבולע את זה של
+   ‏`.device`. **מי שמוסיף מסך ירוק מלא מוסיף אותו לסלקטור שם.** */
+.ahag{margin:-8px -18px -14px;min-height:calc(100% + 22px);
+  display:flex;flex-direction:column;text-align:center;
+  background:var(--leaf-head);color:var(--on-head);
+  padding:calc(44px + env(safe-area-inset-top)) 22px 22px}
+/* הפרצוף של מי שנטעת לו, בטבעת חול. **והמשטח מוצהר
+   במפורש**: ה-`rect` שבספרייט הוא `currentColor` והכלל הגלובלי
+   צובע אותו `--s2`, שהוא קרם על דף לבן וכהה על ירוק. */
+.ahag .fcs{width:64px;height:64px;border-radius:50%;overflow:hidden;display:block;
+  margin:0 auto;background:var(--face-fill);flex:none;
+  box-shadow:0 0 0 3px var(--leaf-head),0 0 0 5px var(--sun-on-leaf)}
+.ahag .fcs svg,.ahag .fcs img{display:block;width:100%;height:100%;object-fit:cover}
+.ahag .fcs.sq{border-radius:20px;background:none;overflow:visible;
+  box-shadow:0 0 0 1px var(--leaf-gold-line);
+  display:grid;place-items:center;color:var(--sun-on-leaf)}
+.ahag h1{font-size:clamp(26px,8.4vw,34px);font-weight:800;margin:22px 0 0;
+  letter-spacing:-.3px;line-height:1.15;text-wrap:balance}
+.ahag .dsub{font-size:15.5px;color:var(--sun-on-leaf);margin:6px 0 0;line-height:1.4}
+/* שני הערכים. **`auto auto` עם `space-between`**, ולא שני חצאים
+   שווים כמו בעיצוב: זו בדיוק המלכודת של `.duo`. */
+.ahak{border:1px solid var(--leaf-gold-line);border-radius:24px;padding:20px 22px;
+  margin-top:26px;background:rgba(0,0,0,.08);
+  display:flex;justify-content:space-between;align-items:baseline;gap:14px;text-align:start}
+.ahak>div{min-width:0}
+.ahak .l{font-size:12px;color:var(--mist)}
+.ahak .v{font-size:clamp(20px,6.6vw,31px);font-weight:700;line-height:1.1;
+  margin:2px 0 0;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ahak .now{color:var(--on-head)}
+.ahak .fut{color:var(--sun-on-leaf)}
+.ahak>div:last-child{text-align:end}
+/* ‏**המשפט הוא `--mist` ולא `#DCEADF` שבעיצוב.** לעיצוב יש שם
+   ארבע דרגות על הירוק (לבן, חול, `#DCEADF`, והתוויות הקטנות),
+   ובפלטה שלנו יש שלוש: `--on-head`, `--sun-on-leaf` ו-`--mist`.
+   **וצבע קשיח הוא בדיוק מה שספר המותג עוצר עליו**, כי הוא
+   עובד בערכה אחת ונשבר בשנייה בלי שום שגיאה. **המחיר שנאמר:**
+   המשפט יושב באותה דרגה של התוויות שבכרטיס, ומה שמבדיל
+   ביניהם הוא הגודל והמקום. ‏4.7:1 על הראש, כלומר עובר. */
+.ahag .ahaline{font-size:14px;line-height:1.6;color:var(--mist);margin:22px 0 0;
+  text-wrap:balance}
+/* הפעולות נצמדות לתחתית, כמו בעיצוב (`flex:1` על המרווח
+   שלפניהן). **והראשי בחול ולא בירוק**, כי על מסך ירוק
+   מלא כפתור ירוק אינו נפרד מהרקע. */
+.ahacta{margin-top:auto;padding-top:20px}
+.ahacta .btn{width:100%;height:54px;background:var(--sun-on-leaf);
+  color:var(--leaf-head);border-color:var(--sun-on-leaf)}
+.ahacta .btn.g2{background:none;border:1px solid var(--leaf-gold-line);
+  color:var(--on-head);height:50px;margin-top:10px}
+.ahag .ahafine{font-size:11px;line-height:1.5;color:var(--mist);margin:0 0 14px}
 /* ‏min-height:62% של .es נועד למסך ריק שאין בו דבר מלבד ההודעה. במסך
    האישור יש מתחתיה כרטיס ושלוש יציאות, ולכן הוא מצומצם — אבל לא לאפס:
    הסיבה שהוא נדחף פעם מתחת לקצה המכשיר לא הייתה המרווח אלא שהמסך ישב
@@ -3309,7 +3338,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd9a545b';
+window.NETA_BUILD = 'b0bc4d5';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4206,37 +4235,48 @@ window.NETA_CONFIG = {
 </section>
 
 <!-- 4 AHA -->
-<section class="screen center-v" data-name="רגע ההשקעה">
-  <div class="center">
-    <svg width="104" height="121" viewBox="0 0 140 160" style="display:block">
-      <ellipse cx="70" cy="150" rx="36" ry="6" fill="var(--s2)"/>
-      <line x1="70" y1="148" x2="70" y2="50" stroke="var(--leaf)" stroke-width="4" stroke-linecap="round"/>
-      <path d="M70 120 C 52 114, 44 98, 53 87 C 62 98, 68 109, 70 120" fill="var(--leaf)" opacity=".35"/>
-      <path d="M70 120 C 88 114, 96 98, 87 87 C 78 98, 72 109, 70 120" fill="var(--leaf)" opacity=".35"/>
-      <path d="M70 95 C 48 87, 38 66, 51 53 C 62 67, 68 82, 70 95" fill="var(--leaf)" opacity=".35"/>
-      <path d="M70 95 C 92 87, 102 66, 89 53 C 78 67, 72 82, 70 95" fill="var(--leaf)"/>
-      <circle cx="89" cy="53" r="15" fill="none" stroke="var(--leaf)" stroke-width="1" opacity=".45"/>
-    </svg>
-    <h2 id="aha-h2">העלה שלך נוסף לעץ של דניאל</h2>
-    <p class="sub" id="aha-sub">זו הנטיעה הראשונה עבור <b>דניאל</b>. אתה פותח אותה.</p>
-  </div>
-  <!-- היום עצמו, ולא הסכום. כל עובדה מספרית כאן כבר נקראה במסך הסיכום
-       שנייה אחת קודם, ומה שלא נאמר שם הוא איך זה ירגיש כשהמועד יגיע.
-       הסכום נשאר, כשורה מתחת למשפט, כדי שהמסך יאשר שהכול נרשם. -->
-  <div class="aha-day">
-    <p class="ad-when" id="aha-when">אוגוסט 2032</p>
-    <p class="ad-line" id="aha-line"></p>
-    <p class="ad-amt"><span id="aha-amtk">בקצב הזה ייצבר שם</span> <b id="aha-v3">כ-14,343 ₪</b></p>
-  </div>
-  <p class="fine" style="margin-top:10px;text-align:center" id="aha-fine">הדמיה לפי מסלול מאוזן. אינה מהווה הבטחת תשואה.</p>
+<!-- ‏── "נטעת": מסך ירוק מלא ────────────────────────
+     ‏`CHANGES.md` §5.6 ו-`design/neta-06-create.html` (השלב השישי,
+     הקלאס `.done`). המסך הזה היה האחרון שנשאר בשפה
+     הישנה: דף לבן, נבט מצויר בן 104x121, וכרטיס קרם.
 
-  <!-- פעולה אחת ראשית, ולא שתיים שוות. ההזמנה היא הרגע החזק ביותר
-       שיהיה לבקש בו שיתוף, ו"לא כרגע" הוא היציאה ממנו. כשאין למי
-       להזמין (קופה שלא יועדה, או הפקדה לרגע קיים) נשאר כפתור אחד. -->
-  <div id="a-acts">
-    <button class="btn" id="a-share" onclick="shareFromAha()">הזמן את הקרובים</button>
-    <button class="btn" id="a-next" onclick="ahaNext()">חזרה לנטיעות שלי</button>
-    <button class="alink" id="a-skip" onclick="ahaSkip()"><span>לא כרגע</span></button>
+     **והוא ירוק מלא ולא ראש ירוק מעל גיליון**, כמו הדלת
+     והסטורי, ולכן הוא נוסף לסלקטור של `gtop` — אחרת נשארת
+     מעליו הרצועה הלבנה של 14 הפיקסלים, בדיוק כמו שקרה שם.
+
+     **ומה שירד:** המשפט הארוך שהיה ב-`aha-sub` ("איזה כיף שכבר
+     עכשיו חשבת כמה צעדים קדימה…"), שהיה שתי שורות של שבח
+     מעל משפט שאומר את אותו דבר; ו-"לא כרגע", שהיה קישור שלישי
+     מתחת לשני הכפתורים. בעיצוב יש שתי פעולות בלבד, והשנייה
+     ("לראות את הלימודים של נועה") היא גם היציאה. -->
+<section class="screen" data-name="רגע ההשקעה">
+  <div class="ahag">
+    <!-- עיגול הוא אדם וריבוע מעוגל הוא רגע: לקופה שלא
+         יועדה אין נהנה, ולכן שם זה האייקון של הרגע. -->
+    <span class="fcs" id="aha-face" aria-hidden="true"></span>
+    <h1 id="aha-h2">נטעת</h1>
+    <p class="dsub" id="aha-when">·</p>
+    <!-- שני ערכים ולא שלושה: מה שהפקדת היום ומה שייצבר.
+         **והם `auto auto` עם `space-between` ולא שני חצאים שווים**,
+         אותה מלכודת `.duo`: בעיצוב זו רשת של `1fr 1fr` עם מספר
+         של 31 ו-`nowrap`, וב-320 נשארים 120 פיקסלים לכל טור. -->
+    <div class="ahak">
+      <div><p class="l" id="aha-k1">הנטיעה הראשונה</p>
+        <p class="v now" id="aha-v1">·</p></div>
+      <div><p class="l" id="aha-k2">בקצב הזה ייצבר</p>
+        <p class="v fut" id="aha-v2">·</p></div>
+    </div>
+    <!-- משפט אחד, והוא זה שנותן למסך את שמו: מה יקרה
+         ביום עצמו. ‏`ahaDayLine` היא המקור, והיא כבר מוטה
+         נכון לנהנה שהוא אני. -->
+    <p class="ahaline" id="aha-line"></p>
+    <div class="ahacta" id="a-acts">
+      <!-- ההסתייגות יושבת מעל הפעולות ולא מתחת למספר:
+           בעיצוב אין הסתייגות כלל, ואנחנו מציגים צפי. -->
+      <p class="ahafine" id="aha-fine"></p>
+      <button class="btn" id="a-share" onclick="shareFromAha()">להזמין קרובים לנטוע איתך</button>
+      <button class="btn g2" id="a-next" onclick="ahaNext()">חזרה לנטיעות שלי</button>
+    </div>
   </div>
 </section>
 
@@ -5748,7 +5788,11 @@ function paintHeader(){}
    ‏30 היה "השם שלך" וירד איתו, ו**זה היה חייב לרדת כאן**: מחיקת
    מסך מזיזה את כל מה שאחריו באחד, ו"הוספת אדם" עברה מ-31 ל-30. היא
    כן מציגה סרגל (נמדד), ולו ה-30 היה נשאר הוא היה נועל אותה בשקט. */
-const NOCHROME=[19,20,21,22,23,25,26,27,29];
+/* ‏**ו-4 הוא מסך "נטעת".** הוא ירוק מלא ונושא שתי יציאות
+   משלו בתחתית, וסרגל של חמישה יעדים מתחתיהן הוא שלוש פעולות
+   ברגע שכולו אחת. בעיצוב אין שם סרגל, ושני המסלולים שמגיעים
+   אליו — נטיעה חדשה והפקדה לרגע קיים — יוצאים ממנו בכפתור. */
+const NOCHROME=[4,19,20,21,22,23,25,26,27,29];
 const REVIEW=24;
 /* מסך הבית מסומן on כבר ב-HTML, ולכן הוא נצבע כל עוד לא ידוע מה
    להראות. ‏openShared ו-landSignedIn כבר מסתירים את הבמה בדיוק מהסיבה
@@ -5857,7 +5901,7 @@ function go(i){
      ולא מרשימה שנייה שצריך לסנכרן. */
   const dv=document.querySelector('.device');
   if(dv)dv.classList.toggle('gtop',!!screens[i]&&
-    !!screens[i].querySelector(':scope > .leafhead, :scope > .tabg, :scope > #splash, :scope > .how-story'));
+    !!screens[i].querySelector(':scope > .leafhead, :scope > .tabg, :scope > #splash, :scope > .how-story, :scope > .ahag'));
   [...nav.children].forEach((b,n)=>b.classList.toggle('on',n===i));
   /* ‏**הטאב המסומן הוא הטאב שממנו נכנסו**, ‏`FIX-moment` §5.
      מסך הרגע ושאר המסכים שאינם יעד בסרגל סימנו תמיד את הראשון,
@@ -7498,9 +7542,7 @@ function renderMoney(){const v=freq==='m'?+amtM.value:+amtL.value;amtShow(freq,v
        שנבחר מסלול — כלומר קו מפריד ריק מתחת לכותרת לאורך כל החלק
        הראשון של המסך, בדיוק כשגוללים ורוצים לזכור כמה בחרת. */
     document.getElementById('amt-sticky-txt').textContent=
-      v.toLocaleString('he-IL')+' ₪ '+(freq==='m'?'בחודש':'היום');return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);const approx=mode==='market'?'כ-':'';num.textContent=approx+Math.round(total).toLocaleString('he-IL')+' ₪';document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+approx+Math.round(total).toLocaleString('he-IL')+' ₪';if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();ahaCopy();
-txt('aha-amtk',ahaAmtLabel());
-txt('aha-v3',approx+Math.round(total).toLocaleString('he-IL')+' ₪');const assume=freq==='m'?'בהנחה שההפקדה נמשכת עד אז. ':'';
+      v.toLocaleString('he-IL')+' ₪ '+(freq==='m'?'בחודש':'היום');return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);const approx=mode==='market'?'כ-':'';num.textContent=approx+Math.round(total).toLocaleString('he-IL')+' ₪';document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+approx+Math.round(total).toLocaleString('he-IL')+' ₪';if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();payFine();const assume=freq==='m'?'בהנחה שההפקדה נמשכת עד אז. ':'';
   fine.textContent=assume+(mode==='keep'?'הסכום נשמר כפי שהוא ואינו חשוף לשוק. שימו לב שערכו הריאלי עשוי להישחק עם הזמן בשל אינפלציה.':mode==='safe'?'הקרן והריבית מובטחות על ידי הגוף הפיננסי המנהל. התנאים המדויקים, לרבות סכומי מינימום, נקבעים על ידו.':'התשואות להמחשה בלבד ומבוססות על נתוני עבר. הערך עשוי לרדת. אינן מהוות הבטחת תשואה או ייעוץ השקעות.');}
 document.querySelectorAll('.opt[data-m]').forEach(el=>el.onclick=()=>{
   modeTouched=true;setMode(el.dataset.m);
@@ -9309,12 +9351,6 @@ function backFromInvite(){
   if(cur&&plantAt(cur)){openDetail(cur);return}
   goHome();
 }
-/* המועד יושב בכותרת הכרטיס ולא בכיתוב של הסכום, ולכן כאן נשאר רק מה
-   שקורה לכסף. "שם" מפנה ליום שהמשפט שמעליו כבר תיאר. */
-function ahaAmtLabel(){
-  if(mode==='keep')return 'יישמרו שם';
-  return freq==='m' ? 'בקצב הזה ייצבר שם' : 'ובמועד יהיו שם';
-}
 /* המשפט שנושא את המסך הוא אותו משפט שנושא את ההזמנה, ולכן הוא נכתב
    פעם אחת. ‏AHA_DAY החזיקה עד כה עותק שני של אותם שבעה משפטים בניסוח
    "ביום ש...", והשתיים כבר הספיקו להיפרד: החתונה שם איבדה את המשך,
@@ -9367,61 +9403,92 @@ function ahaDayLine(){
   return inviteLine(o.kid,o.occ,o.sex);
 }
 /* copy on the payment + aha screens follows the planting being deposited into */
-function ahaCopy(){
-  const nm=goal.name, dl=goal.dateLabel, open=goal.desig===false;
-  txt('aha-when',dl||'');
-  const dayLine=document.getElementById('aha-line');
-  if(dayLine)dayLine.innerHTML=ahaDayLine();
-  if(open){
-    txt('pay-fine','ההפקדה עוברת לחשבון הרשום על שמך, אצל הגוף הפיננסי המנהל, ומיועדת לקופה שפתחת. נטע אינה מחזיקה בכסף בשום שלב.');
-    const el0=document.getElementById('aha-sub');
-    if(el0)el0.innerHTML='הכסף שמור על שמך. <b>תחליט למי הוא הולך, כשתדע.</b>';
+/* ‏**שם הרגע בלבד, והוא נגזר ממה שנשמר על הנטיעה.**
+   ‏`momOccNoun` מורידה מ-`plantingName` את " של <הילד>" ומיידעת,
+   ו-`possOf` מוסיפה את הקניין: "הלימודים שלה". **ובלי מגדר
+   אין קניין ואין לוכסן**, בדיוק כמו בכרטיס של "מה מחכה להם".
+   בנטיעה חדשה אין עדיין שורה במודל, ולכן מרכיבים אחת
+   מ-`goal` ומעבירים אותה לאותה פונקציה — מקור אחד ולא טבלה שנייה. */
+function ahaMoment(){
+  if(isNewPlant){
+    const nm=goal.name||'';
+    const occ=occasionEnum(goal.type);
+    const pseudo={name:plantingName(goal.type,nm,goal.desig!==false),
+                  occasion:occ,sex:beneSex};
+    return {noun:momOccNoun(pseudo,nm),sex:beneSex,kid:nm,occ:occ};
+  }
+  let p=null;try{p=plantAt(cur)}catch(e){}
+  if(!p)return {noun:'',sex:null,kid:'',occ:null};
+  return {noun:momOccNoun(p,p.kid),sex:p.sex,kid:p.kid||'',occ:p.occasion};
+}
+/* הפרצוף של מי שנטעת לו. **עיגול הוא אדם וריבוע מעוגל
+   הוא רגע**, ולקופה שלא יועדה אין אדם: צללית אנונימית שם
+   היא אדם שאינו קיים. אותה הכרעה בדיוק של שורת הרגע. */
+function ahaFace(){
+  const el=document.getElementById('aha-face');
+  if(!el)return;
+  const m=ahaMoment();
+  if(!m.kid){
+    el.className='fcs sq';
+    el.innerHTML=occIcon(m.occ,30,m.noun);
     return;
   }
-  txt('pay-fine','ההפקדה עוברת ישירות לחשבון הנעול על שם '+nm+', אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.');
-  /* "הדמיה לפי מסלול מאוזן" היה כתוב קשיח בקובץ, בזמן שהמספר שמעליו
-     מחושב מהמסלול שנבחר בפועל. כל עוד ברירת המחדל הייתה מאוזן איש לא
-     ראה; מאז שהיא "ריבית מובטחת", הכיתוב מכחיש את המספר שמעליו. */
+  el.className='fcs';
+  let av='';
+  if(isNewPlant)av=cAvatar||kidAvatar(m.kid,beneSex);
+  else{let p=null;try{p=plantAt(cur)}catch(e){}av=(p&&detailKidAv(p))||kidAvatar(m.kid,m.sex)}
+  el.innerHTML=kidFaceHTML(av,64);
+}
+/* ‏**שתי פונקציות ולא אחת, כי הן רצות בשתי נקודות זמן.**
+   שורת ההפקדה שבמסך התשלום חייבת להיות עדכנית בכל תנועה של
+   הסליידר, ומסך "נטעת" נכתב פעם אחת כשמגיעים אליו. ‏`ahaCopy`
+   רצה עד כה מתוך `renderMoney`, כלומר היא ציירה פרצוף וכתבה
+   חמישה צמתים על מסך שאינו על המסך, בכל גרירה של הסליידר. */
+function payFine(){
+  const nm=goal.name;
+  txt('pay-fine',goal.desig===false
+    ?'ההפקדה עוברת לחשבון הרשום על שמך, אצל הגוף הפיננסי המנהל, ומיועדת לקופה שפתחת. נטע אינה מחזיקה בכסף בשום שלב.'
+    :('ההפקדה עוברת ישירות לחשבון הנעול על שם '+nm+', אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.'));
+
+}
+/* מסך "נטעת": הפרצוף, שורת הרגע, המשפט וההסתייגות. */
+function ahaCopy(){
+  /* שורת המשנה: הרגע והמועד, שורה אחת. אותה הצמדה
+     של `wiz-occ` ושל שורת הרגע ב-"מה מחכה להם". */
+  const m=ahaMoment();
+  const dl=goal.dateLabel||'';
+  /* ‏**וכשהנהנה הוא אני, הקניין הוא "שלך" ולא "שלו".**
+     ‏`possOf` נגזרת מ-`beneSex`, ובמסלול "עבורי" הוא עדיין מלא
+     — כלומר המסך אמר "בר המצווה שלו" על מי שקורא אותו.
+     זו אותה משפחה של תשעת המקומות שבפרק "כשהנהנה הוא אני",
+     ו-`selfsay.js` הוא שתפס אותה כאן. */
+  const mine=beneIsMe()||isSelfName(m.kid);
+  const phrase=m.noun?(m.noun+(mine?' שלך':possOf(m.sex))):'';
+  txt('aha-when',[phrase,dl].filter(Boolean).join(' · ')||'·');
+
+  ahaFace();
+
+  /* המשפט: מה יקרה ביום עצמו. */
+  const dayLine=document.getElementById('aha-line');
+  if(dayLine)dayLine.innerHTML=isNewPlant?ahaDayLine():ahaAgainLine();
+
+  /* ‏"הדמיה לפי מסלול מאוזן" היה כתוב קשיח בקובץ, בזמן
+     שהמספר שמעליו מחושב מהמסלול שנבחר בפועל. */
   txt('aha-fine',mode==='keep'
     ? 'הכסף יישמר כמו שהוא, בלי ריבית.'
     : ('הדמיה לפי מסלול '+trackLabel().split(' · ')[0]+'. אינה מהווה הבטחת תשואה.'));
-  /* המשפט הזה ישב קודם בקופסה ירוקה מתחת למספר, וחזר על מה שהכותרת
-     כבר אמרה. כשורת משנה תחת הכותרת הוא משלים אותה במקום להכפיל.
-
-     "מכאן זה קורה מעצמו, בכל חודש" נכון רק להוראת קבע. בהפקדה חד
-     פעמית אין מה שיקרה מעצמו, ולכן שם נשאר הניסוח הקצר. */
-  /* מה שקורה מכאן, ומי קוצר בסוף. השם נאמר כאן ולא בכותרת, פעם אחת
-     במסך — אותו כלל כמו ב"העתיד שלנו".
-
-     "תראה את זה גדל" נכון כשיש ממה לגדול: הפקדה חודשית מוסיפה, וריבית
-     מוסיפה. הפקדה חד פעמית במסלול "יישמר כמו שהוא" אינה גדלה בכלל,
-     ושם המשפט אומר "שמור" ולא "גדל". */
-  /* שני משפטים: מה שעשית, ומה שיקרה מכאן. השם אינו חוזר במשפט הראשון
-     כי הכותרת בדיוק אמרה אותו, ולכן "בעתיד שלו" ולא "בעתיד של X".
-
-     "תראה את זה גדל" נכון כשיש ממה לגדול: הפקדה חודשית מוסיפה, וריבית
-     מוסיפה. הפקדה חד פעמית במסלול "יישמר כמו שהוא" אינה גדלה בכלל,
-     ושם המשפט אומר "שמור" ולא "גדל". */
-  const el=document.getElementById('aha-sub');
-  if(isNewPlant){
-    const grows=freq==='m'||mode!=='keep';
-    el.innerHTML=beneIsMe()
-      ? ('איזה כיף שכבר עכשיו חשבת כמה צעדים קדימה והשקעת בעתיד שלך. '+
-         (grows?'מעכשיו תוכל לראות את זה גדל לאורך השנים, ו'
-               :'מעכשיו זה שמור ומחכה, ו')+
-         '<b>תקצור את הפירות</b> ברגע המיוחל.')
-      : ('איזה כיף שכבר עכשיו חשבת כמה צעדים קדימה והשקעת בעתיד '+bs('שלו','שלה')+'. '+
-         (grows?'מעכשיו תוכל לראות את זה גדל לאורך השנים, ו'
-               :'מעכשיו זה שמור ומחכה, ו')+
-         '<b>'+nm+'</b> '+bs('יקצור','תקצור')+' את הפירות ברגע המיוחל.');
-    return;
-  }
-  let p=null;try{p=plantAt(cur);}catch(e){}
-  if(!p){el.innerHTML='עד כה השקעת עבור <b>'+nm+'</b>';return}
-  const others=p.who.filter(w=>w[1]!=='אתה').map(w=>w[1]);
-  el.innerHTML=others.length
-    ?'עד כה השקיעו ב'+p.kid+' <b>'+['אתה'].concat(others).join(', ')+'</b>'
-    :'עד כה <b>אתה</b> היחיד שהשקיע ב'+p.kid;
+}
+/* הפקדה לרגע שכבר קיים: שורת היום מתארת פתיחה
+   ("X עוד לא יודע, אבל…"), וכאן הוא כבר יודע שיש רגע. מה
+   שנכון בהפקדה חוזרת הוא מי כבר נוטע שם. */
+function ahaAgainLine(){
+  let p=null;try{p=plantAt(cur)}catch(e){}
+  if(!p)return '';
+  const others=(p.who||[]).filter(function(w){return w[1]!=='אתה'})
+    .map(function(w){return w[1]});
+  return others.length
+    ?('נוטעים כאן: <b>'+attrText(['אתה'].concat(others).join(', '))+'</b>')
+    :'כל הפקדה מצטרפת לקודמת, והכול גדל יחד.';
 }
 /* המכתב ירד ממסך הרגע. מה שישב שם היה חלון של שנייה אחת — מי שדילג
    עליו איבד אותו — והוא גם מעולם לא שמר דבר: seal() רק החליף תצוגה,
@@ -9704,14 +9771,24 @@ function finishDeposit(){
 
    רק בנטיעה ראשונה. בהפקדה נוספת הכותרת נשארת מה שהייתה, ולכן
    הברכה לא נשחקת. */
+/* ‏**הכותרת היא שלוש מילים, והשם נאמר בה.** ‏`CHANGES.md` §5.6
+   נוקב ב-"נטעת לנועה". מה שהיה כאן ("זהו, בשעה טובה. ההשקעה
+   עבור אביב נוצרה בהצלחה!") הוא אישור מערכת בשתי שורות,
+   והוא מתאר מה קרה במערכת ולא מה עשית.
+
+   **ו"נטעת" ולא "השקעת", וזה אינו סותר את §2א:** הכלל שם
+   הוא שתווית של **סכום שכבר הושקע** אומרת "השקעת", ו"נטעת"
+   נשאר שם של פעולה. זו הפעולה. */
+function ahaTitle(){
+  const nm=goal.name||'';
+  if(goal.desig===false)return isNewPlant?'נטעת':'הוספת לקופה שלך';
+  if(beneIsMe()||isSelfName(nm))return isNewPlant?'נטעת לעצמך':'הוספת לעצמך';
+  if(!nm)return isNewPlant?'נטעת':'הוספת';
+  return (isNewPlant?'נטעת ל':'הוספת ל')+nm;
+}
 function celebrate(){
   const h2=document.getElementById('aha-h2');
-  if(h2)h2.innerHTML=goal.desig===false
-    ? (isNewPlant?'זהו, בשעה טובה.<br>הקופה שלך נפתחה!':'הוספת לקופה שלך')
-    : (isNewPlant?(beneIsMe()
-        ? 'זהו, בשעה טובה.<br>ההשקעה שלך נוצרה בהצלחה!'
-        : ('זהו, בשעה טובה.<br>ההשקעה עבור '+attrText(goal.name)+' נוצרה בהצלחה!'))
-                 :('העלה שלך נוסף לעץ של '+goal.name));
+  if(h2)h2.textContent=ahaTitle();
   if(onbo){
     const v=freq==='m'?+amtM.value:+amtL.value;
     const total=mode==='keep'?fvCalc(v,0):fvCalc(v,rate);
@@ -9746,7 +9823,19 @@ function celebrate(){
      ממילא — אתה רואה את מה שיצרת — וגם מה שמחליף את שלב הפתיחות
      שירד: שם, ולא באשף, "פתח לקרובים" הוא הכפתור הראשי. */
   ahaToDetail=!!(isNewPlant&&cur);
-  txt('a-next',ahaToDetail?'לרגע שנטעת':'חזרה לנטיעות שלי');
+  /* ‏**שני הערכים שבכרטיס**, באותם מקורות של `wizCard`:
+     מה שהפקדת היום, ומה שייצבר בקצב הזה עד המועד.
+     ‏`APPROX` ו-`MQ` ולא מקף רגיל, כמו בכרטיס של האשף. */
+  const v=freq==='m'?+((amtM||{}).value||0):+((amtL||{}).value||0);
+  txt('aha-k1',isNewPlant
+    ?(freq==='m'?'הנטיעה הראשונה':'מה שנטעת')
+    :'מה שהוסף עכשיו');
+  txt('aha-v1',v?shekel(v*100):'·');
+  const yr=(goal.dateLabel||'').match(/\d{4}/);
+  txt('aha-k2',(mode==='keep'?'יישמר עד':'בקצב הזה ייצבר')+(yr?(' ב'+MQ+yr[0]):''));
+  txt('aha-v2',v?(APPROX+shekel(Math.round(fvCalc(v,mode==='keep'?0:rate))*100)):'·');
+  txt('a-next',ahaToDetail?'לראות את הרגע שנטעת':'חזרה לנטיעות שלי');
+  ahaCopy();
   /* השיתוף מוצע רק כשיש מה לשתף: רגע חדש ומיועד. לקופה שעדיין לא
      יועדה אי אפשר לפתוח לקרובים בכלל — הם לא יכולים להפקיד לתוכה —
      ובהפקדה לרגע קיים ההצעה כבר יושבת במסך הרגע שממנו הגעת.
@@ -9754,12 +9843,15 @@ function celebrate(){
      כשיש הזמנה היא הכפתור, והיציאה היא קישור מתחתיה. כשאין, היציאה
      היא הכפתור ואין קישור: כפתור רפאים בודד היה נראה כמו חצי פעולה. */
   const canShare=ahaToDetail&&goal.desig!==false;
+  /* ‏**שתי פעולות ולא שלוש.** ‏"לא כרגע" היה קישור שלישי
+     מתחת לשניים, והכפתור השני כבר אומר את אותו דבר:
+     לראות את מה שנטעת בלי להזמין איש. **וכשאין מה לשתף
+     השני הופך לראשי** ומקבל את המילוי, כדי שלא יישאר
+     על המסך כפתור מתאר בודד. */
   const sh=document.getElementById('a-share'),
-        nx=document.getElementById('a-next'),
-        sk=document.getElementById('a-skip');
+        nx=document.getElementById('a-next');
   if(sh)sh.style.display=canShare?'':'none';
-  if(sk)sk.style.display=canShare?'':'none';
-  if(nx)nx.style.display=canShare?'none':'';
+  if(nx)nx.classList.toggle('g2',canShare);
   isNewPlant=false;
   go(4);
 }
@@ -9770,10 +9862,6 @@ function ahaNext(){
   if(ahaToDetail&&cur){ahaToDetail=false;openDetail(cur);return}
   goHome();
 }
-/* ‏"לא כרגע" הוא היציאה מהמסך, ולא קיצור דרך לרגע. עד כה הוא עבר דרך
-   ahaNext ונחת במסך הנטיעה, שבו יושב "הזמן קרוב" — כלומר מי שאמר "לא
-   כרגע" קיבל מיד את אותה הצעה שוב. הביתה. */
-function ahaSkip(){ahaToDetail=false;goHome()}
 /* אותה פעולה בדיוק כמו במסך הרגע, ובאותן מילים: פותחת לקרובים ונוחתת
    על ההזמנה כפי שהיא תיראה. הגיליון שבדרך אינו חיכוך מיותר — הוא
    המקום היחיד שאומר מה פתיחה עושה, ומה כבר אי אפשר לבטל.
