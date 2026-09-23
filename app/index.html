@@ -3436,7 +3436,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    האצבע במקום איתה. הכלל הזה מכבה אותו לכל אורך המגע, וזה מה
    שבקובץ העיצוב. */
 .crnw.grab .crn .cface{transition:none}
-.crn .cband{position:absolute;top:0;left:50%;height:72px;border-radius:99px;
+/* ‏**הקפסולה היא רוחב המסך, תמיד.** היא הייתה ברוחב התוכן כשכולם
+   נכנסו, ואז היא נגמרת במקום אחר לכל מספר ילדים — ואלון ביקש
+   שלוש פעמים שתהיה כמו בעיצוב, שבו היא מגיעה לשני הקצוות.
+   ‏`left:0;right:0` ולא רוחב שנכתב ב-JS: אין מה לחשב. */
+.crn .cband{position:absolute;inset:0 0 auto;height:72px;border-radius:99px;
   background:rgba(255,255,255,.07)}
 /* ‏**והצבע מוצהר במפורש.** ‏`<button>` יורש `color:buttontext`
    מהדפדפן ולא מהראש הירוק, ולכן משבצת של קופה שאין לה נהנה —
@@ -4369,7 +4373,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '344647d';
+window.NETA_BUILD = '352f32c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -18732,10 +18736,9 @@ function fuLayout(c,anim,px){
   };
   let B=fuGeom(c,n,sel,fuH(n,false));
   if(!fits(B))B=fuGeom(c,n,sel,fuH(n,true));
-  const P=B.P,pc=B.pc,leftEdge=B.leftEdge,rightEdge=B.rightEdge;
-  /* **הקפסולה לעולם אינה ארוכה מהכרטיסייה שמתחתיה**: כשכולם
-     נכנסים היא ברוחב התוכן, וכשלא היא ממלאת את הרוחב ומי שלא
-     נכנס נחתך בקצה המעוגל.
+  const P=B.P;
+  /* ‏`wide` אינו קובע יותר את רוחב הקפסולה — היא מלאה תמיד — אלא
+     מי נחתך ואיפה יושב ה-＋.
      **והמדידה היא מול שני הקצוות ולא מול הרוחב הכולל.** גוש
      התוכן ממורכז על עצמו ולא על המיכל, ולכן הוא יכול להיות צר
      מהמיכל **ובכל זאת לחרוג ממנו בצד אחד** — נמדד: בחמישה
@@ -18743,14 +18746,14 @@ function fuLayout(c,anim,px){
      ב-10 פיקסלים. ‏**‏＋ שנחתך הוא הפעולה היחידה בטבעת.** */
   const wide=!fits(B);
   r.classList.toggle('wide',wide);
-  const band=r.querySelector('.cband');
-  if(band){
-    band.style.width=(wide?rw:(rightEdge-leftEdge))+'px';
-    band.style.transform='translateX(calc(-50% + '+(wide?0:((leftEdge+rightEdge)/2))+'px))';
-  }
-  let ax=pc;
+  /* ‏**ה-＋ יושב בקצה הקפסולה ולא צמוד לפרצוף האחרון.** מרגע
+     שהקפסולה היא רוחב מלא, משבצת שיושבת באמצע משאירה את הקצה
+     השמאלי ריק — והקצה הוא בדיוק המקום שבו פעולה נקראת כפעולה.
+     במצב `wide` היא נדחקת ימינה עד למשבצת הפנויה הראשונה, כי שם
+     מה שמעבר לה נחתך ממילא. */
+  const lim=-(rw/2)+FU_GAP+FU_SM/2;
+  let ax=lim;
   if(wide){
-    const lim=-(rw/2)+FU_GAP+FU_SM/2;
     let best=null;
     for(let q=B.lo;q<=B.hi;q++)
       if(P[q]>=lim-0.5&&(best===null||P[q]<P[best]))best=q;
