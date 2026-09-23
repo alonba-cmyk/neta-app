@@ -4456,7 +4456,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b06b8b0';
+window.NETA_BUILD = 'ff87826';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7367,9 +7367,17 @@ function bShortWhen(o){
   }
   return '';
 }
-/* "שני רגעים", לא "2 רגעים". */
-const COUNT_WORD=['','','שני','שלושה','ארבעה','חמישה','שישה'];
+/* "שני רגעים", לא "2 רגעים". ‏**עד עשרה**, כי `SPEC-relatives-full`
+   §5 קובע שמספרים קטנים בתוך משפט נכתבים במילים וספרות שמורות
+   לסכומים ולתאריכים; הרשימה עצרה בשישה, ומשבעה ומעלה משפט ההקשר
+   חזר לספרה. */
+const COUNT_WORD=['','','שני','שלושה','ארבעה','חמישה','שישה',
+                  'שבעה','שמונה','תשעה','עשרה'];
 function countWord(n){return COUNT_WORD[n]||String(n)}
+/* אותה רשימה בנקבה, ל"ועוד אחת בדרך" שבכרטיס. */
+const COUNT_WORD_F=['','אחת','שתיים','שלוש','ארבע','חמש','שש',
+                    'שבע','שמונה','תשע','עשר'];
+function countWordF(n){return COUNT_WORD_F[n]||String(n)}
 let cType='בר/בת מצווה',cIcon='bar_mitzvah',dateTouched=false;
 /* a fund without a named beneficiary is a different instrument, and says so */
 let designated=true;
@@ -13339,8 +13347,19 @@ function relInviters(){
    השאלה הזאת — הרשימה עצמה, מיקום סקשן הילדים, והכפתור הירוק —
    ושתיים מהן שאלו רק על relatives. ‏placeKidSection לבדה הייתה
    משאירה את הילדים מתחת למצב ריק שכבר אינו מוצג. */
+/* ‏**מי ברשימה "נוטעים איתי", ומקור אחד לכל מי ששואל.** ‏`SPEC-relatives-full`
+   §6 דורש שמספר הקרובים בכרטיס יהיה שווה למספר השורות ברשימה,
+   **כולל הממתינים**, ואלון ראה את ההפך בחשבון שלו: הכרטיס הכריז
+   "קרוב אחד" והרשימה מתחתיו הייתה ריקה. הכרטיס סָפַר `relPlanters`
+   (מי שכבר נטע) והרשימה ציירה את הפנקס כולו, כלומר שתי שאלות
+   שונות על אותה שורה במסך. עכשיו הרשימה, הספירה וערימת הפרצופים
+   קוראות מכאן. */
+function relPeople(){
+  if(relInviteKey)return relatives.slice();
+  return relInviters().concat(relatives);
+}
 function relListCount(){
-  return relatives.length+(relInviteKey?0:relInviters().length);
+  return relPeople().length;
 }
 /* שורה של מי שהזמין אותי. היא אינה נפתחת לעריכה, כי הוא אינו שלי
    לערוך, והכיתוב אינו נוקב בקרבה: קרבה אינה סימטרית, ומי שהוספתי
@@ -13393,35 +13412,50 @@ function paintRelCard(){
      לא נטע אינו "עוד אין קרובים" — יש קרוב, והוא הוזמן; מה שאין
      הוא כסף, וזה מה ששני התאים אומרים. **ו"אתה לבד" כשאיני נוטע
      עם איש אבל כן נוטע לאחרים.** */
-  const inv=relatives.filter(function(r){return !relJoined(r)&&r.status==='invited'}).length;
+  const invPpl=relatives.filter(function(r){return !relJoined(r)&&r.status==='invited'});
+  const inv=invPpl.length;
   const forOthers=kidSectionCount();
-  txt('rl-num',joined?(joined===1?'קרוב אחד':joined+' קרובים')
-    :inv?(inv===1?'קרוב אחד':inv+' קרובים')
+  /* ‏**המספר הוא מספר השורות ברשימה, כולל הממתינים** (§6). הוא
+     סָפַר את מי שכבר נטע, ולכן הכרטיס הכריז "קרוב אחד" מעל רשימה
+     שיש בה ארבעה — או, אצל אלון, מעל רשימה ריקה. */
+  const n=relPeople().length;
+  txt('rl-num',n?(n===1?'קרוב אחד':n+' קרובים')
     :forOthers?'אתה לבד':'עוד אין קרובים');
   /* ‏**ערימת פרצופים במקום פרצוף יחיד** (§2): הטאב הזה הוא על
      קבוצה, ולכן הסימן שלו הוא קבוצה. שלושה, כמו בשאר הטאבים —
      מעבר לזה הערימה מתחילה לכסות את המספר שלצידה. **ובמצב ריק
      שני עיגולים מקווקוים**, כי "אין ערך עדיין" הוא מקווקו בכל
      המוצר. */
-  const invPpl=relatives.filter(function(r){return !relJoined(r)&&r.status==='invited'});
-  const show=joined?ppl:invPpl;
+  const show=relPeople();
   if(stk)stk.innerHTML=show.length
     ? show.slice(0,3).map(function(x){
         return '<span>'+faceHTML(x.av,'av-someone')+'</span>'}).join('')
     : '<span class="gh"></span><span class="gh"></span>';
-  if(stk)stk.classList.toggle('ghost',!joined);
+  if(stk)stk.classList.toggle('ghost',!show.length);
   /* ‏**למי הם נוטעים, ולא "כל קרוב מהכיס שלו".** ‏§2 נוקב בשורה
      אחת שאומרת לכמה ילדים; **ו"ועוד אחת בדרך" אינה שם**, כי אלון
      ביקש במפורש שהשורה הזאת תרד, וזו בקשה שגוברת על העיצוב. */
   const kids=relKidCount();
+  /* ‏**שורה אחת בשני חלקים** (§2): הזמנה שממתינה ואחריה למי הם
+     נוטעים, ו**המספרים במילים ולא בספרות** — אלון ראה "לעתיד של
+     3 ילדים", וספרה בתוך משפט הקשר היא בדיוק מה ש-§5 אוסר.
+     **והחלק הראשון מופיע רק כשיש הזמנה ממתינה**, וזה מחזיר את
+     "ועוד אחת בדרך" שירדה מכאן בסבב קודם לבקשת אלון: מה שהוא
+     ביקש להוריד אז היה שורה שאומרת את זה **לבדה**, והיא חוזרת
+     כחצי משפט שנגמר בלמי. */
+  const pend=inv?('ועוד '+countWordF(inv)+' בדרך'):'';
+  const to=kids?('ל'+(kids===1?'ילד אחד':countWord(kids)+' ילדים')):'';
   txt('rl-sub',joined
-    ? (kids?('לעתיד של '+(kids===1?'ילד אחד':kids+' ילדים')):'לעתיד של מי שיקר לכם')
+    ? ([pend,to].filter(Boolean).join(', ')||'לעתיד של מי שיקר לכם')
     : inv?(inv===1?'הוזמן ועוד לא נטע':'הוזמנו ועוד לא נטעו')
     : 'כל קרוב שמצטרף נוטע מהכיס שלו');
-  /* "נטעתם יחד" הוא מה שנצבר ברגעים של המשפחה שלי, כולל הכסף של
-     הקרובים — זה בדיוק מה שהמילה "יחד" אומרת. "הם נטעו" הוא החלק
-     שלהם בתוכו. */
-  const rows=((lastModel&&lastModel.plantings)||[]).filter(function(p){return p.familyMine});
+  /* ‏**"נטעתם יחד" ו"הם נטעו" נגזרים מאותו מקור שממנו נגזרת
+     הרשימה** (§2). הם חושבו על `familyMine` בלבד בזמן שהשורות
+     סופרות את `participants` של **כל** הנטיעות, ולכן קרוב שנטע
+     לאחיין שלי הציג סכום בשורה ולא נספר בתא שמעליה. עכשיו שניהם
+     על כל הנטיעות שבמודל: `accrued` בסך הכול, ו`accrued-mine`
+     הוא החלק שלהם. */
+  const rows=(lastModel&&lastModel.plantings)||[];
   const tot=rows.reduce(function(a,p){return a+Number(p.accrued||0)},0);
   const mine=rows.reduce(function(a,p){return a+Number(p.mine||0)},0);
   const theirs=Math.max(0,tot-mine);
@@ -13588,11 +13622,11 @@ function buildRelatives(){
       /* כתובת מייל — "שלח שוב", כי יש מה לשלוח. טלפון — "העתק קישור",
          כי ההודעה עוברת ביד ממילא. הקישור של מי שהוזמן במייל לא אבד:
          הוא בגיליון שנפתח בלחיצה על השורה. */
-      if(r.status==='invited')right=canResend(r,'')
-        ? '<button class="tbpill" onclick="event.stopPropagation();resendInvite('+i+',\'\')">שלח שוב</button>'
-        : liveAccount()
-        ? '<button class="tbpill" onclick="event.stopPropagation();copyRelativeLink('+i+')">העתק קישור</button>'
-        : '<button class="tbpill" onclick="event.stopPropagation();inviteRelative('+i+')">שלח שוב</button>';
+      /* ‏**מי שהוזמן ועוד לא נטע מקבל תג `ממתינה` ולא כפתור**
+         (§3.1). ישבו כאן "שלח שוב" ו"העתק קישור", כלומר פעולה
+         שנייה על מסך שיש בו פעולה ראשית אחת — ושתיהן ממילא חיות
+         בגיליון שהשורה פותחת, כך שדבר לא אבד. */
+      if(r.status==='invited')right='<span class="tbpill wait">ממתינה</span>';
       /* ‏**מי שכבר נוטע אינו מוזמן.** הכפתור נגזר מ-`status`
          לבדו, שהוא `'none'` בכל חשבון חי, ולכן מרים קיבלה
          "להזמין" בשורה שאומרת "נוטעת לניצקה". עכשיו הוא
@@ -13607,10 +13641,24 @@ function buildRelatives(){
            אינו הופך ל-0. */
         const pls=relPlantings(r);
         const amt=pls.length?relAmount(r):null;
+        /* ‏**ואחרי הסכום חץ** (§3.1): השורה נכנסת לגיליון של
+           הקרוב, וזה מה שהחץ אומר. בתג ובכפתור אין חץ, כי שם
+           מה שבקצה הוא מצב או פעולה ולא כניסה. */
+        /* ‏**ו"להזמין" שמור למי שעוד לא הצטרף.** מי שכבר בפנים
+           ועוד לא הפקיד מקבל `0 ₪` עמום עם התווית שלו (‏§5:
+           "ערך חסר מוצג כ-`0 ₪`"), ולא כפתור שמזמין מישהו
+           שכבר כאן. **ובלי סכום גלוי נשאר התג**, כי מספר שאיני
+           רשאי לראות אינו הופך ל-0 — וזה מה שמבדיל בין השניים:
+           ‏`relAmount` מחזירה `null` גם כשאין הפקדה וגם כשהיא
+           חסויה, ומה שמכריע הוא אם יש בכלל נטיעה משותפת. */
+        const chev='<span class="tbchev"><svg width="7" height="12" '+
+          'viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg></span>';
         right=amt!=null
-          ? amtHTML(relVerb(r),amt)
+          ? amtHTML(relVerb(r),amt)+chev
           : pls.length
           ? '<span class="tbpill wait">נוטע</span>'
+          : r.status==='in'
+          ? amtHTML(relVerb(r),0)+chev
           : '<button class="tbpill" onclick="event.stopPropagation();inviteRelative('+i+')">להזמין</button>';
       }
       return relTabRow(r,right,' onclick="editRelative('+i+')"');
@@ -13639,15 +13687,24 @@ function invTabRow(x){
   const n=x.items.length;
   const one=n===1?x.items[0]:null;
   const sub=one?one.name:(countWord(n)+' רגעים יחד');
-  /* כפתור מוביל לדבר עצמו: רגע אחד נפתח, וכמה מהם מובילים למסך
-     שמחזיק אותם. אותה הכרעה בדיוק כמו בשורה של ילד. */
-  const act=one
-    ? '<button class="tbpill" onclick="openDetail(\''+attrText(one.key)+'\')">הרגע</button>'
-    : '<button class="tbpill" onclick="openInvestments()">ההשקעות שלי</button>';
-  return '<div class="tabrow">'+
+  /* ‏**מה שבקצה הוא הסכום, כמו בכל שורה אחרת ברשימה** (§3.1).
+     ישבה כאן גלולה ("הרגע" / "ההשקעות שלי"), כלומר אותה שורה
+     מדדה דבר אחר מהשורות שמתחתיה. **והתווית היא שם עצם**, כי
+     למי שהזמין אותי אין קרבה שאפשר לגזור ממנה מין, וזו בדיוק
+     הצורה ש-`relVerb` כבר מחזירה כשאין `g`.
+     ‏**והשורה עצמה מנווטת**: רגע אחד נפתח, וכמה מהם מובילים
+     למסך שמחזיק אותם — אותה הכרעה של השורה של ילד. */
+  const go=one?'openDetail(\''+attrText(one.key)+'\')':'openInvestments()';
+  const amt=relAmount(x);
+  const right=amt!=null
+    ? amtHTML('נטיעה',amt)
+    : '<span class="tbpill wait">נוטע</span>';
+  return '<div class="tabrow" onclick="'+go+'">'+
     '<span class="fc">'+faceHTML(x.av,'av-someone')+'</span>'+
     '<span class="gr"><span class="t">'+attrText(x.name)+'</span>'+
-    '<span class="s">'+attrText(sub)+'</span></span>'+act+'</div>';
+    '<span class="s">'+attrText(sub)+'</span></span>'+right+
+    '<span class="tbchev"><svg width="7" height="12" viewBox="0 0 7 12" '+
+        'aria-hidden="true"><use href="#chev"/></svg></span>'+'</div>';
 }
 /* ‏`placeKidSection` נמחקה. היא הזיזה את סקשן הילדים מעל המצב הריק
    של הקרובים או מתחתיו, כי אז הוא ישב ראשון והמצב הריק היה מסך שלם;
@@ -13667,10 +13724,33 @@ function kidHeadLabel(sex){
         :sex==='m'?'אני נוטע עבורם'
         :'נוטעים עבורם';
 }
+/* ‏**"אני נוטע עבורם" הוא הילדים של אחרים, ולא הילדים שלי**
+   (`SPEC-relatives-full` §3.2). אלון ראה שם את אביב ואת גל,
+   שתיהן הבנות שלו, לצד לניצקה האחיינית — והרשימה הזאת היא
+   המקבילה של "היקרים של אחרים" שבמסך הבית. הילדים שלי חיים
+   בבית ובטאב "מה מחכה להם".
+
+   **הגבול הוא `familyMine`**, אותו גבול של מסך הבית ולא אחד
+   שהומצא כאן: ילד שיש לו רגע במשפחה שלי הוא שלי. **ולמי שאין
+   לו ולו רגע אחד הקרבה מכריעה** (`KIN_MINE`), כי אין ממה
+   לגזור — וילד כזה ממילא מופיע בבורר של "מה מחכה להם" דרך
+   `fuWithBenes`, ולכן אינו נעלם מהמוצר.
+
+   **המחיר שנאמר:** ילד שלי שאין לו רגע אינו על המסך הזה. */
+function beneIsOthers(b){
+  if(!b)return false;
+  const ms=kidMomentsAll(b);
+  if(ms.length)return !ms.some(function(p){return p.familyMine!==false});
+  return KIN_MINE.indexOf(b.relation)<0;
+}
+function kidSectionRows(){
+  return relInviteKey?[]:(benes||[]).filter(function(b){
+    return b&&b.name&&beneIsOthers(b)});
+}
 /* כמה ילדים ברשימה השנייה, כלומר האם אני נוטע לאחרים. הכרטיס
    שואל את זה כדי להבדיל בין "אתה לבד" לבין "עוד אין קרובים". */
 function kidSectionCount(){
-  return relInviteKey?0:((benes||[]).filter(function(b){return b&&b.name}).length);
+  return kidSectionRows().length;
 }
 /* ‏**ארבעת המצבים של §4, במקום אחד.** ‏`relBlank` הוא המצב שאין בו
    דבר — לא קרובים, לא הזמנות ולא ילדים — ואז הגיליון הוא שלושת
@@ -13697,9 +13777,17 @@ function paintRelStart(){
   const two=!blank&&!relInviteKey&&relPlanters().length===0&&kidSectionCount()===0;
   cta.style.display=two?'':'none';
   cta.innerHTML=two?hmCtaBlock('לפתוח רגע ליקר שלכם',"openAddPerson('for')"):'';
+  /* ‏**מחזירה וגם מורידה.** ‏`#rel-eyebrow` מוחזר ב-`buildRelatives`
+     ו-`#kid-head`/`#kid-list` ב-`paintKidSection`, אבל `#rel-list`
+     היה נסתר כאן ולא הוחזר על ידי איש — כלומר חשבון שעבר ממצב
+     ריק למצב שיש בו קרוב הציג את הכותרת "נוטעים איתי" מעל רשימה
+     ב-`display:none`. **זה בדיוק מה שאלון ראה**, וזה גם מה שהכלל
+     "כותרת מקטע לא מופיעה בלי שורה אחת מתחתיה" (§4) אוסר.
+     **מי שמסתיר צומת חייב גם להחזיר אותו** — אותו כלל של
+     `chartMode` שכבר מתועד כאן. */
   ['rel-eyebrow','rel-list','kid-head','kid-list'].forEach(function(id){
     const e=document.getElementById(id);
-    if(e&&blank)e.style.display='none';
+    if(e)e.style.display=blank?'none':'';
   });
 }
 function paintKidSection(){
@@ -13707,7 +13795,7 @@ function paintKidSection(){
   if(!head||!box)return;
   /* במצב הזמנה הרשימה שמעל היא בחירה מרובה של נמענים, וילד אינו
      נמען. סקשן שלישי שם היה רעש על מסך שיש בו משימה אחת. */
-  const rows=relInviteKey?[]:(benes||[]).filter(function(b){return b&&b.name});
+  const rows=kidSectionRows();
   head.style.display=relInviteKey?'none':'';
   box.style.display=relInviteKey?'none':'';
   if(relInviteKey)return;
@@ -13741,21 +13829,31 @@ function paintKidSection(){
                n ? (n===1?'רגע אחד':countWord(n)+' רגעים')
                  : 'עוד לא נפתח רגע']
       .filter(Boolean).join(' · ');
+    /* ‏**"נטעת" והסכום, ולא חץ לבדו** (§3.2). השורה נגמרה בחץ
+       בזמן שכל שורה אחרת במסך נושאת מספר, ומה שהיא מודדת הוא
+       כמה **אני** נטעתי לילד הזה — כלומר `mine` ולא `accrued`,
+       שהוא של כולם. */
+    const mine=all.reduce(function(a,p){return a+Number(p.mine||0)},0);
     return '<div class="tabrow" onclick="'+go+'">'+
       '<button type="button" class="fc" aria-label="'+attrText(b.name)+', לערוך" '+
         'onclick="event.stopPropagation();editKid(\''+attrText(key)+'\')">'+
         kidFaceHTML(b.avatar||kidAvatar(b.name,b.sex),44)+'</button>'+
       '<span class="gr"><span class="t">'+attrText(b.name)+'</span>'+
       '<span class="s">'+attrText(sub)+'</span></span>'+
+      amtHTML('נטעת',mine)+
       '<span class="tbchev"><svg width="7" height="12" viewBox="0 0 7 12" '+
         'aria-hidden="true"><use href="#chev"/></svg></span></div>';
   }).join('')+
-    relAddRow('for','להוסיף קרוב','ילד, נכד, אחיין, או ילד של חברים');
+    relAddRow('for','לפתוח רגע לילד של מישהו אחר','אחיין, נכד, הבן של חבר');
   /* ‏**ואותה פסקה גם כאן, מאותו טעם.** ‏`neta-211` מציג אותה
      בשני מצבים ("עוד לא פתחת רגע לילד של מישהו אחר"), ומקטע
-     שכל תוכנו שורה מקווקוות נקרא כמקטע שלא נטען. **והכיתוב של
-     הכפתור לא השתנה**, כי "שתי שורות ההוספה אומרות את אותו
-     הדבר" היא הכרעה של אלון שגוברת על העיצוב. */
+     שכל תוכנו שורה מקווקוות נקרא כמקטע שלא נטען.
+     **והכיתוב נוקב במה שהכפתור עושה**, "לפתוח רגע לילד של מישהו
+     אחר" — זה מה ש-§3.2 כותב, ומרגע שהרשימה היא של ילדי אחרים
+     שתי השורות אינן אומרות עוד את אותו הדבר. מה שאלון החזיר
+     בסבב ההוא הוא **השאלה** ("את מי תרצה להוסיף"), והיא נשארה:
+     ‏`openAddPerson('for')` מסמנת ברירת מחדל ואינה מדלגת על
+     הפאנל. */
   if(!rows.length)box.innerHTML=
     '<p class="qln">עוד לא פתחת רגע לילד של מישהו אחר. '+
     'אפשר לנטוע לאחיין, לנכד, או לילד של חבר.</p>'+box.innerHTML;
@@ -18054,12 +18152,17 @@ function buildHomeSummary(fast){
     paintFuture(fuAll,sel,isEmpty||!fuAll.length);
     if(liveAccount()){buildProfile();loadAccountLists();applyTabSources();paintLaterCard();}
     paintInvestments();
-    /* **והכרטיס של "הקרובים שלי" גם הוא.** הוא סוכם את `lastModel`,
-       ו-`buildRelatives` רצה בטעינה לפני שהמודל הגיע — כלומר "יחד
-       השקעתם עד היום · ·" על חשבון שיש בו 27,200 ₪, לנצח, כי אין
-       שום מסלול שמצייר אותו שוב. זו אותה סיבה בדיוק ש-`paintInvestments`
-       נקרא כאן: **מי שקורא מהמודל חייב להיקרא שוב כשהמודל מגיע.** */
-    paintRelCard();
+    /* **ו"הקרובים שלי" כולו, לא הכרטיס לבדו.** הוא סוכם את
+       `lastModel`, ו-`buildRelatives` רצה בטעינה לפני שהמודל הגיע —
+       כלומר "יחד השקעתם עד היום · ·" על חשבון שיש בו 27,200 ₪,
+       לנצח, כי אין שום מסלול שמצייר אותו שוב. **וכאן ישבה
+       `paintRelCard` לבדה, וזה היה חצי תיקון:** גם השורות קוראות
+       מהמודל (`relPlantings`, `relAmount`, ילדי אחרים), ולכן
+       הכרטיס התעדכן והרשימה מתחתיו נשארה על הציור שלפני הטעינה —
+       "קרוב אחד" מעל שורה שמציעה להזמין אותו, ואצל אלון מעל
+       רשימה ריקה. **מי שקורא מהמודל חייב להיקרא שוב כשהמודל
+       מגיע**, וזו הפונקציה שקוראת לשלושתם. */
+    buildRelatives();
     buildFeed();buildConnection();
     /* ההתראות ממתינות במסד למי שיפתח את האפליקציה. זו רשת הביטחון:
        הריקון המיידי קורה אצל מי שגרם לאירוע (ראו onAction למטה), וכאן
@@ -18849,7 +18952,18 @@ function fuLayout(c,anim,px){
   const els=r.querySelectorAll('.cface'),n=els.length;
   if(!n)return;
   const sel=r.dataset.sel===undefined||r.dataset.sel===''?c:+r.dataset.sel;
-  const shift=c-(+r.dataset.c||0);
+  /* ‏**וההיסט נורמלי מעגלית, כמו המיקומים עצמם.** ‏`c-prev` הוא
+     מספר גולמי, ובטבעת בת שלושה מעבר מ-0 ל-2 הוא **+2** בזמן
+     שהתנועה בפועל היא צעד אחד אחורה. ‏`nd!==od-shift` שמתחתיו
+     מסמן אז את הנבחר עצמו כמי שהתגלגל מקצה לקצה, והוא **קופץ
+     במקום לנסוע** — בדיוק מה שאלון ראה, ובדיוק במספר הילדים
+     שיש לו. **קובץ העיצוב אינו נתקל בזה** כי יש בו חמישה
+     פרצופים, ובחמישה לחיצה על שכן ועל מי שאחריו נופלת ממילא
+     בטווח; נמדד ב-`neta-204`: ב-+1 מתגלגל אחד וב-+2 שניים,
+     והנבחר נוסע בשניהם. ‏`fuOff` כבר עושה בדיוק את הנרמול הזה
+     למיקומים, וההיסט נשאר גולמי. */
+  const shift0=c-(+r.dataset.c||0),hn=fuH(n);
+  const shift=n?(((shift0+n+hn)%n)-hn):shift0;
   r.dataset.c=c;
   const fits=function(G){
     return !((G.rightEdge-G.leftEdge)>rw||G.leftEdge<-(rw/2)-0.5||
@@ -19577,6 +19691,19 @@ function openHome(){ openInvestments(); }
    מחדש של הטבעת, כי היא מחושבת ממידות ו-`getBoundingClientRect`
    על מסך שאינו `.on` מחזיר 0. */
 function openFuture(){ go(0); fuLayout(+((document.getElementById('fu-crn')||{}).dataset||{}).c||0,false,0); }
+/* ‏**ומחשבים מחדש כשהרוחב משתנה**, כמו `window.addEventListener("resize",boot)`
+   שבקובץ העיצוב. המיקומים נגזרים מרוחב הטבעת בפועל, ו-`fuLayout`
+   רץ בכניסה לטאב בלבד — כלומר סיבוב מכשיר או פתיחת מקלדת השאירו
+   את הטבעת על החישוב של הרוחב הקודם. בלי אנימציה, כי אין כאן
+   מחווה שהמשתמש עשה. */
+let fuRz=0;
+window.addEventListener('resize',function(){
+  clearTimeout(fuRz);
+  fuRz=setTimeout(function(){
+    const r=document.getElementById('fu-crn');
+    if(r&&r.dataset.ok==='1')fuLayout(+r.dataset.c||0,false,0);
+  },120);
+});
 /* הבחירה שורדת מעבר בין טאבים. עד כה הכניסה מהסרגל התחתון ניקתה את
    fuPick, כלומר מי שבחר ילד, עבר ל"פעילות" וחזר, מצא את המסך על ילד
    אחר. זו בחירה של המשתמש ולא מצב זמני של המסך, ואיפוס שלה הוא
