@@ -3338,16 +3338,26 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    תוכן התא לפי הכיווניות ומזיז את המספר, ולכן `display:flex` עם
    `justify-content:center` ולא `text-align` לבדו.
 
-   **ושני תאים ולא שלושה, ו"צמיחה" אינה כאן.** ‏`accrued_agorot`
-   הוא `sum(contributions.amount_agorot)` — כלומר סכום ההפקדות
-   ותו לא — ואין במסד ולו עמודה אחת של שווי נוכחי. הטור השלישי
-   היה מציג `0 ₪` לכל אדם לנצח, וזו בדיוק ההכרעה שכבר רשומה על
-   הכרטיס של "פעילות": מספר שאין מאחוריו מנגנון אינו עולה למסך.
-   **והסכום עדיין נסגר**, כי השקעת + אחרים נטעו = הנצבר בדיוק. */
+   **ושלושה תאים ולא שניים, וזו הכרעה שהתהפכה.** נרשם כאן
+   ש"צמיחה" אינה עולה למסך, כי `accrued_agorot` הוא
+   `sum(contributions.amount_agorot)` ואין במסד ולו עמודה אחת של
+   שווי נוכחי — כלומר הטור היה `0 ₪` לכל אדם לנצח, בדיוק ההכרעה
+   שרשומה על הכרטיס של "פעילות". **מה שמחזיק את ההיפוך הוא שזה
+   הכלל החוצה של החבילה ולא חריג של המסך הזה:** ‏`FIX-home-empty.md`
+   פרק 0 §2 קובע שהשלד אינו משתנה לעולם וערך שאין מוצג `0 ₪` עמום,
+   ושקף "הכסף עבד" שב"פעילות" **כבר מציג את התא הזה בדיוק כך**.
+   **והנימוק מעשי ולא סגנוני:** תא שמופיע רק כשיש בו ערך קופץ
+   ביום שהצמיחה מתחילה, ומזיז את המסך מתחת לאצבע.
+   **והסכום עדיין נסגר**, כי השקעת + אחרים נטעו = הנצבר בדיוק,
+   והשלישי אפס. */
 .trio2{display:flex;margin-top:18px;padding:14px 0 2px;
   border-top:1px solid rgba(255,255,255,.14)}
-.trio2>div{flex:1;min-width:0;padding:0 6px;text-align:center}
-.trio2>div+div{border-inline-start:1px solid rgba(255,255,255,.12)}
+/* ‏**הקו המפריד יושב על שלושת התאים ולא על שניים.** בלעדיו התא
+   הראשון רחב ב-1 מהשניים האחרים (‏94 מול 95), ובדיקת הקבלה של
+   ‏`FIX-home-empty` נוקבת ברוחב זהה. */
+.trio2>div{flex:1;min-width:0;padding:0 6px;text-align:center;
+  border-inline-start:1px solid transparent}
+.trio2>div+div{border-inline-start-color:rgba(255,255,255,.12)}
 .trio2 .k{margin:0;font-size:11.5px;color:rgba(255,255,255,.62);white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;display:flex;justify-content:center}
 .trio2 .v{margin:4px 0 0;font-size:16.5px;font-weight:700;white-space:nowrap;
@@ -3370,8 +3380,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    **ו-`.scroll` מאפס אותו**, כי שם הפעולות דביקות בתחתית
    הגיליון: ריפוד מתחתיהן הוא שטח גלילה ריק מתחת לכפתור. */
 .sheet-main{flex:1 1 auto;background:var(--s1);border-radius:28px 28px 0 0;
-  margin:-28px -18px 0;padding:18px 20px 22px;min-height:0;position:relative;
+  margin:-28px -18px 0;padding:24px 20px 22px;min-height:0;position:relative;
   display:flex;flex-direction:column}
+/* ‏**‏24 מלמעלה בארבעת הטאבים, ולא 18** — בקשה של אלון, וזה גם המספר
+   שבחבילה: `FIX-02` כבר נוקב בו ("הריפוד של 24 הוא כל האוויר
+   שהחבילה נותנת שם"), והתווית הראשונה הייתה יושבת על 18. **וזה
+   הריפוד ולא מרווח על התווית**, כי `:first-child` אינו מזהה אותה
+   בשלושה מהטאבים — יושבים לפניה אחים מוסתרים. **ושני הגיליונות
+   שהדבר הראשון בהם אינו תווית נשארים על 18:** מסך הרגע פותח בשורה
+   (ושם החבילה נוקבת דווקא ב-4), והפרופיל באריח. */
+.sheet-main.scroll,.sheet-main.pfsh{padding-top:18px}
 /* ‏**תווית אחת לכל הגיליונות, בקשה של אלון.** היו שתיים:
    ‏`.tablbl` ב-12.5px בלי ריווח אותיות ובלי אוויר מעל, ו-`.eyebrow.big`
    ב-10px עם `letter-spacing:.12em` ו-`margin-top:30`. ‏"למי נטעת" ו"מחכה
@@ -3710,6 +3728,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הראשונה נשארת על מה שהגיליון נותן לה, ‏18, וזה מה ש-`lbl.js`
    כבר מודד בארבעת הטאבים. */
 .sheet-main .tablbl.sec2{margin-top:36px}
+/* ‏**ושורה מקווקוות שנגמר בה מקטע אינה מוסיפה את ה-16 שלה על ה-36.**
+   זה נמדד ותוקן פעם אחת ב-`#rel-list`, ו**חזר בטאב השני**: ב"מה
+   מחכה להם" שורת ההוספה יושבת ישירות לפני הכותרת הבאה, ושתי
+   ההצהרות מסתכמות ל-52 במקום 36 — אלון ראה את זה במכשיר. **מה
+   שמפריד בין מקטעים הוא התווית שאחריהם**, ולכן המרווח יורד מהשורה
+   בכל מקום שבו זה המצב ולא במכל מסוים. */
+.sheet-main .list-add:has(+.tablbl){margin-bottom:0}
 /* פעולה טקסטואלית בקצה השורה ("להזמין ›"), כשהשורה עצמה אינה
    נכנסת למסך אלא מזמינה. ירוק כמו `.v`, אבל בלי משקל של סכום. */
 .tabrow .go{font-size:14px;font-weight:600;color:var(--leaf);
@@ -4431,7 +4456,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '97a8ef5';
+window.NETA_BUILD = 'b06b8b0';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6048,9 +6073,12 @@ window.NETA_CONFIG = {
           <span class="y" id="mi-g-oth-p">·</span>
         </button>
       </div>
+      <!-- ‏**שלושה תאים, תמיד**, ו"צמיחה" היא `0 ₪` עמום כל עוד
+           אין במסד שווי נוכחי. ראו ההערה שב-CSS. -->
       <div class="trio2">
         <div><p class="k">השקעת</p><p class="v" id="mi-t1">·</p></div>
         <div><p class="k">אחרים נטעו</p><p class="v" id="mi-t2">·</p></div>
+        <div><p class="k">צמיחה</p><p class="v nil" id="mi-t3">·</p></div>
       </div>
       <!-- הכפתור יורד כשהקבוצה הנבחרת ריקה, והפעולה עוברת אל סוף
            ההסבר שבלבן: פעולה אחת במסך (`FIX-home-empty.md` §0). -->
@@ -7851,6 +7879,25 @@ const OCC_SYM={bar_mitzvah:'mitzvah',studies:'studies',army_trip:'trip',
    חייבות להיות אותו תו. */
 const MQ='־';
 const APPROX='כ'+MQ;
+/* ‏**וסכום שנאמר אחרי "כ־" מעוגל, ולא נקוב עד השקל.** אלון ראה
+   "בדרך לכ־390,263 ₪" ואמר שמספר מדויק עד השקל סותר את ההסתייגות
+   שלפניו ונקרא כהבטחה. **שלוש ספרות משמעותיות ולא עיגול לאלפים**,
+   וזה נמדד מהחבילה ולא נבחר: היא מדפיסה `כ־14,600 ₪` על בדיוק
+   הנטיעה שאצלנו היא 14,626, ו-`כ־23,500`, ‏`כ־9,800`, ‏`כ־400` —
+   כולם שלוש ספרות. עיגול לאלפים היה הופך את 23,500 ל-24,000 ואת
+   צפי של 400 ₪ לאפס, כלומר **נכשל בדיוק בבדיקת הקבלה השנייה**
+   ("במסך עם סכום קטן התחזית נשארת סבירה"). ‏390,263 יוצא 390,000
+   בשתי הצורות.
+   **ומה שמעוגל הוא מה שנושא את ה-"כ־"**, ולא כל סכום: נצבר אינו
+   הערכה, ו"יישמר כמו שהוא" הוא חשבון ולא תחזית. */
+function roundAbout(agorot){
+  const s=Math.round((Number(agorot)||0)/100);
+  if(!s)return 0;
+  const d=Math.floor(Math.log10(Math.abs(s)))-2;
+  const step=Math.pow(10,d);
+  return (d<=0?s:Math.round(s/step)*step)*100;
+}
+function aboutShekel(agorot){return APPROX+shekel(roundAbout(agorot))}
 const OCC_WORD=[[/טיול|תיור|מסע|עולם|טרק/,'trip'],
                 [/לימוד|אוניברסיט|תואר|סטודנט/,'studies'],
                 [/חתונ|נישוא/,'wedding'],
@@ -8066,7 +8113,7 @@ function actSlides(){
       momOccNoun(nx,kid),
       (kid?('של '+kid+', '):'')+'נפתח ב'+(monthYear(actIso(nx))||'·'),
       [['נצבר עד היום',acc[0],acc[1]],
-       ['בדרך ל',Number(nx.projection)?APPROX+shekel(nx.projection):'0 ₪',
+       ['בדרך ל',Number(nx.projection)?aboutShekel(nx.projection):'0 ₪',
         Number(nx.projection)?' sand':' nil sand']])});
   }
   return out;
@@ -9184,7 +9231,8 @@ function renderMoney(){const v=freq==='m'?+amtM.value:+amtL.value;amtShow(freq,v
        שנבחר מסלול — כלומר קו מפריד ריק מתחת לכותרת לאורך כל החלק
        הראשון של המסך, בדיוק כשגוללים ורוצים לזכור כמה בחרת. */
     document.getElementById('amt-sticky-txt').textContent=
-      v.toLocaleString('he-IL')+' ₪ '+(freq==='m'?'בחודש':'היום');return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);const approx=mode==='market'?'כ-':'';num.textContent=approx+Math.round(total).toLocaleString('he-IL')+' ₪';document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+approx+Math.round(total).toLocaleString('he-IL')+' ₪';if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();payFine();const assume=freq==='m'?'בהנחה שההפקדה נמשכת עד אז. ':'';
+      v.toLocaleString('he-IL')+' ₪ '+(freq==='m'?'בחודש':'היום');return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);/* ‏**והגיבור עובר ל-`aboutShekel` כמו כל צפי אחר.** הוא כתב `כ-` במקף רגיל, שנקרא כמינוס בין אות למספר, והוא נקב בסכום עד השקל; ובמסלול המובטח הוא לא אמר `כ־` כלל, בזמן ש-`d-futv` ו-`wiz-proj` אומרים אותו בכל המסלולים. **מה שנשאר בלי הסתייגות הוא `keep` בלבד**, שאינו תחזית אלא סכום ההפקדות. */
+const money=mode==='keep'?shekel(Math.round(total)*100):aboutShekel(Math.round(total)*100);num.textContent=money;document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+money;if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();payFine();const assume=freq==='m'?'בהנחה שההפקדה נמשכת עד אז. ':'';
   fine.textContent=assume+(mode==='keep'?'הסכום נשמר כפי שהוא ואינו חשוף לשוק. שימו לב שערכו הריאלי עשוי להישחק עם הזמן בשל אינפלציה.':mode==='safe'?'הקרן והריבית מובטחות על ידי הגוף הפיננסי המנהל. התנאים המדויקים, לרבות סכומי מינימום, נקבעים על ידו.':'התשואות להמחשה בלבד ומבוססות על נתוני עבר. הערך עשוי לרדת. אינן מהוות הבטחת תשואה או ייעוץ השקעות.');}
 document.querySelectorAll('.opt[data-m]').forEach(el=>el.onclick=()=>{
   modeTouched=true;setMode(el.dataset.m);
@@ -9524,7 +9572,8 @@ function joinCard(i){
   if(b)b.style.display=last?'':'none';
   const v=freq==='m'?+amtM.value:+amtL.value;
   const total=mode==='keep'?fvCalc(v,0):fvCalc(v,rate);
-  const money=(mode==='market'?APPROX:'')+shekel(Math.round(total)*100);
+  const money=mode==='keep'?shekel(Math.round(total)*100)
+    :aboutShekel(Math.round(total)*100);
   /* ‏**שם המסלול ולא הקצב שלו.** "100 ₪ בכל חודש · מאוזן" היא
      הצורה שבעיצוב, ושלושה מקטעים נכנסים בשורה אחת ב-320; עם
      "כ-3.5% בשנה" היא נחתכת. הקצב ממילא נאמר בשורת המסלול. */
@@ -9670,7 +9719,7 @@ function wizCard(cur,total){
   /* ‏**והצפי סופר גם את מה שכבר נצבר ברגע** (§10), כשמוסיפים
      לרגע קיים: אחרת הקפיצה בין המסכים נראית כקסם. */
   const base=wizExistingAccrued();
-  wizSet('wiz-proj',v?(APPROX+shekel(Math.round(fvCalc(v,mode==='keep'?0:rate))*100+base)):shekel(0),!v);
+  wizSet('wiz-proj',v?aboutShekel(Math.round(fvCalc(v,mode==='keep'?0:rate))*100+base):shekel(0),!v);
   /* השורה הרביעית, ומה שהיא אומרת. */
   const row=document.getElementById('wiz-torow');
   if(row)row.style.display=hasTo?'':'none';
@@ -11826,7 +11875,7 @@ function celebrate(){
   txt('aha-v1',v?shekel(v*100):'·');
   const yr=(goal.dateLabel||'').match(/\d{4}/);
   txt('aha-k2',(mode==='keep'?'יישמר עד':'בקצב הזה ייצבר')+(yr?(' ב'+MQ+yr[0]):''));
-  txt('aha-v2',v?(APPROX+shekel(Math.round(fvCalc(v,mode==='keep'?0:rate))*100)):'·');
+  txt('aha-v2',v?aboutShekel(Math.round(fvCalc(v,mode==='keep'?0:rate))*100):'·');
   txt('a-next',ahaToDetail?ahaSeeLabel():'חזרה לנטיעות שלי');
   ahaCopy();
   /* השיתוף מוצע רק כשיש מה לשתף: רגע חדש ומיועד. לקופה שעדיין לא
@@ -12506,7 +12555,7 @@ function paintDetail(key,p){
   const hasFut=proj>tot;
   const futbox=document.getElementById('d-futbox');
   if(futbox)futbox.style.display=hasFut?'':'none';
-  if(hasFut)txt('d-futv',APPROX+shekel(proj));
+  if(hasFut)txt('d-futv',aboutShekel(proj));
 
   /* ── הגיליון ─────────────────────────────────────────────────
      השורה השקטה שפותחת את גיליון התחזית: בנוטע יחיד הקצב והמסלול
@@ -18252,7 +18301,7 @@ function paintInvestments(){
     if(py){
       /* ‏**"עוד לא פתחתם רגע" למי שיש לו הזמנה ואין לו רגע משלו**
          (`FIX-home-empty.md` §2), ו"עוד לא נטעתם" בכל שאר המצבים. */
-      py.textContent=pr>v?('בדרך ל'+APPROX+shekel(pr))
+      py.textContent=pr>v?('בדרך ל'+aboutShekel(pr))
         :((g==='own'&&!r.length&&pendNow.length)?'עוד לא פתחתם רגע':'עוד לא נטעתם');
       py.classList.toggle('nil',!(pr>v));
     }
@@ -18260,13 +18309,16 @@ function paintInvestments(){
     if(btn)btn.classList.toggle('on',hmGroup===g);
   });
 
-  /* שני תאים ולא שלושה: "צמיחה" אין לה מקור, ראו ההערה ב-CSS.
-     והסכום נסגר בדיוק — השקעת ועוד אחרים נטעו הם הנצבר. */
+  /* שלושה תאים, ראו ההערה ב-CSS. הסכום נסגר בדיוק — השקעת ועוד
+     אחרים נטעו הם הנצבר — ו"צמיחה" הוא `0 ₪` עמום עד שתיכנס
+     עמודת שווי נוכחי ל-RPC. */
   const mine=hmSum(rows,function(p){return p.mine==null?p.accrued:p.mine});
   const tot=hmSum(rows,function(p){return p.accrued});
-  const t1=document.getElementById('mi-t1'),t2=document.getElementById('mi-t2');
+  const t1=document.getElementById('mi-t1'),t2=document.getElementById('mi-t2'),
+        t3=document.getElementById('mi-t3');
   if(t1){t1.textContent=shekel(mine);t1.classList.toggle('nil',!mine)}
   if(t2){t2.textContent=shekel(Math.max(0,tot-mine));t2.classList.toggle('nil',!(tot-mine))}
+  if(t3){t3.textContent=shekel(0);t3.classList.add('nil')}
 
   /* ‏**הכפתור נוקב במה שהקבוצה היא, ומשנה טקסט במקום לרדת** כשהיא
      הריקה מבין השתיים. ‏`FIX-home-empty.md` §0.3 מוריד אותו מהירוק
@@ -19227,7 +19279,7 @@ function paintFuture(items,sel,blank){
   const c=document.getElementById('fk-c');
   if(c){
     const v=shares?proj:myProj;
-    c.textContent=v>0?(APPROX+shekel(v)):shekel(0);
+    c.textContent=v>0?aboutShekel(v):shekel(0);
     c.classList.toggle('nil',!(v>0));
   }
 
@@ -19269,7 +19321,7 @@ function paintFuture(items,sel,blank){
       f2.style.display='';
       f2.textContent=(mo>0&&proj>mo&&yrs)
         ? ('קרוב שיפקיד 50 ₪ בחודש במשך '+yearsWord(yrs)+
-           ', יכול להוסיף '+toTxt+' '+APPROX+shekel(Math.round(proj*5000/mo)))
+           ', יכול להוסיף '+toTxt+' '+aboutShekel(Math.round(proj*5000/mo)))
         : (fund?'כל קרוב שמצטרף מגדיל את מה שיחכה בקופה הזאת.'
                :('כל קרוב שמצטרף מגדיל את מה שיחכה ל'+firstName(it.name)+
                  ', ואת אותו רגע עצמו.'));
