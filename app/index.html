@@ -2412,14 +2412,20 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    השורה: לפני שנבחר ערך היא עוטפת את השאלה ("עבור מי?"), ואחרי
    הבחירה את התשובה — **באותו מקום בדיוק**, ולכן אין קפיצה.
    **ובשלב האישור אין הדלקה בכלל** והכרטיס מוצג נקי. */
-/* ‏**‏`margin-inline` שלילי מול הריפוד, וזו בדיקת הקבלה עצמה.**
-   ‏§12 דורש שההדלקה תעבור מהשאלה לתשובה **בלי קפיצה**, ומסגרת
-   שמוסיפה 20 פיקסלים של ריפוד מצרה את הטקסט שהיא עוטפת: "הבר
-   מצווה של לניצקה · ספט׳ 2036" נשבר לשתי שורות ברגע שהוא נדלק,
-   וכל מה שמתחתיו זז. המסגרת גולשת אל תוך 16 הריפוד של הכרטיס
-   במקום לדחוק את הטקסט, ולכן רוחב השורה זהה דלוקה וכבויה. */
+/* ‏**המסגרת גולשת שמאלה בלבד, וזו הכרעה של שני אילוצים שנפגשים.**
+   ‏§12 דורש שההדלקה תעבור **בלי קפיצה**, ומסגרת שמוסיפה 20 פיקסלים
+   של ריפוד מצרה את הטקסט שהיא עוטפת: "הבר מצווה של לניצקה · ספט׳
+   ‏2036" נשבר לשתי שורות ברגע שהוא נדלק, וכל מה שמתחתיו זז. לכן
+   הריפוד מקוזז במרווח שלילי — **אבל בצד אחד בלבד**.
+   **‏`margin-inline:-10px` גלש גם ימינה, אל תוך ה-13 שמפרידים
+   מהפרצוף**, ואז המסגרת נחתה 3 פיקסלים ממנו ונקראה כנוגעת בו;
+   ‏`.usub` אף גלש מתחתיו. אלון ראה את זה במכשיר.
+   עכשיו ‏`margin-inline-start:0` — כלומר הקצה הימני של המסגרת יושב
+   בדיוק על הקצה הימני של התווית שמעליה ושל השורה שמתחתיה — ו-‏`-20`
+   בקצה השני, כך שרוחב השורה בפועל אינו משתנה ואין קפיצה. */
 .wizc .lit{background:var(--lit-bg);box-shadow:0 0 0 1.5px var(--sun-on-leaf);
-  border-radius:12px;padding:0 10px;margin-inline:-10px;color:var(--on-head)}
+  border-radius:12px;padding:0 10px;margin-inline-start:0;
+  margin-inline-end:-20px;color:var(--on-head)}
 /* ‏**‏`.usub` הוא `-webkit-box` עם `line-clamp:2`**, ו-`inline-block`
    בתוכו הופך לפריט של הקופסה ונושא שורה משלו: "הבר מצווה של לניצקה ·
    ספט׳ 2036" נשבר לשתיים ב-360 אף שהטקסט (200) נכנס ברוחב (221).
@@ -2611,10 +2617,18 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    §9), ולכן הוא `.list-add` ולא תא. הסימון עליו הוא מסגרת מלאה,
    כי שורה מקווקוות שנבחרה חייבת להיראות שנבחרה. */
 /* ‏**התג "כבר קיים" על פינת אריח הרגע** (`FIX-create-v2.md` §10):
-   ‏11px, אותו זוג של "מחכה לנטיעה" — חול שקט על משטח חול בהיר. */
+   אותו זוג של "מחכה לנטיעה" — חול שקט על משטח חול בהיר.
+   **והוא רוכב על הקו העליון ואינו יושב בתוך האריח.** ב-`top:6px`
+   הוא נחת בדיוק על האייקון — משטח אטום מעל ציור — ואלון ראה שני
+   אריחים שהאייקון שלהם חתוך לחצי. ‏`.nwt.has .tg2` שבקובץ העיצוב
+   הוא `top:-7px`, כלומר תג שחוצה את הגבול ואינו מכסה דבר; מרווח
+   השורה ברשת הוא 8, ולכן הוא אינו נוגע באריח שמעליו.
+   **הכלל: תג שיושב בתוך אריח חייב מקום משלו, אחרת הוא מכסה את מה
+   שהאריח בא להראות.** */
 .occgrid button{position:relative}
-.occgrid .exi{position:absolute;top:6px;inset-inline-end:6px;
-  font-size:11px;font-weight:700;line-height:1;padding:3px 6px;
+.occgrid .exi{position:absolute;top:-7px;inset-inline-start:9px;
+  font-size:10px;font-weight:700;line-height:1;padding:2px 7px;
+  white-space:nowrap;
   border-radius:99px;background:var(--sun-bg);color:var(--sun-2)}
 #c-kidpick .list-add{margin-top:12px}
 #c-kidpick .list-add.on{border-style:solid;background:var(--leaf-bg)}
@@ -4355,7 +4369,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '9dc5ffd';
+window.NETA_BUILD = '344647d';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7933,7 +7947,12 @@ function actSlides(){
   const nP=Object.keys(keys).length,planters=actMonthPlanters(rows);
   const mineN=actNum(f.mine),othN=actNum(f.oth);
   out.push({k:'month',html:actSlide('נוסף החודש',
-    '<span class="cfc sq top"><svg viewBox="10 6 40 57" aria-hidden="true">'+
+    /* ‏**‏`viewBox` של הסמל שמצויר ולא של סמל אחר.** ‏`#sprout` הוא
+       ‏`0 0 14 15`, ו-`10 6 40 57` הוא החיתוך של `#sprout-art` —
+       חלון שמתחיל אחרי הציור כולו, כלומר פיסה של 4 על 9 מפינתו,
+       מוגדלת. **‏`viewBox` אינו גודל, הוא מערכת הצירים של הציור**,
+       וזה בדיוק מה שאלון ראה: סמל קטן ולא ממורכז בתוך הריבוע. */
+    '<span class="cfc sq top"><svg viewBox="0 0 14 15" aria-hidden="true">'+
       '<use href="#sprout"/></svg></span>',
     shekel(f.total||0),
     /* ‏**ושלוש אמירות ולא אחת, מאז שהמצב הריק הוא אותו מסך.**
@@ -18657,16 +18676,41 @@ function fuWithBenes(items,all){
 const FU_GAP=13,FU_SM=40,FU_BG=56;
 let fuSig='',fuCenter=0,fuGrab=false,fuMoved=false;
 /* ההיסט המעגלי של פריט i ביחס למי שבמרכז. כך גם לראשון וגם לאחרון
-   יש שכנים משני הצדדים ואף פעם אין קצה או שטח ריק בתוך הקפסולה. */
-function fuOff(i,c,n){const h=Math.floor(n/2);return ((i-c+n+h)%n)-h}
+   יש שכנים משני הצדדים ואף פעם אין קצה או שטח ריק בתוך הקפסולה.
+
+   **ומי מקבל את המשבצת העודפת, וזה מה שקובע לאיזה צד הקפסולה
+   נוטה.** ה-＋ תופס משבצת קבועה **בצד שמאל**, ולכן במספר אי-זוגי
+   של ילדים הצד השמאלי כבד יותר והקפסולה נגמרת רחוק מהקצה הימני:
+   בשלושה ילדים ב-390 היא נעצרה 83 פיקסלים לפניו, ואלון ראה את זה
+   במכשיר. ‏`Math.ceil` נותן את המשבצת העודפת לצד ימין, וכך היא
+   מתקרבת לקצה שממנו מתחילים לקרוא. **הנבחר נשאר במרכז המסך
+   בדיוק** — מה שהתחלף הוא איפה יושבים השכנים שלו, ולא הוא.
+
+   **אבל לא כשהקפסולה מלאה.** במצב `wide` מה שאינו נכנס נחתך, ומי
+   שמסתיר אותו הוא המשבצת של ה-＋ שבצד שמאל; להעביר את העודף ימינה
+   שם פירושו פרצוף חצוי בקצה שממנו מתחילים לקרוא. לכן `fuLayout`
+   בונה קודם עם `ceil`, ואם יצא `wide` — בונה מחדש עם `floor`. */
+function fuH(n,wide){return n<2?0:(wide?Math.floor(n/2):Math.ceil(n/2))}
+function fuOff(i,c,n,h){return ((i-c+n+h)%n)-h}
 function fuIdx(c,d,n){return ((c+d)%n+n)%n}
-function fuBuild(c,n,sel){
-  const h=Math.floor(n/2),lo=-h,hi=n-1-h,P={};
+function fuBuild(c,n,sel,h){
+  const lo=-h,hi=n-1-h,P={};
   const rad=function(i){return i===sel?FU_BG/2:FU_SM/2};
   P[0]=0;
   for(let d=1;d<=hi;d++)P[d]=P[d-1]-(rad(fuIdx(c,d-1,n))+FU_GAP+rad(fuIdx(c,d,n)));
   for(let e=-1;e>=lo;e--)P[e]=P[e+1]+(rad(fuIdx(c,e+1,n))+FU_GAP+rad(fuIdx(c,e,n)));
   return {P:P,lo:lo,hi:hi,rad:rad};
+}
+/* גאומטריית הקפסולה לחלוקה נתונה: המיקומים, משבצת ה-＋ ושני
+   הקצוות. היא נקראת פעמיים כשהתוצאה הראשונה יוצאת `wide`. */
+function fuGeom(c,n,sel,h){
+  const B=fuBuild(c,n,sel,h);
+  /* המשבצת שאחרי האחרון היא המשבצת של ה-＋. */
+  B.pc=B.P[B.hi]-B.rad(fuIdx(c,B.hi,n))-FU_GAP-FU_SM/2;
+  B.leftEdge=B.pc-FU_SM/2-FU_GAP;
+  B.rightEdge=B.P[B.lo]+B.rad(fuIdx(c,B.lo,n))+FU_GAP;
+  B.h=h;
+  return B;
 }
 /* ‏**אסור לחשב מיקומים כשהרכיב מוסתר**: `getBoundingClientRect().width`
    מחזיר 0 והחישוב נופל בשקט. אם הרוחב קטן מ-10 — לא נוגעים,
@@ -18682,11 +18726,13 @@ function fuLayout(c,anim,px){
   const sel=r.dataset.sel===undefined||r.dataset.sel===''?c:+r.dataset.sel;
   const shift=c-(+r.dataset.c||0);
   r.dataset.c=c;
-  const B=fuBuild(c,n,sel),P=B.P;
-  /* המשבצת שאחרי האחרון היא המשבצת של ה-＋. */
-  const pc=P[B.hi]-B.rad(fuIdx(c,B.hi,n))-FU_GAP-FU_SM/2;
-  const leftEdge=pc-FU_SM/2-FU_GAP;
-  const rightEdge=P[B.lo]+B.rad(fuIdx(c,B.lo,n))+FU_GAP;
+  const fits=function(G){
+    return !((G.rightEdge-G.leftEdge)>rw||G.leftEdge<-(rw/2)-0.5||
+             G.rightEdge>(rw/2)+0.5);
+  };
+  let B=fuGeom(c,n,sel,fuH(n,false));
+  if(!fits(B))B=fuGeom(c,n,sel,fuH(n,true));
+  const P=B.P,pc=B.pc,leftEdge=B.leftEdge,rightEdge=B.rightEdge;
   /* **הקפסולה לעולם אינה ארוכה מהכרטיסייה שמתחתיה**: כשכולם
      נכנסים היא ברוחב התוכן, וכשלא היא ממלאת את הרוחב ומי שלא
      נכנס נחתך בקצה המעוגל.
@@ -18695,7 +18741,7 @@ function fuLayout(c,anim,px){
      מהמיכל **ובכל זאת לחרוג ממנו בצד אחד** — נמדד: בחמישה
      ילדים ב-390 הגוש הוא 347 מתוך 354, וה-＋ בכל זאת נחתך
      ב-10 פיקסלים. ‏**‏＋ שנחתך הוא הפעולה היחידה בטבעת.** */
-  const wide=(rightEdge-leftEdge)>rw||leftEdge<-(rw/2)-0.5||rightEdge>(rw/2)+0.5;
+  const wide=!fits(B);
   r.classList.toggle('wide',wide);
   const band=r.querySelector('.cband');
   if(band){
@@ -18713,7 +18759,7 @@ function fuLayout(c,anim,px){
   const add=document.getElementById('fu-add-kid');
   if(add){add.style.left='50%';add.style.marginLeft=(ax-FU_SM/2)+'px'}
   els.forEach(function(el,i){
-    const nd=fuOff(i,c,n),od=+el.dataset.d,xp=P[nd]+(px||0);
+    const nd=fuOff(i,c,n,B.h),od=+el.dataset.d,xp=P[nd]+(px||0);
     /* כל פרצוף שמגיע למשבצת של ה-＋ או עובר אותה — מוסתר. בלי זה
        נוצר פרצוף שמציץ מעבר לפלוס בקצה המעוגל. */
     el.style.visibility=(wide&&xp<ax+FU_SM)?'hidden':'';
