@@ -3427,8 +3427,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    קבועה — הנבחר גדול יותר, ואחרי סיבוב הוא כבר לא במרכז; רשת קבועה
    הייתה דוחקת אותו לשכן בצד אחד ופוערת רווח בצד השני. */
 .crnw{position:relative;margin:20px 0 0;flex:0 0 auto}
+/* ‏**ואין על הטבעת `touch-action` כלל, כמו בקובץ העיצוב.** היא נשאה
+   `pan-y`, כלומר "מותר רק לגלול אנכית" — ואז הדפדפן אינו נועל את
+   המחווה לציר האופקי, וכל רכיב אנכי קטן בגרירה מתחיל **גם** לגלול
+   את הדף מתחת לאצבע בזמן שהטבעת נוסעת. בלי ההצהרה הדפדפן נועל
+   כיוון: גרירה שהתחילה אופקית אינה גוללת דבר, ורק המאזין שלנו זז.
+   זו אותה משפחה של `.fucar` ושל `.acar`, ונראה רק במכשיר —
+   ‏`Input.dispatchTouchEvent` אינו מדמה פאן של דפדפן. */
 .crn{position:relative;height:72px;overflow:hidden;border-radius:99px;
-  touch-action:pan-y;cursor:grab}
+  cursor:grab}
 .crnw.grab .crn{cursor:grabbing}
 /* ‏**בזמן גרירה אין אנימציה, וזו כל ההרגשה של המחווה.** ‏`fuLayout`
    מכבה את ה-`transition` בהצבה ומחזירה אותו בפריים הבא, כלומר בין
@@ -3458,7 +3465,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
              height .26s ease,opacity .2s ease;
   /* ‏**‏`-webkit-tap-highlight-color` על הפרצופים ועל הכרטיסייה**,
      אחרת אנדרואיד מצייר מלבן בלחיצה — הבזק מרובע מאחורי פרצוף עגול. */
-  -webkit-tap-highlight-color:transparent}
+  -webkit-tap-highlight-color:transparent;
+  /* ‏**ובלי בחירת טקסט ובלי תפריט מגע.** הפרצופים כאן הם
+     ‏`<button>`, ובמכשיר גרירה ארוכה עליהם מתחילה בחירה או פותחת
+     תפריט הקשר — והמחווה נקטעת באמצע. ‏`backface-visibility:hidden`
+     מקדם אותם לשכבת GPU, ובלעדיו הנפשה של `transform` יחד עם
+     `width` ו-`height` בתוך מכל `overflow:hidden` מעוגל מציירת
+     מחדש בכל פריים. שתי ההצהרות בקובץ העיצוב, ואצלנו לא היו. */
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+  backface-visibility:hidden;transform-style:flat}
 /* ‏**‏`clip-path` על ה-svg עצמו ולא רק `overflow` על העוטף.** בזמן
    שהעיגול גדל או מתכווץ מבצבצת פינה מרובעת מתחתיו. */
 .crn .cface svg,.crn .cface img{display:block;width:100%;height:100%;
@@ -4379,7 +4394,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '594e5d3';
+window.NETA_BUILD = 'b25a4fb';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
