@@ -3206,6 +3206,12 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .crn{position:relative;height:72px;overflow:hidden;border-radius:99px;
   touch-action:pan-y;cursor:grab}
 .crnw.grab .crn{cursor:grabbing}
+/* ‏**בזמן גרירה אין אנימציה, וזו כל ההרגשה של המחווה.** ‏`fuLayout`
+   מכבה את ה-`transition` בהצבה ומחזירה אותו בפריים הבא, כלומר בין
+   שתי תנועות אצבע הוא דלוק — והפרצוף נוסע 260 אלפיות שנייה אחרי
+   האצבע במקום איתה. הכלל הזה מכבה אותו לכל אורך המגע, וזה מה
+   שבקובץ העיצוב. */
+.crnw.grab .crn .cface{transition:none}
 .crn .cband{position:absolute;top:0;left:50%;height:72px;border-radius:99px;
   background:rgba(255,255,255,.07)}
 /* ‏**והצבע מוצהר במפורש.** ‏`<button>` יורש `color:buttontext`
@@ -3217,7 +3223,11 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .crn .cface{position:absolute;top:50%;left:50%;width:40px;height:40px;
   border-radius:50%;overflow:hidden;opacity:.7;padding:0;border:0;
   background:var(--face-fill);color:var(--leaf-head);cursor:pointer;
-  transition:width .26s,height .26s,transform .26s,opacity .26s;
+  /* ‏**האטה של קובץ העיצוב ולא ברירת המחדל.** ‏`.26s` עם `ease`
+     על ה-`transform` נקרא כמו החלקה איטית; ‏`cubic-bezier(.3,.7,.3,1)`
+     יוצא מהר ונעצר רך, וזה מה שמבדיל בין "נוסע" ל"נגרר". */
+  transition:transform .26s cubic-bezier(.3,.7,.3,1),width .26s ease,
+             height .26s ease,opacity .2s ease;
   /* ‏**‏`-webkit-tap-highlight-color` על הפרצופים ועל הכרטיסייה**,
      אחרת אנדרואיד מצייר מלבן בלחיצה — הבזק מרובע מאחורי פרצוף עגול. */
   -webkit-tap-highlight-color:transparent}
@@ -3246,8 +3256,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   border:1.5px dashed var(--sun-on-leaf);color:var(--sun-on-leaf);
   background:var(--leaf-add);-webkit-tap-highlight-color:transparent}
 /* ── הכרטיס ─────────────────────────────────────────────────────── */
+/* ‏**‏18 בין הבורר לכרטיסייה, ולא 8.** ‏§3 נוקב ב-20, וקובץ העיצוב
+   מכריז `.swx{margin-top:8px}` ומיד **דורס אותו ב-18** 55 שורות
+   אחריו. קראתי את ההצהרה הראשונה ולא את זו שניצחה בקסקייד —
+   בדיוק המלכודת שהפרק על שמות קלאס תפוסים מתאר, בכיוון של ערך
+   ולא של שם. */
 .swx{display:block;position:relative;flex:0 0 auto;touch-action:pan-y;
-  margin-top:8px;-webkit-tap-highlight-color:transparent}
+  margin-top:18px;-webkit-tap-highlight-color:transparent}
 .swx .kcard2{transition:transform .22s ease,opacity .22s ease;will-change:transform}
 .swx.drag .kcard2{transition:none}
 .kcard2{border:1px solid var(--leaf-gold-line);border-radius:26px;
@@ -4135,7 +4150,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'a4fcfdd';
+window.NETA_BUILD = '8064847';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -17546,15 +17561,29 @@ function paintInvestments(){
   if(t1){t1.textContent=shekel(mine);t1.classList.toggle('nil',!mine)}
   if(t2){t2.textContent=shekel(Math.max(0,tot-mine));t2.classList.toggle('nil',!(tot-mine))}
 
-  /* הכפתור נוקב במה שהקבוצה היא, ויורד כשהיא ריקה: אז הפעולה
-     יושבת כפתור מלא בסוף ההסבר שבלבן (`FIX-home-empty.md` §0). */
+  /* ‏**הכפתור נוקב במה שהקבוצה היא, ומשנה טקסט במקום לרדת** כשהיא
+     הריקה מבין השתיים. ‏`FIX-home-empty.md` §0.3 מוריד אותו מהירוק
+     בכל קבוצה ריקה, ואלון ראה את זה בחשבון שלו — שבו כל שמונה
+     הנטיעות הן "היקרים שלך" — ואמר שהכפתור והמספרים אמורים
+     **להשתנות ולא להיעלם**. ‏**הכלל שיוצא מזה מדויק יותר מ-§0.3:**
+     הכפתור יורד מהירוק כשהמסך **כולו** ריק (חשבון חדש, הזמנה
+     שממתינה, ילד בלי רגע) — שם הגיליון הלבן הוא ההסבר והכפתור
+     שבסופו הוא הפעולה הראשית. כשמה שריק הוא **הקבוצה שנבחרה
+     בלבד**, המסך מלא, הבורר הוא מתג בין שני מצבים חיים, וכפתור
+     שנעלם בלחיצה על מתג נקרא כתקלה. **פעולה אחת במסך נשמרת**,
+     כי הכפתור המלא שבלבן יורד במקומו. */
+  const kind=rows.length?'':hmEmptyKind(hmGroup,own,oth);
   const cta=document.getElementById('mi-cta');
   if(cta){
-    cta.textContent=hmGroup==='own'?'לראות מה מחכה להם':'לראות למי נטעת';
-    cta.style.display=rows.length?'':'none';
+    cta.textContent=rows.length
+      ? (hmGroup==='own'?'לראות מה מחכה להם':'לראות למי נטעת')
+      : (hmGroup==='own'?'לפתוח רגע ליקר שלכם':'לנטוע למישהו נוסף');
+    cta.style.display=(rows.length||kind==='example')?'':'none';
   }
+  /* חץ הגלילה נוסע עם הכפתור: הוא מה שמפריד בינו לגיליון הלבן,
+     ובלעדיו הכפתור נצמד לקצה המעוגל. */
   const hint=document.getElementById('mi-hint');
-  if(hint)hint.style.display=rows.length?'':'none';
+  if(hint)hint.style.display=(rows.length||kind==='example')?'':'none';
 
   const full=document.getElementById('kin-full'),empty=document.getElementById('kin-empty');
   if(full)full.style.display=rows.length?'':'none';
@@ -17588,7 +17617,13 @@ function paintInvestments(){
     '</button>';
   };
   const html=g.groups.map(function(x){
-    const occs=x.rows.map(momentNoun);
+    /* ‏**בלי כפילויות.** לאלון שלוש נטיעות בשם "הלימודים של אביב",
+       והשורה הציגה "הלימודים, הלימודים, הלימודים, החתונה, בת
+       המצווה" — שם שחוזר שלוש פעמים נקרא כתקלה ולא כשלושה רגעים,
+       ובכל מקרה מה שהשורה אומרת הוא **לקראת מה** ולא כמה. זו אותה
+       הכרעה שכבר יושבת ב-`fuOccLine` בטאב השכן, ששם היא מתועדת. */
+    const occs=x.rows.map(momentNoun).filter(function(v,i,a){
+      return v&&a.indexOf(v)===i});
     const rel=kinMe(beneRelOf(x.kidId,x.kid));
     const sub=(occs.length===1&&rel)?(rel+' · '+occs[0]):occs.join(', ');
     return item({html:faceHTML(kidFace(x.rows,x.kid),'av-kid1')},x.kid,sub,
@@ -17748,6 +17783,8 @@ function hmEmptyHTML(g,own,oth){
      שירד מהמוצר: היא אומרת מה יופיע ולא מעמידה פנים שיש נתונים. */
   if(kind==='example'){
     const mine=g==='own';
+    /* ‏**ואין כאן כפתור מלא**: במצב הזה הכפתור נשאר בירוק ומשנה
+       טקסט, ושני כפתורים לאותה פעולה על מסך אחד הם מה שהספר פוסל. */
     return hmLbl(mine?'היקרים שלך':'היקרים של אחרים')+
       '<p class="qln">'+(mine
         ?'כאן יופיעו הילדים שלכם, הרגעים שפתחתם להם וכמה נצבר לכל אחד.'
@@ -17755,8 +17792,7 @@ function hmEmptyHTML(g,own,oth){
       hmDashRow(faceHTML(mine?'av-kid2':'av-kid6','av-kid1'),
                 mine?'נועה':'רומי','לדוגמה',
                 mine?'הלימודים, הדירה':'הבת של דנה ואורי · הלימודים',
-                mine?902000:43000,'ex')+
-      hmCtaBlock(mine?'לפתוח רגע ליקר שלכם':'לנטוע למישהו נוסף','startCreate()');
+                mine?902000:43000,'ex');
   }
 
   /* ‏**‏4 · חשבון חדש.** שלושת הצעדים, וכפתור. */
@@ -17774,6 +17810,11 @@ function hmJoinFirst(){
    מהקבוצה שאינה זו שנלחצה. */
 function hmCta(){
   const rows=hmRows(hmGroup);
+  /* ‏**כשהקבוצה שנבחרה ריקה הכפתור הוא פעולת הפתיחה**, וההכרעה
+     יושבת כאן ולא ב-`onclick` שנכתב מחדש בכל ציור: שני מקומות
+     שמחליטים מה הכפתור עושה הם בדיוק מה שנשבר ביום שאחד מהם
+     משתנה. */
+  if(!rows.length){startCreate();return}
   if(hmGroup==='oth'){
     const g=kidGroups(rows).groups[0];
     if(g)fuPick='k:'+(g.kidId||g.kid);
@@ -18184,6 +18225,12 @@ function fuBindCard(){
     dx=x-x0;
     const c=card();if(c)c.style.transform='translateX('+(dx*.6)+'px)';
   };
+  /* ‏**הכרטיס יוצא לכיוון האצבע ונכנס מהצד השני**, ולא נעלם
+     ומופיע במקומו. ‏170 אלפיות שנייה של יציאה (חצי רוחב, שקיפות 0),
+     ואז הבחירה מתחלפת, הכרטיס **קופץ** בלי אנימציה ל-35 אחוז מהצד
+     ההפוך, ו-20 אלפיות שנייה אחר כך הוא נוסע חזרה לאפס. בלי הקפיצה
+     הזאת אין מאיפה להיכנס, ובלי ההשהיה של 20 היא מתבטלת באותו
+     פריים. זה מה שבקובץ העיצוב, וזה מה שהופך החלפה למעבר. */
   const up=function(){
     if(x0===null)return;
     s.classList.remove('drag');
@@ -18194,8 +18241,18 @@ function fuBindCard(){
     const i=Math.max(0,items.map(function(x){return x.id}).indexOf(fuPick));
     const to=(d>46)?((i+1)%n):((d<-46)?((i-1+n)%n):i);
     if(to===i){c.style.transform='';return}
-    c.style.transform='';
-    pickFuture(items[to].id);
+    const w=s.offsetWidth||330,sgn=(d<0?-1:1);
+    c.style.transform='translateX('+(sgn*w*.5)+'px)';
+    c.style.opacity='0';
+    setTimeout(function(){
+      pickFuture(items[to].id);
+      const c2=card();if(!c2)return;
+      c2.style.transition='none';
+      c2.style.transform='translateX('+(-sgn*w*.35)+'px)';
+      setTimeout(function(){
+        c2.style.transition='';c2.style.transform='';c2.style.opacity='';
+      },20);
+    },170);
   };
   s.addEventListener('touchstart',down,{passive:true});
   s.addEventListener('touchmove',move,{passive:true});
@@ -18734,15 +18791,14 @@ function momentNoun(p){
 /* מספרים קטנים במילים, כמו בשאר המסכים. מעל עשרה חוזרים לספרה. */
 const HEB_COUNT=['','אחד','שני','שלושה','ארבעה','חמישה','שישה','שבעה','שמונה','תשעה','עשרה'];
 function hebCount(n){return HEB_COUNT[n]||String(n)}
-/* שורת אדם ברשימה של "ההשקעות שלי". רגע אחד נפתח ישירות, וכמה מהם
-   מובילים ל"מה מחכה להם" עם אותו אדם נבחר — בדיוק אותה הכרעה של
-   שורת הילד ב"הקרובים שלי": כפתור מוביל לדבר עצמו, וכשיש כמה
-   "דברים" הוא מוביל למסך שמחזיק את כולם. */
+/* שורת אדם ברשימה של "ההשקעות שלי" מובילה ל"מה מחכה להם" עם אותו
+   אדם נבחר, **גם כשיש לו רגע אחד**. עד כה רגע יחיד נפתח ישירות,
+   בנימוק ש"כפתור מוביל לדבר עצמו"; אלון תפס שזה הדבר הלא נכון,
+   והוא צודק. **הרשימה הזאת היא אנשים ולא רגעים** — הכותרת מעליה
+   היא "בעתיד של מי השקעת", השורה נושאת פרצוף ושם, והמסך שמחזיק
+   אדם הוא הטאב השכן. נחיתה על מסך הרגע מדלגת בדיוק על מה שהשורה
+   הבטיחה: מי הוא, מי נוטע לו, ומה עוד מחכה לו. */
 function openKidMoments(k){
-  const rows=((lastModel&&lastModel.plantings)||[]).filter(function(p){
-    return String(p.kidId||kidOf(p))===String(k);
-  });
-  if(rows.length===1){openDetail(rows[0].key);return}
   fuPick='k:'+k;
   /* ‏go אינו מצייר, ולכן קביעת fuPick לבדה אינה מזיזה את הבורר. */
   buildHomeSummary();
