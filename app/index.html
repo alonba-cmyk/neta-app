@@ -3476,8 +3476,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   backface-visibility:hidden;transform-style:flat}
 /* ‏**‏`clip-path` על ה-svg עצמו ולא רק `overflow` על העוטף.** בזמן
    שהעיגול גדל או מתכווץ מבצבצת פינה מרובעת מתחתיו. */
+/* ‏**והציור שבפנים אינו משתתף במחווה.** ‏`-webkit-user-drag:none`
+   מכבה את גרירת התמונה של הדפדפן, ו-`pointer-events:none` מוודא
+   שמה שהאצבע נוגעת בו הוא הכפתור עצמו — כך `closest('.cface')`
+   שבמאזין הלחיצה אינו תלוי במה שצויר בתוכו. */
 .crn .cface svg,.crn .cface img{display:block;width:100%;height:100%;
-  object-fit:cover;border-radius:50%;clip-path:circle(50%)}
+  object-fit:cover;border-radius:50%;clip-path:circle(50%);
+  -webkit-user-drag:none;pointer-events:none}
 /* ‏**אייקון רגע אינו פרצוף ואינו ממלא את העיגול.** הדמויות מצוירות
    עד קצה הריבוע ונחתכות למסכה; אייקון קווי שנמתח לקצה נוגע ברים.
    **בפיקסלים ולא באחוזים:** ‏`padding` באחוזים נגזר מרוחב **המכל**
@@ -3507,6 +3512,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .swx{display:block;position:relative;flex:0 0 auto;touch-action:pan-y;
   margin-top:18px;-webkit-tap-highlight-color:transparent}
 .swx .kcard2{transition:transform .22s ease,opacity .22s ease;will-change:transform}
+.swx img{-webkit-user-drag:none}
 .swx.drag .kcard2{transition:none}
 /* ‏**גובה קבוע 200, ושורת המספרים נעוצה לתחתית** (`FIX-relatives-v2.md`
    §5, וזה כלל שחל על כל המסכים). כך שורת המספרים יושבת על אותו קו
@@ -4394,7 +4400,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'b25a4fb';
+window.NETA_BUILD = 'ff23b62';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -15389,7 +15395,11 @@ function gardenEmptyCta(){
    עוד לא נחתם מוצגת כדמות עד שהוא יגיע, ולא כעיגול ריק. */
 function kidFaceHTML(av,px){
   const url=(av&&av.indexOf('av-')!==0)?photoUrl(av):'';
-  if(url)return '<img class="kidimg" src="'+attrText(url)+'" alt="" width="'+px+'" height="'+px+'">';
+  /* ‏**`draggable="false"`, וזה אינו קישוט.** ‏`<img>` נגרר בברירת
+     המחדל, ולכן אצבע שמתחילה על פרצוף **אמיתי** בבורר פותחת גרירת
+     תמונה של הדפדפן ולא מזיזה את הטבעת. בהדגמה כל הדמויות הן svg
+     ואין לזה ביטוי; זה נראה רק בחשבון שהעלו בו תמונה. */
+  if(url)return '<img class="kidimg" draggable="false" src="'+attrText(url)+'" alt="" width="'+px+'" height="'+px+'">';
   const id=(av&&av.indexOf('av-')===0)?av:'av-kid1';
   return '<svg viewBox="0 0 40 40" width="'+px+'" height="'+px+'"><use href="#'+id+'"/></svg>';
 }
@@ -15420,7 +15430,7 @@ function signIn(paths,bucket){
    ולא דמות של ילד. */
 function faceHTML(av,fallback){
   const url=(av&&av.indexOf('av-')!==0)?photoUrl(av):'';
-  if(url)return '<img class="avimg" src="'+attrText(url)+'" alt="">';
+  if(url)return '<img class="avimg" draggable="false" src="'+attrText(url)+'" alt="">';
   const id=(av&&av.indexOf('av-')===0)?av:(fallback||'av-parent');
   return '<svg class="avsvg" viewBox="0 0 40 40"><use href="#'+id+'"/></svg>';
 }
