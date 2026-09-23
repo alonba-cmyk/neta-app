@@ -3095,8 +3095,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ‏**ערך שאין הוא `0 ₪` עמום ולא "·"** (`FIX-home-empty.md` §0).
    זה הפוך מהמוסכמה של שאר המוצר, ובמסך הזה זה נכון: כל מספר כאן
    הוא מונה של כסף, ואפס הוא נקודת הפתיחה שלו. */
-.grp2 .g .b.nil,.trio2 .v.nil{color:rgba(255,255,255,.45)}
-.grp2 .g .y.nil{color:rgba(255,255,255,.38)}
+/* ‏**המצב הריק עמום, אבל נקרא, וזו מדידה ולא טעם.** המסמכים
+   מבקשים `0 ₪` עמום במקום ערך חסר, ו-`.45` על הראש הירוק הוא
+   ‏3.31:1 ו-`.38` הוא 2.49 — כלומר מספר שאי אפשר לקרוא אינו מספר.
+   ‏`.72` עובר 4.5 גם על הראש וגם על האריח הבהיר שבתוכו, ועדיין
+   קריא כעמום מול הלבן המלא של ערך אמיתי. ‏`contrast.js` תפס את
+   שמונת המקומות. */
+.grp2 .g .b.nil,.trio2 .v.nil,.grp2 .g .y.nil{color:rgba(255,255,255,.72)}
 /* ‏**הכותרת והמספר ממורכזים בכוח.** בעברית עם ₪ הדפדפן מיישר את
    תוכן התא לפי הכיווניות ומזיז את המספר, ולכן `display:flex` עם
    `justify-content:center` ולא `text-align` לבדו.
@@ -3111,7 +3116,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   border-top:1px solid rgba(255,255,255,.14)}
 .trio2>div{flex:1;min-width:0;padding:0 6px;text-align:center}
 .trio2>div+div{border-inline-start:1px solid rgba(255,255,255,.12)}
-.trio2 .k{margin:0;font-size:11.5px;color:rgba(255,255,255,.55);white-space:nowrap;
+.trio2 .k{margin:0;font-size:11.5px;color:rgba(255,255,255,.62);white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;display:flex;justify-content:center}
 .trio2 .v{margin:4px 0 0;font-size:16.5px;font-weight:700;white-space:nowrap;
   display:flex;justify-content:center;color:var(--on-head)}
@@ -3203,9 +3208,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .crnw.grab .crn{cursor:grabbing}
 .crn .cband{position:absolute;top:0;left:50%;height:72px;border-radius:99px;
   background:rgba(255,255,255,.07)}
+/* ‏**והצבע מוצהר במפורש.** ‏`<button>` יורש `color:buttontext`
+   מהדפדפן ולא מהראש הירוק, ולכן משבצת של קופה שאין לה נהנה —
+   שבה מצויר אייקון הרגע ולא פרצוף — יצאה **שחורה** על העיגול
+   הבהיר. ‏`--leaf-head` הוא הצבע היחיד בפלטה שאינו מתהפך, כלומר
+   ירוק עמוק בשתי הערכות, וזה מה שמאפשר לו לשבת על משטח בהיר
+   בשתיהן (‏13:1 בכהה, ‏9.7:1 בבהירה). נראה בצילום ולא בקוד. */
 .crn .cface{position:absolute;top:50%;left:50%;width:40px;height:40px;
   border-radius:50%;overflow:hidden;opacity:.7;padding:0;border:0;
-  background:var(--face-fill);cursor:pointer;
+  background:var(--face-fill);color:var(--leaf-head);cursor:pointer;
   transition:width .26s,height .26s,transform .26s,opacity .26s;
   /* ‏**‏`-webkit-tap-highlight-color` על הפרצופים ועל הכרטיסייה**,
      אחרת אנדרואיד מצייר מלבן בלחיצה — הבזק מרובע מאחורי פרצוף עגול. */
@@ -3214,6 +3225,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שהעיגול גדל או מתכווץ מבצבצת פינה מרובעת מתחתיו. */
 .crn .cface svg,.crn .cface img{display:block;width:100%;height:100%;
   object-fit:cover;border-radius:50%;clip-path:circle(50%)}
+/* ‏**אייקון רגע אינו פרצוף ואינו ממלא את העיגול.** הדמויות מצוירות
+   עד קצה הריבוע ונחתכות למסכה; אייקון קווי שנמתח לקצה נוגע ברים.
+   **בפיקסלים ולא באחוזים:** ‏`padding` באחוזים נגזר מרוחב **המכל**
+   ולא מרוחב האלמנט, ועל משבצת אבסולוטית בטבעת של 354 זה יצא 78 —
+   עיגול של 156 שכיסה חצי מהטבעת. נראה בצילום ולא במדידה. */
+.crn .cface.mo{padding:9px}
+.crn .cface.mo.on{padding:13px}
+.crn .cface.mo svg{clip-path:none;border-radius:0}
 .crn .cface.on{width:56px;height:56px;opacity:1;
   box-shadow:0 0 0 2.5px var(--sun-on-leaf)}
 /* משבצת רפאים: מצב 1, כשאין אף יקר. */
@@ -3264,7 +3283,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ‏**התא הראשון גדול מהשאר**, כי זה מה שבאו לראות. */
 .ktrio .kv.lead{font-size:clamp(15.5px,5.2vw,21px)}
 .ktrio .kv.sand{color:var(--sun-on-leaf)}
-.ktrio .kv.nil{color:rgba(255,255,255,.45)}
+.ktrio .kv.nil{color:rgba(255,255,255,.72)}
 /* שני תאים במקום שלושה: ילד של אחרים שאינו משתף. */
 .ktrio.two .kk{font-size:14px}
 .ktrio.two .kv{font-size:20px}
@@ -4116,7 +4135,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'a969a16';
+window.NETA_BUILD = 'f1a2808';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -18099,6 +18118,7 @@ function fuRingHTML(items,selIdx){
   }
   return '<span class="cband"></span>'+items.map(function(x,i){
     return '<button type="button" class="cface'+(i===selIdx?' on':'')+
+      (x.av?'':' mo')+
       '" data-i="'+i+'" aria-label="'+attrText(x.name||'')+'">'+
       (x.av?kidFaceHTML(x.av,56):occIcon(x.occ,26,x.name))+'</button>';
   }).join('');
