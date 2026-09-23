@@ -3512,7 +3512,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .kcard2 .cbig .stk>span+span{margin-inline-start:0;margin-inline-end:-14px}
 .kcard2 .cbig .stk>span.gh{background:none;box-shadow:none;
   border:1.5px dashed var(--leaf-gold-line)}
-#rl-card{margin-top:18px}
+/* ‏**הראש הירוק כאן גבוה בדיוק כמו ב"פעילות", וזה נמדד.** שני
+   הטאבים חולקים את אותו שלד — שורה של 60 וכרטיס של 200 — אבל
+   ב"פעילות" יושבת מתחת לכרטיס שורת הנקודות של הקרוסלה (20), והמסילה
+   שם פותחת ב-20 ולא ב-18. ההפרש היה 22 פיקסלים, ואלון ראה אותו
+   כקפיצה במעבר בין שני טאבים שכנים. **המרווח התחתון הוא המקום
+   שהנקודות תופסות שם**, ולא מספר שנבחר: 60+20+200+20+36 בשניהם. */
+#rl-card{margin:20px 0}
 .kcard2 .cfc{width:48px;height:48px;border-radius:50%;overflow:hidden;flex:0 0 auto;
   display:block;background:var(--face-fill);box-shadow:0 0 0 2px var(--leaf-gold-line)}
 .kcard2 .cfc svg,.kcard2 .cfc img{display:block;width:100%;height:100%;
@@ -4373,7 +4379,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '352f32c';
+window.NETA_BUILD = '594e5d3';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -18682,19 +18688,13 @@ let fuSig='',fuCenter=0,fuGrab=false,fuMoved=false;
 /* ההיסט המעגלי של פריט i ביחס למי שבמרכז. כך גם לראשון וגם לאחרון
    יש שכנים משני הצדדים ואף פעם אין קצה או שטח ריק בתוך הקפסולה.
 
-   **ומי מקבל את המשבצת העודפת, וזה מה שקובע לאיזה צד הקפסולה
-   נוטה.** ה-＋ תופס משבצת קבועה **בצד שמאל**, ולכן במספר אי-זוגי
-   של ילדים הצד השמאלי כבד יותר והקפסולה נגמרת רחוק מהקצה הימני:
-   בשלושה ילדים ב-390 היא נעצרה 83 פיקסלים לפניו, ואלון ראה את זה
-   במכשיר. ‏`Math.ceil` נותן את המשבצת העודפת לצד ימין, וכך היא
-   מתקרבת לקצה שממנו מתחילים לקרוא. **הנבחר נשאר במרכז המסך
-   בדיוק** — מה שהתחלף הוא איפה יושבים השכנים שלו, ולא הוא.
-
-   **אבל לא כשהקפסולה מלאה.** במצב `wide` מה שאינו נכנס נחתך, ומי
-   שמסתיר אותו הוא המשבצת של ה-＋ שבצד שמאל; להעביר את העודף ימינה
-   שם פירושו פרצוף חצוי בקצה שממנו מתחילים לקרוא. לכן `fuLayout`
-   בונה קודם עם `ceil`, ואם יצא `wide` — בונה מחדש עם `floor`. */
-function fuH(n,wide){return n<2?0:(wide?Math.floor(n/2):Math.ceil(n/2))}
+   **והחלוקה היא `floor`, כלומר הנבחר באמצע והשכנים משני הצדדים.**
+   בשלושה ילדים זה פרצוף אחד מימין לנבחר ואחד משמאלו, בדיוק כמו
+   בקובץ העיצוב. ‏`ceil` נוסה — הוא נותן את המשבצת העודפת לימין,
+   כלומר כל הפרצופים נערמים בצד אחד — **ואלון ראה שהם מיושרים
+   לימין ולא פרוסים לאמצע.** מה שמאזן את הקפסולה הוא הפרצופים,
+   ומה שיושב בקצה השמאלי הוא ה-＋. */
+function fuH(n){return n<2?0:Math.floor(n/2)}
 function fuOff(i,c,n,h){return ((i-c+n+h)%n)-h}
 function fuIdx(c,d,n){return ((c+d)%n+n)%n}
 function fuBuild(c,n,sel,h){
@@ -18705,8 +18705,7 @@ function fuBuild(c,n,sel,h){
   for(let e=-1;e>=lo;e--)P[e]=P[e+1]+(rad(fuIdx(c,e+1,n))+FU_GAP+rad(fuIdx(c,e,n)));
   return {P:P,lo:lo,hi:hi,rad:rad};
 }
-/* גאומטריית הקפסולה לחלוקה נתונה: המיקומים, משבצת ה-＋ ושני
-   הקצוות. היא נקראת פעמיים כשהתוצאה הראשונה יוצאת `wide`. */
+/* גאומטריית הקפסולה: המיקומים, משבצת ה-＋ ושני הקצוות. */
 function fuGeom(c,n,sel,h){
   const B=fuBuild(c,n,sel,h);
   /* המשבצת שאחרי האחרון היא המשבצת של ה-＋. */
@@ -18734,9 +18733,8 @@ function fuLayout(c,anim,px){
     return !((G.rightEdge-G.leftEdge)>rw||G.leftEdge<-(rw/2)-0.5||
              G.rightEdge>(rw/2)+0.5);
   };
-  let B=fuGeom(c,n,sel,fuH(n,false));
-  if(!fits(B))B=fuGeom(c,n,sel,fuH(n,true));
-  const P=B.P;
+  const B=fuGeom(c,n,sel,fuH(n));
+  const P=B.P,pc=B.pc;
   /* ‏`wide` אינו קובע יותר את רוחב הקפסולה — היא מלאה תמיד — אלא
      מי נחתך ואיפה יושב ה-＋.
      **והמדידה היא מול שני הקצוות ולא מול הרוחב הכולל.** גוש
@@ -18752,7 +18750,7 @@ function fuLayout(c,anim,px){
      במצב `wide` היא נדחקת ימינה עד למשבצת הפנויה הראשונה, כי שם
      מה שמעבר לה נחתך ממילא. */
   const lim=-(rw/2)+FU_GAP+FU_SM/2;
-  let ax=lim;
+  let ax=pc;
   if(wide){
     let best=null;
     for(let q=B.lo;q<=B.hi;q++)
