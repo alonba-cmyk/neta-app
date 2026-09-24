@@ -2722,13 +2722,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    השורה ברשת הוא 8, ולכן הוא אינו נוגע באריח שמעליו.
    **הכלל: תג שיושב בתוך אריח חייב מקום משלו, אחרת הוא מכסה את מה
    שהאריח בא להראות.** */
-.occgrid button{position:relative}
-.occgrid .exi{position:absolute;top:-7px;inset-inline-start:9px;
-  font-size:10px;font-weight:700;line-height:1;padding:2px 7px;
-  white-space:nowrap;
-  border-radius:99px;background:var(--sun-bg);color:var(--sun-2)}
-#c-kidpick .list-add{margin-top:12px}
-#c-kidpick .list-add.on{border-style:solid;background:var(--leaf-bg)}
+/* ‏**התג המרחף ירד עם התג עצמו** (`FIX-create-v3.md` §5): "כבר
+   קיים" הוא היום שורה שנייה בתוך האריח, ולא קפסולה על הקצה
+   העליון. ‏`.occgrid` משרת מסך אחד בלבד, ולכן אין מה להשאיר.
+   **ושני הכללים של `#c-kidpick .list-add` ירדו איתם** — "מישהו
+   חדש" הוא אריח ברשת (§3) ולא שורה מקווקוות, וסלקטור שאינו
+   מצביע על דבר הוא בדיוק המלכודת שהפרק "כלל שהורחב ואז מצטמצם"
+   מתאר. */
 /* ‏**"עוד לא החלטתי" היא שורה שקטה בתחתית הגיליון ולא תיבת סימון.**
    היא תשובה שלישית לאותה שאלה, ולא הגדרה על מה שמעליה: תיבה שיושבת
    מתחת לרשימה של אנשים נקראת כמתג על מי שנבחר. */
@@ -2857,6 +2857,275 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   .device.gtop .wizbar{margin:6px 0 7px}
 }
 .screen.wiz .eyebrow+.stack,.screen.wiz .stack+.stack{margin-top:clamp(6px,1.2vh,12px)}
+
+/* ══ FIX-create-v3 · שבעת מסכי האשף ═══════════════════════════════
+   ‏`FIX-create-v3.md`, עיצוב `design/neta-261-create-all.html`.
+   **תיקון עיצובי בלבד** (§0): מבנה הפלואו, סדר השלבים, האפשרויות
+   בכל מסך והלוגיקה שמאחוריהם לא נגעו. מה שמשתנה הוא המראה,
+   ובמקומות שהמסמך נוקב בהם גם הנוסח. **מסך הסיום מחוץ לתיקון.**
+
+   ‏**והמחלקות אינן `.nw*`/`.kt2`/`.opr` שבקובץ העיצוב**, כי אלה
+   שמות של קובץ בודד ולא של המוצר: אצלנו אותו רכיב בדיוק כבר נקרא
+   ‏`.card-main.wizc`, ‏`.pick`, ‏`.occgrid` ו-`.kgrid`. ‏§0 מתיר לגעת
+   ברכיב משותף רק אם המראה של המסכים האחרים אינו זז, ולכן כל כלל
+   כאן ממוקד ל-`.screen.wiz`, ל-`#wiz-card` או למזהה של הפאנל. */
+
+/* ── §11 · אזור התוכן גולל, והכפתור מקובע ───────────────────────
+   ‏**הכפתור התחתון יוצא מהמסך במסך התשלום** (נמדד 77 פיקסלים של
+   גלילה ב-390x844), וזה בדיוק מה ש-§13.7 אוסר. עד כה הבמה כולה
+   גללה — ההכרעה של `FIX-scroll.md`, שנכתבה על ארבעת הטאבים ועל
+   מסך הרגע — וכאן המסמך נוקב במפורש בהפך: רק אזור התוכן גולל,
+   והכפתור על רקע לבן מחוצה לו.
+
+   **וזו אותה צורה בדיוק של פלואו ההזמנה**, שכבר יושבת בקובץ
+   (`[data-name="הזמנת קרוב"]`): המסך הוא עמודת flex שתופסת את
+   גובה הבמה, והפעולה נעוצה בתחתיתה. **בלי עטיפה חדשה בכל מסך**,
+   כי ארבעת המסכים ושלושת הפאנלים היו שבעה מקומות לסנכרן: מה
+   שמקבע את הכפתור הוא `margin-top:auto` בעמודת ה-flex ועוד
+   ‏`position:sticky` לתוכן ארוך, ושניהם על אותו צומת. */
+.screen.on.wiz,.screen.on.center-v.wiz{display:flex;flex-direction:column;
+  flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:clip;
+  margin-bottom:-14px;padding-bottom:0}
+/* בשלושת הפאנלים של "הקמה" העמודה היא הפאנל ולא המסך, כי שניים
+   מהשלושה מוסתרים והמסך מחזיק את שלושתם. */
+[data-name="הקמה"].screen.wiz>div{display:flex;flex-direction:column;
+  flex:1 0 auto}
+.screen.wiz .wcta{margin-top:auto;position:sticky;bottom:0;z-index:3;
+  background:var(--s1);
+  padding:clamp(9px,1.8vh,15px) 0 calc(clamp(6px,1.2vh,12px) + env(safe-area-inset-bottom))}
+.screen.wiz .wcta>.btn{width:100%;margin-top:0}
+
+/* ── §2 · מסגרת החול צריכה אוויר משלה ואסור שתיחתך ──────────────
+   ‏`.usub` הוא `-webkit-box` עם `line-clamp:2`, כלומר `overflow:hidden`
+   בגובה תיבת השורה בדיוק, והתגית חורגת ממנה למעלה ולמטה. הסבב
+   הקודם קנה 3 פיקסלים בכל צד; המסמך נוקב ב-`padding:4px 11px`
+   ועוד `margin:7px 0 3px`, כלומר תגית גבוהה יותר. ‏`line-clamp`
+   יורד מהשורה הזאת — הצירוף הארוך ביותר הוא שתי שורות ממילא —
+   ומה שמחזיק אותה הוא הריפוד.
+   **והמרווחים מקוזזים, ולכן הקצה התחתון של הכרטיס אינו זז**
+   כשההדלקה עוברת אליה: זו בדיוק בדיקת הקבלה של §12 בסבב הקודם. */
+#wiz-occ{display:block;overflow:visible;-webkit-line-clamp:none;
+  padding-block:7px 3px;margin-top:-2px;margin-bottom:-10px}
+#wiz-name{padding-block:4px;margin-top:-2px;margin-bottom:-4px}
+/* ‏**והריפוד מקוזז בקצה השמאלי בלבד**, כפי שכבר היה: המסגרת
+   מוסיפה 22 פיקסלים של ריפוד, ובלעדי הקיזוז "הטיול אחרי הצבא של
+   אביב · ספט׳ 2036" נשבר לשתי שורות ברגע שהוא נדלק — נמדד, וזה
+   בדיוק מה ש-`wizcard.js` שומר עליו. הקצה הימני יושב על הקו של
+   התווית שמעליה, ולכן אין קפיצה בשני הכיוונים. */
+#wiz-card .lit{display:inline-block;max-width:calc(100% + 22px);white-space:normal;
+  line-height:1.45;padding:4px 11px;margin-inline-start:0;
+  margin-inline-end:-22px;border-radius:12px}
+/* ‏**ובשלב "כמה" המסגרת עוטפת את כל רגל הכרטיס כקופסה** (§2), עם
+   ריפוד פנימי ובלי להיצמד לקו המפריד — ולכן הקו יורד איתה. */
+.wizc #wiz-money.bot.lit{display:flex;border-radius:14px;padding:11px 13px;
+  margin:12px 0 0;border-top:0;box-decoration-break:slice;
+  -webkit-box-decoration-break:slice}
+
+/* ── §3 · "למי נוטעים" הוא רשת שתי עמודות ───────────────────────
+   ‏**אריח ולא שורה**: פרצוף בעיגול, השם, ומתחתיו הקרבה באפור.
+   ‏`.kidg` ממוקד ל-`#c-kidpick` ואינו נוגע ב-`.pick` של "מי יקבל
+   את הכסף", ששם השורה נשארת שורה. */
+#c-kidpick.kidg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#c-kidpick.kidg button{border:1px solid var(--line);border-radius:16px;
+  display:flex;align-items:center;gap:10px;text-align:start;width:100%;
+  background:none;font-family:inherit;cursor:pointer;
+  padding:clamp(9px,1.6vh,13px) 12px;margin:0}
+#c-kidpick.kidg button.on{border-color:var(--leaf);background:var(--leaf-bg);
+  box-shadow:inset 0 0 0 1px var(--leaf)}
+#c-kidpick.kidg .fc{width:clamp(30px,4.4vh,36px);height:clamp(30px,4.4vh,36px);
+  border-radius:50%;overflow:hidden;flex:none;border:0;padding:0;
+  background:var(--s2);display:block}
+#c-kidpick.kidg .fc svg,#c-kidpick.kidg .fc img{display:block;width:100%;
+  height:100%;object-fit:cover;clip-path:circle(50%)}
+#c-kidpick.kidg .nm{flex:1;min-width:0}
+#c-kidpick.kidg .nm b{display:block;font-size:14px;font-weight:700;
+  color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#c-kidpick.kidg .nm span{display:block;font-size:11.5px;color:var(--tx-3);
+  font-weight:400;margin-top:1px;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
+/* ‏**"מישהו חדש" הוא אריח ככל השאר ולא שורה מקווקוות**, כי ברשת
+   שתי עמודות שורה ברוחב מלא נקראת כמקטע אחר. העיגול מקווקו, וזה
+   מה שאומר "אין כאן ערך עדיין" בכל שאר המוצר. */
+#c-kidpick.kidg .newk{width:clamp(30px,4.4vh,36px);height:clamp(30px,4.4vh,36px);
+  border-radius:50%;border:1.5px dashed var(--line-2);display:grid;
+  place-items:center;color:var(--leaf);font-size:19px;flex:none}
+#c-kidpick.kidg button.on .newk{border-style:solid;border-color:var(--leaf)}
+
+/* ── §4 · "פרטי הילד": עיגול הוא אדם, וגם "אחר" ─────────────────
+   ‏**כל דמות יושבת בתוך עיגול ולא בתוך ריבוע** (§4, §13.2). זה
+   קבוע בכל האפליקציה — עיגול הוא אדם, ריבוע מעוגל הוא רגע —
+   והרשת הזאת הייתה החריג האחרון. ‏`.kgrid` משרת גם את "להוסיף
+   קרוב" ואת "הזמנת קרוב", ולכן הכלל ממוקד ל-`#c-avpick`. */
+#c-avpick .f{border-radius:50%!important;overflow:hidden}
+#c-avpick .f svg,#c-avpick .f img{clip-path:circle(50%)}
+/* ‏**ו"אחר" מקבל עיגול עם סימן שאלה** ולא צללית של אדם: זו
+   האפשרות שאין לה קרבה ואין ממה לגזור לה פרצוף. */
+#c-avpick .qm{display:grid;place-items:center;background:var(--s2);
+  color:var(--tx-3);font-size:17px;font-weight:700}
+/* ‏**שדה השם גבוה כמו שדה טקסט רגיל** (§4, §13.1): `clamp(50px,7vh,58px)`
+   ו-17px, ולא תיבה קטנה. ממוקד לשדה הזה ולא ל-`.field input`
+   הגלובלי, שמשרת 27 שדות. */
+#c-name{height:clamp(50px,7vh,58px);font-size:17px}
+
+/* ── §5 · "לאיזה רגע": שתי עמודות, סמל בצד השם ──────────────────
+   ‏**אריח רחב עם סמל בריבוע מעוגל בצד** ולא סמל מעל שם בארבע
+   עמודות. ‏`.occgrid` משרת גם את גיליון עריכת הרגע, ולכן הכלל
+   ממוקד ל-`#c-pills`. */
+#c-pills.occgrid{grid-template-columns:1fr 1fr;gap:9px}
+#c-pills.occgrid button{display:flex;flex-direction:row;align-items:center;gap:10px;
+  text-align:start;padding:clamp(9px,1.6vh,13px) 12px;position:relative;
+  justify-items:stretch}
+#c-pills.occgrid .em{width:clamp(26px,3.9vh,32px);height:clamp(26px,3.9vh,32px);
+  border-radius:10px;background:var(--leaf-bg);display:grid;place-items:center;
+  flex:none}
+#c-pills.occgrid .em svg{width:70%;height:70%}
+#c-pills.occgrid .lb{flex:1 1 auto;min-width:0;font-size:13.5px;
+  font-weight:700;line-height:1.3;text-align:start;display:block;min-height:0;
+  color:var(--tx)}
+/* ‏**"כבר קיים" יושב בתוך האריח ולא מרחף מעליו** (§5, §13.8):
+   שורה שנייה קטנה ואפורה מתחת לשם, והאריח מקבל רקע מעט שונה
+   וסמל מעומעם. תג שמרחף על הקצה העליון מכסה את מה שהאריח בא
+   להראות — וזה בדיוק מה שנרשם כאן על התג באשף. */
+#c-pills.occgrid .exi{position:static;display:block;background:none;
+  padding:0;margin-top:2px;font-size:11px;font-weight:400;
+  color:var(--tx-3);border-radius:0}
+#c-pills.occgrid button.has{background:var(--s2)}
+#c-pills.occgrid button.has .em{opacity:.62}
+#c-pills.occgrid button.has.on{background:var(--leaf-bg)}
+#c-pills.occgrid button.has.on .em{opacity:1}
+
+/* ── §6 · "כמה": שבבים, סליידר, ושורת השנים ─────────────────────
+   ‏**שני שבבים ברוחב שווה עם מרווח של 10** (§6, §13.4), ולא שני
+   כפתורים ברוחב הטקסט. */
+.screen.wiz #eb-freq+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.screen.wiz #eb-freq+.two .pill{width:100%;margin:0;
+  height:clamp(44px,6vh,50px);border-radius:14px;font-size:14px;
+  font-weight:700}
+/* ‏**הסליידר צריך להיראות כמו סליידר** (§6, §13.6): מסילה בגובה 8,
+   מילוי ירוק, ידית לבנה עם טבעת ירוקה, ותוויות מינימום ומקסימום
+   מתחתיה. הקלט עצמו נשאר `input[type=range]` — הוא מה שנותן
+   מקלדת, נגישות וגרירה — והציור הוא `::-webkit-slider-runnable-track`
+   ו-`::-webkit-slider-thumb` עליו, ולא `<div>` שני שצריך לסנכרן. */
+.screen.wiz .rngw{margin-top:clamp(8px,1.6vh,14px)}
+/* ‏`direction:ltr` על הקלט עצמו, אחרת המינימום יושב מימין בעוד
+   שהתוויות שמתחתיו אומרות את ההפך — ספרות נקראות משמאל לימין,
+   וזו אותה הכרעה שכבר יושבת על משבצות הקוד ועל המייל. */
+.screen.wiz .rngw input[type=range]{-webkit-appearance:none;appearance:none;
+  width:100%;height:22px;background:none;margin:0;display:block;direction:ltr}
+/* ‏**המילוי הוא גרדיאנט על המסילה ולא `<div>` שני שצריך לסנכרן.**
+   ‏`--p` נכתב ב-`amtShow`, שהיא ממילא המקום היחיד שיודע גם את הערך
+   וגם את הטווח. */
+.screen.wiz .rngw input[type=range]::-webkit-slider-runnable-track{
+  height:8px;border-radius:99px;
+  background:linear-gradient(to right,var(--leaf) 0 var(--p,0%),var(--line) var(--p,0%) 100%)}
+.screen.wiz .rngw input[type=range]::-moz-range-track{
+  height:8px;border-radius:99px;
+  background:linear-gradient(to right,var(--leaf) 0 var(--p,0%),var(--line) var(--p,0%) 100%)}
+.screen.wiz .rngw input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;
+  appearance:none;width:22px;height:22px;border-radius:50%;background:var(--s1);
+  border:3px solid var(--leaf);margin-top:-7px;box-shadow:0 2px 6px rgba(11,27,20,.18)}
+.screen.wiz .rngw input[type=range]::-moz-range-thumb{width:22px;height:22px;
+  border-radius:50%;background:var(--s1);border:3px solid var(--leaf);
+  box-shadow:0 2px 6px rgba(11,27,20,.18)}
+.screen.wiz .rngl{display:flex;justify-content:space-between;
+  font-size:11px;color:var(--tx-3);margin-top:4px;direction:ltr}
+/* ‏**שורת השנים תמיד בשורה אחת, וחמישה שבבים ברוחב שווה** (§6,
+   ‏§13.5). ‏`.chips` הגלובלי הוא `flex-wrap:wrap` עם רוחב תוכן. */
+.screen.wiz #c-terms{display:flex;flex-wrap:nowrap;gap:8px}
+.screen.wiz #c-terms button{flex:1 1 0;min-width:0;white-space:nowrap;
+  padding-inline:2px;font-size:13px;border-radius:99px;
+  height:clamp(36px,5vh,42px);padding-block:0}
+/* ‏`.qm` ממלא את העיגול, כי `.f` הוא מה שמגדיר את המידה. */
+#c-avpick .qm{width:100%;height:100%}
+/* ‏**שורת ההסבר של השבבים נאמרת פעם אחת** (§6): התווית שמעליהם
+   והשורה שמתחתיהם אמרו את אותו דבר בשתי שכבות. */
+.screen.wiz #eb-freq,.screen.wiz #freq-stop-hint{display:none!important}
+
+/* ── §7 · "מי יקבל את הכסף": שלוש שורות באותה צורה ──────────────
+   ‏**פרצוף בעיגול, כותרת, ומשפט הסבר מתחתיה**, ומרווח של 9 בין
+   השורות (§7, §13.11). ‏`.pick` של המסך משרת גם את "למי נוטעים",
+   שעבר לרשת, ולכן הכלל ממוקד ל-`#c-who`. */
+.screen.wiz #c-who{gap:9px}
+.screen.wiz #c-who button{gap:12px;border-radius:16px;
+  padding:clamp(10px,1.8vh,14px) 14px}
+.screen.wiz #c-who button.on{box-shadow:inset 0 0 0 1px var(--leaf)}
+.screen.wiz #c-who .fc{width:clamp(38px,5.4vh,44px);height:clamp(38px,5.4vh,44px);
+  border-radius:50%}
+.screen.wiz #c-who .fc.plus{border-style:dashed;border-width:1.5px;font-size:19px}
+.screen.wiz #c-who .nm b{font-size:14.5px;font-weight:700}
+.screen.wiz #c-who .nm>span{font-size:12.5px;line-height:1.45;margin-top:2px}
+/* ‏**משפט ההסבר של האפשרות הראשונה הוא הקצר מכולם, ולכן הוא ירוק
+   ולא אפור** (§7): בלעדיו השורה נקראת כריקה לצד שתי השורות
+   שמתחתיה. */
+.screen.wiz #c-who button[data-w="me"] .nm>span{color:var(--leaf)}
+.screen.wiz #c-who button[data-w="me"].on .nm>span{color:var(--leaf)}
+/* הקישור "מה מגן על זה" אחרי השורות, עם אוויר משלו. */
+.screen.wiz #c-safebtn{margin-top:clamp(9px,1.7vh,14px)!important}
+
+/* ── §8 · "תשלום": אותה שורה בדיוק של §7 ────────────────────────
+   ‏**התג יושב באותה שורה עם הכותרת** — הוא כבר כך במרקאפ
+   (`.row` עם `gap:6px`) — **והטקסט הקטן על חיבור הסליקה הוא
+   ‏11.5px ב---tx-3 עם `line-height:1.6`** (§8). */
+.screen.wiz [data-name] .fine,.screen.wiz>.fine{font-size:11.5px;line-height:1.6}
+[data-name="תשלום"].screen.wiz>.fine{font-size:11.5px;color:var(--tx-3);line-height:1.6}
+/* ‏**שתי שורות הבחירה בנויות כמו שלוש השורות של §7**: אותו גובה,
+   אותו מרווח, ואותה מסגרת לנבחר. */
+[data-name="תשלום"].screen.wiz .opt.pay{border-radius:16px;
+  padding:clamp(10px,1.8vh,14px) 14px}
+[data-name="תשלום"].screen.wiz .stack{gap:9px}
+[data-name="תשלום"].screen.wiz .opt.pay.on{box-shadow:inset 0 0 0 1px var(--leaf)}
+
+/* ── §9 · "סיכום ואישור": קופסה אחת עם מסגרת ────────────────────
+   ‏**חמש השורות בתוך קופסה אחת ברדיוס 18** (§9, §13.12), התווית
+   מימין באפור 13 והערך משמאל בשחור 14 מודגש, הערת המשנה מתחת
+   לערך ב-11.5, וקו מפריד בין השורות ולא אחרי האחרונה. */
+[data-name="סיכום ואישור"].screen.wiz .card{border-radius:18px;
+  border:1px solid var(--line);background:var(--s1);padding:2px 15px}
+[data-name="סיכום ואישור"].screen.wiz .stat{padding-block:clamp(9px,1.6vh,13px)}
+[data-name="סיכום ואישור"].screen.wiz .stat .k{font-size:13px;color:var(--tx-3)}
+[data-name="סיכום ואישור"].screen.wiz .stat .v{font-size:14px;font-weight:700;
+  color:var(--tx)}
+[data-name="סיכום ואישור"].screen.wiz .stat .v i{font-size:11.5px;font-weight:400;
+  color:var(--tx-3)}
+[data-name="סיכום ואישור"].screen.wiz #pay-fine{font-size:11.5px;line-height:1.6}
+
+/* ── §11 · התקציב האנכי של שלושת המסכים שנדחקו ──────────────────
+   נמדד ב-390x844: מסך הסכום חרג ב-41 פיקסלים אחרי ששורת השנים
+   עברה אליו, ומסך התשלום ב-138 — שם יושבים גם האמצעים השמורים,
+   שני המסכים היחידים שהמסמך מוסיף להם תוכן. */
+.screen.wiz .amtbig{margin:0 0 clamp(4px,.9vh,8px)}
+.screen.wiz .rngw{margin-top:clamp(6px,1.2vh,10px)}
+.screen.wiz #c-datehint{margin:4px 0 0;font-size:11px}
+.screen.wiz #eb-term{margin-top:clamp(7px,1.4vh,12px)}
+[data-name="תשלום"].screen.wiz .eyebrow{margin-top:clamp(6px,1.2vh,10px)}
+[data-name="תשלום"].screen.wiz .opt.pay{padding:clamp(8px,1.5vh,12px) 13px}
+[data-name="תשלום"].screen.wiz .opt p{margin-top:2px;line-height:1.45}
+[data-name="תשלום"].screen.wiz>.fine{margin-top:clamp(7px,1.3vh,11px)}
+[data-name="תשלום"].screen.wiz .stack{gap:8px}
+.screen.wiz #eb-freq+.two .pill{height:clamp(42px,5.6vh,48px)}
+.screen.wiz #panel-m,.screen.wiz #panel-l{margin-top:clamp(6px,1.2vh,10px)}
+.screen.wiz .trkeb{margin-top:clamp(7px,1.3vh,11px)}
+.screen.wiz #amt-sub{margin-top:3px}
+.screen.wiz .wcta{padding-block:clamp(8px,1.5vh,13px)}
+[data-name="תשלום"].screen.wiz #pay-saved .opt{padding:clamp(8px,1.4vh,11px) 13px}
+/* ריפוד ראש הגיליון: `clamp(11px,2vh,18px)` שבעיצוב, ולא 22. */
+.screen.wiz{padding-top:clamp(12px,2.2vh,18px)}
+.screen.wiz #c-up{padding-block:clamp(8px,1.5vh,12px)}
+.screen.wiz #c-avfield{margin-top:clamp(8px,1.6vh,14px)}
+.screen.wiz #wiz-trk{padding-block:clamp(8px,1.4vh,11px)}
+.screen.wiz #c-namefield{margin-top:clamp(8px,1.5vh,12px)}
+.screen.wiz #c-up{margin-top:clamp(7px,1.3vh,11px)}
+.screen.wiz .rngl{margin-top:3px}
+/* ‏**שורת "נפתחת בספטמבר 2036, עוד 10 שנים" יורדת באשף.** הכרטיס
+   שבראש כבר נוקב במועד ("הבת מצווה של נועה · ספט׳ 2036") והשבב
+   הדלוק נוקב בשנים — כלומר אותה עובדה בשלוש שכבות, ובמסך שזה
+   עתה קיבל את שורת השנים. בהפקדה לרגע קיים אין ראש ואין כרטיס,
+   ושם היא נשארת. */
+.screen.wiz #c-datehint{display:none}
+#wiz-torow{display:block}
+#wiz-torow .v{font-size:13.5px;font-weight:700}
+[data-name="תשלום"].screen.wiz .opt p{line-height:1.4}
+[data-name="תשלום"].screen.wiz #pay-saved{gap:7px}
 /* ── הזמנת קרוב · הפלואו (`FIX-invite-v1.md`) ─────────────────────
    **הזמנת קרוב היא משימה ולא מקום**, ולכן היא לובשת את הכרום של
    אשף הנטיעה בדיוק: אותו `#wizhead` (שורה עליונה, סרגל שלבים
@@ -2903,8 +3172,9 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   border:1.5px solid var(--line-2);display:grid;place-items:center;
   color:transparent;font-size:14px;line-height:1}
 .ivr.on .bx{background:var(--leaf);border-color:var(--leaf);color:var(--on-leaf)}
-/* ‏**ושורה מקווקוות שנבחרה חייבת להיראות שנבחרה** — אותה הכרעה
-   ואותו כלל של `#c-kidpick .list-add.on` באשף הנטיעה. */
+/* ‏**ושורה מקווקוות שנבחרה חייבת להיראות שנבחרה.** אותו כלל ישב
+   על `#c-kidpick .list-add.on` באשף הנטיעה, וירד איתה כשהיא הפכה
+   לאריח ברשת (`FIX-create-v3.md` §3); כאן הרשימה עדיין רשימה. */
 .ivz .list-add.on{border-style:solid;border-color:var(--leaf);
   background:var(--leaf-bg)}
 /* ‏**הכותרת של השלב אינה ילדה ישירה של `.screen.wiz`** — היא בתוך
@@ -4674,7 +4944,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7764fa7';
+window.NETA_BUILD = '7791a45';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -5068,8 +5338,11 @@ window.NETA_CONFIG = {
       <div style="text-align:start"><p class="l" id="wiz-projl">בקצב הזה ייצבר</p>
         <p class="v f" id="wiz-proj"><span>0 ₪</span></p></div>
     </div>
+    <!-- ‏**שורה אחת ולא תווית וערך בשני קצוות** (`FIX-create-v3.md`
+         §7): "המתנה תגיע ל <הערך>", והמסגרת עוטפת את כולה. בשני
+         קצוות המסגרת נדחקה אל הקצה השמאלי של הכרטיס ונגעה בו. -->
     <div class="wizto" id="wiz-torow" style="display:none">
-      <p class="l">המתנה תגיע ל</p><p class="v" id="wiz-to"><span></span></p>
+      <p class="v" id="wiz-to"><span></span></p>
     </div>
   </div>
 
@@ -5327,12 +5600,12 @@ window.NETA_CONFIG = {
        ו"+ מישהו חדש" הוא שורה מקווקוות ולא תא ברשימה, בדיוק כמו
        "+ הוסף קרוב" ב"הקרובים שלי": אנשים ברשימה, פעולה בשורה. -->
   <div class="field" id="c-kidfield" style="display:none">
-    <div class="pick" id="c-kidpick"></div>
+    <div class="kidg" id="c-kidpick"></div>
   </div>
   <!-- השם לבדו בשורה. בן/בת ישבו כאן וירדו עם בורר הדמויות: הקרבה
        שבשאלה הבאה כבר נושאת מגדר, והצ'יפים חוזרים רק אחרי "אחר". -->
-  <div class="field" id="c-namefield"><label id="c-namelbl">איך קוראים לו?</label>
-    <input type="text" id="c-name" placeholder="למשל: דניאל">
+  <div class="field" id="c-namefield"><label id="c-namelbl">מה השם?</label>
+    <input type="text" id="c-name" placeholder="איך קוראים לו או לה">
     <!-- "עבורי" עונה על השאלה הזאת מראש. הערך מוצג ואינו נשאל, וזו
          כבר המוסכמת באשף (.fixedval), ולא שדה מושבת שנראה כמו משהו
          שאפשר להקליד בו. -->
@@ -5368,7 +5641,7 @@ window.NETA_CONFIG = {
        השלב בא אחריהן. -->
   <button type="button" class="quietl" id="c-undecidedlink"
     onclick="pickUndecided()">עוד לא החלטתי עבור מי</button>
-  <button class="btn gap" id="c-cta" onclick="toOccasion()">המשך</button>
+  <div class="wcta"><button class="btn" id="c-cta" onclick="toOccasion()">להמשיך</button></div>
   </div><!-- /cp-0 -->
 
   <!-- ── שלב 2: לאיזה רגע ──────────────────────────────────────
@@ -5383,41 +5656,28 @@ window.NETA_CONFIG = {
   <p class="sub gap">אפשר לשנות את זה בכל שלב, גם אחרי שהנטיעה נפתחה</p>
   <div class="field" style="margin-top:18px">
     <div class="occgrid" id="c-pills">
-      <button class="on" data-t="בר/בת מצווה"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></span><span class="lb">בר/בת מצווה</span></button>
-      <button data-t="לימודים"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-studies"/></svg></span><span class="lb">לימודים</span></button>
-      <button data-t="טיול אחרי צבא"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-trip"/></svg></span><span class="lb">טיול אחרי צבא</span></button>
-      <button data-t="רכב ראשון"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-car"/></svg></span><span class="lb">רכב ראשון</span></button>
-      <button data-t="דירה"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-home"/></svg></span><span class="lb">דירה</span></button>
-      <button data-t="חתונה"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-wedding"/></svg></span><span class="lb">חתונה</span></button>
+      <button class="on" data-t="בר/בת מצווה"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></span><span class="lb">הבר מצווה</span></button>
+      <button data-t="לימודים"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-studies"/></svg></span><span class="lb">הלימודים</span></button>
+      <button data-t="טיול אחרי צבא"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-trip"/></svg></span><span class="lb">הטיול אחרי הצבא</span></button>
+      <button data-t="רכב ראשון"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-car"/></svg></span><span class="lb">הרכב הראשון</span></button>
+      <button data-t="דירה"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-home"/></svg></span><span class="lb">הדירה</span></button>
+      <button data-t="חתונה"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-wedding"/></svg></span><span class="lb">החתונה</span></button>
       <button data-t="קופת הפתעות"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-fund"/></svg></span><span class="lb">קופת הפתעות</span></button>
       <button data-t="custom"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-other"/></svg></span><span class="lb">משהו אחר</span></button>
     </div>
     <input type="text" id="c-custom" placeholder="למשל: טיול גדול, רכב ראשון" style="margin-top:8px;display:none">
   </div>
 
-  <!-- ‏**המועד עבר לכאן ממסך הסכום, וזו החבילה.** השאלה היא "לאיזה
-       רגע ומתי", ושתי החצאים שלה הן אותה עובדה: רגע בחיים יש לו
-       תאריך. במסך הסכום הוא ישב מתחת למספר ונקרא כהגדרה עליו,
-       והכרטיס שבראש ממילא נוקב בו ("הלימודים שלה · ספטמבר 2038").
-
-       הגוש כולו יורד בהפקדה לרגע קיים (`showTermStep`), כי שם
-       המועד נקבע כשהרגע נפתח. -->
-  <p class="eyebrow" id="eb-term" style="margin-top:20px">מתי תרצה לקצור את הפירות?</p>
-  <div class="chips" id="c-terms">
-    <button onclick="setTerm(this,5)">בעוד 5 שנים</button>
-    <button onclick="setTerm(this,10)">10</button>
-    <button onclick="setTerm(this,15)">15</button>
-    <button onclick="setTerm(this,20)">20</button>
-    <button onclick="openExactDate(this)">תאריך אחר</button>
-  </div>
-  <div class="field" id="c-datefield" style="display:none;margin-top:10px">
-    <input type="date" id="c-date" value="2032-08-01" oninput="dateTouched=true;onExactDate()">
-  </div>
-  <p class="fine" id="c-datehint" style="margin:8px 0 16px"></p>
+  <!-- ‏**והמועד חזר למסך הסכום** (`FIX-create-v3.md` §6). הוא ישב
+       כאן מאז `FIX-create-v2`, בנימוק ש"לאיזה רגע ומתי" הן אותה
+       עובדה. **מה שמחזיק את ההיפוך:** השנים והסכום הם שתי הידיות
+       היחידות שמזיזות את הצפי, והצפי מוצג בכרטיס שמעל מסך הסכום
+       — כלומר ידית שיושבת במסך אחר מזיזה מספר שאי אפשר לראות
+       בזמן שמזיזים אותה. **המחיר שנאמר:** מסך הרגע הופך לשאלה
+       אחת בלבד, ומסך הסכום נושא שלוש. -->
   <!-- ‏**רגע שכבר קיים מביא איתו את המועד שלו** (`FIX-create-v2.md`
        §10): במקום שורת השנים, שורה שאומרת מתי הוא ייפתח ושהנטיעה
        החדשה מתווספת אליו. -->
-  <p class="fine" id="c-exline" style="display:none;margin:2px 0 16px"></p>
 
   <!-- כרטיס "כך זה ייראה אצלך" ירד מכאן. הוא נולד כשהשם והרגע נשאלו
        באותו מסך, ואז הוא באמת חיבר שתי תשובות לדבר אחד. אחרי הפיצול
@@ -5425,8 +5685,8 @@ window.NETA_CONFIG = {
        הדולק אומר את הרגע. תצוגה מקדימה שמראה רק את מה שנבחר בשורה
        שמעליה אינה תצוגה מקדימה. מה שהיא כן חיברה, השם והרגע יחד,
        נאמר במסך הסיכום שלפני הנעילה. -->
-  <button class="btn gap" onclick="toAmount()">המשך</button>
-  <button class="link backlink" onclick="cStepGo(0)">חזרה</button>
+  <div class="wcta"><button class="btn" onclick="toAmount()">להמשיך</button>
+  <button class="link backlink" onclick="cStepGo(0)">חזרה</button></div>
   </div><!-- /cp-1 -->
 
   <div id="cp-2" style="display:none">
@@ -5509,7 +5769,7 @@ window.NETA_CONFIG = {
     <p class="fine gap">המנגנונים האלה נועדו למקרה אחד: שמישהו ינסה להסיט את הכסף בשקט לקראת המועד. שינוי כזה לעולם לא קורה מיד, ולעולם לא בלי שכולם יידעו.</p>
   </div>
 
-  <div class="two gap"><button class="btn" onclick="beneContinue()">המשך</button><button class="btn ghost" onclick="toAmount()">חזרה</button></div>
+  <div class="two gap wcta"><button class="btn" onclick="beneContinue()">להמשיך</button><button class="btn ghost" onclick="toAmount()">חזרה</button></div>
   </div><!-- /cp-2 -->
 
 </section>
@@ -5522,6 +5782,9 @@ window.NETA_CONFIG = {
        את שניהם, ושורה שחוזרת עליו 100 פיקסלים מתחתיו היא אמירה
        כפולה. -->
   <h2 class="wizonly" id="amt-h">כמה להשקיע?</h2>
+  <!-- ‏**שורת ההסבר אחת ומתחת לשאלה** (§6). היא הייתה תווית מעל
+       השבבים ועוד שורה מתחתיהם, כלומר אותה אמירה בשתי שכבות. -->
+  <p class="sub wizonly" id="amt-sub">כל חודש או פעם אחת, אפשר לעצור בכל רגע</p>
   <div class="row gap nowiz"><div class="dot g" id="ct-icon"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div><div><div class="title" id="ct-title">השקע עבור דניאל</div><div class="meta" id="ct-meta">בר מצווה · המועד המיוחל אוגוסט 2032</div></div></div>
   <p class="sticky-sum nowiz" id="amt-sticky"><span id="amt-sticky-txt"></span></p>
   <p class="eyebrow" id="eb-freq">כל חודש או פעם אחת</p>
@@ -5536,13 +5799,30 @@ window.NETA_CONFIG = {
     <div class="amtmid"><span class="amtin"><input id="out-m" inputmode="numeric" value="100" aria-label="סכום חודשי"><i>₪</i></span>
       <span class="amtsub">בכל חודש</span></div>
     <button type="button" class="amtstep" onclick="amtStep('m',1)" aria-label="עוד">＋</button>
-  </div><div class="row"><input type="range" id="amt-m" min="20" max="1000" step="10" value="100"></div></div>
+  </div><div class="rngw"><input type="range" id="amt-m" min="20" max="1000" step="10" value="100"><div class="rngl"><span>20 ₪</span><span>1,000 ₪</span></div></div></div>
     <div id="panel-l" class="field" style="display:none"><div class="amtbig">
     <button type="button" class="amtstep" onclick="amtStep('l',-1)" aria-label="פחות">−</button>
     <div class="amtmid"><span class="amtin"><input id="out-l" inputmode="numeric" value="1,000" aria-label="סכום חד פעמי"><i>₪</i></span>
       <span class="amtsub">פעם אחת</span></div>
     <button type="button" class="amtstep" onclick="amtStep('l',1)" aria-label="עוד">＋</button>
-  </div><div class="row"><input type="range" id="amt-l" min="100" max="30000" step="100" value="1000"></div></div>
+  </div><div class="rngw"><input type="range" id="amt-l" min="100" max="30000" step="100" value="1000"><div class="rngl"><span>100 ₪</span><span>30,000 ₪</span></div></div></div>
+  <!-- ‏**שורת השנים יושבת כאן** (`FIX-create-v3.md` §6): חמישה שבבים
+       ברוחב שווה בשורה אחת, ואחריהם שורת המסלול. הגוש כולו יורד
+       בהפקדה לרגע קיים (`showTermStep`), כי שם המועד נקבע כשהרגע
+       נפתח. -->
+  <p class="eyebrow" id="eb-term">לכמה זמן להמתין?</p>
+  <div class="chips" id="c-terms">
+    <button onclick="setTerm(this,5)">5 שנים</button>
+    <button onclick="setTerm(this,10)">10</button>
+    <button onclick="setTerm(this,15)">15</button>
+    <button onclick="setTerm(this,20)">20</button>
+    <button onclick="openExactDate(this)">אחר</button>
+  </div>
+  <div class="field" id="c-datefield" style="display:none;margin-top:10px">
+    <input type="date" id="c-date" value="2032-08-01" oninput="dateTouched=true;onExactDate()">
+  </div>
+  <p class="fine" id="c-datehint" style="margin:8px 0 0"></p>
+  <p class="fine" id="c-exline" style="display:none;margin:2px 0 0"></p>
   <!-- שורת המסלול של האשף. היא יושבת כאן ולא בסוף המסך, כי אחריה
        אין יותר שאלות והכפתור בא מיד. -->
   <p class="eyebrow wizonly trkeb">מה יקרה לכסף עד אז</p>
@@ -5595,7 +5875,7 @@ window.NETA_CONFIG = {
     </div>
   </div>
   <p class="fine" id="fine" style="margin-bottom:14px"></p>
-  <div class="two"><button class="btn" id="amt-cta" onclick="afterAmount()">השקע עכשיו</button><button class="btn ghost" id="amt-back" onclick="backFromAmount()">חזרה</button></div>
+  <div class="two wcta"><button class="btn" id="amt-cta" onclick="afterAmount()">השקע עכשיו</button><button class="btn ghost" id="amt-back" onclick="backFromAmount()">חזרה</button></div>
 </section>
 
 <!-- 3 PAYMENT -->
@@ -5627,7 +5907,7 @@ window.NETA_CONFIG = {
        טקסט במסך הבחירה ולא מסך נפרד: כאן הוא נקרא לפני הלחיצה. -->
   <p class="fine" style="margin-top:16px">חיבור הסליקה עדיין בהקמה. הנטיעה תירשם עכשיו, והחיוב הראשון יתבצע כשהחיבור יושלם. עד אז לא יורד כסף.</p>
 
-  <div class="two" style="margin-top:14px"><button class="btn" onclick="toReview()">המשך לסיכום</button><button class="btn ghost" id="pay-back" onclick="backFromPay()">חזרה</button></div>
+  <div class="two wcta" style="margin-top:14px"><button class="btn" onclick="toReview()">להמשיך לסיכום</button><button class="btn ghost" id="pay-back" onclick="backFromPay()">חזרה</button></div>
 </section>
 
 <!-- 4 AHA -->
@@ -6825,7 +7105,7 @@ window.NETA_CONFIG = {
   <div class="pyc nowiz">
     <div class="dot g" id="py-icon"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div>
     <div class="pyc-x">
-      <div class="pyc-nm" id="py-title">בר/בת מצווה של דניאל</div>
+      <div class="pyc-nm" id="py-title">הבר מצווה של דניאל</div>
       <div class="pyc-am" id="py-amt">100 ₪ בכל חודש</div>
       <div class="pyc-dt" id="py-dt">עד אוגוסט 2032 · על שם דניאל</div>
     </div>
@@ -6857,7 +7137,7 @@ window.NETA_CONFIG = {
 
   <p class="fine gap" id="pay-fine">הכסף עובר ישירות לחשבון הנעול על שם דניאל, אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.</p>
 
-  <div class="two"><button class="btn" id="py-cta" onclick="finishDeposit()">אשר את הנטיעה</button><button class="btn ghost" onclick="go(3)">חזרה</button></div>
+  <div class="two wcta"><button class="btn" id="py-cta" onclick="finishDeposit()">אשר את הנטיעה</button><button class="btn ghost" onclick="go(3)">חזרה</button></div>
 </section>
 
 <!-- 25 PARTNER INVITE (the receiving side — what a co-owner sees when they open the link) -->
@@ -7601,11 +7881,11 @@ function go(i){
   /* ‏**הראש של מסלול המוזמנת נכתב כאן ולא ב-`flowBar`**, שהיא
      של האשף ויוצאת מיד על `!creating`. */
   if(joinLive&&JOIN_SCREENS.indexOf(i)>=0)joinHead(i);
-  if(i===2){flowBar(stepNo('amount'),'כמה תשקיע');
+  if(i===2){flowBar(stepNo('amount'),'כמה');
     /* ‏**"חזרה" יורד כשיש ראש.** החץ שבשורה העליונה הוא החזרה,
        וכפתור שני מתחת לכפתור הראשי הוא אותה פעולה פעמיים. */
     document.getElementById('amt-back').style.display=joinLive?'none':'';
-    txt('amt-cta',creating?'המשך':joinLive?'להמשיך':'השקע עכשיו');}
+    txt('amt-cta',creating?'להמשיך':joinLive?'להמשיך':'השקע עכשיו');}
   else if(i===ONBO.identity)flowBar(stepNo('identity'),'פתיחת חשבון');
   else if(i===3)flowBar(stepNo('pay'),'תשלום');
   else if(i===REVIEW)flowBar(stepNo('review'),'סיכום ואישור');
@@ -7775,7 +8055,7 @@ function cPaintUp(){
         (cPhotoOn?'תישמר יחד עם הנטיעה':'במשבצת הראשונה, לחץ כדי לבחור בה')+
       '</i></span><span class="rm" data-rm="1">חזרה לדמות</span>'
     : '<span class="ic">＋</span>'+
-      '<span class="t"><b>העלה תמונה'+of+'</b><i>במקום הדמות שנבחרה</i></span>';
+      '<span class="t"><b>להעלות תמונה'+of+'</b><i>במקום הדמות שנבחרה</i></span>';
 }
 function cPhotoTap(ev){
   const t=ev&&ev.target;
@@ -7845,7 +8125,7 @@ function cSelfName(){
   txt('c-selfname-v',on?selfName():'');
   f.style.display=on?'':'none';
   nm.style.display=on?'none':'';
-  if(lbl)lbl.textContent=on?'הנטיעה היא שלך':bs('איך קוראים לו?','איך קוראים לה?');
+  if(lbl)lbl.textContent=on?'הנטיעה היא שלך':'מה השם?';
   cPaintUp();prev();checkBene();
 }
 let cSelfOn=false,cSelfPrev='';
@@ -7871,9 +8151,11 @@ function beneCopy(){
      "מי הוא/היא עבורך?" ו"איך קוראים לו/לה?". הן היו קבועות
      ב-HTML, כלומר מי שבחר "בת" ראה מסך שממשיך לשאול בזכר. */
   txt('c-rellbl',bs('מי הוא עבורך?','מי היא עבורך?'));
+  /* ‏**תווית השם היא "מה השם?"** (`FIX-create-v3.md` §4), וההטיה
+     עברה ל-placeholder שאינו מנחש כלל ("איך קוראים לו או לה"):
+     שאלה שנשאלת לפני שיודעים מי הילד אינה יכולה להיות מוטה. */
   const nl=document.getElementById('c-namelbl');
-  if(nl&&nl.textContent!=='הנטיעה היא שלך')
-    nl.textContent=bs('איך קוראים לו?','איך קוראים לה?');
+  if(nl&&nl.textContent!=='הנטיעה היא שלך')nl.textContent='מה השם?';
   /* ‏c-acctfine ירדה מהמסך, ואיתה ההטיה למין הנהנה שהייתה בה. */
   if(document.getElementById('c-who'))whoCopy();
 }
@@ -7962,7 +8244,7 @@ function prev(){
 [cName,cCustom,cDate].forEach(el=>el.addEventListener('input',function(){prev();checkBene();render()}));prev();
 /* שורת ההעלאה נושאת את השם ("התמונה של דניאל"), ולכן היא נצבעת
    מחדש על כל הקלדה בשדה השם. */
-cName.addEventListener('input',function(){cPaintUp()});
+cName.addEventListener('input',function(){cPaintUp();applyCKid()});
 /* shareMode עדיין נקרא ונכתב — investIn טוענת אותו מהנטיעה שמפקידים
    בה, ומסך הסיכום מציג אותו. מה שירד הוא רק הבורר שקבע אותו באשף. */
 let shareMode='private',isNewPlant=false;
@@ -9364,9 +9646,12 @@ function updateGoal(){
   if(cDate.value){const d=new Date(cDate.value);dateLabel=months[d.getMonth()]+' '+d.getFullYear();years=yearsUntil(cDate.value);}
   goal={name:designated?n:t,type:t,icon:cIcon,dateLabel:dateLabel,years:years,desig:designated};
   /* amount comes first on this screen — it's what the screen is actually for; term is a refinement under it */
+  /* ‏**"לכמה זמן <השם> ימתין?"** (`FIX-create-v3.md` §6), ובהטיה
+     לפי הילד (§10). כשאין נהנה אין למי להמתין, ואז השאלה היא על
+     המועד עצמו. */
   txt('eb-term',(designated&&!beneIsMe())
-    ?('מתי תרצה ש'+n+' '+bs('יוכל','תוכל')+' לקצור את הפירות?')
-    :'מתי תרצה לקצור את הפירות?');
+    ?('לכמה זמן '+n+' '+bs('ימתין','תמתין')+'?')
+    :'לכמה זמן להמתין?');
   htm('ct-icon',occIcon(occasionEnum(cType),20));
   document.getElementById('ct-title').textContent=designated?('השקע עבור '+n):('השקע ל'+t);
   /* the header no longer states the date — it is an input on this screen now */
@@ -9578,6 +9863,16 @@ amtM.oninput=render;amtL.oninput=render;
 function amtShow(k,v){
   const el=document.getElementById(k==='m'?'out-m':'out-l');
   if(el&&document.activeElement!==el)el.value=v.toLocaleString('he-IL');
+  /* ‏**המילוי הירוק של הסליידר** (`FIX-create-v3.md` §6). הוא נכתב
+     כאן ולא במאזין נפרד, כי זו ממילא הפונקציה היחידה שיודעת גם את
+     הערך וגם את הטווח — ושני מקומות שמחשבים את אותו אחוז נשברים
+     ביום שאחד מהם משתנה. */
+  const r=amtRange(k);
+  if(r){
+    const mn=+r.min,mx=+r.max;
+    const pc=mx>mn?Math.max(0,Math.min(100,(v-mn)/(mx-mn)*100)):0;
+    r.style.setProperty('--p',pc+'%');
+  }
 }
 function amtRange(k){return k==='m'?amtM:amtL}
 function amtClamp(k,v){
@@ -9724,7 +10019,8 @@ function guardFine(){
 }
 /* creating a planting is three decisions, one per screen */
 let cStep=0;
-const C_LABELS=['עבור מי','לאיזה רגע','מי יקבל את הכסף'];
+/* ‏**שמות השלבים הם אלה שבטבלה של `FIX-create-v3.md` §1.** */
+const C_LABELS=['למי נוטעים','לאיזה רגע','מי יקבל את הכסף'];
 /* שם הפאנל לפי אינדקס. cStepGo מקבל מספר כי סדר הפאנלים הוא סדר
    הזרימה, ו-stepNo מקבל שם כי המספר שלה זז לפי designated ו-onbo. */
 const C_KEYS=['who','occ','bene'];
@@ -9838,6 +10134,13 @@ function flowBar(cur,label){
      שם היא מה שנראה עד שהסקריפט רץ. */
   const t=flowSteps();
   txt('wiz-t','נטיעה חדשה');
+  /* ‏**ושורת השלב נוקבת בפאנל שעל המסך** (`FIX-create-v3.md` §1):
+     "פרטי הילד" ולא "למי נוטעים", שהיא שאלה שכבר נענתה. ההכרעה
+     יושבת כאן ולא אצל הקוראים, כי `pickCKid` קוראת ל-`applyCKid`
+     ואז ל-`flowBar` — כלומר כל כתיבה משם הייתה נדרסת מיד.
+     **המונה עצמו אינו זז:** הפאנל אינו שלב אצלנו, וזו ההכרעה של
+     `FIX-create-v2.md` §9 שלא נגעה. */
+  if(cStep===0&&cFreshPanel())label='פרטי הילד';
   txt('wiz-step','שלב '+cur+' מתוך '+t+(label?(' · '+label):''));
   const bar=document.getElementById('wiz-bar');
   if(bar)bar.innerHTML=Array.from({length:t},function(_,i){
@@ -10038,7 +10341,10 @@ function wizCard(cur,total){
   txt('wiz-eb',last?'זה מה שייפתח':'נטיעה חדשה');
   /* ‏**לפני שנבחר ערך, המסגרת עוטפת את השאלה; אחריו את התשובה** —
      באותו מקום בדיוק, ולכן אין קפיצה. */
-  wizSet('wiz-name',nm||(!desig?'קופה שלא יועדה':'עבור מי?'),!nm&&desig);
+  /* ‏**ובפאנל "מישהו חדש" השאלה היא "מה השם?"** (`FIX-create-v3.md`
+     §2): "עבור מי?" כבר נענתה בלחיצה שפתחה את הפאנל. */
+  wizSet('wiz-name',nm||(!desig?'קופה שלא יועדה'
+    :(cFreshPanel()?'מה השם?':'עבור מי?')),!nm&&desig);
   /* הרגע והמועד הם שורה אחת, כמו בכרטיס המזכרת של מסך הרגע. */
   const t=cType==='custom'?((( document.getElementById('c-custom')||{}).value)||'').trim():cType;
   const occ=(hasOcc&&t)?plantingName(t,nm,true):'';
@@ -10068,7 +10374,7 @@ function wizCard(cur,total){
   /* השורה הרביעית, ומה שהיא אומרת. */
   const row=document.getElementById('wiz-torow');
   if(row)row.style.display=hasTo?'':'none';
-  if(hasTo)wizSet('wiz-to',wizToLabel(),false);
+  if(hasTo)wizSet('wiz-to','המתנה תגיע ל '+wizToLabel(),false);
 
   /* ההדלקה, וההבזק כשערך מתחלף. */
   const key=wizLitKey(cur,total);
@@ -10205,7 +10511,7 @@ function startCreate(){
   });
   markSexChip('m');
   beneCopy();
-  paintCKid();applyCKid();
+  paintCKid();applyCKid();paintCTiles();
   cDate.value='';
   document.querySelectorAll('#c-terms button').forEach(function(x){x.classList.remove('on')});
   document.getElementById('c-datefield').style.display='none';
@@ -10249,16 +10555,31 @@ function cExistingFor(t){
   if(!e||e==='other')return null;
   return cKidMoments().filter(function(p){return (p.occasion||'')===e})[0]||null;
 }
-/* התג "כבר קיים" על פינת האריח. הוא נמחק ונכתב מחדש בכל ציור, כי
-   הרשימה משתנה עם הילד שנבחר. */
+/* ‏**התווית של האריח מוטה ומיודעת** (`FIX-create-v3.md` §5 ו-§10):
+   "הבר מצווה" או "הבת מצווה" לפי מי שנבחר, "הלימודים", "הדירה".
+   ‏**ובלי לוכסן, בשום מילה** — התווית נשאה "בר/בת מצווה", וזה
+   בדיוק מה ש-§10 אוסר. **ואין טבלה שנייה:** ‏`OCCASION_NOUN` היא
+   מה שבונה את שם הנטיעה שנשמר במסד, ולכן האריח אומר בדיוק את מה
+   שייכתב. ‏`data-t` נשאר המפתח הקנוני, כי כל שאר האשף קורא ממנו.
+
+   ‏**ו"כבר קיים" יושב בתוך האריח** (§5, §13.8): שורה שנייה קטנה
+   מתחת לשם, ולא תג שמרחף על הקצה העליון ומכסה את הסמל. */
+function cTileLabel(t){
+  if(!t||t==='custom')return 'משהו אחר';
+  return OCCASION_NOUN[t]?OCCASION_NOUN[t]():t;
+}
 function paintCTiles(){
   const all=document.querySelectorAll('#c-pills button');
   all.forEach(function(x){
-    const old=x.querySelector('.exi');
-    if(old)old.remove();
+    const lb=x.querySelector('.lb');
+    if(lb){
+      const old=lb.querySelector('.exi');
+      if(old)old.remove();
+      lb.textContent=cTileLabel(x.dataset.t);
+    }
     const p=cExistingFor(x.dataset.t);
     x.classList.toggle('has',!!p);
-    if(p)x.insertAdjacentHTML('beforeend','<span class="exi">כבר קיים</span>');
+    if(p&&lb)lb.insertAdjacentHTML('beforeend','<span class="exi">כבר קיים</span>');
   });
 }
 /* ‏**רגע קיים מביא איתו את התאריך שלו** (§10): במקום שורת השנים
@@ -10440,7 +10761,10 @@ function beneContinue(){
 }
 function cStepGo(n){
   cStep=n;
-  [0,1,2].forEach(function(i){document.getElementById('cp-'+i).style.display=i===n?'block':'none'});
+  /* ‏`''` ולא `'block'`: הפאנל הוא עמודת flex בגיליון האשף (§11),
+     והצבה inline של `block` מנצחת את הכלל ומשאירה את הכפתור
+     באמצע המסך במקום בתחתיתו. */
+  [0,1,2].forEach(function(i){document.getElementById('cp-'+i).style.display=i===n?'':'none'});
   flowBar(stepNo(C_KEYS[n]),C_LABELS[n]);
   if(n===1)occHead();
   if(n===2)checkBene();
@@ -10556,7 +10880,9 @@ function paySummaryBody(){
   txt('py-benek','רשום על שם');
   txt('py-bene',nm);
   txt('py-relk','משתחרר');
-  txt('py-rel',whoMode==='me'?'במועד המיוחל, לידיך עבורו'
+  /* ‏**"עבורו/עבורה" לפי הילד** (`FIX-create-v3.md` §10), ובלי
+     לוכסן. */
+  txt('py-rel',whoMode==='me'?('במועד המיוחל, לידיך '+bs('עבורו','עבורה'))
     :whoMode==='parent'?'במועד המיוחל, לידי ההורה'
     :whoMode==='other'?'במועד המיוחל, לידי המורשה'
     :('במועד המיוחל, '+bs('לידיו','לידיה')));
@@ -10575,7 +10901,7 @@ function toggleDesig(cb){
   const avf=document.getElementById('c-avfield');
   if(avf)avf.style.display=designated?'':'none';
   /* והרשת שמעל, מאותה סיבה: מי שאינו יודע עבור מי אינו נשאל מי. */
-  paintCKid();applyCKid();
+  paintCKid();applyCKid();paintCTiles();
   /* הצ'יפים יושבים בתוך c-avfield ויורדים איתו. אין להם שורה משלהם
      כאן: pickCRel הוא מי שמחליט אם הם מוצגים, ולכן שורה שמדליקה
      אותם לפי designated הייתה מחזירה אותם למי שלא בחר "אחר". */
@@ -15014,7 +15340,12 @@ function selfName(){
 function kidRelKeys(){
   return window.__kidRel==='self'?KIN_SELF:KIN_FOR;
 }
+/* ‏**ו"אחר" הוא עיגול עם סימן שאלה** (`FIX-create-v3.md` §4): זו
+   האפשרות שאין לה קרבה ואין ממה לגזור לה פרצוף, וצללית של אדם
+   שם נקראת כאדם נוסף ברשת. ‏`.qm` נושא את הסימן, ו-`.f` נשאר
+   העיגול — אותו רכיב, תוכן אחר. */
 function selfFaceCell(k){
+  if(k==='other')return '<span class="qm">?</span>';
   return k==='self' ? faceHTML(myAvatarKey(),'av-parent') : '';
 }
 /* ערך שאינו מפתח מוכר הוא טקסט חופשי מ"אחר", או מחרוזת שנשמרה
@@ -15753,22 +16084,23 @@ function kidPickHTML(){
       ' onclick="pickCKid(this,\''+attrText(k).replace(/'/g,"\\'")+'\')">'+
       '<span class="fc">'+kidFaceHTML(b.avatar||kidAvatar(b.name,b.sex),38)+'</span>'+
       '<span class="nm"><b>'+attrText(b.name)+'</b>'+
-      (sub?'<span>'+attrText(sub)+'</span>':'')+'</span>'+CHEV_IN+'</button>';
+      (sub?'<span>'+attrText(sub)+'</span>':'')+'</span></button>';
   }).join('')+
-  /* ‏**"מישהו חדש" הוא שורה מקווקוות בסוף הרשימה** (`FIX-create-v2.md`
-     §9), ולא עוד שורה ברשימה: הוא אינו אדם, הוא פעולה על הרשימה —
-     בדיוק אותה הכרעה של `.list-add` בכל שאר המסכים. הוא נפלט כאן
-     ולא יושב במרקאפ, כי `paintCKid` כותבת את `innerHTML` של המכל
-     ושורה סטטית בתוכו הייתה נמחקת בכל ציור. */
-  '<button type="button" class="list-add kidnew'+(cKidPick==='new'?' on':'')+
+  /* ‏**"מישהו חדש" הוא אריח ככל השאר** (`FIX-create-v3.md` §3), ולא
+     שורה מקווקוות ברוחב מלא: ברשת שתי עמודות שורה שחוצה את שתיהן
+     נקראת כמקטע אחר ולא כאפשרות שמינית. מה שאומר "אין כאן ערך
+     עדיין" הוא העיגול המקווקו, וזו הצורה שכבר יושבת בכל שאר
+     המוצר. הוא נפלט כאן ולא יושב במרקאפ, כי `paintCKid` כותבת את
+     ה-`innerHTML` של המכל ושורה סטטית בתוכו הייתה נמחקת בכל ציור. */
+  '<button type="button" class="kidnew'+(cKidPick==='new'?' on':'')+
   '" data-k="new" onclick="pickCKid(this,\'new\')">'+
-  '<span class="adp" aria-hidden="true">+</span>'+
-  '<span class="gr"><span class="t">מישהו חדש</span>'+
-  '<span class="s">ילד, נכד, אחיין, או עבורי</span></span></button>';
+  '<span class="newk" aria-hidden="true">+</span>'+
+  '<span class="nm"><b>מישהו חדש</b>'+
+  '<span>ילד, נכד, אחיין</span></span></button>';
 }
-/* החץ של שורה שנכנסים אליה. ‏`#chev` מצויר שמאלה, וזה הכיוון של
-   "פנימה" ב-RTL; "חזרה" היא ההיפוך שלו. */
-const CHEV_IN='<svg class="ch" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg>';
+/* ‏**החץ ירד עם השורה** (`FIX-create-v3.md` §3): אריח אינו מנווט,
+   הוא נבחר. ‏`CHEV_IN` היה הקורא היחיד ל-`#chev` כאן, והצהרה שאין
+   לה קורא היא קוד מת. */
 function paintCKid(){
   const box=document.getElementById('c-kidpick');
   const fld=document.getElementById('c-kidfield');
@@ -15795,6 +16127,13 @@ function paintCKid(){
    שואל, ולכן אין מסך "אחרי הבחירה": pickCKid ממשיכה מיד לשלב הבא.
    מה שנשאר כאן הוא איך הפאנל נראה כשנכנסים אליו, כולל חזרה אליו
    מהשלב הבא — ואז השורה שנבחרה מסומנת ו"המשך" על המסך. */
+/* ‏**הפאנל השני של שלב 1, "מישהו חדש".** שתי פונקציות שואלות את
+   אותה שאלה — מה מוצג ומה כתוב בשורת השלב — ולכן היא נגזרת
+   במקום אחד. */
+function cFreshPanel(){
+  return cKidPick==='new'&&
+    !!(benes||[]).filter(function(b){return b&&b.name}).length;
+}
 function applyCKid(){
   const has=!!(benes||[]).filter(function(b){return b&&b.name}).length;
   const fresh=(cKidPick==='new');
@@ -15813,9 +16152,19 @@ function applyCKid(){
      נעול ממילא מרגע שנטיעה מיועדת מצביעה על הישות (0061). */
   if(nf)nf.style.display=(!has||fresh)?'':'none';
   if(af)af.style.display=(designated&&(!has||fresh))?'':'none';
-  /* "המשך" יורד עד שנבחר משהו: אין מה להמשיך אליו, והודעת שגיאה על
-     שדה שאינו על המסך אינה אומרת דבר. */
-  if(cta)cta.style.display=(has&&!cKidPick&&designated)?'none':'';
+  /* ‏**הכפתור כבוי ואינו נעלם** (`FIX-create-v3.md` §3 ו-§13.7): הוא
+     היה `display:none` עד שנבחר מישהו, וכפתור שנעלם מזיז את כל מה
+     שמתחתיו ומשאיר מסך בלי פעולה. הכיתוב שלו במצב הכבוי אומר מה
+     חסר — "לבחור למי" — ולא "המשך" מושבת.
+     **ובפאנל "מישהו חדש" הוא כבוי עד שהוקלד שם**, כי בלי שם אין מה
+     ליצור (`commitGoal` חוסמת שם ריק ממילא). */
+  const need=designated&&((has&&!cKidPick)||
+    (fresh&&!(((document.getElementById('c-name')||{}).value||'').trim())));
+  if(cta){
+    cta.style.display='';
+    cta.classList.toggle('off',!!need);
+    cta.textContent=(has&&!cKidPick&&designated)?'לבחור למי':'להמשיך';
+  }
   /* ‏**הכותרת אומרת באיזה משני הפאנלים אנחנו.** "עבור מי הנטיעה?"
      מעל שדה שם ורשת קרבה היא שאלה שכבר נענתה; בחבילה הפאנל השני
      נקרא "מישהו חדש". */
@@ -15887,7 +16236,7 @@ function prefillKid(name,av,sex,rel){
   const b=(benes||[]).filter(function(x){
     return String(x.name||'').trim()===String(name||'').trim()})[0];
   cKidPick=b?String(b.id||b.name):'new';
-  paintCKid();applyCKid();
+  paintCKid();applyCKid();paintCTiles();
   /* ‏**וממשיכים מיד לשלב הרגע.** ‏`prefillKid` נקראת רק מכניסה
      שנוקבת בילד בשמו ("להוסיף רגע לנועה", "צור השקעה עבור נועה",
      ושורת הילד ב"הקרובים שלי"), כלומר השאלה "עבור מי" כבר
