@@ -2464,6 +2464,21 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ספט׳ 2036" נשבר לשתיים ב-360 אף שהטקסט (200) נכנס ברוחב (221).
    שם הוא נשאר `inline`, וזה מספיק: המסגרת היא ריפוד, רדיוס וצל,
    וכולם חלים על inline בשורה אחת. */
+/* ‏**ו-`line-clamp` דורש `overflow:hidden`, שחתך את הטבעת.**
+   ‏`.usub` גבוה בדיוק כתיבת השורה (‏19.6 ב-14/1.4), והתגית היא
+   תיבה של 21 ועוד 1.5 של צל מכל צד — כלומר **2.5 נחתכו למעלה
+   ו-1.9 למטה**, וזה בדיוק הקו העליון והתחתון של התגית. אלון ראה
+   אותה חתוכה במכשיר.
+   **הריפוד מרחיב את תיבת החיתוך ולא את השורה:** ‏3 למעלה ולמטה,
+   ‏`margin-top` יורד מ-5 ל-2 ו-`margin-bottom` הוא ‎-3, ולכן גם
+   הטקסט וגם מה שמתחתיו יושבים על אותו פיקסל בדיוק. ‏`line-clamp`
+   אינו נשען על גובה התיבה אלא על מספר השורות, ולכן הוא אינו זז.
+   **וממוקד ל-`#wiz-occ` ולא ל-`.card-main.wizc .usub`:** זו השורה
+   היחידה שנושאת `.lit` אי פעם, ואותו קלאס משרת גם את כרטיס ההצטרפות
+   ואת "להוסיף קרוב". שם `.jnp .usub` כבר דורס את `margin-top`
+   בספציפיות גבוהה יותר, ולכן הריפוד היה נכנס והפיצוי לא — כלומר
+   הגיליון היה זז פיקסל בשלב השלישי. ‏`join6.js` תפס את זה. */
+#wiz-occ{padding-block:3px;margin-top:2px;margin-bottom:-3px}
 .wizc .tbhero>span,.wizc .bot .v>span,.wizc .wizto .v>span{display:inline-block}
 /* ‏**שני תאי הכסף יחד**, ולכן המסגרת על השורה ולא על תא אחד. */
 .wizc .bot.lit{padding:10px;margin-inline:-10px;border-radius:14px}
@@ -4619,7 +4634,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4df23f0';
+window.NETA_BUILD = '1194345';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -9774,7 +9789,15 @@ function flowBar(cur,label){
      המסך היוצא. הוא נשאר גלוי מעל הנכנס, בלי שום שגיאה. */
   if(!creating)return;
   wizStep=cur;
+  /* ‏**והכותרת נכתבת כאן, כי `#wizhead` משרת ארבעה אשפים.**
+     ‏`ivHead` כותבת "להזמין קרוב", ‏`apHead` "להוסיף קרוב"
+     ו-`joinHead` "נוטע ל…", ואילו האשף הזה הסתמך על מה שכתוב
+     ב-HTML — כלומר על הציור הראשון בלבד. מי שנכנס לאחד משלושת
+     האחרים ואז פתח נטיעה ראה את **הכותרת שלהם** מעל "שלב 2 מתוך
+     5 · לאיזה רגע", וזה מה שאלון צילם. אותה מחרוזת שב-HTML, כי
+     שם היא מה שנראה עד שהסקריפט רץ. */
   const t=flowSteps();
+  txt('wiz-t','נטיעה חדשה');
   txt('wiz-step','שלב '+cur+' מתוך '+t+(label?(' · '+label):''));
   const bar=document.getElementById('wiz-bar');
   if(bar)bar.innerHTML=Array.from({length:t},function(_,i){
