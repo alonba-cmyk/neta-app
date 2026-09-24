@@ -4944,7 +4944,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7791a45';
+window.NETA_BUILD = 'ca848a9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -12398,7 +12398,7 @@ function plantingFromFlow(){
       :beneMode==='guardian'?(fieldVal('c-gcontact')||null):null,
     /* רגע ללא נהנה הוא קופה שלי, ולכן הוא של המשפחה שלי. הפיצול עצמו
        אינו נשמר — רק התוצאה שלו: אצלי, או ריק עד שההורה יאשר. */
-    familyMine:!desig||famMode==='mine'
+    familyMine:beneFamilyMine()
   };
 }
 function fieldVal(id){const el=document.getElementById(id);return el?el.value.trim():''}
@@ -15306,6 +15306,34 @@ const KIN_FOR=['son','daughter','grandson','granddaughter','nephew','niece'];
    ההורה שלהם הוא הילד שלי או האח שלי, כלומר משפחה אחרת, ושם "ההורה
    של X" היא בדיוק התשובה הנכונה. */
 const KIN_MINE=['son','daughter'];
+/* ‏**לאיזו משפחה שייך הרגע, ומה שמכריע הוא הקרבה.**
+   אלון נטע לשמוליק, סימן אותו "אחיין", והוא הופיע ב"היקרים שלך".
+   ‏`familyMine` נגזר עד כה מ-`famMode==='mine'` — כלומר משלב "מי
+   יקבל את הכסף", שברירת המחדל שלו היא "אני, עבורו" — **והקרבה
+   שנבחרה בשלב הראשון לא נשאלה שם כלל**: היא נשמרה
+   ב-`beneficiaries.relation` ואיש לא הצליב אותה. זו אותה משפחה של
+   "שתי שאלות על אותה עובדה חייבות להיפגש איפשהו", שכבר מתועדת כאן
+   בכיוון ההפוך (פיסטוקית, שנבחרה "בת" ואז "ההורה של").
+
+   **ו-`KIN_MINE` הוא כבר הגבול במקום השני שנשאל את זה:**
+   ‏`relRowIsOthers` נופלת אליו כשאין ולו רגע אחד לגזור ממנו, וכך
+   שני המקומות מסכימים סוף סוף.
+
+   **והתשובה המפורשת גוברת:** "ההורה של X" אומרת במילים שהילד אינו
+   שלי, וזה נכון גם אם הקרבה נכתבה אחרת.
+
+   **המחיר שנאמר:** קרבה חופשית ("אחר") אינה ב-`KIN_MINE`, ולכן ילד
+   שנוצר איתה נספר מעכשיו ב"היקרים של אחרים". אין ממה לגזור, וזו
+   בדיוק הסיבה ש"אחר" קיים.
+   **ומה שכבר נשמר אינו משתנה:** ‏`family_of` הוא עמודה על הנטיעה,
+   ורגעים שנוצרו לפני השינוי ממשיכים לשאת את מה שנרשם בהם —
+   כתיבה חזרה למסד הייתה משנה שורות קיימות בלי שאיש ביקש. */
+function beneFamilyMine(){
+  if(!designated)return true;
+  if(whoMode==='parent')return false;
+  if(cRel==='self')return true;
+  return KIN_MINE.indexOf(cRel)>=0;
+}
 /* אותה רשימה ועוד "עבורי", באשף בלבד. שבע קרבות ועוד "אחר" הן שמונה
    תאים, כלומר 4+4 מלאות: אין חור בשורה האחרונה ואין תא שנמתח על
    שתיים כדי לסתום אותו.
@@ -16030,6 +16058,17 @@ function fillKid(name,av,sex,rel){
      אחרת, ובלי זה "פתח רגע" על השורה שלי היה יוצר נטיעה שנשמרת
      כאילו היא עבור מישהו אחר. */
   if(rel&&KIN_SELF.indexOf(rel)>=0)cRel=rel;
+  /* ‏**וקרבה חופשית היא "אחר" ולא מה שנשאר מהילד הקודם.** ‏`rel`
+     שאינו מפתח מוכר הוא הטקסט שמישהו הקליד ב"אחר", ועד כה הוא
+     פשוט לא נקלט — ‏`cRel` נשאר על הערך של הבחירה הקודמת, כי
+     ‏`pickCKid` מאפסת אותו רק בענף של "מישהו חדש". מרגע
+     ש-`beneFamilyMine` נגזרת ממנו זו אינה עוד תווית שמתיישנת
+     אלא לאיזו משפחה הרגע נספר. */
+  else if(rel&&String(rel).trim()){
+    cRel='other';
+    const rf=document.getElementById('c-relfree');
+    if(rf)rf.value=String(rel).trim();
+  }
   else if(!rel&&av&&av.indexOf('av-')===0){
     if(av==='av-kid7')cRel='other';
     else KIN_FOR.forEach(function(k){if(kinAv(k)===av)cRel=k});
