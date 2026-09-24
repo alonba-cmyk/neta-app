@@ -4456,7 +4456,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ff87826';
+window.NETA_BUILD = '77cc68e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -12392,6 +12392,10 @@ function personPlanting(p,w,extra){
 function plantTrackLabel(p){
   if(p.mode==='keep')return 'יישמר כמו שהוא (ללא ריבית)';
   if(p.rate==null)return '';           // לא ידוע — לא מוצג
+  /* ‏**וערך שאינו מספר אינו "לא ידוע" אלא באג, ולכן הוא שותק.**
+     ‏`NaN` שיוצא מכאן מגיע אל המסך כמחרוזת ("כ-NaN% בשנה") ואין
+     שום שגיאה שמצביעה עליו. */
+  if(!isFinite(Number(p.rate)))return '';
   if(p.rate===0)return 'יישמר כמו שהוא (ללא ריבית)';
   return TRACK_LABELS[p.rate]||('כ-'+(+(p.rate*100).toFixed(2))+'% בשנה');
 }
@@ -12827,7 +12831,15 @@ function openForecast(){
    אינו נאמר: "ללא מסלול" הוא מידע שאיש לא מסר. */
 function personTrackLine(w){
   const bits=[];
-  const tl=w[10]!=null?plantTrackLabel({rate:w[10]}):'';
+  /* ‏**‏`w[11]` הוא הקצב, ו-`w[10]` הוא המועד.** השורה קראה את
+     האינדקס הלא נכון, ולכן `plantTrackLabel` קיבל תאריך והכפיל
+     אותו ב-100: **"כ-NaN% בשנה"** בשורת הנוטע שבמסך הרגע. אלון
+     ראה את זה במכשיר. ‏`personPlanting`, שיושבת שתי שורות משם,
+     כבר קוראת `w[11]` נכון — כלומר אותה עובדה נגזרה בשני מקומות
+     ואחד מהם טעה. **ובהדגמה זה בלתי נראה**, כי שורות `who` שם הן
+     ארבע עמודות ו-`w[10]` הוא `undefined`: אותו נתיב־שונה־בשקט
+     שכבר מתועד כאן חמש פעמים. */
+  const tl=w[11]!=null?plantTrackLabel({rate:w[11]}):'';
   if(tl)bits.push(tl);
   if(w[6]!=null&&Number(w[6])>0)bits.push(shekel(Number(w[6]))+' בכל חודש');
   else if(w[8]!=null)bits.push('הפקדה אחת');
