@@ -1243,18 +1243,29 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    מפרידים על מסך שכבר מפריד בשורות. והקבוצות הן "היום", "השבוע"
    ו"מוקדם יותר", ולא יום־יום: היום המדויק נאמר בשורה השנייה. */
 /* ‏**‏36 בין המקטעים** (`FIX-activity-v2.md` §3), כמו בכל גיליון
-   במוצר. הכותרת עצמה היא 15.5/700 בצבע הטקסט המלא: היא מפרידה בין
-   קבוצות ואינה תווית שקטה שמכנה רשימה אחת. */
-.fday{margin:36px 0 2px;font-size:15.5px;font-weight:700;
-  letter-spacing:normal;color:var(--tx)}
-.fday:first-child{margin-top:12px}
+   במוצר. **והטיפוגרפיה היא של `.tablbl` בדיוק, בקשה של אלון**:
+   הוא ראה "היום" בגודל ובמשקל שאין לאף כותרת מקטע אחרת במוצר
+   ("נוטעים איתי", "אני נוטע עבורם"), וביקש אותה אחת. זו הפעם
+   השנייה שההכרעה הזאת מתהפכת — היא הייתה `.tablbl` עם קו,
+   ‏`FIX-activity-v2` העלה אותה ל-15.5/700 בנימוק שהיא מפרידה בין
+   קבוצות ואינה מכנה רשימה — **ומה שמחזיק את ההיפוך הוא שהשורה
+   הראשונה בגיליון קופצת בגודל במעבר בין טאבים**, וזה בדיוק מה
+   שהתיקון "תווית אחת לכל הגיליונות" בא לסגור.
+   **המחיר שנאמר:** "היום" מפסיק להיקרא כמפריד וקורא כתווית שקטה,
+   וקובץ העיצוב נוקב ב-15.5/700 לכל כותרות המקטעים **בכל הטאבים** —
+   כלומר המוצר מתרחק ממנו בארבעתם יחד ולא רק כאן.
+   **והראשונה על 0**, כמו בשאר הטאבים: הריפוד של הגיליון הוא כל
+   האוויר שיש שם. */
+.fday{margin:36px 0 2px;font-size:12.5px;font-weight:400;
+  letter-spacing:normal;color:var(--tx-3)}
+.fday:first-child{margin-top:0}
 /* ‏**שורת פיד: מי, מה עשה, למי, מתי** (`FIX-activity.md` §1). עד
    כאן היא אמרה רק לאיזה רגע הלך הכסף — אייקון, "הלימודים של אביב"
    וסכום — כלומר רשימת תנועות ולא פיד. המידות הן של `.tabrow`, כי
    שתיהן שורה בגיליון הלבן ושתיהן נסרקות באותה עין. */
 .fr{display:flex;align-items:center;gap:12px;padding:10px 0;cursor:pointer;
   border-bottom:1px solid var(--rule)}
-.fr:last-child{border-bottom:0}
+.fr:last-child,.fr:has(+.fmx:last-child){border-bottom:0}
 /* ‏40 כמו הפרצוף שלצידו (§3): שתי הצורות נסרקות באותה עין, ואותו
    רכיב בשני גדלים זה מתחת לזה הוא בדיוק מה שאלון תפס פעם אחת. */
 .fic{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;flex-shrink:0;background:var(--leaf-bg)}
@@ -1288,9 +1299,28 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    **מי** ואחר כך מה. */
 /* ‏**שורה אחת בלבד, עם שלוש נקודות** (§3): "מי ולמי" הוא משפט קצר,
    ושבירה שלו לשתי שורות הופכת את הפיד לרשימת פסקאות. */
+/* ‏**והיא נשברת לשתי שורות ואינה נחתכת** (`FIX-activity-v3.md` §4).
+   השורה נכתבה `nowrap` כש"מי ולמי" היה משפט קצר, ואז היא קיבלה את
+   "ההפקדה החודשית שלך ל<שם הרגע המלא>" — שלוש שורות זהות שכולן
+   נגמרו בשלוש נקודות. עם הניסוח החדש ("נטעת לאלון") היא כמעט אף
+   פעם אינה צריכה את השנייה. */
 .fn{font-size:14.5px;font-weight:700;line-height:1.35;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  white-space:normal;overflow:visible;text-overflow:clip}
 .fn b{font-weight:700}
+/* ‏**"לראות לאילו", ורק בשורה מקובצת** (§3). ריצה אחת של הוראת קבע
+   שנגעה בשני רגעים היא שורה אחת עם הסכום המצטבר, והפירוט נפתח
+   מתחתיה **באותו מסך** ולא במסך אחר: השאלה שהיא עונה עליה היא
+   "לאילו רגעים", וזו שאלה על השורה ולא על הרגע. */
+.fr .fmore{display:inline-block;font:inherit;font-size:12.5px;font-weight:700;
+  color:var(--leaf);margin-top:3px;background:none;border:0;padding:0;cursor:pointer}
+/* הפירוט מיושר לטקסט של השורה שמעליו ולא לקצה הגיליון: 40 של
+   הפרצוף ועוד 12 של הרווח. */
+.fmx{margin-inline-start:52px;padding-bottom:8px}
+.fmx>button{display:flex;width:100%;justify-content:space-between;align-items:baseline;
+  gap:10px;padding:6px 0;background:none;border:0;font:inherit;cursor:pointer;text-align:start}
+.fmx>button>span{font-size:13px;color:var(--tx-2)}
+.fmx>button>b{font-size:13px;font-weight:700;color:var(--tx);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
 .fs{font-size:12.5px;color:var(--tx-3);margin-top:2px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fs.oth{color:var(--tx-3)}
@@ -4644,7 +4674,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'a062c32';
+window.NETA_BUILD = '5a63538';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -5496,7 +5526,7 @@ window.NETA_CONFIG = {
   <p class="sticky-sum nowiz" id="amt-sticky"><span id="amt-sticky-txt"></span></p>
   <p class="eyebrow" id="eb-freq">כל חודש או פעם אחת</p>
   <div class="two gap"><button class="pill" data-f="m" onclick="setFreq('m')">כל חודש</button><button class="pill" data-f="l" onclick="setFreq('l')">סכום חד פעמי</button></div>
-  <p class="hint" id="freq-stop-hint">אפשר לעצור את ההפקדה בכל רגע.</p>
+  <p class="hint" id="freq-stop-hint">אפשר לעצור בכל רגע.</p>
   <!-- הסכום גדול ובמרכז, ולא תווית קטנה לצד הסליידר. במסך הזה המספר
      הגדול היחיד היה הצפי, כלומר התשובה לשאלה אחרת, ומי ששאל "כמה אני
      משקיע" קיבל תשובה רק בטקסט קטן. הפלוס והמינוס אינם קישוט: סליידר
@@ -5536,7 +5566,7 @@ window.NETA_CONFIG = {
   <div class="stack gap nowiz" id="mode-block">
     <div class="opt" data-m="safe"><div class="row" style="gap:6px"><b>שיצבור ריבית מובטחת</b><span class="tag">מתאים לרוב</span></div><p>הסכום רק גדל. הריבית ידועה מראש ואינה יורדת.</p></div>
     <div class="opt" data-m="market"><b>שיושקע בשוק ההון</b><p>צמיחה גבוהה יותר, אך הערך אינו מובטח.</p></div>
-    <div class="opt" data-m="keep"><b>שיישמר כמו שהוא</b><p id="keep-desc">כל מה שתפקיד יחכה במלואו למועד המיוחל.</p></div>
+    <div class="opt" data-m="keep"><b>שיישמר כמו שהוא</b><p id="keep-desc">כל מה שתיטע יחכה במלואו למועד המיוחל.</p></div>
   </div>
   <!-- בענף הבטוח ההבדל בין המסלולים הוא אילוץ ולא העדפה: שניהם
        מובטחים, ומי שבוחר בגמיש עושה זאת כי אין לו את סכום הפתיחה.
@@ -5571,7 +5601,7 @@ window.NETA_CONFIG = {
 <!-- 3 PAYMENT -->
 <section class="screen center-v" data-name="תשלום">
   <h2 class="wizonly">איך לשלם?</h2>
-  <div class="row gap nowiz"><div class="dot g" id="pay-icon"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div><div><div class="title">איך תעביר את ההפקדה?</div><div class="meta" id="pay-meta">הפקדה חודשית · עבור דניאל</div></div></div>
+  <div class="row gap nowiz"><div class="dot g" id="pay-icon"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></div><div><div class="title">איך תעביר את הכסף?</div><div class="meta" id="pay-meta">נטיעה חודשית · עבור דניאל</div></div></div>
 
   <!-- נטע אינה מבקשת מספר כרטיס ואינה מבקשת מספר חשבון. כל אמצעי נגבה
        אצל מי שגובה אותו: ההרשאה לחיוב חשבון נחתמת מול הבנק, כרטיס נקלט
@@ -5934,7 +5964,7 @@ window.NETA_CONFIG = {
     <div id="act-e-rows">
       <div class="tabrow">
         <span class="fc"><svg class="avsvg" viewBox="0 0 40 40" aria-hidden="true"><use href="#av-granny"/></svg></span>
-        <span class="gr"><span class="t">קרוב שהפקיד</span>
+        <span class="gr"><span class="t">קרוב שנטע</span>
           <span class="s">כל פעם שמישהו נוטע לאותו רגע</span></span></div>
       <div class="tabrow">
         <span class="sq"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></span>
@@ -6227,7 +6257,7 @@ window.NETA_CONFIG = {
        אותם. -->
   <div class="card gap" id="resume-card" style="display:none;background:var(--sun-bg);border-color:var(--sun-line)">
     <div class="row gap-s"><span>⏸</span><b style="font-size:13px;font-weight:500;color:var(--sun)">הנטיעה שהתחלת ממתינה</b></div>
-    <p class="sub" style="color:var(--sun-txt)" id="resume-t">הבר מצווה של דניאל · 100 ₪ בחודש. נשאר רק לחבר אמצעי תשלום כדי שההפקדה הראשונה תצא.</p>
+    <p class="sub" style="color:var(--sun-txt)" id="resume-t">הבר מצווה של דניאל · 100 ₪ בחודש. נשאר רק לחבר אמצעי תשלום כדי שהנטיעה הראשונה תצא.</p>
     <button class="btn" style="margin-top:12px" onclick="resumeOnbo()">השלם והפעל</button>
   </div>
   <!-- כרטיס "ממתין לאישור שלך" ישב כאן, בראש המסך מעל הכול. הוא ירד
@@ -6508,7 +6538,7 @@ window.NETA_CONFIG = {
     <!-- ‏**שורת ההוספה יורדת במצב הריק**, כי שם הכפתור שבתוך הכרטיס
          הוא הפעולה. שתי דרכים לאותה פעולה על מסך שאין בו כלום. -->
     <button class="addpm" id="pm-add" onclick="addPay()">+ להוסיף אמצעי תשלום</button>
-    <div class="note2"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-lock"/></svg><span>ההפקדות עוברות ישר לחשבונות הנעולים בגוף המנהל. נטע לא מחזיקה בכסף ולא שומרת את פרטי הכרטיס.</span></div>
+    <div class="note2"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-lock"/></svg><span>הכסף עובר ישר לחשבונות הנעולים בגוף המנהל. נטע לא מחזיקה בכסף ולא שומרת את פרטי הכרטיס.</span></div>
   </div>
 </section>
 
@@ -6541,7 +6571,7 @@ window.NETA_CONFIG = {
     <path d="M70 132 C 82 128, 88 117, 81 109 C 74 117, 72 124, 70 132" fill="var(--leaf)" opacity=".5"/>
   </svg>
   <div class="nc-sums" style="margin-top:12px">
-    <div><span class="k">ההפקדה הראשונה</span><span class="v now">1 בספטמבר</span></div>
+    <div><span class="k">הנטיעה הראשונה</span><span class="v now">1 בספטמבר</span></div>
     <div class="t"><span class="k">בקצב הזה ייצבר</span><span class="v end">כ-23,500 ₪</span></div>
   </div>
   <div class="tax">
@@ -6825,9 +6855,9 @@ window.NETA_CONFIG = {
       <div class="sw on" id="py-vis" onclick="this.classList.toggle('on')" role="switch"></div></div>
   </div>
 
-  <p class="fine gap" id="pay-fine">ההפקדה עוברת ישירות לחשבון הנעול על שם דניאל, אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.</p>
+  <p class="fine gap" id="pay-fine">הכסף עובר ישירות לחשבון הנעול על שם דניאל, אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.</p>
 
-  <div class="two"><button class="btn" id="py-cta" onclick="finishDeposit()">אשר את ההפקדה</button><button class="btn ghost" onclick="go(3)">חזרה</button></div>
+  <div class="two"><button class="btn" id="py-cta" onclick="finishDeposit()">אשר את הנטיעה</button><button class="btn ghost" onclick="go(3)">חזרה</button></div>
 </section>
 
 <!-- 25 PARTNER INVITE (the receiving side — what a co-owner sees when they open the link) -->
@@ -6846,8 +6876,8 @@ window.NETA_CONFIG = {
 
   <p class="eyebrow big">מה זה אומר בפועל</p>
   <div class="card">
-    <div style="padding:9px 0;border-bottom:1px solid var(--line)"><b style="font-size:12.5px">שניכם מפקידים</b><p class="fine" style="margin-top:3px">אין "בעלים" אחד ו"משקיע" אחר</p></div>
-    <div style="padding:9px 0;border-bottom:1px solid var(--line)"><b style="font-size:12.5px">שניכם רואים הכל</b><p class="fine" style="margin-top:3px">כולל כל הפקדה, מכל אחד, לא רק את שלך</p></div>
+    <div style="padding:9px 0;border-bottom:1px solid var(--line)"><b style="font-size:12.5px">שניכם נוטעים</b><p class="fine" style="margin-top:3px">אין "בעלים" אחד ו"משקיע" אחר</p></div>
+    <div style="padding:9px 0;border-bottom:1px solid var(--line)"><b style="font-size:12.5px">שניכם רואים הכל</b><p class="fine" style="margin-top:3px">כולל כל נטיעה, מכל אחד, לא רק את שלך</p></div>
     <div style="padding:9px 0"><b style="font-size:12.5px">כל שינוי מהותי</b><p class="fine" style="margin-top:3px">דורש הסכמה של שניכם</p></div>
   </div>
   <p class="fine gap">זה שונה מהזמנה רגילה לקרוב: קרוב רואה רק את מה שהוא השקיע ולא יכול לשנות כלום. שותפות היא בעלות משותפת אמיתית, לא השתתפות.</p>
@@ -7043,7 +7073,7 @@ window.NETA_CONFIG = {
       <span><span id="d-goalicon"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></span> <span id="d-yr">2032</span></span>
     </div>
     <div class="dm-key" id="d-key">
-      <span><i class="dsw m"></i><span id="d-kdepw">ההפקדות שלכם</span> <em id="d-kdep"></em></span>
+      <span><i class="dsw m"></i><span id="d-kdepw">הנטיעות שלכם</span> <em id="d-kdep"></em></span>
       <span><i class="dsw g"></i>הצמיחה <em id="d-kgrow"></em></span>
     </div>
     <p class="dm-disc" id="d-disc"></p>
@@ -7060,7 +7090,7 @@ window.NETA_CONFIG = {
     <div id="pv-fut-rows">
     <div class="stat"><span class="k" id="pv-futk">צפוי</span>
       <span class="v" id="pv-futv" style="color:var(--sun-soft)">·</span></div>
-    <div class="stat" id="pv-monrow"><span class="k">הפקדה חודשית</span>
+    <div class="stat" id="pv-monrow"><span class="k">נטיעה חודשית</span>
       <span class="v" id="pv-mon">·</span></div>
     <div class="stat"><span class="k">מסלול</span><span class="v" id="pv-track">·</span></div>
     </div>
@@ -8034,8 +8064,8 @@ function onboAbandon(){
   onbo=false;setEmpty(true);
   document.getElementById('resume-card').style.display='block';
   txt('resume-t',(goal.type||'בר/בת מצווה')+' של '+(goal.name||'דניאל')+' · '+
-    (freq==='m'?(+amtM.value).toLocaleString('he-IL')+' ₪ בחודש':'הפקדה חד פעמית')+
-    '. נשאר רק לחבר אמצעי תשלום כדי שההפקדה הראשונה תצא.');
+    (freq==='m'?(+amtM.value).toLocaleString('he-IL')+' ₪ בחודש':'נטיעה אחת')+
+    '. נשאר רק לחבר אמצעי תשלום כדי שהנטיעה הראשונה תצא.');
   goHome();
 }
 function resumeOnbo(){onbo=true;document.getElementById('resume-card').style.display='none';openPayment()}
@@ -9375,7 +9405,7 @@ let freq='m',mode=null,rate=.035,modeTouched=false;
 const amtM=document.getElementById('amt-m'),amtL=document.getElementById('amt-l');
 /* a one-time deposit that "stays as it is" doesn't grow at all — the sensible default only for
    a monthly deposit, which keeps accumulating on its own regardless of the track chosen */
-function setFreq(f){freq=f;document.querySelectorAll('.pill[data-f]').forEach(b=>b.classList.toggle('on',b.dataset.f===f));document.getElementById('panel-m').style.display=f==='m'?'block':'none';document.getElementById('panel-l').style.display=f==='l'?'block':'none';document.getElementById('freq-stop-hint').style.display=f==='m'?'block':'none';document.getElementById('keep-desc').textContent=f==='m'?'כל מה שתפקיד יחכה במלואו למועד המיוחל.':'הסכום שתפקיד יחכה במלואו למועד המיוחל.';render()}
+function setFreq(f){freq=f;document.querySelectorAll('.pill[data-f]').forEach(b=>b.classList.toggle('on',b.dataset.f===f));document.getElementById('panel-m').style.display=f==='m'?'block':'none';document.getElementById('panel-l').style.display=f==='l'?'block':'none';document.getElementById('freq-stop-hint').style.display=f==='m'?'block':'none';document.getElementById('keep-desc').textContent=f==='m'?'כל מה שתיטע יחכה במלואו למועד המיוחל.':'הסכום שתיטע יחכה במלואו למועד המיוחל.';render()}
 /* ‏setFreq בחרה כאן מסלול בעצמה (keep לחודשי, safe לחד-פעמי) כשהמשתמש
    עוד לא נגע בשאלה 3. כלומר לחיצה על "כל חודש" — שאלה על תדירות —
    הכריעה גם את שאלת הריבית, ומי שהמשיך משם קיבל מסלול פיננסי שלא בחר.
@@ -9531,8 +9561,8 @@ function renderMoney(){const v=freq==='m'?+amtM.value:+amtL.value;amtShow(freq,v
        שנבחר מסלול — כלומר קו מפריד ריק מתחת לכותרת לאורך כל החלק
        הראשון של המסך, בדיוק כשגוללים ורוצים לזכור כמה בחרת. */
     document.getElementById('amt-sticky-txt').textContent=
-      v.toLocaleString('he-IL')+' ₪ '+(freq==='m'?'בחודש':'היום');return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תפקיד':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);/* ‏**והגיבור עובר ל-`aboutShekel` כמו כל צפי אחר.** הוא כתב `כ-` במקף רגיל, שנקרא כמינוס בין אות למספר, והוא נקב בסכום עד השקל; ובמסלול המובטח הוא לא אמר `כ־` כלל, בזמן ש-`d-futv` ו-`wiz-proj` אומרים אותו בכל המסלולים. **מה שנשאר בלי הסתייגות הוא `keep` בלבד**, שאינו תחזית אלא סכום ההפקדות. */
-const money=mode==='keep'?shekel(Math.round(total)*100):aboutShekel(Math.round(total)*100);num.textContent=money;document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+money;if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();payFine();const assume=freq==='m'?'בהנחה שההפקדה נמשכת עד אז. ':'';
+      v.toLocaleString('he-IL')+' ₪ '+(freq==='m'?'בחודש':'היום');return}num.classList.remove('idle');if(freq==='m'){const verb=mode==='keep'?'תיטע':'תשקיע';label.textContent='אם '+verb+' '+v.toLocaleString('he-IL')+' ₪ בחודש עד '+goal.dateLabel;}else{const verb=mode==='keep'?'תיטע':'תשקיע';label.textContent='אם '+verb+' היום '+v.toLocaleString('he-IL')+' ₪';}const principal=fvCalc(v,0);const total=mode==='keep'?principal:fvCalc(v,rate);/* ‏**והגיבור עובר ל-`aboutShekel` כמו כל צפי אחר.** הוא כתב `כ-` במקף רגיל, שנקרא כמינוס בין אות למספר, והוא נקב בסכום עד השקל; ובמסלול המובטח הוא לא אמר `כ־` כלל, בזמן ש-`d-futv` ו-`wiz-proj` אומרים אותו בכל המסלולים. **מה שנשאר בלי הסתייגות הוא `keep` בלבד**, שאינו תחזית אלא סכום ההפקדות. */
+const money=mode==='keep'?shekel(Math.round(total)*100):aboutShekel(Math.round(total)*100);num.textContent=money;document.getElementById('amt-sticky-txt').textContent=(freq==='m'?v.toLocaleString('he-IL')+' ₪ בחודש':v.toLocaleString('he-IL')+' ₪ היום')+' · '+money;if(freq==='m'&&mode!=='keep'&&total>principal){mid.style.display='block';mid.textContent='ה-'+Math.round(principal).toLocaleString('he-IL')+' ₪ שלך יהפכו ל';}else{mid.style.display='none'}sub.textContent=goal.desig===false?('יחכו לרגע שתחליט, ב'+goal.dateLabel):occasionPhrase();payFine();const assume=freq==='m'?'בהנחה שהנטיעה החודשית נמשכת עד אז. ':'';
   fine.textContent=assume+(mode==='keep'?'הסכום נשמר כפי שהוא ואינו חשוף לשוק. שימו לב שערכו הריאלי עשוי להישחק עם הזמן בשל אינפלציה.':mode==='safe'?'הקרן והריבית מובטחות על ידי הגוף הפיננסי המנהל. התנאים המדויקים, לרבות סכומי מינימום, נקבעים על ידו.':'התשואות להמחשה בלבד ומבוססות על נתוני עבר. הערך עשוי לרדת. אינן מהוות הבטחת תשואה או ייעוץ השקעות.');}
 document.querySelectorAll('.opt[data-m]').forEach(el=>el.onclick=()=>{
   modeTouched=true;setMode(el.dataset.m);
@@ -9605,7 +9635,7 @@ function openPayment(){
      ולכן paySummary מרכיבה אותם ולא שלוש שורות נפרדות כאן. */
   document.getElementById('pay-recurring').style.display=freq==='m'?'flex':'none';
   document.getElementById('pay-onetime').style.display=freq==='l'?'flex':'none';
-  document.getElementById('pay-meta').textContent=(freq==='m'?'הפקדה חודשית':'הפקדה חד פעמית')+(goal.desig===false?' · '+goal.type:' · עבור '+goal.name);
+  document.getElementById('pay-meta').textContent=(freq==='m'?'נטיעה חודשית':'נטיעה אחת')+(goal.desig===false?' · '+goal.type:' · עבור '+goal.name);
   paySummary();
   go(3);
 }
@@ -10443,7 +10473,7 @@ function opennessNote(){
 function payPreview(sub){
   const v=freq==='m'?+amtM.value:+amtL.value;
   const amt=v.toLocaleString('he-IL')+' ₪';
-  txt('py-amt',freq==='m'?(amt+' בכל חודש'):(amt+' · הפקדה אחת'));
+  txt('py-amt',freq==='m'?(amt+' בכל חודש'):(amt+' · נטיעה אחת'));
   txt('py-dt',[goal.dateLabel?('עד '+goal.dateLabel):'',sub].filter(Boolean).join(' · '));
   /* המרחק הוא הפרט שהכי קשה לחוש ממועד לבדו, ולכן הוא בעמודה משלו.
      שנה אחת או פחות אינה "עוד כמה שנים", ואז העמודה יורדת. */
@@ -10470,7 +10500,7 @@ function paySummaryBody(){
        so the review shows only what this deposit actually decides */
     /* וגם הכותרת: אין כאן מה שייפתח, יש רגע שכבר קיים שההפקדה נכנסת אליו. */
     txt('py-h','זה הרגע שאליו זה נכנס');
-    txt('py-sub','ההפקדה מצטרפת לנטיעה שכבר קיימת, ומכאן היא נעולה עד המועד.');
+    txt('py-sub','הכסף מצטרף לנטיעה שכבר קיימת, ומכאן הוא נעול עד המועד.');
     htm('py-icon',occIcon((plantAt(cur)||{}).occasion||occasionEnum(goal.type),20));
     txt('py-title',(plantAt(cur)||{}).name||goal.type||'');
     payPreview('');
@@ -11769,8 +11799,8 @@ function ahaFace(){
 function payFine(){
   const nm=goal.name;
   txt('pay-fine',goal.desig===false
-    ?'ההפקדה עוברת לחשבון הרשום על שמך, אצל הגוף הפיננסי המנהל, ומיועדת לקופה שפתחת. נטע אינה מחזיקה בכסף בשום שלב.'
-    :('ההפקדה עוברת ישירות לחשבון הנעול על שם '+nm+', אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.'));
+    ?'הכסף עובר לחשבון הרשום על שמך, אצל הגוף הפיננסי המנהל, ומיועדת לקופה שפתחת. נטע אינה מחזיקה בכסף בשום שלב.'
+    :('הכסף עובר ישירות לחשבון הנעול על שם '+nm+', אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.'));
 
 }
 /* מסך "נטעת": הפרצוף, שורת הרגע, המשפט וההסתייגות. */
@@ -11833,7 +11863,7 @@ function ahaAgainLine(){
     .map(function(w){return w[1]});
   return others.length
     ?('נוטעים כאן: <b>'+attrText(['אתה'].concat(others).join(', '))+'</b>')
-    :'כל הפקדה מצטרפת לקודמת, והכול גדל יחד.';
+    :'כל נטיעה מצטרפת לקודמת, והכול גדל יחד.';
 }
 /* המכתב ירד ממסך הרגע. מה שישב שם היה חלון של שנייה אחת — מי שדילג
    עליו איבד אותו — והוא גם מעולם לא שמר דבר: seal() רק החליף תצוגה,
@@ -11975,7 +12005,7 @@ function reviewCta(){
     const kid=(plantAt(cur)||{}).kid||'';
     return 'לנטוע '+shekel(v*100)+(kid?(' ל'+kid):'');
   }
-  if(!creating)return 'אשר את ההפקדה';
+  if(!creating)return 'אשר את הנטיעה';
   const v=freq==='m'?+amtM.value:+amtL.value;
   const nm=designated?(((document.getElementById('c-name')||{}).value)||'').trim():'';
   return 'לנטוע '+shekel(v*100)+(nm?(' ל'+nm):'');
@@ -12117,7 +12147,7 @@ function finishDeposit(){
         if(f.status)detail+=' (סטטוס '+f.status+')';
         detail+=f.uid?(' · זהות '+String(f.uid).slice(0,8)):' · ללא זהות';
       }
-      ask(isNewPlant?'הנטיעה לא נשמרה':'ההפקדה לא נשמרה',detail,'הבנתי');
+      ask('הנטיעה לא נשמרה',detail,'הבנתי');
     });
 }
 
@@ -12264,17 +12294,17 @@ const plants={
     now:1500,end:15700,yl:12,tNow:14.3,monthly:60,occasion:'studies',sex:'f',kid:'נועה',rate:0.06,approver:'guardian',guardName:'מיכל',shared:false,mine:true,co:'מיכל',
     who:[['av-parent','אתה','1,500 ₪','m']],
     lCount:'ולא רק כסף, מכתב אחד חתום ממך',lSub:'המכתב ייפתח בספטמבר 2038, יחד עם נועה.',
-    line:'בזכות 60 ₪ בחודש שאתה מפקיד, נועה מתקרבת ללימודים שלה'},
+    line:'בזכות 60 ₪ בחודש שאתה נוטע, נועה מתקרבת ללימודים שלה'},
   danielArmy:{icon:'other',name:'הגיוס של דניאל',date:'מרץ 2030',yr:2030,planted:2022,
     now:2700,end:6100,yl:4,tNow:50,monthly:50,occasion:'other',sex:'m',kid:'דניאל',rate:0.035,approver:'later',shared:true,mine:false,
     who:[['av-uncle','דוד יוסי','2,700 ₪','m']],
     lCount:'ולא רק כסף, מכתב אחד חתום מדוד יוסי',lSub:'המכתב ייפתח במרץ 2030, יחד עם דניאל.',
-    line:'בזכות 50 ₪ בחודש שדוד יוסי מפקיד, דניאל יגיע מוכן לגיוס'},
+    line:'בזכות 50 ₪ בחודש שדוד יוסי נוטע, דניאל יגיע מוכן לגיוס'},
   openFund:{icon:'open_fund',name:'קופת הפתעות',date:'יוני 2035',yr:2035,planted:2025,
     now:400,end:4900,yl:9,tNow:11.1,monthly:30,occasion:'open_fund',kid:'מי שאחליט',rate:0.02,shared:false,mine:true,designated:false,
     who:[['av-parent','אתה','400 ₪','m']],
     lCount:'ולא רק כסף, עוד לא נכתב מכתב',lSub:'אפשר לצרף מכתב ברגע שתייעד את הקופה.',
-    line:'בזכות 30 ₪ בחודש שאתה מפקיד, יש כאן משהו שמחכה לרגע הנכון'},
+    line:'בזכות 30 ₪ בחודש שאתה נוטע, יש כאן משהו שמחכה לרגע הנכון'},
   /* ‏**רגע אחד לילד שאינו המשפחה שלי**, כדי ששתי הקבוצות של מסך
      הבית (`FIX-home-v2.md` §1ב) יתקיימו בהדגמה. בלעדיו הכרטיס
      השני הוא `0 ₪` תמיד, כלומר הבורר נמדד על ענף אחד בלבד —
@@ -12284,12 +12314,12 @@ const plants={
     rel:'nephew',fam:false,rate:0.06,approver:'later',shared:false,mine:true,
     who:[['av-parent','אתה','612 ₪','m']],
     lCount:'ולא רק כסף, עוד לא נכתב מכתב',lSub:'אפשר לצרף מכתב בכל רגע.',
-    line:'בזכות 30 ₪ בחודש שאתה מפקיד, איתן מתקרב ליום הגדול שלו'},
+    line:'בזכות 30 ₪ בחודש שאתה נוטע, איתן מתקרב ליום הגדול שלו'},
   noaHome:{occ:'apartment',name:'הדירה של נועה',date:'יוני 2045',yr:2045,planted:2021,
     now:7000,end:64100,yl:19,tNow:20.8,monthly:100,occasion:'apartment',sex:'f',kid:'נועה',rate:0.08,shared:true,mine:false,
     who:[['av-granny','סבתא רחל','7,000 ₪','f']],
     lCount:'ולא רק כסף, מכתב אחד חתום מסבתא רחל',lSub:'המכתב ייפתח ביוני 2045, יחד עם נועה.',
-    line:'בזכות 100 ₪ בחודש שסבתא רחל מפקידה, נועה תתחיל עם דירה משלה'}
+    line:'בזכות 100 ₪ בחודש שסבתא רחל נוטעת, נועה תתחיל עם דירה משלה'}
 };
 let cur='danielBar';
 const dTime=document.getElementById('d-time');
@@ -12388,10 +12418,10 @@ function liveLine(monthly,others,kid,designated,occasion,sex){
   const px=himHer(sex);
   const clause=OCCASION_CLAUSE[occasion]?OCCASION_CLAUSE[occasion](px):('נבנה כאן משהו שמחכה '+px);
   const names=others.length?listNames(others):'';
-  if(monthly&&others.length)return 'בזכות '+rate+' שאתה מפקיד, ומה ש'+names+' הוסיפו '+to+', '+clause;
-  if(monthly)             return 'בזכות '+rate+' שאתה מפקיד '+to+', '+clause;
-  if(others.length)       return 'מה שאתה ו'+names+' הפקדתם מחכה '+to;
-  return 'מה שהפקדת מחכה '+to;
+  if(monthly&&others.length)return 'בזכות '+rate+' שאתה נוטע, ומה ש'+names+' הוסיפו '+to+', '+clause;
+  if(monthly)             return 'בזכות '+rate+' שאתה נוטע '+to+', '+clause;
+  if(others.length)       return 'מה שאתה ו'+names+' נטעתם מחכה '+to;
+  return 'מה שנטעת מחכה '+to;
 }
 function listNames(a){
   return a.length<2?(a[0]||''):a.slice(0,-1).join(', ')+' ו'+a[a.length-1];
@@ -12475,7 +12505,7 @@ function paintOrder(key){
 }
 function changeOrder(){
   if(!orderNow)return;
-  sheetForm('שינוי ההפקדה החודשית',
+  sheetForm('שינוי הנטיעה החודשית',
     '<p class="sub">מה שכבר נצבר נשאר במקומו. השינוי חל מהחודש הבא.</p>'+
     '<div class="field" style="margin:12px 0 0"><label>סכום חודשי חדש</label>'+
     '<input type="number" id="sh-amt" inputmode="numeric" min="10" step="10" value="'+
@@ -12483,7 +12513,7 @@ function changeOrder(){
     /* העצירה יושבת בתוך גיליון השינוי ולא ככפתור נפרד: הכפתור אומר
        "עצור או שנה", והתיבה שהובילה לשניהם ירדה ממסך הרגע. */
     '<button class="later" style="margin-top:12px" onclick="sheetClose();stopOrder()">'+
-    'או לעצור את ההפקדה לגמרי</button>',
+    'או לעצור את הנטיעה לגמרי</button>',
     'שמור', function(){
       const el=document.getElementById('sh-amt');
       const v=Math.round(+(el&&el.value||0));
@@ -12491,7 +12521,7 @@ function changeOrder(){
       const src=netaSource();
       if(!src.setStandingOrder){toast('לא זמין בהדגמה');return}
       src.setStandingOrder(orderNow.id,v*100).then(function(){
-        toast('ההפקדה החודשית עודכנה');
+        toast('הנטיעה החודשית עודכנה');
         const k=orderNow.key;
         paintOrder(k);refreshDetail(k,true);
       },function(){toast('לא הצלחנו לשמור, נסה שוב')});
@@ -12501,7 +12531,7 @@ function stopOrder(){
   if(!orderNow)return;
   /* שלוש ההבחנות שהפונקציה במסד כופה, במילים: מה נעצר, מה נשאר,
      ומה לא נגעו בו. בלעדיהן "עצור" נקרא כמו ביטול הנטיעה. */
-  sheetForm('לעצור את ההפקדה החודשית?',
+  sheetForm('לעצור את הנטיעה החודשית?',
     '<p class="sub">' + shekel(orderNow.agorot) + ' בחודש לא יצאו יותר.<br>'+
     'מה שכבר נצבר נשאר וממשיך לצמוח עד המועד, והנטיעה עצמה אינה נסגרת.<br>'+
     'מי שנוטע כאן מלבדך אינו מושפע.</p>',
@@ -12510,7 +12540,7 @@ function stopOrder(){
       if(!src.stopStandingOrder){toast('לא זמין בהדגמה');return}
       const k=orderNow.key;
       src.stopStandingOrder(k).then(function(r){
-        toast(r===null?'לא הייתה הפקדה פעילה':'ההפקדה החודשית נעצרה');
+        toast(r===null?'לא הייתה נטיעה פעילה':'הנטיעה החודשית נעצרה');
         paintOrder(k);refreshDetail(k,true);
       },function(){toast('לא הצלחנו לעצור, נסה שוב')});
     });
@@ -12551,7 +12581,7 @@ function personSub(w,long){
      אומר שאסור לי לראות, ואז נשארת הצורה הכללית. */
   const once=w[6]!=null&&Number(w[6])<=0;
   const verb=once
-    ? (isMe?'הפקדת':vb(w[3],'הפקיד','הפקידה'))+(m?' ב'+m:' פעם אחת')
+    ? (isMe?'נטעת':vb(w[3],'נטע','נטעה'))+(m?' ב'+m:' פעם אחת')
     : (isMe?'נוטע':vb(w[3],'נוטע','נוטעת'))+(m?' מאז '+m:'');
   return [w[9]||'',verb].filter(Boolean).join(' · ');
 }
@@ -12617,7 +12647,7 @@ function openPerson(i){
   txt('pv-num',shekel(accrued));
   /* "שלכם" תיאר קבוצה במסך של אדם אחד — הכותרת ממש מעליו אומרת
      "ההשקעה שלך" או "ההשקעה של סבתא רחל". */
-  txt('d-kdepw',isMe?'ההפקדות שלך':('ההפקדות של '+w[1]));
+  txt('d-kdepw',isMe?'הנטיעות שלך':('הנטיעות של '+w[1]));
 
   /* אותו גרף בדיוק שהיה במסך הרגע — עם המחוון והנבט שנע על העקומה —
      רק שהוא מוזן במספרים של האדם הזה. זה מה שהופך אותו לנכון: עד כה
@@ -12662,7 +12692,7 @@ function openPerson(i){
   personActs={isMe:isMe,key:p.key,designated:p.designated};
   paintPersonActs();
   txt('pv-fine',isMe
-    ? 'הצפי מניח שההפקדה החודשית נמשכת עד המועד. הוא שלך בלבד ואינו מחובר לאף אחד אחר.'
+    ? 'הצפי מניח שהנטיעה החודשית נמשכת עד המועד. הוא שלך בלבד ואינו מחובר לאף אחד אחר.'
     : 'זה מה ש'+w[1]+' נטע כאן, והצפי הוא שלו בלבד. מי שעוצר או משנה, המספר משתנה איתו.');
   go(27);
 }
@@ -12676,7 +12706,7 @@ function paintPersonActs(){
   acts.className='';
   acts.innerHTML=(a.isMe
       ? '<button class="btn" onclick="investIn(cur)">'+
-        (a.designated===false?'הפקד לקופה':'השקע עוד')+'</button>' : '')+
+        (a.designated===false?'נטע לקופה':'השקע עוד')+'</button>' : '')+
     '<div class="two'+(canStop?'':' one')+'" style="margin-top:8px">'+
       (canStop?'<button class="btn ghost" onclick="changeOrder()">עצור או שנה</button>':'')+
       '<button class="btn ghost" onclick="go(5)">חזרה</button></div>';
@@ -13122,7 +13152,7 @@ function openForecast(){
     body='<div class="fcbody"><p class="fine" style="margin:0 0 4px">'+
       (tl?('מסלול '+tl+(mon>0?' · '+shekel(mon)+' בכל חודש':'')):'')+'</p>'+
       forecastSVG(tot,proj,dep,p)+
-      '<div class="fcrw"><span>ההפקדות שלך עד '+p.yr+'</span><b>'+shekel(Math.min(dep,proj))+'</b></div>'+
+      '<div class="fcrw"><span>מה שנטעת עד '+p.yr+'</span><b>'+shekel(Math.min(dep,proj))+'</b></div>'+
       (grow>0?'<div class="fcrw"><span>מה שהזמן יוסיף</span><b class="s">כ'+MQ+shekel(grow)+'</b></div>':'')+
       '<div class="fctot"><span>בקצב הזה, ב'+p.date+'</span><b>כ'+MQ+shekel(proj)+'</b></div>'+
       '<p class="fine" style="margin-top:10px">התחזית מבוססת על '+(tl||'המסלול שנבחר')+
@@ -13136,7 +13166,7 @@ function openForecast(){
      העיצוב מחזיר אותה בדיוק כאן. ורק לבעלים, כי נטיעה שקרוב פתח
      אינה שלך לערוך. */
   const edit=(p.mine&&momAlone(p))
-    ? '<button class="btn ghost" onclick="sheetClose();openEdit()">לשנות הפקדה או מסלול</button>'
+    ? '<button class="btn ghost" onclick="sheetClose();openEdit()">לשנות נטיעה או מסלול</button>'
     : '';
   document.getElementById('sh-acts').innerHTML=
     edit+'<button class="btn ghost" onclick="sheetClose()">סגור</button>';
@@ -13157,7 +13187,7 @@ function personTrackLine(w){
   const tl=w[11]!=null?plantTrackLabel({rate:w[11]}):'';
   if(tl)bits.push(tl);
   if(w[6]!=null&&Number(w[6])>0)bits.push(shekel(Number(w[6]))+' בכל חודש');
-  else if(w[8]!=null)bits.push('הפקדה אחת');
+  else if(w[8]!=null)bits.push('נטיעה אחת');
   return bits.join(' · ');
 }
 /* הגרף של הגיליון: קו ההפקדות, וטריז הצמיחה מעליו. ‏RTL, ולכן
@@ -14314,10 +14344,10 @@ function buildPays(){
       '<path d="M4 16h56" stroke="currentColor" stroke-width="2.4"/>'+
       '<rect x="11" y="28" width="16" height="5" rx="2.5" fill="var(--sun-soft)"/></svg></div>'+
       '<div class="t">עוד לא נוסף אמצעי תשלום</div>'+
-      '<div class="s">הנטיעה מתחילה לגדול מההפקדה הראשונה. הוראת קבע או כרטיס.</div>'+
+      '<div class="s">הנטיעה מתחילה לגדול מהנטיעה הראשונה. הוראת קבע או כרטיס.</div>'+
       '<button class="btn" onclick="addPay()">להוסיף אמצעי תשלום</button></div>';
     if(add)add.style.display='none';
-    txt('pm-sub','כאן מחברים את ההפקדה החוזרת ומנהלים אותה לאורך השנים.');
+    txt('pm-sub','כאן מחברים את הנטיעה החוזרת ומנהלים אותה לאורך השנים.');
     txt('pf-pay-meta','עוד לא נוסף אמצעי תשלום');
     return;
   }
@@ -14335,11 +14365,11 @@ function buildPays(){
         (p.state==='warn'?'לעדכן כרטיס':'להחליף אמצעי')+'</button></div>';
   }).join('');
   txt('pm-sub',monthly
-    ?('בכל חודש יורדים '+shekel(monthly)+' להפקדות החוזרות שלך.')
-    :'כאן מחברים את ההפקדה החוזרת ומנהלים אותה לאורך השנים.');
+    ?('בכל חודש יורדים '+shekel(monthly)+' לנטיעות החוזרות שלך.')
+    :'כאן מחברים את הנטיעה החוזרת ומנהלים אותה לאורך השנים.');
   const live=pays.filter(function(p){return p.state==='live'})[0];
   txt('pf-pay-meta',(live?live.t.split(' · ')[0]:'ללא אמצעי פעיל')+
-      (monthly?' · '+shekel(monthly)+' בכל חודש':' · אין הפקדה קבועה'));
+      (monthly?' · '+shekel(monthly)+' בכל חודש':' · אין נטיעה קבועה'));
 }
 function openPay(){buildPays();go(16)}
 /* ארבע הספרות האחרונות ולא המספר המלא: זה כל מה ש-payment_methods
@@ -14370,7 +14400,7 @@ function addPay(){
       if(!t||!t.trim()){toast('צריך סוג');return false}
       if(!n||!/^\d{4}$/.test(n.trim())){toast('צריך ארבע ספרות');return false}
       const row={t:t.trim(),n:'····'+n.trim(),state:'off',
-                 note:'אמצעי גיבוי, עדיין לא מממן הפקדה קבועה.'};
+                 note:'אמצעי גיבוי, עדיין לא מממן נטיעה קבועה.'};
       if(liveAccount()){
         netaServer.addPayment({label:row.t,last4:lastFour(row.n),
                                kind:payKind(row.t),isDefault:!pays.length})
@@ -16202,7 +16232,7 @@ function togglePref(el){
 function openNotifySheet(){
   sheetPick('התראות','מה נשלח אליך במייל, וממה אפשר לוותר.',
     '<div class="prefbox">'+
-      prefRow('notify_contribution','כשקרוב מפקיד',
+      prefRow('notify_contribution','כשקרוב נוטע',
               'מישהו הוסיף כסף לרגע שפתחת') +
       prefRow('notify_joined','כשקרוב מצטרף',
               'מישהו שהזמנת נכנס לרגע בפעם הראשונה') +
@@ -16220,7 +16250,7 @@ function openPrivacySheet(){
   sheetPick('פרטיות','מה קרובים רואים עליך.',
     '<div class="prefbox">'+
       prefRow('amounts_visible','סכומים גלויים כברירת מחדל',
-              'המתג במסך התשלום ייפתח כך. מי שנוטע איתך לאותו רגע יראה כמה הפקדת, ואפשר לשנות לכל הפקדה בנפרד.') +
+              'המתג במסך התשלום ייפתח כך. מי שנוטע איתך לאותו רגע יראה כמה נטעת, ואפשר לשנות לכל נטיעה בנפרד.') +
       '<p class="fine">מי שפתח את הרגע רואה את הסכום שלך כך או כך, כבעל הרגע.'+
       ' הורדת המידע ומחיקת החשבון עוד לא נבנו כמסך, ואפשר לבקש אותן'+
       ' בפנייה אלינו. הפירוט המלא במדיניות הפרטיות.</p>'+
@@ -16325,8 +16355,8 @@ function loadAccountLists(){
     rows.forEach(function(m){
       pays.push({t:m.label,n:m.last4?('····'+m.last4):'',
                  state:m.is_default?'live':'off',
-                 note:m.is_default?'מממן את ההפקדות הקבועות שלך.'
-                                  :'אמצעי נוסף, לא מממן הפקדה קבועה.'});
+                 note:m.is_default?'מממן את הנטיעות הקבועות שלך.'
+                                  :'אמצעי נוסף, לא מממן נטיעה קבועה.'});
     });
     buildPays();
   }).catch(function(){});
@@ -18134,9 +18164,10 @@ function withPrep(prep,name){
 /* המגדר של מי שהפקיד אינו ידוע — הפרופיל מחזיק שם בלבד. האפיון כבר קבע
    את הפתרון למצב הזה במקום אחר ("מורשה/ית", "בר/בת מצווה"): צורה כפולה
    קבועה, ולא ניחוש לפי השם. */
-const VERB={invested:'השקיע/ה',deposited:'הפקיד/ה',
-            attached:'צירף/ה',  joined:'הצטרף/ה',
-            participated:'השתתף/ה'};
+/* ‏**וארבעה מתוכה נמחקו: הם הוכרזו ואיש לא קרא להם.** ‏`participated`
+   הוא היחיד שנקרא, וזו אותה הכרעה של "כשערך חוזר לברירת המחדל מוחקים
+   את ההחרגה" — הצהרה שאין לה קורא היא קוד מת שנושא לוכסן. */
+const VERB={participated:'השתתף/ה'};
 
 /* השורה נושאת שלושה דברים ולא משפט אחד: מי, מה, וכמה. הכותרת היא תמיד
    שם הנטיעה — זה מה שמאפשר לסרוק את הרשימה ולמצוא נטיעה — והשורה
@@ -18194,9 +18225,23 @@ function feedWhen(iso){
    "טיול גדול של נועה" היה יוצא "הטיול הגדול של **ה**נועה". */
 function feedMomentName(e){
   const parts=String(e.name||'').split(' של ');
-  const head=parts.length>1?parts.slice(0,-1).join(' של '):(e.name||'');
   const tail=parts.length>1?(' של '+parts[parts.length-1]):'';
-  return theNoun(head,e.occ)+tail;
+  return feedOccNoun(e)+tail;
+}
+/* ‏**הרגע לבדו, בלי הילד** (`FIX-activity-v3.md` §2): השורה הראשית
+   כבר נוקבת בילד, ולכן השורה השנייה אומרת "הטיול" ולא "הטיול של
+   אלון". מיודע, כמו בכל האפליקציה. */
+function feedOccNoun(e){
+  const parts=String(e.name||'').split(' של ');
+  const head=parts.length>1?parts.slice(0,-1).join(' של '):(e.name||'');
+  return theNoun(head,e.occ);
+}
+/* ‏**שם הילד נגזר מהזנב שאחרי " של " בשם הנטיעה**, שהוא בדיוק מה
+   שהילד נקרא בו בכל שאר המסכים. בקופה שלא יועדה אין זנב, ואז אין
+   ילד — והשורה נופלת לשם הרגע. */
+function feedKid(e){
+  const parts=String(e.name||'').split(' של ');
+  return parts.length>1?parts.slice(1).join(' של '):'';
 }
 /* ‏**הפועל מוטה כשהמגדר ידוע, ובלעדיו שם עצם ולא לוכסן.**
    ‏`actor_sex` מגיע מ-0078, והוא ריק ברוב הפרופילים; זו אותה הכרעה
@@ -18205,11 +18250,12 @@ function feedSay(name,sex,m,f,noun){
   const nm='<b>'+attrText(name||'קרוב')+'</b>';
   return sex==='f'?(nm+' '+f):sex==='m'?(nm+' '+m):(nm+' · '+noun);
 }
-function feedRowHTML(e){
+function feedRowHTML(e,idx){
   const mine=!!e.isMe;
   const mom=feedMomentName(e);
   const toMom=withPrep('ל',mom);
   let title='',sub=feedWhen(e.at),amount='',cls='',glyph=occIcon(e.occ,22,e.name);
+  let more='';
   /* ‏**כל שורה שהנושא שלה הוא אדם נפתחת בפרצוף**, גם שלי. `person`
      הוא הדגל, ו-`face` הוא המפתח שעשוי להיות ריק — ואז `faceHTML`
      נופלת לדמות ברירת המחדל. בלי ההפרדה, שורה שלי בחשבון בלי תמונה
@@ -18218,23 +18264,37 @@ function feedRowHTML(e){
   let face=mine?myAvatarKey():e.avatar;
 
   if(e.kind==='contribution'){
-    /* ‏**הפקדה שלי אינה "אני נטעתי"**: היא ההפקדה עצמה, והכותרת
-       נוקבת בה ולא בי. ‏`contribKind` מבדיל בין הוראת קבע לחד־פעמית,
-       וזה מה שהשורה השנייה אומרת. */
-    title=mine?('ההפקדה'+(e.contribKind==='recurring'?' החודשית':'')+' שלך '+toMom)
-              :feedSay(e.actor,e.actorSex,'נטע '+toMom,'נטעה '+toMom,'הפקדה '+toMom);
-    if(mine&&e.contribKind==='recurring')sub='הוראת קבע · '+sub;
+    /* ‏**השורה אומרת מי נטע, למי, ומתי** (`FIX-activity-v3.md` §2).
+       עד כאן היא פתחה ב"ההפקדה החודשית שלך ל<שם הרגע המלא>", כלומר
+       נקבה במנגנון ולא באדם — ושלוש ריצות של אותה הוראת קבע היו
+       שלוש שורות זהות שכולן נחתכות. עכשיו הראשית היא **מי ולמי**
+       והמשנית היא **מה ומתי**.
+       **ובלי מגדר שם עצם ולא לוכסן** (§5), כמו בכל שאר המוצר. */
+    const kid=feedKid(e);
+    const toKid=withPrep('ל',kid||mom);
+    const n=(e.items&&e.items.length)||1;
+    title=mine?('נטעת '+toKid)
+              :feedSay(e.actor,e.actorSex,'נטע '+toKid,'נטעה '+toKid,'נטיעה '+toKid);
+    /* ‏**מספר הרגעים במילים** (§2), כמו בכל מספר אחר במוצר שאינו
+       סכום או תאריך. */
+    sub=(n>1?('ל'+countWord(n)+' רגעים'):feedOccNoun(e))+' · '+sub;
     /* בלי סכום נשארת רק עצם ההשתתפות — כך רואה קרוב את קרוב אחר. */
     /* ‏**תווית וסכום, על אותו קו ימני כמו בכל המסכים** (§3), ולא
        סכום עירום. התווית נוקבת במי שנטע ואינה מנחשת: בלי מגדר היא
-       שם עצם ("הפקדה") ולא לוכסן. **ו-"+" ירד** — מה שהוא אמר
+       שם עצם ("נטיעה") ולא לוכסן. **ו-"+" ירד** — מה שהוא אמר
        ("נכנס מבחוץ") נאמר עכשיו במילה, והוא היה תו ניטרלי שנדחף
        אל הקצה השני של הספרות בפסקה RTL. */
     amount=e.amount!=null
       ? '<span class="amt"><span class="k">'+
-          attrText(mine?'נטעת':e.actorSex==='f'?'נטעה':e.actorSex==='m'?'נטע':'הפקדה')+
+          attrText(mine?'נטעת':e.actorSex==='f'?'נטעה':e.actorSex==='m'?'נטע':'נטיעה')+
           '</span><span class="n'+(mine?' me':'')+'">'+shekel(e.amount)+'</span></span>'
       : '<div class="fa let">השתתפות</div>';
+    /* ‏**והפירוט נפתח במקום** ולא במסך אחר. `idx` הוא מספר השורה
+       בציור הנוכחי, וזה כל מה שצריך: הפיד נבנה מחדש בכל ציור,
+       ומזהה שנגזר ממפתח נטיעה היה חוזר פעמיים בשורה מקובצת. */
+    if(n>1&&idx!=null){
+      more='<button class="fmore" onclick="feedMore('+idx+',event)">לראות לאילו</button>';
+    }
   }else if(e.kind==='letter_signed'){
     /* ‏**המכתב נכתב אל הילד ולא אל הרגע** (§1): "כתב מכתב לדניאל".
        השם נגזר מהזנב שאחרי " של " בשם הנטיעה, שהוא בדיוק מה שהילד
@@ -18290,30 +18350,72 @@ function feedRowHTML(e){
     ? '<div class="fav">'+faceHTML(face,mine?'av-parent':'av-someone')+
       '<span class="fbadge">'+occIcon(e.occ,12,e.name)+'</span></div>'
     : '<div class="fic'+cls+'">'+glyph+'</div>';
-  const open=e.key?' onclick="openDetail(\'' + e.key + '\')"':'';
+  /* ‏**שורה מקובצת אינה מנווטת**, כי היא נוגעת בכמה רגעים ואין לה
+     אחד לפתוח; מה שנפתח ממנה הוא הפירוט, וכל שורה בו מנווטת לרגע
+     שלה. זו אותה הכרעה של "כפתור מוביל לדבר עצמו". */
+  const grouped=!!(e.items&&e.items.length>1);
+  const open=(e.key&&!grouped)?' onclick="openDetail(\'' + e.key + '\')"':'';
   return '<div class="fr'+(sub?'':' one')+'"'+open+'>'+badge+
     '<div class="fx"><div class="fn">'+title+'</div>'+
     (sub?'<div class="fs'+(mine?'':' oth')+'">'+attrText(sub)+'</div>':'')+
-    '</div>'+amount+'</div>';
+    more+'</div>'+amount+'</div>'+
+    (grouped&&idx!=null?feedMoreHTML(e,idx):'');
 }
-/* ‏**כמה הפקדות שלי לאותו רגע באותו יום הן שורה אחת** (§1). הפיד
-   הציג שלוש שורות "הלימודים של אביב" זו מתחת לזו, כלומר את אותה
-   עובדה שלוש פעמים. הצירוף הוא שלי בלבד: הפקדה של קרוב היא אירוע
-   שלו, ושתי הפקדות של שני אנשים אינן אותו דבר.
+/* הפירוט שמתחת לשורה המקובצת: שם הרגע והסכום שלו, וכל שורה מנווטת
+   אל הרגע עצמה. */
+function feedMoreHTML(e,idx){
+  return '<div class="fmx" id="fmx-'+idx+'" hidden>'+
+    e.items.map(function(it){
+      const nm=feedOccNoun(it);
+      return '<button'+(it.key?(' onclick="openDetail(\''+it.key+'\')"'):'')+'>'+
+        '<span>'+attrText(nm)+'</span><b>'+shekel(it.amount||0)+'</b></button>';
+    }).join('')+'</div>';
+}
+/* ‏`hidden` ולא `style.display`, כי זה מצב ולא עיצוב; והכפתור מחליף
+   כיתוב, אחרת "לראות לאילו" נשאר על המסך אחרי שכבר רואים. */
+function feedMore(idx,ev){
+  if(ev){ev.stopPropagation();ev.preventDefault()}
+  const box=document.getElementById('fmx-'+idx);
+  if(!box)return;
+  box.hidden=!box.hidden;
+  const btn=box.previousElementSibling&&box.previousElementSibling.querySelector('.fmore');
+  if(btn)btn.textContent=box.hidden?'לראות לאילו':'לסגור';
+}
+/* ‏**שורה אחת לכל ריצה של הוראת קבע** (`FIX-activity-v3.md` §3).
+   שלושת התנאים הם אותו נוטע, אותו ילד, ואותה ריצה — כלומר חותם
+   זמן בסטייה של דקות בודדות. הוראת קבע אחת שנוגעת בשלושה רגעים
+   ייצרה שלוש שורות זהות שכולן נחתכות, וזה מה שאלון ראה.
 
-   ‏`contribKind` נכנס למפתח, כי הוראת קבע והפקדה חד־פעמית אומרות
-   שני דברים שונים בשורה השנייה. */
+   **ונטיעה חד־פעמית עומדת תמיד בשורה משלה**, גם אם נוצרה באותה
+   שנייה: היא אירוע נפרד ולא חלק מריצה.
+
+   **והקיבוץ הוא לפי הילד ולא לפי הרגע**, כי זה מה שהשורה אומרת:
+   "נטעת לאלון · לשני רגעים". ‏`feedKid` נגזר משם הנטיעה, וקופה
+   שלא יועדה אינה מתקבצת עם דבר (אין לה ילד, ולכן המפתח שלה ריק
+   ומובחן משאר השורות של אותו נוטע).
+
+   **והחלון נמדד מול העוגן ולא כחלוקה לדליים**, אחרת שתי רשומות
+   במרחק שנייה אחת נופלות לשני דליים בדיוק כשהן חוצות את הגבול. */
+const FEED_RUN_MS=10*60000;
 function feedMerge(rows){
-  const out=[],at={};
+  const out=[],open={};
   rows.forEach(function(e){
-    if(e.kind!=='contribution'||!e.isMe||e.amount==null){out.push(e);return}
-    const day=String(e.at||'').slice(0,10);
-    /* ‏`e.key||e.name`: בהדגמה אין מזהה נטיעה, ו-`undefined` בכל
-       המפתחות איחד ארבע נטיעות שונות של אותו יום לשורה אחת. */
-    const k=day+'|'+(e.key||e.name||'')+'|'+(e.contribKind||'');
-    if(at[k]!==undefined){out[at[k]].amount+=Number(e.amount||0);return}
-    at[k]=out.length;
-    out.push(Object.assign({},e));
+    if(e.kind!=='contribution'||e.contribKind!=='recurring'||e.amount==null){
+      out.push(e);return}
+    const kid=feedKid(e);
+    const k=(e.isMe?'me':('n|'+(e.actor||'')))+'|'+kid;
+    const t=+new Date(e.at);
+    const g=open[k];
+    const item={key:e.key,name:e.name,occ:e.occ,amount:Number(e.amount||0)};
+    if(g&&isFinite(t)&&Math.abs(t-g.t)<=FEED_RUN_MS){
+      out[g.i].amount+=item.amount;
+      out[g.i].items.push(item);
+      return;
+    }
+    open[k]={i:out.length,t:t};
+    const c=Object.assign({},e);
+    c.items=[item];
+    out.push(c);
   });
   return out;
 }
@@ -18321,14 +18423,14 @@ function feedHTML(rows){
   const list=feedMerge(
     rows.slice().sort(function(a,b){return new Date(b.at)-new Date(a.at)}));
   let out='',last=null,open=false;
-  list.forEach(function(e){
+  list.forEach(function(e,i){
     const g=feedGroup(e.at);
     if(g!==last){
       if(open)out+='</div>';
       out+='<div class="fday">'+g+'</div><div class="frows">';
       last=g;open=true;
     }
-    out+=feedRowHTML(e);
+    out+=feedRowHTML(e,i);
   });
   return out+(open?'</div>':'');
 }
@@ -18704,7 +18806,7 @@ function amtHTML(label,agorot){
 }
 /* ההשקעות האחרונות שלי: ההפקדות שלי מהפיד, מסוננות לקבוצה הנבחרת.
    ‏**מקור אחד ולא שני**, כלומר אותן שורות שהפיד מציג ואותו איחוד
-   של כמה הפקדות לאותו רגע באותו יום (`feedMerge`).
+   של כמה נטיעות לאותו רגע באותו יום (`hmMergeMoments`).
    **והמיפוי לקבוצה הוא לפי מזהה כשיש ולפי שם הרגע כשאין**, כי
    ‏`demoSource.feed` אינה נושאת מזהה נטיעה. */
 function hmRecent(rows){
@@ -18713,10 +18815,31 @@ function hmRecent(rows){
     if(p.key)byKey[p.key]=1;
     if(p.name)byName[p.name]=1;
   });
-  return feedMerge((feedRows||[]).filter(function(e){
+  return hmMergeMoments((feedRows||[]).filter(function(e){
     if(e.kind!=='contribution'||!e.isMe)return false;
     return e.key?!!byKey[e.key]:!!byName[e.name];
   })).slice(0,3);
+}
+/* ‏**שתי שאלות, שתי יחידות קיבוץ.** הפיד שואל **מה קרה**, ולכן
+   ריצה אחת של הוראת קבע היא שורה אחת גם כשנגעה בשלושה רגעים
+   (`feedMerge`); הרשימה הזאת שואלת **לאילו רגעים**, ולכן היחידה
+   שלה היא הרגע. **המקור עדיין אחד** — אותן שורות פיד בדיוק — ומה
+   שנפרד הוא רק מה מתקבץ למה. ‏`feedMerge` היה משרת את שתיהן עד
+   שהוא עבר לקבץ לפי ילד, ואז שורה כאן הייתה נוקבת בשם רגע אחד
+   ובסכום של שניים. */
+function hmMergeMoments(rows){
+  const out=[],at={};
+  rows.forEach(function(e){
+    if(e.amount==null){out.push(e);return}
+    const day=String(e.at||'').slice(0,10);
+    /* ‏`e.key||e.name`: בהדגמה אין מזהה נטיעה, ו-`undefined` בכל
+       המפתחות איחד ארבע נטיעות שונות של אותו יום לשורה אחת. */
+    const k=day+'|'+(e.key||e.name||'')+'|'+(e.contribKind||'');
+    if(at[k]!==undefined){out[at[k]].amount+=Number(e.amount||0);return}
+    at[k]=out.length;
+    out.push(Object.assign({},e));
+  });
+  return out;
 }
 function paintInvestments(){
   const own=hmRows('own'),oth=hmRows('oth');
@@ -19693,7 +19816,7 @@ function fuEmptyHTML(it){
   return hmLbl(nm?('הרגעים של '+nm):'הרגעים שלך')+
     (it.rows||[]).map(function(p){return fuMomentRow(p,true)}).join('')+
     hmLbl(nm?('מי נטע '+withPrep('ל',nm)):'מי נטע כאן','sec2')+
-    '<p class="qln">אף אחד עוד לא נטע כאן. ההפקדה הראשונה היא מה שמתחיל את הספירה.</p>'+
+    '<p class="qln">אף אחד עוד לא נטע כאן. הנטיעה הראשונה היא מה שמתחיל את הספירה.</p>'+
     hmCtaBlock('לנטוע'+(to?(' '+to):''),'fuPlantFirst()');
 }
 /* הפעולות של המצבים הריקים. שתיהן מובילות לדבר עצמו: פתיחת רגע
@@ -19820,7 +19943,7 @@ function paintFuture(items,sel,blank){
       const toTxt=fund?'לקופה הזאת':('לעתיד של '+firstName(it.name));
       f2.style.display='';
       f2.textContent=(mo>0&&proj>mo&&yrs)
-        ? ('קרוב שיפקיד 50 ₪ בחודש במשך '+yearsWord(yrs)+
+        ? ('קרוב שייטע 50 ₪ בחודש במשך '+yearsWord(yrs)+
            ', יכול להוסיף '+toTxt+' '+aboutShekel(Math.round(proj*5000/mo)))
         : (fund?'כל קרוב שמצטרף מגדיל את מה שיחכה בקופה הזאת.'
                :('כל קרוב שמצטרף מגדיל את מה שיחכה ל'+firstName(it.name)+
@@ -20193,7 +20316,7 @@ function designate(){
 function addPartner(){
   const p=plantAt(cur);
   sheetForm('הוסף שותף/ה ל'+p.name,
-    'שניכם תהיו רשומים כבעלים שווים, שניכם מפקידים, שניכם רואים הכל, וכל שינוי מהותי דורש הסכמה של שניכם.'+
+    'שניכם תהיו רשומים כבעלים שווים, שניכם נוטעים, שניכם רואים הכל, וכל שינוי מהותי דורש הסכמה של שניכם.'+
     '<label>שם מלא</label><input type="text" id="pt-name" placeholder="שם השותף/ה">',
     'שלח הזמנה',
     function(){
@@ -21035,7 +21158,7 @@ function splitLine(n,amount){
   const past=n<=CH.passed;
   const dep=Math.min(CH.monthly*n,amount),grow=Math.max(0,amount-dep);
   if(grow<(past?1:100))return '';
-  return (past?'הפקדתם ':'תפקידו ')+
+  return (past?'נטעתם ':'תיטעו ')+
     '<em>'+shekelAt(dep,true)+'</em> · '+
     (past?'הצמיחה הוסיפה ':'הצמיחה תוסיף ')+
     '<b>'+shekelAt(grow,past)+'</b>';
