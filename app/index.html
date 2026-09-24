@@ -4456,7 +4456,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '77cc68e';
+window.NETA_BUILD = '65fae1f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -12606,7 +12606,11 @@ function paintDetail(key,p){
     return '<'+(tap?'button':'div')+' class="tabrow"'+
       (tap?' onclick="openPerson('+i+')"':'')+'>'+
     '<span class="fc">'+faceHTML(w[0],'av-parent')+'</span>'+
-    '<span class="gr"><span class="t">'+attrText(w[1])+'</span>'+
+    /* ‏**‏"אתה" מוטה, ולא קבוע בזכר.** ‏`liveDetail` כותבת `'אתה'`
+       ל-`w[1]` והיא גם הסימן הפנימי שזה אני (`personSub`,
+       `personalOf`), ולכן ההטיה היא בציור ולא בנתון. */
+    '<span class="gr"><span class="t">'+
+      attrText((w[7]||w[1]==='אתה')?meLabel():w[1])+'</span>'+
       (sub?'<span class="s">'+sub+'</span>':'')+'</span>'+
     /* ‏**‏`amtHTML` ולא המחרוזת שבשורה** (§5 של `FIX-waiting-v2`,
        §8 של `FIX-tabs-v2`): התווית מעל הסכום היא מה שמיישר את כל
@@ -13727,6 +13731,26 @@ function invTabRow(x){
 function myPronoun(){
   return (typeof netaServer!=='undefined'&&netaServer&&netaServer.profile&&
           netaServer.profile.sex)||'';
+}
+/* ‏**איך אני נקרא ברשימת נוטעים.** אלון פתח רגע לעצמו וראה "מי נטע
+   לאלון" ומתחתיו שורה שכתוב בה "אלון" — אותו שם פעמיים במרחק 40
+   פיקסלים, ושורה שנקראת כאדם שלישי.
+
+   **‏"אתה" / "את" כשהפנייה ידועה, והשם כשאינה.** זה הופך את מה
+   שנרשם כאן על הרשימה ב"מה מחכה להם" ("השם מהפרופיל ולא 'את'"),
+   ומה שמחזיק את ההיפוך הוא ששני הנימוקים שנתנו שם כבר אינם
+   עומדים: הראשון היה ש"את" מנחש מגדר — ומ-0047 יש `profiles.sex`
+   ו-`myPronoun` קוראת אותו, כלומר אין כאן ניחוש אלא תשובה
+   שנשאלה; והשני היה שזו רשימת שמות — וגם קובץ העיצוב חושב כך,
+   ובכל זאת כותב בה "אתה", כי מה שהשורה שלי צריכה לומר הוא
+   **איזו שורה היא שלי**.
+
+   **ובלי פנייה חוזרים לשם**, ולא ללוכסן. */
+function meLabel(){
+  const sx=myPronoun();
+  if(sx==='f')return 'את';
+  if(sx==='m')return 'אתה';
+  return firstName(myName()||localName||'')||'אני';
 }
 /* ‏`FIX-lists.md` §4, ופונקציה ולא ביטוי בתוך הפיינטר כדי שאפשר
    יהיה למדוד את שלוש הצורות בלי חשבון חי: ‏`netaServer` הוא
@@ -19168,13 +19192,18 @@ function fuOccLine(it){
 /* ‏**האם בעל הרגע משתף סכומים** (§5). ‏`participants[].amount` הוא
    `null` בדיוק כשאסור לי לראות אותו (‏0076), ולכן זו העובדה עצמה
    ולא דגל שצריך לגזור. */
+/* ‏**‏`==null` ולא `===null`, כמו ב-`fuPlanters`.** השתיים נחלקו:
+   כאן "חסוי" היה `null` מפורש בלבד, ושם גם שדה שלא נשלח — ולכן
+   המסך הכריז שהוא משתף (וציית ל"נצבר") בזמן שכל שורה בו הציגה
+   את התג "משתתף". שדה שאינו שם ושדה `null` אומרים אותו דבר
+   לקורא: אינני יודע כמה. */
 function fuRowShares(p){
-  return !(p.participants||[]).some(function(x){return x&&x.amount===null});
+  return !(p.participants||[]).some(function(x){return x&&x.amount==null});
 }
 function fuShares(it){
   const rows=(it&&it.rows)||[];
   return !rows.some(function(p){
-    return (p.participants||[]).some(function(x){return x&&x.amount===null});
+    return (p.participants||[]).some(function(x){return x&&x.amount==null});
   });
 }
 /* מי נוטע לילד הזה, וכמה. ‏`kidGroups` אוספת שמות בלבד, וכאן צריך
@@ -19185,17 +19214,23 @@ function fuPlanters(it){
     (p.participants||[]).forEach(function(x){
       const nm=(x&&x.name)||'';
       if(!nm)return;
-      if(!map[nm]){map[nm]={name:nm,avatar:x.avatar||null,amount:0,hidden:false,n:0};
+      if(!map[nm]){map[nm]={name:nm,avatar:x.avatar||null,amount:0,hidden:false,n:0,
+                            is_me:null};
                    order.push(nm)}
       const g=map[nm];
       g.n++;
+      if(x.is_me!=null&&g.is_me==null)g.is_me=!!x.is_me;
       if(x.amount==null)g.hidden=true; else g.amount+=Number(x.amount||0);
       if(!g.avatar&&x.avatar)g.avatar=x.avatar;
     });
   });
   return order.map(function(k){return map[k]});
 }
-function fuIsMe(nm){
+/* ‏**‏`is_me` כשהשרת מוסר אותו, והשם כנפילה אחורה.** ‏0079 הוסיפה
+   את הדגל ל-`my_plantings`, ועד אז הזיהוי היה השוואת שם בלבד —
+   ושני אנשים בעלי אותו שם נקראו כאדם אחד. */
+function fuIsMe(nm,x){
+  if(x&&x.is_me!=null)return !!x.is_me;
   const me=myName()||localName||'';
   return nm==='אתה'||nm==='את'||(me&&String(nm)===String(me));
 }
@@ -19222,7 +19257,7 @@ function fuMomentRow(p,dash){
 /* שורת נוטע. התדירות היא הקצב שלי כשזה אני, ובכמה רגעים הוא נוטע
    כשזה מישהו אחר — הקצב שלו אינו נמסר לי. */
 function fuPlanterRow(x,it){
-  const me=fuIsMe(x.name);
+  const me=fuIsMe(x.name,x);
   const mo=me?((it.rows||[]).reduce(function(a,p){return a+Number(p.myMonthly||0)},0)):0;
   const sub=me
     ? (mo>0?('כל חודש · '+shekel(mo)):(x.n>1?(hebCount(x.n)+' נטיעות'):'נטיעה אחת'))
@@ -19230,7 +19265,7 @@ function fuPlanterRow(x,it){
   /* ‏**השם המלא ולא `firstName`**: "סבתא רחל" הוא איך שהיא נקראת
      בפנקס, ו-`firstName` היה מציג "סבתא". זו רשימת שמות, ומה
      שנכון בה הוא השם שנשמר. */
-  const nm=me?(firstName(myName()||'')||'אני'):String(x.name||'');
+  const nm=me?meLabel():String(x.name||'');
   return '<div class="tabrow">'+
     '<span class="fc sm">'+faceHTML(me?myAvatarKey():x.avatar,
       me?'av-parent':'av-someone')+'</span>'+
@@ -19264,8 +19299,8 @@ function fuSheetHTML(it){
   }else{
     /* ‏**לא משתפים:** אני עם הסכום שלי, ומתחתי שורה אחת עם ערימת
        פרצופים ומשפט אחד — ואין במסך שום סכום של נוטע אחר (§5). */
-    const mine=ppl.filter(function(x){return fuIsMe(x.name)});
-    const others=ppl.filter(function(x){return !fuIsMe(x.name)});
+    const mine=ppl.filter(function(x){return fuIsMe(x.name,x)});
+    const others=ppl.filter(function(x){return !fuIsMe(x.name,x)});
     const names=others.map(function(x){return String(x.name||'')});
     const lead=names.length===1?names[0]
       :names.length===2?(names[0]+' ו'+names[1])
