@@ -2877,12 +2877,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ‏**שדה השם ברוחב מלא מתחת לרשת הקרבה** (§5). */
 .ivz .ivname{width:100%;margin-top:clamp(7px,1.5vh,10px)}
 /* ‏**תיבת המסר.** ערוגה קרם לטקסט שהכנו, ושדה אמיתי ל"לכתוב
-   בעצמי" — אותו גובה בדיוק, אחרת המסך קופץ במעבר בין השבבים. */
+   בעצמי" — אותו גובה בדיוק, אחרת המסך קופץ במעבר בין השבבים.
+   ‏16px ולא 14.5 שבעיצוב: זה שדה שמקלידים בו, וסאפארי מזמזם
+   לתוך כל שדה שקטן מ-16. שני המצבים באותה מידה, כי זה אותו
+   רכיב. */
 .ivmsg{margin-top:clamp(9px,1.9vh,16px);width:100%;box-sizing:border-box;
   min-height:clamp(84px,15vh,118px);background:var(--leaf-bg);
   border:1px solid var(--leaf-line);border-radius:16px;
-  padding:clamp(11px,2vh,15px) 14px;font-family:inherit;font-size:14.5px;
-  line-height:1.7;color:var(--tx);text-align:start;display:block}
+  padding:clamp(11px,2vh,15px) 14px;font-family:inherit;font-size:16px;
+  line-height:1.6;color:var(--tx);text-align:start;display:block}
 textarea.ivmsg{resize:none;color:var(--tx)}
 .ivmsg.none{color:var(--tx-3);background:var(--s2);border-color:var(--line)}
 /* שלושת השבבים, בשורה אחת. */
@@ -4616,7 +4619,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'c756e10';
+window.NETA_BUILD = '9c8fc68';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
