@@ -2416,6 +2416,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .tabhd.wizhd .hi{margin-top:1px}
 .tabhd .wizx{background:none;border:0;padding:0 2px;font-family:inherit;
   font-size:13.5px;color:var(--sun-on-leaf);cursor:pointer;flex:none}
+/* ‏**במסך הסיום של הזמנת קרוב אין חץ, אין "ביטול" ואין שורת משנה**
+   (`FIX-invite-v1.md` §2), ובמסך הקישור אין חזרה כי ההזמנה כבר
+   נרשמה בשרת. ‏`visibility` ולא `display`, כדי שהכותרת תישאר
+   ממורכזת בדיוק על אותו פיקסל בשני המצבים — אותה הכרעה של שורת
+   החץ במסכי ההרשמה. */
+#wizhead.ivnb .tabhd .bk,#wizhead.ivnb .tabhd .wizx{visibility:hidden}
+#wizhead.ivend .tabhd .hi{display:none}
+#wizhead.ivend .wizbar{display:none}
+#wizhead.ivend{padding-bottom:24px}
 /* סרגל השלבים: מקטע לכל שלב, והצבוע בחול כי הוא על הירוק. */
 .wizbar{display:flex;gap:5px;margin:14px 0 16px}
 .wizbar i{flex:1;height:3px;border-radius:2px;background:var(--leaf-tile-line);
@@ -2589,6 +2598,25 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   box-shadow:0 0 0 2px var(--sun-on-leaf)}
 .card-main.wizc .ph.empty{background:none;border:1.5px dashed var(--leaf-tile-line);
   box-shadow:none}
+/* ‏**ה-`+` שבתוך העיגול המקווקו** (`FIX-invite-v1.md` §3), וממוקד
+   לכרטיס ההזמנה: בכרטיס האשף המשבצת הריקה נשארת ריקה, כי שם היא
+   ממתינה לפרצוף של ילד ולא לפעולה. */
+/* ‏**הגיבור בכרטיס ההזמנה קטן מזה של האשף, ובכוונה.** שם הוא
+   נושא שם של ילד קצר ומספר גדול; כאן הוא נושא גם את השאלה
+   ("איך קוראים לאמא?"), וב-32 היא נשברת לשתי שורות והכרטיס גדל
+   ב-38 פיקסלים באמצע השלב — בדיוק הקפיצה ש-`FIX-create-v2` §12
+   אוסר. ‏`.nwnm` שבקובץ העיצוב הוא 25, וזה מה שהוא. */
+.device.gtop #iv-card .tbhero{font-size:clamp(18px,2.3vh,26px)}
+/* ‏**וההדלקה ברגל הכרטיס אינה גולשת שמאלה.** ‏`.wizc .lit` נושא
+   ‏`margin-inline-end:-20px`, שנכתב לשורות שמיושרות לימין: שם
+   הריפוד מתפשט שמאלה אל תוך הכרטיס ואינו מצר את הטקסט. כאן
+   הערך יושב בקצה **השמאלי** של שורת `space-between`, ולכן אותו
+   מרווח דוחף אותו 20 פיקסלים מעבר לריפוד והתגית נחתכת בקצה
+   הכרטיס. הריפוד מתפשט לכיוון הרווח שבאמצע השורה, שהוא ריק
+   ממילא. */
+.card-main.wizc.ivc .wizto .lit{margin-inline:0}
+.card-main.wizc.ivc .ph.empty{display:grid;place-items:center;
+  color:var(--sun-on-leaf);font-size:23px;line-height:1;font-weight:400}
 /* ‏**‏`clip-path` ולא `border-radius` עם `overflow`** (`FIX-create-v2.md`
    §8.1). ה-svg מצויר בגודל קבוע והעיגול מתכווץ לפי גובה המסך, ועיגול
    של קופסה אינו חותך את הציור שבתוך svg — זו הפינה שבצבצה. */
@@ -2784,6 +2812,138 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   .device.gtop .wizbar{margin:6px 0 7px}
 }
 .screen.wiz .eyebrow+.stack,.screen.wiz .stack+.stack{margin-top:clamp(6px,1.2vh,12px)}
+/* ── הזמנת קרוב · הפלואו (`FIX-invite-v1.md`) ─────────────────────
+   **הזמנת קרוב היא משימה ולא מקום**, ולכן היא לובשת את הכרום של
+   אשף הנטיעה בדיוק: אותו `#wizhead` (שורה עליונה, סרגל שלבים
+   וכרטיס שמתמלא), אותו `.screen.wiz` לגיליון הלבן, ואין סרגל
+   טאבים באף שלב. **‏§2 אוסר לבנות כרום חדש**, ולכן אין כאן ולו
+   כלל אחד על הראש, על הסרגל או על הכרטיס — מה שיש כאן הוא מה
+   שבתוך הגיליון בלבד, וכרטיס רביעי (`.ivc`) שנבדל מהשלושה רק
+   בכך שאין בו מספרים.
+
+   **והמחלקות אינן `.nw*` שבקובץ העיצוב**, כי אלה השמות של
+   ‏`neta-242` ולא של המוצר: אצלנו אותו רכיב בדיוק נקרא `.tabg.wizg`,
+   ‏`.wizbar`, ‏`.card-main.wizc` ו-`.screen.wiz`, ושכפול שלהם בשם
+   שני היה בדיוק "כרום חדש" שהמסמך אוסר. */
+/* ‏**המסך הוא עמודת flex שתופסת את גובה הבמה**, כדי שהכפתור
+   התחתון יהיה מקובע מחוץ לאזור הגלילה (§8). זה אותו זוג בדיוק
+   שכבר יושב על שלושת מסכי המשנה של הפרופיל, ומאותה סיבה. */
+[data-name="הזמנת קרוב"].screen.on{display:flex;flex-direction:column;
+  flex:1 1 auto;min-height:0}
+.ivz .ivbody{flex:1;min-height:0;overflow-y:auto;overflow-x:clip;
+  padding-inline:2px;margin-inline:-2px}
+.ivz .ivcta{flex:none;background:var(--s1);
+  padding:clamp(10px,2vh,14px) 0 calc(4px + env(safe-area-inset-bottom))}
+.ivz .ivcta .btn{width:100%}
+/* ‏**רשימת הקרובים: שורה עם פרצוף 44, שם, מה הוא עושה היום, ותיבת
+   סימון.** ‏44 ולא 40, כי `.tabrow` הוא רכיב אחד בכל הגיליונות
+   הלבנים של המוצר ושינוי כאן לבדו הוא בדיוק הקפיצה בין מסכים
+   שהסבב בא לסגור. */
+.ivlist{display:flex;flex-direction:column}
+.ivr{display:flex;align-items:center;gap:11px;width:100%;background:none;
+  border:0;border-bottom:1px solid var(--s2);font-family:inherit;
+  padding:clamp(7px,1.5vh,11px) 0;cursor:pointer;text-align:start}
+.ivr .f{width:44px;height:44px;border-radius:50%;flex:none;overflow:hidden;
+  background:var(--s2);display:block}
+.ivr .f svg,.ivr .f img{display:block;width:100%;height:100%;object-fit:cover;
+  clip-path:circle(50%)}
+.ivr .tx{flex:1;min-width:0}
+.ivr .t{display:block;font-size:15.5px;font-weight:700;color:var(--tx);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ivr .s{display:block;font-size:12.5px;color:var(--tx-3);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ‏**תיבת סימון ולא עיגול**, כמו בקובץ העיצוב; היא נצבעת ירוק
+   בבחירה, וזו הצורה שכבר יושבת על `.relbox` ברשימת ההזמנה. */
+.ivr .bx{width:26px;height:26px;border-radius:9px;flex:none;
+  border:1.5px solid var(--line-2);display:grid;place-items:center;
+  color:transparent;font-size:14px;line-height:1}
+.ivr.on .bx{background:var(--leaf);border-color:var(--leaf);color:var(--on-leaf)}
+/* ‏**ושורה מקווקוות שנבחרה חייבת להיראות שנבחרה** — אותה הכרעה
+   ואותו כלל של `#c-kidpick .list-add.on` באשף הנטיעה. */
+.ivz .list-add.on{border-style:solid;border-color:var(--leaf);
+  background:var(--leaf-bg)}
+/* ‏**הכותרת של השלב אינה ילדה ישירה של `.screen.wiz`** — היא בתוך
+   הפאנל שבתוך אזור הגלילה — ולכן `.screen.wiz>h2` אינו מגיע אליה,
+   והיא קיבלה את ברירת המחדל של `h2` בכל הקובץ. אותן מידות בדיוק. */
+.ivz .ivbody>div>h2{margin:0 0 clamp(6px,1.4vh,10px);
+  font-size:clamp(17px,2.6vh,20px);font-weight:700;color:var(--tx)}
+/* ‏**ארבע עמודות ולא שלוש**, כמו ב-`[data-name="הקמה"]` ומאותה
+   מדידה: שמונה תאים בשלוש עמודות הם שלוש שורות, והשלישית דוחפת
+   את שדה השם ואת "להמשיך" מתחת לקיפול ב-360x640. */
+.ivz .kgrid{grid-template-columns:repeat(4,1fr);margin-top:0}
+.ivz .kgrid .f{width:clamp(36px,11.5vw,44px);height:clamp(36px,11.5vw,44px);
+  border-radius:13px}
+.ivz .kgrid button{padding:clamp(6px,1.3vh,9px) 4px clamp(5px,1.1vh,7px);gap:5px}
+/* ‏**שדה השם ברוחב מלא מתחת לרשת הקרבה** (§5). */
+.ivz .ivname{width:100%;margin-top:clamp(7px,1.5vh,10px)}
+/* ‏**תיבת המסר.** ערוגה קרם לטקסט שהכנו, ושדה אמיתי ל"לכתוב
+   בעצמי" — אותו גובה בדיוק, אחרת המסך קופץ במעבר בין השבבים. */
+.ivmsg{margin-top:clamp(9px,1.9vh,16px);width:100%;box-sizing:border-box;
+  min-height:clamp(84px,15vh,118px);background:var(--leaf-bg);
+  border:1px solid var(--leaf-line);border-radius:16px;
+  padding:clamp(11px,2vh,15px) 14px;font-family:inherit;font-size:14.5px;
+  line-height:1.7;color:var(--tx);text-align:start;display:block}
+textarea.ivmsg{resize:none;color:var(--tx)}
+.ivmsg.none{color:var(--tx-3);background:var(--s2);border-color:var(--line)}
+/* שלושת השבבים, בשורה אחת. */
+.ivalt{display:flex;gap:7px;margin-top:clamp(8px,1.6vh,12px)}
+.ivalt button{flex:1;min-width:0;background:var(--s1);border:1px solid var(--line-2);
+  border-radius:99px;font-family:inherit;font-size:12.5px;color:var(--tx-2);
+  padding:clamp(7px,1.4vh,10px) 4px;cursor:pointer;white-space:nowrap}
+.ivalt button.on{border-color:var(--leaf);color:var(--leaf);font-weight:700;
+  background:var(--leaf-bg)}
+/* ‏**מסך הקישור.** התיבה מקווקוות ובכיוון LTR, כי כתובת נקראת
+   משמאל לימין גם במסמך RTL — אותה הכרעה של משבצות הקוד ושל שורת
+   הכתובת בגיליון ההזמנה. */
+.ivurl{margin-top:clamp(9px,1.9vh,16px);border:1.5px dashed var(--line-2);
+  border-radius:14px;padding:clamp(11px,2vh,15px) 14px;font-size:13.5px;
+  color:var(--tx-2);direction:ltr;unicode-bidi:isolate;text-align:start;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ivshare{display:flex;gap:8px;margin-top:clamp(8px,1.6vh,12px)}
+.ivshare button{flex:1;min-width:0;background:var(--s1);border:1px solid var(--line);
+  border-radius:16px;font-family:inherit;padding:clamp(9px,1.8vh,13px) 4px;
+  cursor:pointer;display:grid;gap:5px;place-items:center;color:var(--tx)}
+.ivshare button svg{width:20px;height:20px;color:var(--leaf)}
+.ivshare button span{font-size:12.5px;font-weight:700}
+.ivnote{margin-top:clamp(7px,1.4vh,11px);font-size:11.5px;color:var(--tx-3);
+  text-align:center}
+/* ‏**מסך הסיום: פרצוף 96 עם וי ירוק בפינה.** הראש הירוק מצטמצם
+   לסרגל בלבד (§3), ולכן הגיליון הוא כל המסך ואין בו כרטיס. */
+.ivdone{display:flex;flex-direction:column;align-items:center;text-align:center;
+  justify-content:center;min-height:100%;box-sizing:border-box;padding:18px 4px}
+.ivdone .fw{position:relative;width:96px;height:96px;flex:none}
+.ivdone .fw>span{display:block;width:100%;height:100%;border-radius:50%;
+  overflow:hidden;background:var(--s2)}
+.ivdone .fw>span svg,.ivdone .fw>span img{display:block;width:100%;height:100%;
+  object-fit:cover;clip-path:circle(50%)}
+.ivdone .chk{position:absolute;bottom:0;left:0;width:34px;height:34px;
+  border-radius:50%;background:var(--leaf);color:var(--on-leaf);display:grid;
+  place-items:center;font-size:17px;line-height:1;border:2px solid var(--s1)}
+.ivdone h2{margin:clamp(18px,3vh,26px) 0 0;font-size:clamp(20px,3.2vh,24px);
+  font-weight:800;color:var(--tx)}
+.ivdone p{margin:9px 0 0;font-size:13.5px;line-height:1.65;color:var(--tx-2);
+  max-width:30ch}
+/* ‏**עיגול חול עם האות הראשונה, למי שעוד אינו באפליקציה** (§9):
+   פרצוף גנרי של אדם אחר הוא המצאה, ואות היא מה שבקובץ העיצוב. */
+.ivini{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;
+  background:var(--sun-bg);color:var(--sun-2);font-weight:800}
+.ivdone .ivini{font-size:38px}
+.card-main.wizc.ivc .ph.ini{background:none}
+.card-main.wizc .ph .ivini{background:var(--leaf-tile);color:var(--sun-on-leaf);
+  font-size:22px}
+/* ‏**ומתחת ל-700 שכבה נוספת, ולא `clamp` תלול יותר** — אותה הכרעה
+   בדיוק של אשף הנטיעה, ומאותו נימוק: `clamp` על `vh` הוא ליניארי,
+   ולכן מקדם שמספיק ב-640 מכווץ גם מסך של 760 שאין לו בעיה.
+   מה שחסר ב-640 הוא 68 פיקסלים בשלב 1, והם בדיוק מה שחמש השורות
+   והמרווחים שביניהן נותנים שם. */
+@media (max-height:700px){
+  .ivz .ivbody>div>h2{margin-bottom:5px}
+  .ivz .ivr{padding-block:5px}
+  .ivz .ivr .f{width:40px;height:40px}
+  .ivz .list-add{margin:8px 0 6px;padding:9px 12px}
+  .ivz .list-add .adp{width:28px;height:28px;font-size:17px}
+  .ivz .ivcta{padding-top:9px}
+}
 .wel{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 4px 0}
 /* סימן המותג במסך הפתיחה. 800 ו-letter-spacing שלילי כדי ששלוש
    האותיות ייקראו כגוש אחד ולא כשלוש; הנבט יושב מעל האות האחרונה
@@ -4456,7 +4616,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '9db808e';
+window.NETA_BUILD = 'c756e10';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -4614,6 +4774,19 @@ window.NETA_CONFIG = {
   <g id="ic-share" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 3.4 V14.2"/><path d="M8.4 7 L12 3.4 L15.6 7"/>
     <path d="M5.6 11.4 H4.4 V20.6 H19.6 V11.4 H18.4"/>
+  </g>
+  <!-- ‏**שני אייקונים לשלושת כפתורי השיתוף של הזמנת קרוב**
+       (`FIX-invite-v1.md` §5.4). בקובץ העיצוב שלושתם תווי יוניקוד
+       (✉ ☎ ☐), וזה בדיוק מה שהסבב הזה הוריד מהמוצר: תו נראה אחרת
+       בכל מערכת הפעלה. ‏`ic-letter` כבר קיים ונושא את "בהודעה",
+       ושני אלה נוספו לשניים האחרים — קוויים, 1.8, ‏`currentColor`,
+       כמו כל השאר. -->
+  <g id="ic-chat" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.6 11.6 A8.6 8.6 0 0 1 8.1 19.3 L3.4 20.6 L4.7 15.9 A8.6 8.6 0 1 1 20.6 11.6 Z"/>
+  </g>
+  <g id="ic-copy" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="8.6" y="8.6" width="12" height="12" rx="3"/>
+    <path d="M15.4 5.4 H6.4 A3 3 0 0 0 3.4 8.4 V17.4"/>
   </g>
   <g id="ic-key" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="8.6" cy="8.8" r="4.2"/><path d="M11.6 12 L19.4 19.8"/><path d="M14.8 18.2 L16.8 16.2"/>
@@ -4899,6 +5072,26 @@ window.NETA_CONFIG = {
         <div class="tx"><p class="n" id="jn-me">·</p><p class="s" id="jn-terms">·</p></div>
         <div class="fv"><b id="jn-fv">·</b><span id="jn-fvw">·</span></div>
       </div>
+    </div>
+  </div>
+
+  <!-- ‏**הכרטיס הרביעי: הזמנת קרוב** (`FIX-invite-v1.md` §3).
+       אשף רביעי באותו ראש ולא ראש רביעי, בדיוק כמו "להוסיף
+       קרוב" ומסלול המוזמנת — מה שמתחלף הוא הכרטיס בלבד.
+       **ואין בו מספרים**: השאלה כאן היא מי, ולא כמה. הרגל
+       היא `.wizto`, אותה שורה בדיוק שנושאת את "המתנה תגיע ל"
+       באשף הנטיעה, ועליה נוחתת ההדלקה בשלב המסר. -->
+  <div class="card-main wizc ivc" id="iv-card" style="display:none">
+    <div class="utop">
+      <span class="ph" id="iv-av" aria-hidden="true"></span>
+      <div class="tx">
+        <p class="eb" id="iv-eb">·</p>
+        <p class="tbhero" id="iv-nm"><span></span></p>
+        <p class="usub" id="iv-rel"><span></span></p>
+      </div>
+    </div>
+    <div class="wizto" id="iv-foot">
+      <p class="l">המסר שיקבלו</p><p class="v" id="iv-msgk"><span></span></p>
     </div>
   </div>
 </div>
@@ -7081,6 +7274,77 @@ window.NETA_CONFIG = {
     </div>
     <div class="cta2"><button class="btn" id="sec-cta" onclick="openSetPassword()">·</button></div>
   </div>
+</section>
+
+
+<!-- ── הזמנת קרוב ──────────────────────────────────────────────────
+     ‏`FIX-invite-v1.md`. **זו משימה ולא מקום**: מסך מלא מעל
+     האפליקציה, בלי סרגל טאבים באף שלב כולל הסיום, עם אותה שורה
+     עליונה, אותו סרגל שלבים ואותו כרטיס שמתמלא של אשף הנטיעה.
+     עד כה היא נחתה על "הקרובים שלי" במצב הזמנה — כרטיסייה ירוקה,
+     גיליון לבן וסרגל טאבים למטה — כלומר נראתה כמו עוד טאב, ומי
+     שלחץ לא ידע שהוא באמצע משימה.
+
+     **מסך אחד עם חמישה פאנלים ולא חמישה מסכים**, בדיוק כמו
+     ‏`ap-0..ap-5` ו-`cp-0..cp-2`: כל `go(N)` בקובץ נשען על המספר,
+     ומסך באמצע היה מזיז את `NOCHROME` ואת כל השאר. **והוא נוסף
+     בסוף ה-stage** וההפניה אליו לפי שם (`INV_SCREEN`).
+
+     **ובכל שלוש נקודות הכניסה הילד ידוע ונעול** (§1): מסך הרגע,
+     "להוסיף קרוב" שבטאב הקרובים, ו"להזמין קרובים לנטוע איתך"
+     שבמסך הסיום של יצירת נטיעה. -->
+<section class="screen ivz" data-name="הזמנת קרוב">
+  <div class="ivbody">
+    <!-- שלב 1 · מי -->
+    <div id="iv-who">
+      <h2>מי מהקרובים שלך?</h2>
+      <div class="ivlist" id="iv-list"></div>
+      <div id="iv-addbox"></div>
+    </div>
+    <!-- שלב 2 של המסלול החדש · הקרבה והשם -->
+    <div id="iv-new" style="display:none">
+      <h2>מה הקרבה שלכם?</h2>
+      <div class="kgrid" id="iv-kin"></div>
+      <input type="text" class="ivname" id="iv-nmin" placeholder="השם"
+             oninput="ivNameIn()" autocomplete="off">
+    </div>
+    <!-- שלב המסר -->
+    <div id="iv-msg" style="display:none">
+      <h2 id="iv-msgq">·</h2>
+      <div class="ivmsg" id="iv-msgro"></div>
+      <textarea class="ivmsg ivta" id="iv-msgin" style="display:none"
+                maxlength="240" oninput="ivOwnIn()"></textarea>
+      <div class="ivalt" id="iv-alt">
+        <button type="button" class="on" onclick="ivMsgMode(0)">המסר שהכנו</button>
+        <button type="button" onclick="ivMsgMode(1)">לכתוב בעצמי</button>
+        <button type="button" onclick="ivMsgMode(2)">בלי מסר</button>
+      </div>
+    </div>
+    <!-- מסך הקישור -->
+    <div id="iv-link" style="display:none">
+      <h2 id="iv-linkq">·</h2>
+      <div class="ivurl" id="iv-url">·</div>
+      <div class="ivshare">
+        <button type="button" onclick="ivShare('sms')">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-letter"/></svg>
+          <span>בהודעה</span></button>
+        <button type="button" onclick="ivShare('wa')">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-chat"/></svg>
+          <span>בוואטסאפ</span></button>
+        <button type="button" onclick="ivShare('copy')">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-copy"/></svg>
+          <span>להעתיק</span></button>
+      </div>
+      <p class="ivnote">הקישור פתוח שבועיים</p>
+    </div>
+    <!-- מסך הסיום -->
+    <div class="ivdone" id="iv-done" style="display:none">
+      <span class="fw"><span id="iv-doneav"></span><i class="chk">✓</i></span>
+      <h2 id="iv-doneh">·</h2>
+      <p id="iv-dones">·</p>
+    </div>
+  </div>
+  <div class="ivcta"><button class="btn" id="iv-cta" onclick="ivNext()">·</button></div>
 </section>
 
 </div><!-- /stage -->
@@ -9521,8 +9785,8 @@ function flowBar(cur,label){
    (שורה עליונה וסרגל שלבים), ולכן הכפתורים שבו אינם יכולים
    לקרוא לפונקציה של אחד מהם. ‏`apLive` הוא המקור היחיד
    שמכריע באיזה אשף אנחנו. */
-function flowBack(){ if(apLive)apBack(); else if(joinLive)joinBack(); else wizBack(); }
-function flowCancel(){ if(apLive)apExit(); else if(joinLive)joinExit(); else cancelCreate(); }
+function flowBack(){ if(ivLive)ivBack(); else if(apLive)apBack(); else if(joinLive)joinBack(); else wizBack(); }
+function flowCancel(){ if(ivLive)ivExit(); else if(apLive)apExit(); else if(joinLive)joinExit(); else cancelCreate(); }
 /* ── מסלול המוזמנת ───────────────────────────────────────────────
    ‏`CHANGES.md` §6 ו-`design/neta-05-join.html`. שלושת המסכים
    שהאשף כבר משתמש בהם (הסכום, התשלום והאישור) משרתים גם הפקדה
@@ -9639,7 +9903,12 @@ function wizSheet(at){
      (§6), והוא חל על אותם שלושה מסכים של האשף — אלא שהוא נדלק
      דווקא כש-`creating` כבוי. */
   const jnOn=joinLive&&JOIN_SCREENS.indexOf(n)>=0;
-  const on=(creating&&WIZ_SCREENS.indexOf(n)>=0)||(apOn&&!apEnd)||jnOn;
+  /* ‏**והרביעי הוא הזמנת קרוב** (`FIX-invite-v1.md`). הוא מסך אחד
+     עם חמישה פאנלים, ולכן `ivLive` לבדו מכריע; **ומסך הסיום שלו
+     אינו מוריד את הראש** אלא מצמצם אותו לסרגל, כי שם עדיין כתוב
+     "להזמין קרוב" — זה ההבדל מ-`apDone`. */
+  const ivOn=ivLive&&n===INV_SCREEN();
+  const on=(creating&&WIZ_SCREENS.indexOf(n)>=0)||(apOn&&!apEnd)||jnOn||ivOn;
   /* ‏**המסך נבחר לפי המספר ולא לפי `.screen.on`.** ‏`go()` קוראת לכאן
      לפני שהיא מסמנת את הנכנס, ולכן `.on` הוא עדיין מי שיוצא: הקלאס
      היה נוחת על המסך הקודם ומי שנכנס נשאר בלי גיליון. */
@@ -9651,10 +9920,12 @@ function wizSheet(at){
   if(box)box.style.display=on?'':'none';
   /* כרטיס אחד מתוך השלושה, לפי האשף שעל המסך. */
   const wc=document.getElementById('wiz-card'),ac=document.getElementById('ap-card'),
-        jc=document.getElementById('jn-card');
-  if(wc)wc.style.display=(apOn||jnOn)?'none':'';
+        jc=document.getElementById('jn-card'),ic=document.getElementById('iv-card');
+  const ivEnd=ivOn&&ivS&&ivS.step==='done';
+  if(wc)wc.style.display=(apOn||jnOn||ivOn)?'none':'';
   if(ac)ac.style.display=apOn?'':'none';
   if(jc)jc.style.display=jnOn?'':'none';
+  if(ic)ic.style.display=(ivOn&&!ivEnd)?'':'none';
 }
 /* ‏1 הקמה (שלושת הפאנלים), 2 הסכום, 3 התשלום, 24 הסיכום. מסך
    ההשקעה משרת גם הפקדה לרגע קיים, ולכן הקלאס תלוי ב-`creating`
@@ -12754,9 +13025,13 @@ function momYears(p){
 }
 /* ההזמנה משורת "רק אתה נוטע כאן". אותה פעולה בדיוק של הכפתור
    שבתחתית, ולכן אותה פונקציה ולא נתיב שני. */
+/* ‏**שלוש נקודות הכניסה של `FIX-invite-v1.md` §1, וכולן נכנסות
+   לאותו פלואו.** מסך הרגע, "להוסיף קרוב" שבטאב הקרובים, ומסך
+   הסיום של יצירת נטיעה. בשלושתן הילד ידוע מראש ונעול, ולכן מה
+   שהפונקציה מוסרת הוא מפתח רגע — ולא "פתח את הרשימה וחפש שם". */
 function inviteFromMoment(){
   const p=plantAt(cur); if(!p)return;
-  if(p.shared)inviteToPlanting(); else openToCircle();
+  openInviteFlow(cur,null);
 }
 /* ── גיליון התחזית ───────────────────────────────────────────────
    **זה מה שהחליף את הגרף שישב במסך עצמו.** מה שהפיל אותו משם הוא
@@ -13589,8 +13864,26 @@ function listAddHTML(onclick,title,sub,id){
     '<span class="gr"><span class="t">'+attrText(title)+'</span>'+
     '<span class="s">'+attrText(sub)+'</span></span></button>';
 }
+/* ‏**"להוסיף קרוב" נכנס לפלואו ההזמנה** (`FIX-invite-v1.md` §1),
+   כי מה שהמסך הזה באמת מציע הוא להזמין מישהו לנטוע איתי — ולא
+   לרשום שם בפנקס. **והילד נעול שם כמו בשתי הכניסות האחרות:**
+   הרגע הקרוב ביותר מבין הרגעים שאני פתחתי, כי רק להם מותר לי
+   להזמין (`invitations_send` דורשת `app.is_initiator`).
+   **ומי שאין לו רגע כזה נשאר באשף ההוספה**, שהוא הדרך היחידה
+   להוסיף אדם לפנקס בלי להזמין אותו לשום מקום. */
+function ivMyRows(){
+  return ((lastModel&&lastModel.plantings)||[]).filter(function(p){
+    return p&&!p.joined});
+}
+function ivFromRelatives(){
+  const own=ivMyRows(),near=nearestOf(own);
+  const key=(near&&near.p&&near.p.key)||(own[0]&&own[0].key)||'';
+  if(key){openInviteFlow(key,15);return}
+  openAddPerson('with');
+}
 function relAddRow(kind,title,sub){
-  return listAddHTML('openAddPerson(&quot;'+kind+'&quot;)',title,sub);
+  return listAddHTML(kind==='with'?'ivFromRelatives()'
+                                  :('openAddPerson(&quot;'+kind+'&quot;)'),title,sub);
 }
 function buildRelatives(){
   const box=document.getElementById('rel-list');
@@ -14361,7 +14654,7 @@ function inviteFromList(){pickRelativeToInvite(7,cur)}
 
    עכשיו הכפתור פותח את האנשים. הקישור הפתוח וההצצה יושבים שם, בתחתית,
    כשתי אפשרויות ולא כשער. */
-function inviteToPlanting(){pickRelativeToInvite(5,cur)}
+function inviteToPlanting(){openInviteFlow(cur,null)}
 /* ההצצה, כשהיא נפתחת מתוך בחירת הנמען. חוזרים לרשימה ולא לנטיעה: מי
    שהציץ באמצע בחירה עדיין באמצע בחירה. */
 function previewInvite(){
@@ -14729,8 +15022,12 @@ function kinGridHTML(keys,sel,fn,photo,o){
   const wide=(o.cols===4)
     ? ((4-((before+1)%4))%4)===1
     : (before%3===0);
+  /* ‏**‏`noOther` הוא הזמנת קרוב בלבד** (`FIX-invite-v1.md` §5):
+     שם הקרבה היא מה שקובע את המין לכל שאר הפלואו, ו"אחר" הוא
+     בדיוק הערך שאין לו מין — כלומר תא שמפיל את §7. שמונה תאים
+     בארבע עמודות הם שתי שורות מלאות, בלי חור שצריך למלא. */
   return shot+keys.map(function(k){return cell(k,KIN[k].chip,kinAv(k,o.other))}).join('')+
-    cell('other',o.otherLabel||'אחר',o.other||'av-someone',wide);
+    (o.noOther?'':cell('other',o.otherLabel||'אחר',o.other||'av-someone',wide));
 }
 let apKindMode='with',apStep=0,apRel='mother',apAv='av-granny',
     apKidAv='av-kid1',apKidSexV='m',apKidRel='son',apPhoto=null,apPlants=[];
@@ -19792,7 +20089,7 @@ function inviteFromFuture(){
   const own=fuOwnRows(lastFuSel);
   const near=nearestOf(own);
   const key=(near&&near.p.key)||(own[0]&&own[0].key)||'';
-  if(key){cur=key;pickRelativeToInvite(0,key);return}
+  if(key){openInviteFlow(key,0);return}
   openPeople();
 }
 
@@ -20000,7 +20297,467 @@ function inviteFor(key){
    (rel-warn), שם היא נקראת לפני הלחיצה במקום להיות מסך שצריך לסלק.
    והפתיחה בפועל קורית ברגע השליחה הראשונה, כלומר רק אם באמת הוזמן
    מישהו. מי שנכנס והתחרט לא פתח דבר. */
-function openToCircle(){pickRelativeToInvite(5,cur)}
+/* ══ הזמנת קרוב · הפלואו ═══════════════════════════════════════════
+   ‏`FIX-invite-v1.md`, ועיצוב `design/neta-242-invite-full.html`.
+
+   **הזמנת קרוב היא משימה ולא מקום.** היא נחתה עד כה על "הקרובים
+   שלי" במצב הזמנה — כרטיסייה ירוקה, גיליון לבן וסרגל טאבים למטה —
+   ולכן מי שלחץ לא הרגיש שעבר לשום מקום ולא ידע שהוא באמצע משימה.
+   מהיום היא נראית בדיוק כמו יצירת נטיעה: מסך מלא, שורה עליונה עם
+   חץ וביטול, פס התקדמות, כרטיס ירוק שמתמלא, כפתור מקובע בתחתית,
+   ו**אין סרגל טאבים באף שלב, כולל מסך הסיום**.
+
+   **אשף רביעי באותו ראש ולא ראש רביעי** (`#wizhead`), בדיוק כמו
+   "להוסיף קרוב" ומסלול המוזמנת: מה שמתחלף הוא הכרטיס בלבד, ולכן
+   ‏`flowBack` ו-`flowCancel` מפצלות לפי `ivLive`.
+
+   **ומסך אחד עם חמישה פאנלים ולא חמישה מסכים**, כי כל `go(N)`
+   בקובץ נשען על המספר. */
+const INV_SCREEN=function(){
+  return screens.findIndex(function(x){return x.dataset.name==='הזמנת קרוב'});
+};
+(function(){const n=INV_SCREEN();if(n>=0&&NOCHROME.indexOf(n)<0)NOCHROME.push(n)})();
+let ivLive=false;
+let ivS=null;
+/* ‏**רשת הקרבה היא `KIN_WITH` ולא שמונה המילים שבמסמך, ונאמר.**
+   ‏§5 נוקב ב"סבא, סבתא, דוד, דודה, אח, אחות, חבר קרוב, חברה
+   קרובה", כלומר אותם שמונה אנשים בדיוק **מהצד של הילד**; האפליקציה
+   שואלת אותם מהצד שלי ("מי הוא עבורך?") מאז 0068, בנימוק ש"זו
+   העובדה היחידה שהמשתמש באמת יודע".
+   **ומה שמכריע אינו טעם אלא מה שנשמר:** ‏`relatives.relation`
+   מחזיק מפתח מ-`KIN`, וממנו נגזרים המין (§7), הפרצוף, "אמא שלי"
+   ברשימת הקרובים ו"נטע/נטעה" בשורה שלה. מילה חופשית הייתה מאבדת
+   את ארבעתם בשקט — כלומר קרוב שנוצר כאן היה נקרא שבור בכל מסך
+   אחר. **המחיר שנאמר:** הכיתוב על האריחים שונה מזה שבקובץ העיצוב. */
+const IV_KIN=KIN_WITH;
+function ivMk(key){
+  const p=plantAt(key)||{};
+  return {key:key,kid:kidOf(p)||p.kid||'',kidSex:(p.sex||''),
+          who:null,i:-1,nm:'',kin:null,msg:0,txt:'',url:'',sent:false,
+          step:'who',busy:false,back:null};
+}
+/* ‏**בכל שלוש נקודות הכניסה הילד ידוע ונעול** (§1), ולכן הפלואו
+   מקבל מפתח רגע ולא מחפש אותו. מי שאין לו רגע שהוא פתח אינו יכול
+   להזמין בכלל: `invitations_send` דורשת `app.is_initiator`. */
+function openInviteFlow(key,back){
+  if(!key||!plantAt(key)){openPeople();return}
+  ivS=ivMk(key);
+  ivS.back=(back==null?null:back);
+  cur=key;
+  ivLive=true;apLive=false;joinLive=false;creating=false;
+  go(INV_SCREEN());
+  ivShow();
+}
+/* ── מה המסלול, וכמה שלבים יש בו ────────────────────────────────
+   שני שלבים לקרוב קיים (מי, מסר) ושלושה למישהו חדש (מי, קרבה ושם,
+   מסר). מסך הקישור ומסך הסיום אינם משבצות — הם אחרי שהמשימה
+   הושלמה (§6). */
+function ivIsNew(){return !!ivS&&ivS.who==='new'}
+function ivSteps(){return ivIsNew()?['who','new','msg']:['who','msg']}
+/* ‏**מה שמבדיל בין "לשלוח" ל"להכין קישור" אינו המסלול אלא אם יש
+   לאן לשלוח.** ‏§5 מנמק את הקישור ב"אין לאן לשלוח", וזה נכון גם
+   לקרוב שכבר בפנקס ואין לו כתובת: `sendInvite` היה עונה לו
+   "חסרים פרטי קשר" ומשאיר אותו על המסך בלי שום המשך. */
+function ivCanSend(){
+  if(!ivS||ivIsNew()||ivS.i<0)return false;
+  const r=relatives[ivS.i];
+  return !!(r&&r.contact);
+}
+function ivRel(){
+  if(!ivS)return null;
+  if(ivIsNew())return ivS.kin;
+  const r=ivS.i>=0?relatives[ivS.i]:null;
+  return r?r.rel:null;
+}
+function ivName(){
+  if(!ivS)return '';
+  if(ivIsNew())return String(ivS.nm||'').trim();
+  const r=ivS.i>=0?relatives[ivS.i]:null;
+  return (r&&r.name)||'';
+}
+function ivAvHTML(){
+  if(!ivS)return '';
+  if(ivIsNew()){
+    const nm=ivName();
+    return '<span class="ivini">'+attrText(nm?nm.charAt(0):'?')+'</span>';
+  }
+  const r=ivS.i>=0?relatives[ivS.i]:null;
+  return r?faceHTML(r.av,kinAv(r.rel)):'';
+}
+/* ‏**המין מגיע מהרשומה או מהקרבה, ואף פעם לא מלוכסן** (§7).
+   בקרבה חופשית אין `g` — וזה מצב אמיתי, כי קרוב שנוסף לפני הסבב
+   יכול לשאת טקסט חופשי — ואז נוסח שלישי שאינו נוקב במין כלל,
+   בדיוק כמו `relVerb` שמחזירה "נטיעה" במקום פועל. */
+function ivSex(){
+  const k=ivRel();
+  return k?kinSex(k):null;
+}
+function ivG(m,f,n){
+  const g=ivSex();
+  return g==='f'?f:(g==='m'?m:(n==null?m:n));
+}
+/* ── הטקסטים ────────────────────────────────────────────────── */
+function ivReady(){
+  const nm=ivName(),kid=ivS.kid||'';
+  /* ‏**"לעתיד שלו" נגזר מהילד ואינו קבוע.** המסמך כותב "שלו" כי
+     הילד בדוגמה שלו הוא אלון; הקניין הוא של הילד ולא של המוזמן,
+     ו-`possOf` הוא המקום היחיד שמכריע אותו בכל המוצר. בלי מגדר
+     ידוע אין קניין, כמו בכל שאר המסכים. */
+  return 'היי '+nm+', פתחתי ל'+kid+' מקום שבו נוטעים לעתיד'+
+    possOf(ivS.kidSex)+', '+
+    ivG('ואשמח שתצטרף אלי.','ואשמח שתצטרפי אלי.','ואשמח שנעשה את זה יחד.');
+}
+function ivMsgText(){
+  if(!ivS)return '';
+  if(ivS.msg===2)return '';
+  if(ivS.msg===1)return String(ivS.txt||'').trim();
+  return ivReady();
+}
+function ivMsgLabel(){
+  return !ivS?'':(ivS.msg===2?'בלי מסר':(ivS.msg===1?'המסר שלך':'המסר שהכנו'));
+}
+/* ── הכרטיס הירוק (§3) ──────────────────────────────────────────
+   ההדלקה עוברת מהשם אל שורת המסר שברגל, ובשני מסכי הסיום אין
+   הדלקה בכלל. ‏`wizSet` הוא אותו כותב של אשף הנטיעה: לתוך ה-span
+   הפנימי, כי המסגרת עוטפת את הערך ולא את רוחב השורה. */
+function ivCard(){
+  const box=document.getElementById('iv-card');
+  if(!box||box.style.display==='none')return;
+  const nm=ivName();
+  txt('iv-eb','מזמינים לנטוע ל'+(ivS.kid||''));
+  /* ‏**השאלה שבשבב היא של השלב הנוכחי ולא של הפלואו.** לפני
+     הבחירה זה "את מי להזמין?", ואחרי "להוסיף מישהו שאינו ברשימה"
+     השאלה כבר אינה מי אלא מה שמו — וזה גם מה שקובץ העיצוב מציג
+     שם. */
+  const ask=(ivIsNew()&&ivS.step==='new')
+    ? (ivS.kin?('איך קוראים ל'+KIN[ivS.kin].chip+'?'):'מה השם?')
+    : 'את מי להזמין?';
+  wizSet('iv-nm',nm||ask,!nm);
+  wizSet('iv-rel',ivRel()?kinMe(ivRel()):'',false);
+  wizSet('iv-msgk',ivMsgLabel(),false);
+  const av=document.getElementById('iv-av');
+  if(av){
+    const face=ivAvHTML();
+    /* ‏**‏`--leaf-tile` הוא `rgba(255,255,255,.06)`**, כלומר גוון של
+       הראש הירוק — ומתחתיו `.ph` צובע `--face-fill`, שהוא לבן
+       בערכה הבהירה. בלי לכבות אותו עיגול האות יצא לבן במקום
+       ירוק בהיר. זו אותה מלכודת של "ערוגה בתוך ערוגה", בשכבה
+       חמישית. */
+    av.className='ph'+(face?(ivIsNew()?' ini':''):' empty');
+    av.innerHTML=face||'+';
+  }
+  const key=ivS.step==='msg'?'msg':((ivS.step==='who'||ivS.step==='new')?'nm':'');
+  [['nm','iv-nm'],['msg','iv-msgk']].forEach(function(pair){
+    const e=document.getElementById(pair[1]);
+    if(e)(e.firstElementChild||e).classList.toggle('lit',key===pair[0]);
+  });
+}
+/* ── השורה העליונה והסרגל ───────────────────────────────────────
+   ‏**במסך הסיום אין חץ חזרה, אין "ביטול" ואין שורת משנה** (§2),
+   ובמסך הקישור אין חזרה כי ההזמנה כבר נרשמה בשרת — חזרה משם
+   הייתה מציעה לשלוח אותה פעם שנייה. */
+function ivHead(){
+  const box=document.getElementById('wizhead');
+  if(!box||!ivS)return;
+  const end=ivS.step==='done';
+  box.classList.toggle('ivend',end);
+  box.classList.toggle('ivnb',end||ivS.step==='link');
+  txt('wiz-t','להזמין קרוב');
+  txt('wiz-step',end?'':('לנטוע ל'+(ivS.kid||'')));
+  const seq=ivSteps(),i=seq.indexOf(ivS.step);
+  const bar=document.getElementById('wiz-bar');
+  if(bar&&i>=0)bar.innerHTML=seq.map(function(_,k){
+    return '<i class="'+(k<=i?'on':'')+'"></i>'}).join('');
+  ivCard();
+}
+/* ── הכפתור ─────────────────────────────────────────────────── */
+function ivCta(){
+  const b=document.getElementById('iv-cta');
+  if(!b||!ivS)return;
+  const s=ivS.step;
+  let label='',on=true;
+  if(s==='who'){
+    on=ivS.who!=null;
+    label=on?('להזמין את '+(ivIsNew()?'מישהו חדש':ivName())):'לבחור את מי להזמין';
+  }else if(s==='new'){
+    on=!!(ivS.kin&&String(ivS.nm||'').trim());
+    label='להמשיך';
+  }else if(s==='msg'){
+    label=ivCanSend()?'לשלוח את ההזמנה':'להכין קישור';
+  }else if(s==='link'){
+    label='סיימתי';
+  }else{
+    label='חזרה ל'+(ivS.kid||'');
+  }
+  b.textContent=label;
+  b.classList.toggle('off',!on||!!ivS.busy);
+}
+/* ── הפאנלים ────────────────────────────────────────────────── */
+const IV_PANELS={who:'iv-who','new':'iv-new',msg:'iv-msg',link:'iv-link',done:'iv-done'};
+function ivShow(){
+  if(!ivS)return;
+  Object.keys(IV_PANELS).forEach(function(k){
+    const e=document.getElementById(IV_PANELS[k]);
+    if(e)e.style.display=(k===ivS.step)?'':'none';
+  });
+  if(ivS.step==='who')ivPaintList();
+  if(ivS.step==='new')ivPaintNew();
+  if(ivS.step==='msg')ivPaintMsg();
+  if(ivS.step==='link')ivPaintLink();
+  if(ivS.step==='done')ivPaintDone();
+  wizSheet(INV_SCREEN());
+  ivHead();ivCta();
+  const bd=document.querySelector('.ivz .ivbody');
+  if(bd)bd.scrollTop=0;
+}
+function ivGo(step){if(!ivS)return;ivS.step=step;ivShow()}
+/* ‏**מי מוצג ברשימה: כל הקרובים שעדיין אינם נוטעים לילד הזה**
+   (§4). ‏§10.1 קובע שמי שכבר נוטע פשוט אינו מופיע, ומי שכבר
+   הוזמן לרגע הזה מצטרף אליו: הזמנה שנייה לאותו רגע אינה עושה
+   דבר. */
+function ivCandidates(){
+  const p=plantAt(ivS.key)||{},taken={};
+  ((p.participants)||[]).forEach(function(x){
+    if(x&&x.name)taken[String(x.name).trim()]=1});
+  if(p.by)taken[String(p.by).trim()]=1;
+  const out=[];
+  (relatives||[]).forEach(function(r,i){
+    if(!r||!r.name)return;
+    if(taken[String(r.name).trim()])return;
+    if((r.invitedTo||[]).indexOf(ivS.key)>=0)return;
+    out.push({r:r,i:i});
+  });
+  return out;
+}
+function ivRowSub(r){
+  const kin=kinMe(r.rel),pl=relPlantsLine(r);
+  return pl?(kin+', '+pl):kin;
+}
+function ivPaintList(){
+  const box=document.getElementById('iv-list');
+  const add=document.getElementById('iv-addbox');
+  if(box)box.innerHTML=ivCandidates().map(function(o){
+    const on=(ivS.who!=='new'&&ivS.i===o.i);
+    return '<button type="button" class="ivr'+(on?' on':'')+'" '+
+      'onclick="ivPick('+o.i+')">'+
+      '<span class="f">'+faceHTML(o.r.av,kinAv(o.r.rel))+'</span>'+
+      '<span class="tx"><span class="t">'+attrText(o.r.name)+'</span>'+
+      '<span class="s">'+attrText(ivRowSub(o.r))+'</span></span>'+
+      '<span class="bx" aria-hidden="true">✓</span></button>';
+  }).join('');
+  /* ‏**שורת "מישהו חדש" היא `.list-add`**, אותו כפתור מקווקו
+     ברוחב מלא של `FIX-lists.md` — ולא שורה עם עיגול מקווקו. */
+  if(add){
+    add.innerHTML=listAddHTML('ivPickNew()','להוסיף מישהו שאינו ברשימה',
+                              'סבתא, דוד, חבר קרוב','iv-add');
+    const b=document.getElementById('iv-add');
+    if(b)b.classList.toggle('on',ivIsNew());
+  }
+}
+/* ‏**בחירה יחידה בלבד** (§9): לחיצה על שורה שכבר נבחרה אינה
+   מכבה אותה, כי "לא נבחר" אינו מצב שהמסך הזה צריך. */
+function ivPick(i){
+  if(!ivS)return;
+  ivS.who=i;ivS.i=i;
+  ivPaintList();ivHead();ivCta();
+}
+function ivPickNew(){
+  if(!ivS)return;
+  ivS.who='new';ivS.i=-1;
+  ivPaintList();ivHead();ivCta();
+}
+/* ‏**הקרבה קובעת את המין לכל שאר הפלואו** (§5), ואת הפרצוף איתו. */
+function ivPaintNew(){
+  const g=document.getElementById('iv-kin');
+  if(g)g.innerHTML=kinGridHTML(IV_KIN,ivS.kin,'ivPickKin',null,
+                               {cols:4,noOther:true});
+  const in_=document.getElementById('iv-nmin');
+  if(in_){
+    in_.value=ivS.nm||'';
+    in_.placeholder=ivS.kin?('איך קוראים ל'+KIN[ivS.kin].chip+'?'):'השם';
+  }
+}
+function ivPickKin(el,k){
+  if(!ivS)return;
+  ivS.kin=k;
+  const g=document.getElementById('iv-kin');
+  if(g)[].forEach.call(g.children,function(b,n){
+    b.classList.toggle('on',IV_KIN[n]===k)});
+  const in_=document.getElementById('iv-nmin');
+  if(in_)in_.placeholder='איך קוראים ל'+KIN[k].chip+'?';
+  ivHead();ivCta();
+}
+function ivNameIn(){
+  if(!ivS)return;
+  ivS.nm=(document.getElementById('iv-nmin')||{}).value||'';
+  ivHead();ivCta();
+}
+/* ── שלב המסר ───────────────────────────────────────────────── */
+function ivPaintMsg(){
+  txt('iv-msgq','מה לכתוב ל'+ivName()+'?');
+  const ro=document.getElementById('iv-msgro'),ta=document.getElementById('iv-msgin');
+  const own=ivS.msg===1;
+  if(ro){
+    ro.style.display=own?'none':'';
+    ro.className='ivmsg'+(ivS.msg===2?' none':'');
+    ro.textContent=ivS.msg===2?'בלי מסר אישי, רק ההזמנה עצמה':ivReady();
+  }
+  if(ta){
+    ta.style.display=own?'':'none';
+    ta.placeholder='מה תרצה לכתוב ל'+ivName()+'?';
+    /* ‏**השדה מתחיל ריק ומה שהוקלד בו שורד** (§4, §9): הוא נכתב
+       רק כשהערך שבמסך שונה ממה ששמור, אחרת כתיבה חוזרת מאפסת
+       את מיקום הסמן באמצע הקלדה. */
+    if(ta.value!==(ivS.txt||''))ta.value=ivS.txt||'';
+  }
+  const alt=document.getElementById('iv-alt');
+  if(alt)[].forEach.call(alt.children,function(b,n){b.classList.toggle('on',n===ivS.msg)});
+}
+function ivMsgMode(m){
+  if(!ivS)return;
+  ivS.msg=m;
+  ivPaintMsg();ivHead();
+  if(m===1){const t=document.getElementById('iv-msgin');if(t)t.focus()}
+}
+function ivOwnIn(){
+  if(!ivS)return;
+  ivS.txt=(document.getElementById('iv-msgin')||{}).value||'';
+}
+/* ── מסך הקישור (§5.4) ─────────────────────────────────────── */
+function ivPaintLink(){
+  txt('iv-linkq','הקישור ל'+ivName()+' מוכן');
+  const u=document.getElementById('iv-url');
+  if(u){
+    u.textContent=ivS.url||'הקישור נוצר בחשבון מחובר';
+    u.style.direction=ivS.url?'ltr':'rtl';
+  }
+  const sh=document.querySelector('.ivz .ivshare');
+  if(sh)[].forEach.call(sh.children,function(b){
+    b.disabled=!ivS.url;b.style.opacity=ivS.url?'':'.5'});
+}
+/* המסר שנבחר והקישור בסופו, בדיוק כמו שההודעה תישלח. */
+function ivShareText(){
+  const m=ivMsgText();
+  return (m?(m+'\n'):'')+(ivS.url||'');
+}
+function ivShare(how){
+  if(!ivS||!ivS.url)return;
+  const t=ivShareText();
+  if(how==='copy'){
+    copyText(t).then(function(){toast('הקישור הועתק')},function(){});
+    return;
+  }
+  if(how==='wa'){location.href='https://wa.me/?text='+encodeURIComponent(t);return}
+  location.href='sms:?&body='+encodeURIComponent(t);
+}
+/* ── מסך הסיום ─────────────────────────────────────────────── */
+function ivPaintDone(){
+  const nm=ivName(),kid=ivS.kid||'';
+  htm('iv-doneav',ivAvHTML());
+  if(ivCanSend()&&ivS.sent){
+    txt('iv-doneh','ההזמנה נשלחה ל'+nm);
+    txt('iv-dones',ivG('הוא רואה','היא רואה','ההזמנה פתוחה')+
+      ' עכשיו את הרגעים של '+kid+'. ברגע ש'+
+      ivG('הוא ינטע','היא תנטע','תיכנס נטיעה')+', זה יופיע בפעילות.');
+  }else if(ivCanSend()){
+    /* ‏**"נשלחה" נאמר רק כשבאמת יצא מייל** — אותה הבחנה של מסך
+       הסיום ב"להוסיף קרוב": הכרזה על שליחה שלא קרתה היא ההבטחה
+       הגרועה מכולן. */
+    txt('iv-doneh','ההזמנה ל'+nm+' נרשמה');
+    txt('iv-dones','הקישור האישי ממתין ברשימת הקרובים, ואפשר להעביר אותו '+
+      'בכל דרך. ברגע שהוא ייפתח, זה יופיע בפעילות.');
+  }else{
+    txt('iv-doneh','ההזמנה מחכה ל'+nm);
+    txt('iv-dones','ברגע ש'+
+      ivG('הוא יפתח את הקישור ויצטרף, הוא יופיע',
+          'היא תפתח את הקישור ותצטרף, היא תופיע',
+          'הקישור ייפתח וההצטרפות תושלם, זה יופיע')+
+      ' בקרובים שלי ובפעילות.');
+  }
+}
+/* ── ניווט ──────────────────────────────────────────────────── */
+function ivBack(){
+  if(!ivS)return ivExit();
+  if(ivS.step==='new')return ivGo('who');
+  if(ivS.step==='msg')return ivGo(ivIsNew()?'new':'who');
+  ivExit();
+}
+function ivExit(){
+  const back=ivS?ivS.back:null,key=ivS?ivS.key:'';
+  ivLive=false;ivS=null;
+  const box=document.getElementById('wizhead');
+  if(box)box.classList.remove('ivend','ivnb');
+  if(back!=null){go(back);return}
+  if(key&&plantAt(key)){openDetail(key);return}
+  openPeople();
+}
+function ivNext(){
+  if(!ivS||ivS.busy)return;
+  const b=document.getElementById('iv-cta');
+  if(b&&b.classList.contains('off'))return;
+  const s=ivS.step;
+  if(s==='who')return ivGo(ivIsNew()?'new':'msg');
+  if(s==='new')return ivGo('msg');
+  if(s==='msg')return ivCanSend()?ivSend():ivPrepare();
+  if(s==='link')return ivGo('done');
+  ivExit();
+}
+/* ‏**השליחה היא `sendInvite` ולא נתיב שני.** היא המקום היחיד
+   שרושם הזמנה, פותח את הרגע לקרובים, יוצר קישור אישי ומבקש
+   מהשרת לשלוח מייל — ועותק שני שלה כאן היה נפרד ממנה בשינוי
+   הראשון. */
+function ivSend(){
+  const r=relatives[ivS.i];
+  if(!r)return;
+  r.note=ivMsgText();
+  pickedPlant=ivS.key;
+  ivS.busy=true;ivCta();
+  /* ‏**רשת ביטחון, כי ל-`sendInvite` יש מסלול שגיאה שאינו קורא
+     ל-`done`**: הוא פותח גיליון "ההזמנה לא נרשמה" וחוזר, ובלי זה
+     הכפתור היה נשאר כבוי לנצח על מסך שאין ממנו המשך. */
+  const guard=setTimeout(function(){
+    if(ivS&&ivS.busy){ivS.busy=false;ivCta()}},12000);
+  sendInvite(r,function(rr,keys,sent){
+    clearTimeout(guard);
+    if(!ivS)return;
+    ivS.busy=false;ivS.sent=!!sent;
+    ivGo('done');
+  });
+}
+/* ‏**קישור פתוח ולא הזמנה אישית, וזו הכרעה של המסד.**
+   ‏`invitations.contact` הוא `not null` — הוא מה שמאמת את מי
+   שנכנס — והמסלול הזה אינו שואל כתובת בכלל (§5). ‏0025 כבר קבע
+   בדיוק את המצב הזה: קישור בלי `invitation_id` הוא קישור פתוח,
+   ומי שנכנס דרכו מגיע לתור האישורים שלי בשמו. **כלומר אין כאן
+   הבטחה שאין מאחוריה מנגנון**, ואין צורך במיגרציה או בכתובת
+   מומצאת. */
+function ivPrepare(){
+  const key=ivS.key,note=ivMsgText();
+  ivS.busy=true;ivCta();
+  openForRelatives(key);
+  if(ivIsNew()){
+    const nm=String(ivS.nm||'').trim();
+    const r={name:nm,rel:ivS.kin,av:kinAv(ivS.kin),contact:'',note:note,
+             status:'invited',plant:key,invitedTo:[key]};
+    relatives.push(r);
+    ivS.i=relatives.length-1;
+    if(liveAccount())netaServer.addRelative({name:nm,relation:ivS.kin,avatar:r.av})
+      .then(function(row){if(row&&row.id)r.id=row.id},function(){});
+  }else{
+    const r=relatives[ivS.i];
+    if(r){r.note=note;r.status='invited';r.plant=key;
+          r.invitedTo=(r.invitedTo||[]).concat([key])}
+  }
+  buildRelatives();
+  const fin=function(url){
+    if(!ivS)return;
+    ivS.url=url||'';ivS.busy=false;ivGo('link');
+  };
+  if(!liveAccount())return fin('');
+  netaServer.inviteToken(key,null).then(function(t){fin(t?shareUrl(t):'')},
+                                        function(){fin('')});
+}
+function openToCircle(){openInviteFlow(cur,null)}
 /* הפתיחה עצמה. לא ממתינים לה: מדיניות share_links ו-invitations נשענת
    על בעלות בלבד (app.is_owner) ולא על open_to_relatives, ולכן אין כאן
    סדר שחייב להישמר. */
