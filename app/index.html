@@ -4619,7 +4619,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '9c8fc68';
+window.NETA_BUILD = '4df23f0';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -20333,8 +20333,27 @@ let ivS=null;
    את ארבעתם בשקט — כלומר קרוב שנוצר כאן היה נקרא שבור בכל מסך
    אחר. **המחיר שנאמר:** הכיתוב על האריחים שונה מזה שבקובץ העיצוב. */
 const IV_KIN=KIN_WITH;
+/* ‏**והשורה נלקחת מהמודל ולא מ-`plantAt`, וזה היה באג שקט.**
+   ‏`plantAt` הוא `livePlants[key]||plants[key]`: ‏`plants` הוא
+   **טבלת ההדגמה** (`const`, ואיש אינו כותב אליה בחשבון חי),
+   ו-`livePlants[key]` נכתב רק כשפותחים את **מסך הרגע עצמו**.
+   כלומר בחשבון חי שלא נכנסו בו לרגע הזה `plantAt` מחזיר `null`,
+   ‏`openInviteFlow` נפלה ל-`openPeople()`, והלחיצה נחתה על
+   "הקרובים שלי" — בדיוק מה שהפלואו בא להחליף. **ובהדגמה זה נראה
+   מושלם**, כי שם `plants` מלא, וזה אותו נתיב־שונה־בשקט שכבר
+   מתועד כאן שש פעמים.
+   **ומה שהפלואו צריך הוא שם הילד והמין**, ושניהם יושבים על שורת
+   המודל שממנה נגזרה השורה שנלחצה. */
+function ivRow(key){
+  if(!key)return null;
+  const live=plantAt(key);
+  if(live)return live;
+  const rows=(lastModel&&lastModel.plantings)||[];
+  for(let i=0;i<rows.length;i++)if(rows[i]&&rows[i].key===key)return rows[i];
+  return null;
+}
 function ivMk(key){
-  const p=plantAt(key)||{};
+  const p=ivRow(key)||{};
   return {key:key,kid:kidOf(p)||p.kid||'',kidSex:(p.sex||''),
           who:null,i:-1,nm:'',kin:null,msg:0,txt:'',url:'',sent:false,
           step:'who',busy:false,back:null};
@@ -20343,7 +20362,7 @@ function ivMk(key){
    מקבל מפתח רגע ולא מחפש אותו. מי שאין לו רגע שהוא פתח אינו יכול
    להזמין בכלל: `invitations_send` דורשת `app.is_initiator`. */
 function openInviteFlow(key,back){
-  if(!key||!plantAt(key)){openPeople();return}
+  if(!ivRow(key)){openPeople();return}
   ivS=ivMk(key);
   ivS.back=(back==null?null:back);
   cur=key;
