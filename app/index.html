@@ -4456,7 +4456,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 </head>
 <body>
 <script>
-window.NETA_BUILD = '65fae1f';
+window.NETA_BUILD = '9db808e';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -19293,9 +19293,15 @@ function fuSheetHTML(it){
   const ppl=fuPlanters(it);
   let plRows;
   if(shares){
+    /* ‏**ורק למי שרשאי להזמין.** ‏`invitations_send` דורשת
+       `app.is_initiator`, ולכן שורה על ילד שכל הרגעים שלו נפתחו
+       בידי אחרים היא כפתור שהשרת דוחה. אותה הכרעה של סמל השיתוף
+       במסך הרגע. */
     plRows=ppl.map(function(x){return fuPlanterRow(x,it)}).join('')+
-      listAddHTML('','להזמין עוד קרוב'+(to?(' לנטוע '+to):' לנטוע'),
-                  'סבא, סבתא, דוד, חבר קרוב','fu-inv');
+      (fuOwnRows(it).length
+        ? listAddHTML('','להזמין עוד קרוב'+(to?(' לנטוע '+to):' לנטוע'),
+                      'סבא, סבתא, דוד, חבר קרוב','fu-inv')
+        : '');
   }else{
     /* ‏**לא משתפים:** אני עם הסכום שלי, ומתחתי שורה אחת עם ערימת
        פרצופים ומשפט אחד — ואין במסך שום סכום של נוטע אחר (§5). */
@@ -19470,7 +19476,7 @@ function paintFuture(items,sel,blank){
     const addBtn=sh.querySelector('#fu-add');
     if(addBtn)addBtn.onclick=fuAddMoment;
     const invBtn=sh.querySelector('#fu-inv');
-    if(invBtn)invBtn.onclick=function(){openPeople()};
+    if(invBtn)invBtn.onclick=inviteFromFuture;
     /* הנימוק להזמנה, כשאני הנוטע היחיד. שורה שקטה ולא כותרת. */
     const alone=mine>=acc;
     const f2=sh.querySelector('#fu-fine');
@@ -19764,13 +19770,30 @@ function openFutureTab(){buildHomeSummary();openFuture()}
 function goHome(){ openInvestments(); }
 /* ההזמנה שיוצאת מ"העתיד שלנו" נכנסת לאותו מסלול של כל שאר ההזמנות,
    ופותחת את רשימת הקרובים עם הרגע הקרוב של הילד שאין לו עוד נוטע. */
+/* ‏**"להזמין עוד קרוב לנטוע לאלון" פותח את ההזמנה, לא את הטאב.**
+   הוא היה מחובר ל-`openPeople()`, כלומר נחת על "הקרובים שלי" ושם
+   צריך למצוא את "להוסיף קרוב" וללחוץ שוב — ואלון ציפה שייפתח
+   הממשק עצמו. זה בדיוק "כפתור מוביל לדבר עצמו, לא למסך שבו
+   בוחרים אותו".
+
+   **והרגע הוא של היקר שעל המסך.** הגרסה הקודמת של הפונקציה סרקה
+   את כל הילדים ולקחה את הראשון שיש לו נוטע אחד, כלומר מי שמסתכל
+   על אלון היה מזמין לרגע של מישהו אחר; היא נכתבה למסך שכבר אינו
+   קיים ואיש לא קרא לה מאז. **והרגע הקרוב ביותר**, כמו בכל שאר
+   המקומות שמכוונים לילד ולא לרגע.
+
+   **ורק רגע שאני פתחתי:** ‏`invitations_send` דורשת
+   `app.is_initiator`, ולכן הזמנה לרגע שצורפתי אליו הייתה נדחית
+   בשרת. ‏`fuSheetHTML` ממילא אינו מצייר את השורה אז. */
+function fuOwnRows(it){
+  return ((it&&it.rows)||[]).filter(function(p){return p&&!p.joined});
+}
 function inviteFromFuture(){
-  const own=myKidPlantings();
-  const solo=kidGroups(own).groups.filter(function(g){return (g.people||[]).length<=1})[0];
-  const near=solo&&nearestOf(solo.rows);
-  const key=near?near.p.key:(solo&&solo.rows[0]&&solo.rows[0].key)||'';
+  const own=fuOwnRows(lastFuSel);
+  const near=nearestOf(own);
+  const key=(near&&near.p.key)||(own[0]&&own[0].key)||'';
   if(key){cur=key;pickRelativeToInvite(0,key);return}
-  openRelatives(0);
+  openPeople();
 }
 
 /* ─── הסתירה שהייתה במסך הבית, ואיך היא נסגרה סופית ────────────────
