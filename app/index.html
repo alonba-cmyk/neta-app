@@ -3216,7 +3216,13 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .screen.wiz .wcta{padding-block:clamp(8px,1.5vh,13px)}
 [data-name="תשלום"].screen.wiz #pay-saved .opt{padding:clamp(8px,1.4vh,11px) 13px}
 /* ריפוד ראש הגיליון: `clamp(11px,2vh,18px)` שבעיצוב, ולא 22. */
-.screen.wiz{padding-top:clamp(12px,2.2vh,18px)}
+/* ‏**‏11 ולא 18, וזה מה שמשלם על 8 הפיקסלים שהראש קיבל.** הראש
+   הירוק הוא רכיב אחד בכל המסכים, ולכן הריפוד שנוסף לו דוחף גם את
+   האשף — ו-`FIX-create-v3` §11 מבטיח **אפס גלילה ב-390x844**.
+   נמדד: שני שלבים גלשו ב-7 בדיוק. מה שנלקח הוא האוויר שבין קצה
+   הגיליון הלבן לשאלה שבתוכו, כלומר הדבר היחיד בפלואו שגדל יחד עם
+   הראש; התקציב האנכי של האשף חוזר למה שהיה. */
+.screen.wiz{padding-top:clamp(10px,1.3vh,12px)}
 .screen.wiz #c-up{padding-block:clamp(8px,1.5vh,12px)}
 /* ‏**והפאנלים מחזירים את מה שהכרטיס לקח.** הכרטיס גדל ב-35
    פיקסלים ב-`FIX-create-v4` (קו בזרימה, רגל שהיא קופסה, והאוויר
@@ -3761,10 +3767,17 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    **וריפוד הנשימה של 14 עבר אל תוך השורה.** ‏`.device.gtop`
    מאפס אותו, והשורה בת ה-60 היא מה שנותן את האוויר; מה שנשאר
    מעליו הוא `env(safe-area-inset-top)` בלבד, שהוא 0 בדפדפן
-   ובמסך מלא הוא בדיוק מה שצריך. בלעדיו הכרטיס יושב ב-84 ולא
-   ב-70, והמדידה נכשלת. */
+   ובמסך מלא הוא בדיוק מה שצריך.
+
+   **ו-8 פיקסלים מעל השורה, בקשה של אלון.** בדפדפן ה-`env` הוא 0,
+   ולכן הפרצוף והגלולה נגעו בקצה העליון של הירוק — **וזה בדיוק
+   מחצית הריפוד ש-`gtop` לקח**. הירוק עצמו אינו זז: זה ריפוד
+   פנימי, והוא ממשיך לבלוע את שלושת הקצוות. **המחיר:** כל מה
+   שמתחת יורד 8, כלומר הגיליון הלבן מ-340 ל-348 בשלושת הטאבים —
+   ושלושתם יחד, כי זה רכיב אחד. */
 .tabg{background:var(--leaf-head);color:var(--on-head);flex:0 0 auto;
-  margin:-8px -18px 0;padding:env(safe-area-inset-top) 18px 36px;position:relative}
+  margin:-8px -18px 0;padding:calc(env(safe-area-inset-top) + 8px) 18px 36px;
+  position:relative}
 
 /* השורה העליונה: עיגול, שורה קטנה ושורה מודגשת, ולכל היותר פעולה
    אחת בקצה השני. הגובה קבוע גם כשאין בה עיגול ואין פעולה. */
@@ -5109,7 +5122,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '9b6ea9c';
+window.NETA_BUILD = 'ee0680f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
