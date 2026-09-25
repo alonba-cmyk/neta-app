@@ -2913,14 +2913,21 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ‏**והפיצוי האנכי ירד לגמרי** (`FIX-create-v4.md` §1). הוא ישב על
    שתי השורות שנושאות את המסגרת, בערכים א-סימטריים שנגזרו ביד מכל
    שורה בנפרד, וזה החזיק רק כל עוד שתיהן ידועות מראש. */
-/* ‏**ושתי השורות מקבלות את האוויר שהמסגרת צריכה, תמיד.** הריפוד
-   שלה נמדד מתיבת התוכן של הקופסה ה-inline, שהיא נגזרת מגודל הגופן
-   ולא מגובה השורה — ולכן ב-`.tbhero`, שהוא `line-height:1.05`,
-   היא חורגת 6.5 פיקסלים מעל השורה ונוחתת על "נטיעה חדשה" שמעליה.
-   אלון היה רואה את זה בצילום הראשון. ‏7 מכל צד הם בדיוק מה שהמסגרת
-   תופסת, והם **קבועים ולא נוספים בהדלקה** — כלומר הכרטיס אינו זז. */
-#wiz-name{margin-top:7px}
-#wiz-occ{display:block;overflow:visible;-webkit-line-clamp:none;margin-top:7px}
+/* ‏**ושתי השורות מקבלות את האוויר שהמסגרת צריכה, תמיד.** תיבת
+   התוכן של קופסה `inline` נגזרת ממטריקת הגופן (כ-1.5em) ולא
+   מגובה השורה, ו-`.tbhero` הוא `line-height:1.05` — כלומר
+   המסגרת חורגת מהשורה בכ-0.22em למעלה ובכ-0.17em למטה, ועוד
+   ‏1.5 של הטבעת.
+   **ולכן האוויר נמדד ב-`em` ולא בפיקסלים**: הגיבור הוא
+   ‏`clamp(19px,2.9vh,32px)`, ומספר קבוע שמספיק ב-19 נוגע ב-32.
+   שני המרווחים יושבים על `#wiz-name` עצמו, כלומר ה-`em` שלהם
+   הוא גודל הגיבור, ו-`#wiz-occ` מוותר על שלו — **שני אחים
+   בזרימת בלוק מתמוטטים למקסימום**, ולכן מרווח על שניהם היה
+   מספר אחד ולא סכום. **ובשורת הרגע החריגה זניחה**, כי
+   ‏`line-height:1.45` שם גדול כמעט כמו תיבת התוכן עצמה.
+   **והם קבועים ואינם נוספים בהדלקה**, כלומר הכרטיס אינו זז. */
+#wiz-name{margin-top:calc(.24em + 3px);margin-bottom:calc(.19em + 3px)}
+#wiz-occ{display:block;overflow:visible;-webkit-line-clamp:none;margin-top:0}
 /* ‏**והריפוד האופקי מקוזז בקצה השמאלי בלבד**, כפי שכבר היה: המסגרת
    מוסיפה 22 פיקסלים של ריפוד, ובלעדי הקיזוז "הטיול הגדול של
    אביב · ספט׳ 2036" נשבר לשתי שורות ברגע שהוא נדלק — נמדד, וזה
@@ -2948,7 +2955,16 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שהוא שתי מחלקות: רגל הכרטיס הפכה ל-`display:inline` בדיוק ברגע
    שנדלקה, שני הטורים נערמו זה על זה, והכרטיס גדל ב-44 פיקסלים
    בשלב "כמה". נמדד. */
-#wiz-card .tx .lit{display:inline;white-space:normal;padding:5px 11px;
+/* ‏**ו-`padding-block:0`, אף שהמסמך נוקב ב-5.** תיבת התוכן של קופסה
+   ‏`inline` היא מטריקת הגופן ולא גובה השורה, וב-Heebo היא כ-1.5em —
+   כלומר **המסגרת כבר נושאת כ-5 פיקסלים של אוויר סביב הגליפים בלי
+   ולו פיקסל אחד של ריפוד**, וזה מה שהפך אותה לתגית שגבוהה כמעט
+   בחצי מהשורה שהיא עוטפת. נמדד: עם `5px` היא חורגת 10 עד 12
+   מתיבת השורה למעלה ו-8 עד 10.5 למטה, לאורך כל טווח ה-clamp של
+   הגיבור, ולכן היא נגעה ב"נטיעה חדשה" מעל וב"לאיזה רגע?" מתחת.
+   אלון ראה את זה במכשיר. **הריפוד האופקי נשאר 11**, כי שם אין
+   מטריקה שנותנת אותו. */
+#wiz-card .tx .lit{display:inline;white-space:normal;padding:0 11px;
   margin-inline-start:0;margin-inline-end:-22px;border-radius:12px}
 #wiz-occ{line-height:1.45}
 /* ── §1+§2 · הקו, והרגל שיושבת תמיד באותה קופסה ─────────────────
@@ -3055,7 +3071,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    מתחתיה. הקלט עצמו נשאר `input[type=range]` — הוא מה שנותן
    מקלדת, נגישות וגרירה — והציור הוא `::-webkit-slider-runnable-track`
    ו-`::-webkit-slider-thumb` עליו, ולא `<div>` שני שצריך לסנכרן. */
-.screen.wiz .rngw{margin-top:clamp(8px,1.6vh,14px)}
+.screen.wiz .rngw{margin-top:clamp(7px,1.25vh,11px)}
 /* ‏`direction:ltr` על הקלט עצמו, אחרת המינימום יושב מימין בעוד
    שהתוויות שמתחתיו אומרות את ההפך — ספרות נקראות משמאל לימין,
    וזו אותה הכרעה שכבר יושבת על משבצות הקוד ועל המייל. */
@@ -3153,22 +3169,23 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="תשלום"].screen.wiz .stack{gap:8px}
 .screen.wiz #eb-freq+.two .pill{height:clamp(42px,5.6vh,48px)}
 .screen.wiz #panel-m,.screen.wiz #panel-l{margin-top:clamp(6px,1.2vh,10px)}
-.screen.wiz .trkeb{margin-top:clamp(7px,1.3vh,11px)}
+.screen.wiz .trkeb{margin-top:clamp(6px,1.1vh,9px)}
 .screen.wiz #amt-sub{margin-top:3px}
 .screen.wiz .wcta{padding-block:clamp(8px,1.5vh,13px)}
 [data-name="תשלום"].screen.wiz #pay-saved .opt{padding:clamp(8px,1.4vh,11px) 13px}
 /* ריפוד ראש הגיליון: `clamp(11px,2vh,18px)` שבעיצוב, ולא 22. */
 .screen.wiz{padding-top:clamp(12px,2.2vh,18px)}
 .screen.wiz #c-up{padding-block:clamp(8px,1.5vh,12px)}
-/* ‏**והפאנל מחזיר את מה שהכרטיס לקח.** הכרטיס גדל ב-33 פיקסלים
-   ב-`FIX-create-v4` (קו בזרימה, רגל שהיא קופסה, ו-7 של אוויר לכל
-   שורת טקסט), ופאנל "מישהו חדש" הוא היחיד מהשבעה שעבר את הקיפול
-   ב-390x844. שלושת המרווחים האלה, יחד עם הריפוד של `.wcta`, הם
-   מה שהחזיר אותם, ו-§11 של הסבב הקודם ממשיך להתקיים. */
-.screen.wiz #c-avfield{margin-top:clamp(6px,1.1vh,10px);
+/* ‏**והפאנלים מחזירים את מה שהכרטיס לקח.** הכרטיס גדל ב-35
+   פיקסלים ב-`FIX-create-v4` (קו בזרימה, רגל שהיא קופסה, והאוויר
+   שהמסגרת דורשת), ושני שלבים עברו את הקיפול ב-390x844 — פאנל
+   "מישהו חדש" ומסך הסכום. המרווחים האלה, יחד עם הריפוד של
+   ‏`.wcta`, הם מה שהחזיר אותם, ו-§11 של הסבב הקודם ממשיך
+   להתקיים. */
+.screen.wiz #c-avfield{margin-top:clamp(5px,.85vh,7px);
   margin-bottom:clamp(5px,.95vh,8px)}
 .screen.wiz #c-namefield{margin-bottom:clamp(6px,1.1vh,9px)}
-.screen.wiz #c-kidback{margin-bottom:clamp(6px,.95vh,8px)}
+.screen.wiz #c-kidback{margin-bottom:clamp(5px,.75vh,6px)}
 .screen.wiz #wiz-trk{padding-block:clamp(8px,1.4vh,11px)}
 .screen.wiz #c-namefield{margin-top:clamp(8px,1.5vh,12px)}
 .screen.wiz #c-up{margin-top:clamp(7px,1.3vh,11px)}
@@ -4999,7 +5016,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '97b7c3c';
+window.NETA_BUILD = 'be88aae';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
