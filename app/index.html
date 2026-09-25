@@ -4319,19 +4319,34 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    הכרטיס היחיד בכל המוצר שאין בו פס ואין בו תאים — **מה שהוא אומר
    הוא מי, ולא כמה.** */
 .rlrow{display:flex;align-items:center;gap:4px;margin:0}
-/* ‏**וההזזה של ארבעה פיקסלים מטה אינה קישוט.** בציור יש פרצוף אחד
-   למעלה ושניים למטה, ולכן המסה שלו גבוהה ממרכז התיבה; בלעדיה
-   הטקסט שלצידו נראה נמוך ממנו. */
+/* ‏**וההזזה מטה אינה קישוט** (`FIX-relatives-v2.md` §4). בשני
+   הסידורים יש עיגול אחד למעלה ושניים למטה, ולכן מרכז המסה של
+   הציור גבוה ממרכז התיבה — במלא ב-4.2 ובחלקי ב-11 — וההזזה
+   מחזירה אותו אל המרכז, שם הוא נפגש עם מרכז הטקסט שלצידו.
+   **והכלל שהמסמך נוקב בו אינו מה שהמספרים עושים**: הוא
+   מבקש שהמרחק מהעיגול העליון לקצה התיבה ישווה למרחק מהתחתון,
+   ו-`transform` על התיבה מזיז את התיבה ואת הציור יחד, כלומר שני
+   המרחקים האלה אינם משתנים ממנו כלל. מה שהמספרים שלו
+   עושים בפועל הוא בדיוק בדיקת הקבלה החמישית שלו (§8).
+   **ומה שבאמת הפך את הציור אופקית הוא המרווחים השליליים**
+   שהיו כאן (`margin:-15px 0 0 -15px`), כי `margin-left` במסמך RTL
+   אינו הצד שבו נמדדו המספרים; מעכשיו אין מרווח כלל וכל
+   המיקום הוא `translate` אחד, שהוא ציר פיזי ואינו תלוי
+   בכיווניות. **ו-`direction:ltr` נשאר** (§3) כהצהרה של המסמך
+   על מה שבתוכו. */
 .rlnet{position:relative;width:150px;height:118px;flex:0 0 auto;
-  transform:translateY(4px) scale(.93)}
+  direction:ltr;transform:translateY(4px) scale(.93)}
+.rlnet.part{transform:translateY(10px) scale(.93)}
 .rlnet>span{position:absolute;left:50%;top:50%;border-radius:50%;
   overflow:hidden;background:var(--face-fill);display:block}
 .rlnet>span svg,.rlnet>span img{display:block;width:100%;height:100%;
   object-fit:cover;clip-path:circle(50%)}
-.rlnet .me{width:40px;height:40px;margin:-20px 0 0 -20px;
-  box-shadow:0 0 0 2.5px var(--sun-on-leaf)}
-.rlnet .o{width:30px;height:30px;margin:-15px 0 0 -15px;
-  box-shadow:0 0 0 2px rgba(227,206,159,.42)}
+.rlnet .me{width:40px;height:40px;box-shadow:0 0 0 2.5px var(--sun-on-leaf)}
+.rlnet .o{width:30px;height:30px;box-shadow:0 0 0 2px rgba(227,206,159,.42)}
+/* ‏**משבצת ריקה מקווקוות ובלי מילוי** (§6): כך היא נקראת כ"כאן
+   יישב מי שעוד אין", ולא כאדם שלישי בעל פרצוף ריק. */
+.rlnet .o.gh{background:none;box-shadow:none;
+  border:1.5px dashed var(--leaf-gold-line)}
 /* ‏**מי שעדיין אינו נוטע דוהה ואינו נעלם** — הוא בפנקס, וזה מה
    שהמעגל מראה. */
 .rlnet .o.dim{opacity:.42}
@@ -5197,7 +5212,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'e3a8bef';
+window.NETA_BUILD = '67a3197';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -14366,25 +14381,66 @@ function relPlanters(){
    ב"פעילות" — ולכן `actSlide` ו-`actTrio` משרתים גם אותה, ואין
    כאן בונה שני שצריך לסנכרן. */
 
-/* ‏**חמש המשבצות שסביב המרכז** (§9): רדיוס 44, בזוויות ‎-90, -18,
-   ‏54, ‏126 ו-198 מעלות. ‏`translate` פיזי ולא לוגי, כי זו צורה
-   סימטרית וסדר הקריאה אינו נוגע בה. */
+/* ‏**שני סידורים, ולא אחד** (`FIX-relatives-v2.md` §3): חמש משבצות
+   סביב המרכז כשיש שלושה קרובים ומעלה, ושלוש כשיש עד שניים. שניהם
+   על מעגל ברדיוס 44, והמספרים הם פיקסלים מהמרכז — ‏X חיובי ימינה
+   על המסך. **התיבה היא `direction:ltr`**, כי אלה צירים פיזיים ולא
+   התחלה וסוף. */
 const REL_RING=[[0,-44],[41.8,-13.6],[25.9,35.6],[-25.9,35.6],[-41.8,-13.6]];
+const REL_RING3=[[0,-44],[38.1,22],[-38.1,22]];
 function relNetHTML(){
   const ppl=relPeople();
-  /* ‏**חמש משבצות לכל היותר, והאחרונה הפנויה היא ההוספה.** מי
-     שעדיין אינו נוטע דוהה ואינו נעלם: הוא בפנקס, וזה מה שהמעגל
-     מראה. */
-  const show=ppl.slice(0,ppl.length>=REL_RING.length?REL_RING.length:REL_RING.length-1);
-  let out='<span class="me">'+faceHTML(myAvatarKey(),'av-parent')+'</span>';
-  REL_RING.forEach(function(pos,i){
-    const t=' style="transform:translate('+pos[0]+'px,'+pos[1]+'px)"';
+  /* ‏**הסידור נגזר מכמה יש** (§3): עד שניים — שלוש משבצות, ומשלושה
+     ומעלה — חמש. ‏**ומי שעדיין אינו נוטע דוהה ואינו נעלם**, כי הוא
+     בפנקס וזה מה שהמעגל מראה. */
+  const part=ppl.length<=2;
+  const ring=part?REL_RING3:REL_RING;
+  const show=ppl.slice(0,ppl.length>=ring.length?ring.length:ring.length-1);
+  let out='<span class="me" style="transform:translate(-50%,-50%)">'+
+    faceHTML(myAvatarKey(),'av-parent')+'</span>';
+  ring.forEach(function(pos,i){
+    const t=' style="transform:translate(calc(-50% + '+pos[0]+'px),'+
+            'calc(-50% + '+pos[1]+'px))"';
     const r=show[i];
     if(r)out+='<span class="o'+(relJoined(r)?'':' dim')+'"'+t+'>'+
       faceHTML(r.av,'av-someone')+'</span>';
-    else if(i===show.length)out+='<span class="o add"'+t+' aria-hidden="true">+</span>';
+    /* ‏**‏＋ על המשבצת הפנויה הראשונה בלבד**, ושאר הריקות מקווקוות
+       בלי סימן: שלוש קריאות לאותה פעולה על ציור אחד הן שלוש. */
+    else if(i===show.length)out+='<span class="o gh add"'+t+' aria-hidden="true">+</span>';
+    else out+='<span class="o gh"'+t+' aria-hidden="true"></span>';
   });
-  return '<div class="rlnet" aria-hidden="true">'+out+'</div>';
+  return '<div class="rlnet'+(part?' part':'')+'" aria-hidden="true">'+out+'</div>';
+}
+/* ‏**הכותרת ושורת המשנה לפי מספר הנוטעים** (§7). **המספר סופר את
+   מי שכבר נטע**, ומי שהוזמן ועוד לא ענה מופיע בציור בשקיפות ואינו
+   נספר — **וזה הופך את `SPEC-relatives-full` §6**, שקבע שהמספר
+   שווה למספר השורות ברשימה כולל הממתינים. מה שמחזיק את ההיפוך:
+   הכרטיס הזה נושא שני תאים של כסף, והמספר שמעליהם הוא מי שיש
+   מאחוריו כסף. */
+function relG(r){return (KIN[r&&r.rel]||{}).g}
+function relCount2(n){return n===2?'שניים':countWord(n)}
+function relCircleCopy(){
+  const ppl=relPeople();
+  const planted=ppl.filter(relJoined),n=planted.length;
+  if(!n){
+    const inv=ppl.filter(function(r){return r.status==='invited'});
+    if(!inv.length)return {big:'עוד אין קרובים',sub:'כאן יראו מי שנוטע איתכם'};
+    if(inv.length===1){
+      const g=relG(inv[0]);
+      /* **ובלי מגדר שם עצם ולא לוכסן**, אותה הכרעה של `relVerb`. */
+      return {big:g==='f'?'אחת הוזמנה':g==='m'?'אחד הוזמן':'הזמנה אחת',
+        sub:inv[0].name+(g==='f'?' ממתינה לענות':g==='m'?' ממתין לענות'
+                                                       :' · ממתינים לתשובה')};
+    }
+    return {big:relCount2(inv.length)+' הוזמנו',sub:'ממתינים לענות'};
+  }
+  if(n===1){
+    const g=relG(planted[0]);
+    return {big:g==='f'?'קרובה אחת':'קרוב אחד',
+      sub:planted[0].name+(g==='f'?' נוטעת איתכם':g==='m'?' נוטע איתכם'
+                                                        :' · נוטעים איתכם')};
+  }
+  return {big:countWord(n)+' קרובים',sub:'נוטעים איתכם'};
 }
 /* ‏**הנטיעה האחרונה של קרוב**, מהפיד עצמו ולא ממקור שני: אותן
    שורות שהפיד מציג, בלי שלי. */
@@ -14402,62 +14458,53 @@ function relSince(iso){
 }
 function relSlides(){
   const out=[];
-  const ppl=relPeople(),n=ppl.length;
-  const joined=relPlanters().length;
-  const forOthers=kidSectionCount();
-
-  /* ‏**‏1 · המעגל.** הוא אומר מי, ולא כמה, ולכן אין בו פס ואין בו
-     תאים — הכרטיס היחיד כזה במוצר. */
-  out.push({k:'net',html:'<div class="aslide"><div class="kcard2">'+
-    '<div class="cbig rlrow">'+relNetHTML()+
-      '<div style="min-width:0"><p class="rlbig">'+
-      attrText(n?(n===1?'קרוב אחד':countWord(n)+' קרובים')
-                :forOthers?'אתם לבד':'עוד אין קרובים')+'</p>'+
-      '<p class="rlsub">'+attrText(n?'נוטעים איתכם':'כאן יופיעו מי שנוטע איתכם')+
-      '</p></div></div></div></div>'});
-
   const rows=(lastModel&&lastModel.plantings)||[];
   const tot=rows.reduce(function(a,p){return a+Number(p.accrued||0)},0);
   const mine=rows.reduce(function(a,p){return a+Number(p.mine||0)},0);
   const theirs=Math.max(0,tot-mine);
+  const cp=relCircleCopy();
 
-  /* ‏**‏2 · הנטיעה האחרונה.** היא נבנית רק כשבאמת יש אחת: כרטיס
-     שאומר "0 ₪" על אירוע שלא קרה אינו מדווח אלא ממציא. */
+  /* ‏**‏1 · המעגל, ועכשיו גם פס ושני תאים** (`FIX-relatives-v2.md`
+     §1). החבילה הקודמת תיארה לו את הציור ואת הטקסט בלבד, והוא היה
+     הכרטיס היחיד במוצר בלי חלק תחתון; מעכשיו הוא בנוי בדיוק כמו כל
+     כרטיס אחר, ולכן הפס שלו יוצא על אותו קו.
+     **והתאים בסדר הפוך מכרטיס "החלק שלהם"**: כאן הכולל מימין ושלהם
+     משמאל, כי מה שהכרטיס הזה מודד הוא המעגל כולו. */
+  out.push({k:'net',html:'<div class="aslide"><div class="kcard2">'+
+    '<div class="cbig rlrow">'+relNetHTML()+
+      '<div style="min-width:0"><p class="rlbig">'+attrText(cp.big)+'</p>'+
+      '<p class="rlsub">'+attrText(cp.sub)+'</p></div></div>'+
+    '<div class="krule"></div>'+
+    actTrio([['נטעתם יחד',shekel(tot),Number(tot)?'':' nil'],
+             ['הם נטעו',shekel(theirs),Number(theirs)?'':' nil']])+
+    '</div></div>'});
+
+  /* ‏**ושני הכרטיסים האחרים מופיעים מהנטיעה הראשונה של קרוב**
+     (§5), ושניהם יחד: הם נבנים מאותה עובדה, וכרטיס אחד מהם לבדו
+     היה נותן שתי נקודות על מסך שהמסמך נוקב בו באחת או בשלוש. */
   const last=relLastRow();
-  /* ‏**ורק כשיש ממה**: כרטיס "הנטיעה האחרונה" קורא מהפיד וכרטיס
-     "החלק שלהם" קורא מהמודל, ושניהם אומרים את אותו דבר — כמה
-     הקרובים נטעו. בלי התנאי הזה הם יכולים לסתור זה את זה על אותו
-     מסך, ‏50 ₪ מעל 0 ₪. */
-  if(last&&theirs>0){
-    const now=new Date();
-    const kid=feedKid(last);
-    out.push({k:'last',html:actSlide('הנטיעה האחרונה',
-      '<span class="cfc">'+faceHTML(last.avatar,'av-someone')+'</span>',
-      shekel(last.amount||0),
-      /* ‏**ובלי לוכסן**: כשאין מגדר השורה נוקבת בשם ובמועד ותו לא,
-         אותה הכרעה של `feedSay`. */
-      (last.actorSex==='f'?(last.actor+' נטעה'):
-       last.actorSex==='m'?(last.actor+' נטע'):(last.actor+' · נטיעה'))+
-        (kid?(' '+withPrep('ל',kid)):'')+', '+feedWhen(last.at),
-      [['החודש',shekel(relSince(now.getFullYear()+'-'+
-          String(now.getMonth()+1).padStart(2,'0')+'-01'))],
-       ['מתחילת השנה',shekel(relSince(now.getFullYear()+'-01-01'))]])});
-  }
+  if(!relPeople().some(relJoined)||!last)return out;
 
-  /* ‏**‏3 · החלק שלהם.** האחוז הוא החלק של הקרובים מתוך הסך הכול,
-     והוא נבנה רק כשיש ממה לחשב אותו. */
-  if(tot>0){
-    const pct=Math.round(theirs*100/tot);
-    out.push({k:'share',html:actSlide('החלק שלהם',
-      '<span class="pie" style="--pie:'+pct+'%"></span>',
-      pct+'%','ממה שנצבר הגיע מהקרובים',
-      [['הם נטעו',shekel(theirs),Number(theirs)?'':' nil'],
-       ['נטעתם יחד',shekel(tot),Number(tot)?'':' nil']])});
-  } else {
-    out.push({k:'share',html:actSlide('החלק שלהם','<span class="pie" style="--pie:0%"></span>',
-      '0%',joined?'עוד לא נצבר כאן כלום':'כל קרוב שמצטרף נוטע מהכיס שלו',
-      [['הם נטעו','0 ₪',' nil'],['נטעתם יחד','0 ₪',' nil']])});
-  }
+  const now=new Date();
+  const kid=feedKid(last);
+  out.push({k:'last',html:actSlide('הנטיעה האחרונה',
+    '<span class="cfc">'+faceHTML(last.avatar,'av-someone')+'</span>',
+    shekel(last.amount||0),
+    /* ‏**ובלי לוכסן**: כשאין מגדר השורה נוקבת בשם ובמועד ותו לא,
+       אותה הכרעה של `feedSay`. */
+    (last.actorSex==='f'?(last.actor+' נטעה'):
+     last.actorSex==='m'?(last.actor+' נטע'):(last.actor+' · נטיעה'))+
+      (kid?(' '+withPrep('ל',kid)):'')+', '+feedWhen(last.at),
+    [['החודש',shekel(relSince(now.getFullYear()+'-'+
+        String(now.getMonth()+1).padStart(2,'0')+'-01'))],
+     ['מתחילת השנה',shekel(relSince(now.getFullYear()+'-01-01'))]])});
+
+  const pct=tot>0?Math.round(theirs*100/tot):0;
+  out.push({k:'share',html:actSlide('החלק שלהם',
+    '<span class="pie" style="--pie:'+pct+'%"></span>',
+    pct+'%','ממה שנצבר הגיע מהקרובים',
+    [['הם נטעו',shekel(theirs),Number(theirs)?'':' nil'],
+     ['נטעתם יחד',shekel(tot),Number(tot)?'':' nil']])});
   return out;
 }
 /* התמונות של מי שבמעגל ושל מי שנטע אחרון, בקריאה אחת. */
