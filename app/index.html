@@ -238,10 +238,29 @@ setTimeout(function(){
    בכרטיס בבית נשארת אפורה, כי היא משפט תומך ולא מספר שמציגים. אחרת
    יהיה זהב על כל כרטיס במסך והדגש יאבד את משמעותו. */
 *{box-sizing:border-box;margin:0;padding:0}
+/* ── ‏`fix-scrolling.md` §1 · המסמך עצמו אינו נגלל לעולם ──────────
+   **מיכל גלילה אחד, והוא באמצע.** ‏`.stage` הוא זה, והמסמך נעול
+   משני צדדיו. מה שזה קונה אינו חלקות אלא **סרגל הכתובת של כרום
+   באנדרואיד**: הוא מתכווץ ומתרחב תוך כדי גלילה של **המסמך**
+   בלבד, ואז גובה החלון משתנה באמצע התנועה והמסך מקפץ.
+
+   **והמדידה אמרה שזה כבר נכון — בחשבון חי בלבד.** גובה המסמך
+   שווה בדיוק לחלון כי `hideTestRig` מסתירה את סרגל המסכים ואת
+   כפתורי המצבים; בהדגמה הוא גבוה ב-203 פיקסלים, והמסמך נגלל.
+   כלומר הנעילה לא הייתה הבטחה אלא **מקרה**, וכל צומת שיתווסף
+   מתחת ל-`.device` היה מחזיר את הגלילה למסמך בלי שום שגיאה.
+
+   **וסרגל הבדיקה נשאר נגיש:** ‏`.wrap` הוא שגולל אותו. בחשבון
+   חי הוא מוסתר, ואז תוכן העטיפה הוא המכשיר לבדו — כלומר מיכל
+   שאין בו מה לגלול. **אותו נתיב בשני המצבים**, ולא הסתרה שמשנה
+   מבנה. */
+html{height:100dvh;overflow:hidden}
 body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse 70% 55% at 50% 20%,var(--page-1),var(--page-2) 65%);
   color:var(--tx);display:flex;flex-direction:column;align-items:center;padding:0;
-  min-height:100dvh;-webkit-font-smoothing:antialiased}
-.wrap{width:100%;max-width:430px;display:flex;flex-direction:column;align-items:center}
+  height:100dvh;overflow:hidden;-webkit-font-smoothing:antialiased}
+.wrap{width:100%;max-width:430px;display:flex;flex-direction:column;align-items:center;
+  flex:1;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:none}
+.wrap::-webkit-scrollbar{display:none}
 .devlabel{font-size:9.5px;letter-spacing:.1em;color:var(--tx-3);margin:18px 0 8px;text-transform:uppercase}
 .nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;width:100%}
 .nav button{flex:0 0 auto;font-family:inherit;font-size:11px;padding:7px 12px;border-radius:8px;
@@ -256,8 +275,12 @@ body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse
    בלי פינות, בלי צל, ובלי יחס גובה-רוחב — הגובה הוא החלון עצמו.
    הבלימה על 430 היא כדי שהאפליקציה לא תימתח לרוחב מסך מחשב; היא
    נשארת תמיד עמודה, כי כל 27 המסכים נבנו לרוחב הזה. */
-.device{position:relative;width:100%;max-width:430px;height:100dvh;background:var(--bg);
-  display:flex;flex-direction:column;overflow:hidden}
+/* ‏**‏`flex:none`, ולא ברירת המחדל.** מרגע ש-`.wrap` הוא מיכל גלילה
+   (`fix-scrolling.md` §1) המכשיר הוא פריט flex שמתכווץ, וסרגל הבדיקה
+   שמתחתיו היה **מקצר אותו** במקום לרדת מתחתיו — נמדד 487 במקום 640,
+   כלומר המכשיר כבר אינו גובה החלון. */
+.device{position:relative;width:100%;max-width:430px;height:100dvh;flex:none;
+  background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
 .device .notch,.device .statusbar,.device .home-indicator{display:none}
 /* האוויר מעל ההאדר. כשמסגרת הפלאפון הייתה כאן, החריץ ושורת הסטטוס
    המדומים נתנו כ-44 פיקסל, והם ירדו יחד איתה — מה שנשאר היה הריפוד
@@ -279,7 +302,12 @@ body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse
 /* ‏`overscroll-behavior-y:contain` (`FIX-scroll.md`): מרגע שכל המסך
    נגלל, גלילה שמגיעה לקצה הייתה מושכת את הדפדפן עצמו — משיכה
    לרענון בראש, וגומי בתחתית. */
-.stage{display:flex;flex-direction:column;flex:1;overflow-y:auto;padding:8px 18px 14px;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-y:contain}
+/* ‏**‏`min-height:0` מפורש** (`fix-scrolling.md` §1). היום הוא מיותר
+   במקרה — פריט flex שה-`overflow` שלו אינו `visible` מקבל ממילא
+   מינימום 0 — **ולכן הוא תלוי בהצהרה שנייה שאיש אינו קושר אליו**:
+   מי שיחליף את `overflow-y` ל-`visible` יקבל מיכל שגדל עם התוכן,
+   סרגל תחתון שנדחק מחוץ למכשיר, והגלילה עוברת למסמך. בלי שגיאה. */
+.stage{display:flex;flex-direction:column;flex:1;min-height:0;overflow-y:auto;padding:8px 18px 14px;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-y:contain}
 .sticky-sum{position:sticky;top:-8px;z-index:5;margin:8px -18px 10px;padding:7px 18px;background:var(--bg);
   border-bottom:1px solid var(--line);font-size:12.5px;font-weight:500;color:var(--leaf);text-align:center}
 .stage::-webkit-scrollbar{display:none}
@@ -437,7 +465,10 @@ label{display:block;font-size:11px;color:var(--tx-3);margin-bottom:6px}
 input[type=text],input[type=email],input[type=password],input[type=date],select,textarea{
   width:100%;font-family:inherit;font-size:16px;padding:10px 11px;
   border:1px solid var(--line);border-radius:9px;background:var(--s1);color:var(--tx)}
-textarea{min-height:74px;resize:vertical;line-height:1.6}
+/* ‏**וגם שדה טקסט ארוך אינו מחלחל** (`fix-scrolling.md` §4).
+   ‏`<textarea>` הוא `overflow:auto` בברירת המחדל של הדפדפן, ולכן
+   מכתב שנגלל עד סופו היה מושך את הבמה — ומשם את משיכת הרענון. */
+textarea{min-height:74px;resize:vertical;line-height:1.6;overscroll-behavior:contain}
 input:focus,select:focus,textarea:focus{outline:1px solid var(--leaf);outline-offset:0;border-color:var(--leaf)}
 .field{margin-bottom:15px}
 
@@ -1945,7 +1976,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .scrim.on{opacity:1;pointer-events:auto}
 .sheet{width:100%;background:var(--s1);border-top:1px solid var(--line);border-radius:26px 26px 0 0;
   padding:16px 18px 20px;transform:translateY(100%);transition:transform .26s cubic-bezier(.22,.8,.3,1);
-  max-height:86%;overflow-y:auto;scrollbar-width:none}
+  max-height:86%;overflow-y:auto;scrollbar-width:none;overscroll-behavior:contain}
 .sheet::-webkit-scrollbar{display:none}
 /* 86% הם אחוז מגובה המסגרת, שגבוהה מהחלון בנייד — גיליון ארוך היה
    יכול לגלוש מעל הקצה העליון גם אחרי הגלילה. dvh מודד את החלון עצמו.
@@ -2891,6 +2922,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ‏`position:sticky` לתוכן ארוך, ושניהם על אותו צומת. */
 .screen.on.wiz,.screen.on.center-v.wiz{display:flex;flex-direction:column;
   flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:clip;
+  overscroll-behavior-y:contain;
   margin-bottom:-14px;padding-bottom:0}
 /* בשלושת הפאנלים של "הקמה" העמודה היא הפאנל ולא המסך, כי שניים
    מהשלושה מוסתרים והמסך מחזיק את שלושתם. */
@@ -3217,7 +3249,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 [data-name="הזמנת קרוב"].screen.on{display:flex;flex-direction:column;
   flex:1 1 auto;min-height:0}
 .ivz .ivbody{flex:1;min-height:0;overflow-y:auto;overflow-x:clip;
-  padding-inline:2px;margin-inline:-2px}
+  overscroll-behavior-y:contain;padding-inline:2px;margin-inline:-2px}
 .ivz .ivcta{flex:none;background:var(--s1);
   padding:clamp(10px,2vh,14px) 0 calc(4px + env(safe-area-inset-bottom))}
 .ivz .ivcta .btn{width:100%}
@@ -3750,6 +3782,13 @@ textarea.ivmsg{resize:none;color:var(--tx)}
   display:flex;align-items:center;justify-content:center;gap:6px;padding:0 12px;
   background:none;font-family:inherit;color:var(--sun-on-leaf);
   font-size:13px;font-weight:700;white-space:nowrap;cursor:pointer}
+/* ‏**וכפתור עם טקסט הוא 128 לפחות, בארבעת הטאבים** (`FIX-picker-header.md`
+   §3). ‏`min-width:38` היה נותן לכל טאב רוחב שנגזר מהמילים שבו —
+   ‏108 ל"איך זה עובד" מול 98 ל"להזמין קרוב" — כלומר משבצת שזזה
+   בקצה השמאלי בכל מעבר בין טאבים, וזו בדיוק הקפיצה שהשלד המשותף
+   בא לסגור. ‏`:not(.ps)` מחריג את סמל השיתוף שבמסך הרגע, שהוא
+   עיגול ולא גלולה. */
+.tabhd .act:not(.ps){min-width:128px;gap:7px;padding:0 10px}
 .tabhd .act.ps{padding:0;width:38px;font-size:20px;color:var(--on-head);
   border-color:var(--on-head-line)}
 /* ‏**מקווקו** (`FIX-relatives-v2.md` §1): הוא אומר "אין כאן ערך
@@ -4028,7 +4067,12 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    נבנים מהמרכז החוצה לפי הרדיוס האמיתי של כל עיגול ולא על רשת
    קבועה — הנבחר גדול יותר, ואחרי סיבוב הוא כבר לא במרכז; רשת קבועה
    הייתה דוחקת אותו לשכן בצד אחד ופוערת רווח בצד השני. */
-.crnw{position:relative;margin:20px 0 0;flex:0 0 auto}
+/* ‏**‏`FIX-picker-header.md` §1: הטבעת בת ה-72 הופכת לשורת פרצופים
+   בת 34**, בין השורה העליונה לכרטיס. ‏14 מעליה ו-4 מתחתיה, כלומר
+   ‏52 בדיוק — וזה המספר שהטאבים השכנים מקבלים כמרווח ריק (§2).
+   **והמנוע לא נגע:** שלושת הקבועים (`FU_GAP`, `FU_SM`, `FU_BG`)
+   הם מה שהתחלף, ולא שורת חישוב אחת. */
+.crnw{position:relative;margin:0;padding:14px 0 4px;flex:0 0 auto}
 /* ‏**ואין על הטבעת `touch-action` כלל, כמו בקובץ העיצוב.** היא נשאה
    `pan-y`, כלומר "מותר רק לגלול אנכית" — ואז הדפדפן אינו נועל את
    המחווה לציר האופקי, וכל רכיב אנכי קטן בגרירה מתחיל **גם** לגלול
@@ -4036,8 +4080,12 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    כיוון: גרירה שהתחילה אופקית אינה גוללת דבר, ורק המאזין שלנו זז.
    זו אותה משפחה של `.fucar` ושל `.acar`, ונראה רק במכשיר —
    ‏`Input.dispatchTouchEvent` אינו מדמה פאן של דפדפן. */
-.crn{position:relative;height:72px;overflow:hidden;border-radius:99px;
-  cursor:grab}
+/* ‏**‏`overflow:visible` ולא `hidden`.** בגודל הזה אין קפסולה
+   שצריך לחתוך אליה, ומה שכן חורג מהשורה הוא הטבעת של הנבחר —
+   ‏`box-shadow` בן 2 סביב עיגול של 34 בתוך שורה של 34. חיתוך
+   היה משטח אותה משני הקצוות, בדיוק המלכודת של `.tabpick` שכבר
+   מתועדת כאן. */
+.crn{position:relative;height:34px;overflow:visible;cursor:grab}
 .crnw.grab .crn{cursor:grabbing}
 /* ‏**בזמן גרירה אין אנימציה, וזו כל ההרגשה של המחווה.** ‏`fuLayout`
    מכבה את ה-`transition` בהצבה ומחזירה אותו בפריים הבא, כלומר בין
@@ -4049,16 +4097,20 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    נכנסו, ואז היא נגמרת במקום אחר לכל מספר ילדים — ואלון ביקש
    שלוש פעמים שתהיה כמו בעיצוב, שבו היא מגיעה לשני הקצוות.
    ‏`left:0;right:0` ולא רוחב שנכתב ב-JS: אין מה לחשב. */
-.crn .cband{position:absolute;inset:0 0 auto;height:72px;border-radius:99px;
-  background:rgba(255,255,255,.07)}
+/* ‏**הקפסולה אינה מוצגת בגודל הזה** (§1). משטח בן 34 מקצה לקצה
+   מאחורי עיגולים של 24 נקרא כפס ולא כרקע, והשורה הזאת יושבת
+   ממילא בתוך הראש הירוק. הצומת נשאר במרקאפ כי `fuRingHTML` הוא
+   המקום היחיד שבונה אותו, ומחיקה שלו הייתה נוגעת גם בקפסולת
+   הרפאים של המצב הריק. */
+.crn .cband{display:none}
 /* ‏**והצבע מוצהר במפורש.** ‏`<button>` יורש `color:buttontext`
    מהדפדפן ולא מהראש הירוק, ולכן משבצת של קופה שאין לה נהנה —
    שבה מצויר אייקון הרגע ולא פרצוף — יצאה **שחורה** על העיגול
    הבהיר. ‏`--leaf-head` הוא הצבע היחיד בפלטה שאינו מתהפך, כלומר
    ירוק עמוק בשתי הערכות, וזה מה שמאפשר לו לשבת על משטח בהיר
    בשתיהן (‏13:1 בכהה, ‏9.7:1 בבהירה). נראה בצילום ולא בקוד. */
-.crn .cface{position:absolute;top:50%;left:50%;width:40px;height:40px;
-  border-radius:50%;overflow:hidden;opacity:.7;padding:0;border:0;
+.crn .cface{position:absolute;top:50%;left:50%;width:24px;height:24px;
+  border-radius:50%;overflow:hidden;opacity:.5;padding:0;border:0;
   background:var(--face-fill);color:var(--leaf-head);cursor:pointer;
   /* ‏**האטה של קובץ העיצוב ולא ברירת המחדל.** ‏`.26s` עם `ease`
      על ה-`transform` נקרא כמו החלקה איטית; ‏`cubic-bezier(.3,.7,.3,1)`
@@ -4090,29 +4142,39 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    **בפיקסלים ולא באחוזים:** ‏`padding` באחוזים נגזר מרוחב **המכל**
    ולא מרוחב האלמנט, ועל משבצת אבסולוטית בטבעת של 354 זה יצא 78 —
    עיגול של 156 שכיסה חצי מהטבעת. נראה בצילום ולא במדידה. */
-.crn .cface.mo{padding:9px}
-.crn .cface.mo.on{padding:13px}
+/* ‏**והריפוד יורד באותו יחס.** ‏9 מתוך 40 ו-13 מתוך 56 הם 5 מתוך
+   ‏24 ו-8 מתוך 34; ריפוד קבוע היה בולע אייקון של 24. */
+.crn .cface.mo{padding:5px}
+.crn .cface.mo.on{padding:8px}
 .crn .cface.mo svg{clip-path:none;border-radius:0}
-.crn .cface.on{width:56px;height:56px;opacity:1;
-  box-shadow:0 0 0 2.5px var(--sun-on-leaf)}
+.crn .cface.on{width:34px;height:34px;opacity:1;
+  box-shadow:0 0 0 2px var(--sun-on-leaf)}
 /* משבצת רפאים: מצב 1, כשאין אף יקר. */
 .crn .cface.gh{background:rgba(255,255,255,.05);opacity:1;cursor:default;
   border:1.5px dashed var(--leaf-tile-line)}
 /* ‏**ה-＋ תופס משבצת אמיתית בטבעת**, ורקעו אטום כדי שמי שעובר
    מתחתיו ייחתך בקצה המעוגל ולא יציץ ממנו. */
-.crnw .cadd{position:absolute;top:50%;margin-top:-20px;width:40px;height:40px;
+/* ‏**ומרכזו נגזר מהריפוד ולא מחצי הגובה.** ‏`top:50%` על `.crnw`
+   שיש לו ריפוד א-סימטרי (14 מעל, 4 מתחת) מניח את מרכזו על 26
+   בזמן שמרכז השורה הוא 31. ‏19 הם הריפוד העליון ועוד חצי ההפרש
+   בין 34 ל-24, כלומר בדיוק המרכז. */
+.crnw .cadd{position:absolute;top:19px;width:24px;height:24px;
   border-radius:50%;display:flex;align-items:center;justify-content:center;
-  z-index:4;font-size:22px;line-height:1;font-family:inherit;cursor:pointer;
-  border:1.5px dashed var(--sun-on-leaf);color:var(--sun-on-leaf);
-  background:var(--leaf-add);-webkit-tap-highlight-color:transparent}
+  z-index:4;font-size:14px;line-height:1;font-family:inherit;cursor:pointer;
+  border:1.5px dashed var(--leaf-gold-line);color:var(--sun-on-leaf);
+  background:none;-webkit-tap-highlight-color:transparent}
 /* ── הכרטיס ─────────────────────────────────────────────────────── */
 /* ‏**‏18 בין הבורר לכרטיסייה, ולא 8.** ‏§3 נוקב ב-20, וקובץ העיצוב
    מכריז `.swx{margin-top:8px}` ומיד **דורס אותו ב-18** 55 שורות
    אחריו. קראתי את ההצהרה הראשונה ולא את זו שניצחה בקסקייד —
    בדיוק המלכודת שהפרק על שמות קלאס תפוסים מתאר, בכיוון של ערך
    ולא של שם. */
+/* ‏**‏0 מעל ו-20 מתחת** (`FIX-picker-header.md` §2): מה שמפריד
+   בין השורה לכרטיס הוא ריפוד ה-4 של `.crnw`, ו-20 מתחתיו הם
+   בדיוק מה שהנקודות תפסו עד עכשיו — כלומר הגיליון הלבן אינו זז
+   ולו פיקסל מול שני הטאבים השכנים. */
 .swx{display:block;position:relative;flex:0 0 auto;touch-action:pan-y;
-  margin-top:18px;-webkit-tap-highlight-color:transparent}
+  margin:0 0 20px;-webkit-tap-highlight-color:transparent}
 .swx .kcard2{transition:transform .22s ease,opacity .22s ease;will-change:transform}
 .swx img{-webkit-user-drag:none}
 .swx.drag .kcard2{transition:none}
@@ -4140,8 +4202,13 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    ב"פעילות" יושבת מתחת לכרטיס שורת הנקודות של הקרוסלה (20), והמסילה
    שם פותחת ב-20 ולא ב-18. ההפרש היה 22 פיקסלים, ואלון ראה אותו
    כקפיצה במעבר בין שני טאבים שכנים. **המרווח התחתון הוא המקום
-   שהנקודות תופסות שם**, ולא מספר שנבחר: 60+20+200+20+36 בשניהם. */
-#rl-card{margin:20px 0}
+   שהנקודות תופסות שם**, ולא מספר שנבחר.
+
+   **ומ-`FIX-picker-header.md` §2 זה חל על שלושה ולא על שניים**,
+   והמרווח העליון עלה מ-20 ל-52: אלה 52 הפיקסלים ששורת הבורר
+   תופסת ב"מה מחכה להם", והם מה שמניח את הגיליון הלבן על אותו
+   פיקסל בשלושת הטאבים. ‏60+52+200+20+36 בשלושתם. */
+#rl-card{margin:52px 0 20px}
 .kcard2 .cfc{width:48px;height:48px;border-radius:50%;overflow:hidden;flex:0 0 auto;
   display:block;background:var(--face-fill);box-shadow:0 0 0 2px var(--leaf-gold-line)}
 .kcard2 .cfc svg,.kcard2 .cfc img{display:block;width:100%;height:100%;
@@ -4165,7 +4232,12 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    מופיע בשורה הראשונה של הפיד סנטימטר מתחת, וכפילות כזאת מרוקנת את
    החלק הירוק. **כרטיס ברוחב מלא** ומתחיל באותו קו של כל מסך: המסילה
    יוצאת אל שני הקצוות ומחזירה את הריפוד בתוכה, כמו הגיליון הלבן. */
-.acar{margin:20px -18px 0}
+/* ‏**‏52 מעל הכרטיס, כמו שורת הבורר בטאב השכן** (`FIX-picker-header.md`
+   §2). המסמך נוקב ב-`gap-top` בגובה 52 ועוד `gap-bot` שמקזז את
+   ה-20 שהקרוסלה מוסיפה מעצמה; אצלנו זה מספר אחד על אותה הצהרה,
+   כי **ה-20 האלה הם המרווח הזה ולא שכבה נוספת** — ‏`<div>` ריק
+   שכל תפקידו גובה הוא צומת שצריך לסנכרן. */
+.acar{margin:52px -18px 0}
 .arail{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;
   scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 18px;
   -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
@@ -5016,7 +5088,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'be88aae';
+window.NETA_BUILD = 'db8641b';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -5540,8 +5612,13 @@ window.NETA_CONFIG = {
         <div class="hi">מה מחכה</div>
         <div class="nm">להם</div>
       </div>
-      <button class="act" id="fu-how" onclick="howOpen()">
-        <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"/></svg>איך זה עובד</button>
+      <!-- ‏**‏"להוסיף רגע" ולא "איך זה עובד"** (`FIX-picker-header.md`
+           §3). **והשורה המקווקוות בגיליון נשארת:** הכפתור הוא קיצור
+           דרך שנראה תמיד, והשורה היא הפעולה בהקשר של רשימת הרגעים —
+           ושתיהן קוראות ל-`fuAddMoment`, כלומר פעולה אחת עם שתי
+           כניסות ולא שני נתיבים שצריך לסנכרן. -->
+      <button class="act" id="fu-how" onclick="fuAddMoment()">
+        <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg>להוסיף רגע</button>
     </div>
 
     <!-- ── הבורר: טבעת, לא רשימה נגללת (§9) ─────────────────────
@@ -5589,7 +5666,6 @@ window.NETA_CONFIG = {
         </div>
       </div>
     </div>
-    <div class="pdots" id="fu-dots" aria-hidden="true"></div>
   </div><!-- /fut-head -->
 
   <!-- ── הגיליון הלבן ──────────────────────────────────────────────
@@ -6220,6 +6296,11 @@ window.NETA_CONFIG = {
         <div class="hi">כל</div>
         <div class="nm">הפעילות</div>
       </div>
+      <!-- ‏**הטאב היחיד שלא היה בו כפתור בשורה העליונה, ולכן השורה
+           שלו נקראה כמו מסך אחר** (`FIX-picker-header.md` §3). אותה
+           גלולה בדיוק של "ההשקעות שלי", ואותו נוסח. -->
+      <button class="act" onclick="howOpen()">
+        <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"/></svg>איך זה עובד</button>
     </div>
 
     <!-- ‏**הכרטיס הוא קרוסלה של ארבע זוויות על אותו חודש** (§2ב).
@@ -6779,11 +6860,15 @@ window.NETA_CONFIG = {
         <div class="hi">נוטעים</div>
         <div class="nm">איתך</div>
       </div>
-      <!-- ‏**עיגול מקווקו ולא מלא** (`FIX-relatives-v2.md` §1):
-           הוא אומר "אין כאן ערך עדיין, אפשר להוסיף", וזו כבר
-           הצורה של כל משבצת ריקה במוצר. -->
-      <button class="act ps dash" onclick="openAddPerson('with')"
-              aria-label="להוסיף קרוב">＋</button>
+      <!-- ‏**עיגול הפלוס המקווקו הוחלף בכפתור עם שם** (`FIX-picker-header.md`
+           §3). הוא היה הפעולה היחידה בארבעת הטאבים שאינה נוקבת במה
+           היא עושה, **ומקווקו אמר "אין כאן ערך עדיין"** — אמירה על
+           משבצת ריקה, לא על פעולה. **ו-`ivFromRelatives` ולא
+           `openAddPerson`:** הכפתור אומר "להזמין", וזו הפונקציה
+           שמובילה לדבר עצמו; היא נופלת לאשף ההוספה כשאין ולו רגע
+           אחד שמותר לי להזמין אליו. -->
+      <button class="act" onclick="ivFromRelatives()">
+        <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg>להזמין קרוב</button>
     </div>
 
     <!-- ‏**הכרטיס הוא `.kcard2`, אותו רכיב של שאר הטאבים** (§2),
@@ -6792,6 +6877,9 @@ window.NETA_CONFIG = {
          הכותרת במסך הבית, וכאן הנושא הוא מי נוטע איתך.
          **ושני תאים בלבד, בלי צפי:** צפי משותף לכמה ילדים בקצבים
          שונים הוא מספר מעורפל. -->
+    <!-- ‏**‏52 מעל ו-20 מתחת** (`FIX-picker-header.md` §2): אותם 52
+         שהבורר תופס ב"מה מחכה להם", ואותם 20 שהנקודות תופסות
+         ב"פעילות". שלושת הגיליונות מתחילים על אותו פיקסל. -->
     <div class="kcard2" id="rl-card">
       <p class="kt">נוטעים איתך</p>
       <div class="cbig"><span class="stk on-leaf" id="rl-stk"></span>
@@ -8021,7 +8109,10 @@ function go(i){
   if(i===17)buildLetters();
   if(i===SEC_SCREEN())buildSecurity();
   document.querySelector('.stage').scrollTo?.(0,0);
-  window.scrollTo({top:0,behavior:'smooth'});
+  /* ‏**‏`.wrap` ולא `window`**: מרגע שהמסמך נעול (`fix-scrolling.md`
+     §1) ‏`window.scrollTo` הוא פקודה לצומת שאינו גולל. מה שגולל
+     מחוץ למכשיר הוא סרגל הבדיקה, והוא יושב בעטיפה. */
+  document.querySelector('.wrap')?.scrollTo?.({top:0,behavior:'smooth'});
 }
 
 const months=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
@@ -19850,9 +19941,13 @@ function fuWithBenes(items,all){
    **המיקומים נבנים מהמרכז החוצה לפי הרדיוס האמיתי של כל עיגול**,
    ולא על רשת קבועה: הנבחר גדול יותר, ואחרי סיבוב הוא כבר לא
    במרכז. רשת קבועה גורמת לו להידחק לשכן בצד אחד ולפעור רווח בצד
-   השני. הנוסחה נותנת 13 פיקסלים של אוויר בין כל שני עיגולים בכל
-   מצב, כולל בין הפלוס לפרצוף הראשון וכולל ריפוד בקצות הקפסולה. */
-const FU_GAP=13,FU_SM=40,FU_BG=56;
+   השני. הנוסחה נותנת 7 פיקסלים של אוויר בין כל שני עיגולים בכל
+   מצב, כולל בין הפלוס לפרצוף הראשון וכולל ריפוד בקצות הקפסולה.
+
+   **ו-`FIX-picker-header.md` §1 החליף את שלושת הקבועים בלבד**
+   (‏13/40/56 ← 7/24/34). זה כל מה שהמעבר לשורה הקטנה דרש מהמנוע:
+   המיקומים נגזרים מהרדיוס האמיתי, ולכן הם מתכווצים איתם לבדם. */
+const FU_GAP=7,FU_SM=24,FU_BG=34;
 let fuSig='',fuCenter=0,fuGrab=false,fuMoved=false;
 /* ההיסט המעגלי של פריט i ביחס למי שבמרכז. כך גם לראשון וגם לאחרון
    יש שכנים משני הצדדים ואף פעם אין קצה או שטח ריק בתוך הקפסולה.
@@ -19976,7 +20071,7 @@ function fuRingHTML(items,selIdx){
     return '<button type="button" class="cface'+(i===selIdx?' on':'')+
       (x.av?'':' mo')+
       '" data-i="'+i+'" aria-label="'+attrText(x.name||'')+'">'+
-      (x.av?kidFaceHTML(x.av,56):occIcon(x.occ,26,x.name))+'</button>';
+      (x.av?kidFaceHTML(x.av,34):occIcon(x.occ,18,x.name))+'</button>';
   }).join('');
 }
 /* לחיצה בוחרת; גרירה רק מזיזה פרצופים וננעלת למשבצת הקרובה
@@ -20358,11 +20453,11 @@ function paintFuture(items,sel,blank){
     c.classList.toggle('nil',!(v>0));
   }
 
-  /* ── הנקודות ── */
-  const dots=document.getElementById('fu-dots');
-  if(dots)dots.innerHTML=(list.length>1)
-    ? list.map(function(x,i){return '<i'+(i===idx?' class="on"':'')+'></i>'}).join('')
-    : '';
+  /* ‏**ושורת הנקודות ירדה** (`FIX-picker-header.md` §1): שורת
+     הפרצופים שמעל הכרטיס היא גם הבורר וגם המחוון, ושתי הצורות
+     אמרו את אותה עובדה במרחק 200 פיקסלים. **הנקודות ב"פעילות"
+     נשארו**, כי שם אין בורר והקרוסלה היא ארבעה שקפים של אותו
+     חודש. */
 
   /* ── הגיליון ── */
   const full=document.getElementById('home-full'),
