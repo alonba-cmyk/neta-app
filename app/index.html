@@ -259,7 +259,8 @@ body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse
   color:var(--tx);display:flex;flex-direction:column;align-items:center;padding:0;
   height:100dvh;overflow:hidden;-webkit-font-smoothing:antialiased}
 .wrap{width:100%;max-width:430px;display:flex;flex-direction:column;align-items:center;
-  flex:1;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:none}
+  flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;
+  overscroll-behavior-y:contain;scrollbar-width:none}
 .wrap::-webkit-scrollbar{display:none}
 .devlabel{font-size:9.5px;letter-spacing:.1em;color:var(--tx-3);margin:18px 0 8px;text-transform:uppercase}
 .nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;width:100%}
@@ -306,8 +307,17 @@ body{font-family:'Heebo',system-ui,sans-serif;background:radial-gradient(ellipse
    במקרה — פריט flex שה-`overflow` שלו אינו `visible` מקבל ממילא
    מינימום 0 — **ולכן הוא תלוי בהצהרה שנייה שאיש אינו קושר אליו**:
    מי שיחליף את `overflow-y` ל-`visible` יקבל מיכל שגדל עם התוכן,
-   סרגל תחתון שנדחק מחוץ למכשיר, והגלילה עוברת למסמך. בלי שגיאה. */
-.stage{display:flex;flex-direction:column;flex:1;min-height:0;overflow-y:auto;padding:8px 18px 14px;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-y:contain}
+   סרגל תחתון שנדחק מחוץ למכשיר, והגלילה עוברת למסמך. בלי שגיאה.
+
+   **ו-`overflow-x:hidden`, וזה השורה שאלון ראה חסרה.** ‏`overflow`
+   על ציר אחד הופך את הציר השני מ-`visible` ל-`auto`, ולכן הבמה
+   הייתה **מיכל גלילה אופקי** כל הזמן — ורק לא היה לה מה לגלול.
+   ברגע שהכרטיס יוצא בהחלקה הוא מתורגם החוצה, הבמה מקבלת 137
+   פיקסלים של רוחב גלילה, **והאצבע שמחליקה גוללת אותם**: המסך כולו
+   נסע הצידה ורצועה לבנה נפערה בקצה. נמדד שזה קיים גם בגרסה
+   שלפני הסבב, כלומר זה אינו רגרסיה אלא בדיוק מה ש-§1 בא למנוע.
+   זו אותה מלכודת שכבר מתועדת כאן על `#page` ועל הגיליון. */
+.stage{display:flex;flex-direction:column;flex:1;min-height:0;overflow-y:auto;overflow-x:clip;padding:8px 18px 14px;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-y:contain}
 .sticky-sum{position:sticky;top:-8px;z-index:5;margin:8px -18px 10px;padding:7px 18px;background:var(--bg);
   border-bottom:1px solid var(--line);font-size:12.5px;font-weight:500;color:var(--leaf);text-align:center}
 .stage::-webkit-scrollbar{display:none}
@@ -4072,7 +4082,11 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    ‏52 בדיוק — וזה המספר שהטאבים השכנים מקבלים כמרווח ריק (§2).
    **והמנוע לא נגע:** שלושת הקבועים (`FU_GAP`, `FU_SM`, `FU_BG`)
    הם מה שהתחלף, ולא שורת חישוב אחת. */
-.crnw{position:relative;margin:0;padding:14px 0 4px;flex:0 0 auto}
+/* ‏**‏10 מעל ו-8 מתחת, בקשה של אלון.** הרצועה נשארת 52 והכרטיס
+   נשאר 200 — **מה שהתחלף הוא החלוקה בתוך אותם 52 ולא הסכום**,
+   ולכן הגיליון הלבן ממשיך להתחיל על אותו פיקסל בשלושת הטאבים
+   (§2). ‏4 היו מרווח שנקרא כמגע. */
+.crnw{position:relative;margin:0;--pktop:10px;padding:var(--pktop) 0 8px;flex:0 0 auto}
 /* ‏**ואין על הטבעת `touch-action` כלל, כמו בקובץ העיצוב.** היא נשאה
    `pan-y`, כלומר "מותר רק לגלול אנכית" — ואז הדפדפן אינו נועל את
    המחווה לציר האופקי, וכל רכיב אנכי קטן בגרירה מתחיל **גם** לגלול
@@ -4154,11 +4168,11 @@ textarea.ivmsg{resize:none;color:var(--tx)}
   border:1.5px dashed var(--leaf-tile-line)}
 /* ‏**ה-＋ תופס משבצת אמיתית בטבעת**, ורקעו אטום כדי שמי שעובר
    מתחתיו ייחתך בקצה המעוגל ולא יציץ ממנו. */
-/* ‏**ומרכזו נגזר מהריפוד ולא מחצי הגובה.** ‏`top:50%` על `.crnw`
-   שיש לו ריפוד א-סימטרי (14 מעל, 4 מתחת) מניח את מרכזו על 26
-   בזמן שמרכז השורה הוא 31. ‏19 הם הריפוד העליון ועוד חצי ההפרש
-   בין 34 ל-24, כלומר בדיוק המרכז. */
-.crnw .cadd{position:absolute;top:19px;width:24px;height:24px;
+/* ‏**ומרכזו נגזר מהריפוד ולא מחצי הגובה, ומאותה הצהרה.** ‏`top:50%`
+   על `.crnw` שיש לו ריפוד א-סימטרי נופל מתחת למרכז השורה, ומספר
+   קשיח כאן נשבר ביום שהריפוד זז — **וזה קרה.** ‏`--pktop` ועוד חצי
+   ההפרש בין 34 ל-24 הם בדיוק המרכז, בכל ריפוד. */
+.crnw .cadd{position:absolute;top:calc(var(--pktop) + 5px);width:24px;height:24px;
   border-radius:50%;display:flex;align-items:center;justify-content:center;
   z-index:4;font-size:14px;line-height:1;font-family:inherit;cursor:pointer;
   border:1.5px dashed var(--leaf-gold-line);color:var(--sun-on-leaf);
@@ -4173,7 +4187,14 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    בין השורה לכרטיס הוא ריפוד ה-4 של `.crnw`, ו-20 מתחתיו הם
    בדיוק מה שהנקודות תפסו עד עכשיו — כלומר הגיליון הלבן אינו זז
    ולו פיקסל מול שני הטאבים השכנים. */
+/* ‏**‏`overflow-x:clip`, ובמקור ולא רק על הבמה.** הכרטיס יוצא
+   בהחלקה ב-`transform` בן חצי רוחב, ובמסמך RTL זה **רוחב גלילה**
+   של הבמה — ‏137 פיקסלים שהאצבע שמחליקה גוללת אותם, והמסך כולו
+   נוסע הצידה. אלון ראה את זה. ‏`clip` על המכל שבו התנועה קורית
+   אינו יוצר מיכל גלילה כלל, כלומר **אין מה לגלול בשום דפדפן**;
+   חסימה על הבמה לבדה משאירה את האזור קיים ורק אוסרת לגרור אותו. */
 .swx{display:block;position:relative;flex:0 0 auto;touch-action:pan-y;
+  overflow-x:clip;overflow-y:visible;
   margin:0 0 20px;-webkit-tap-highlight-color:transparent}
 .swx .kcard2{transition:transform .22s ease,opacity .22s ease;will-change:transform}
 .swx img{-webkit-user-drag:none}
@@ -5088,7 +5109,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'db8641b';
+window.NETA_BUILD = '9b6ea9c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
