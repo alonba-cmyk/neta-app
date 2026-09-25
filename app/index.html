@@ -4095,11 +4095,11 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    ‏52 בדיוק — וזה המספר שהטאבים השכנים מקבלים כמרווח ריק (§2).
    **והמנוע לא נגע:** שלושת הקבועים (`FU_GAP`, `FU_SM`, `FU_BG`)
    הם מה שהתחלף, ולא שורת חישוב אחת. */
-/* ‏**‏10 מעל ו-8 מתחת, בקשה של אלון.** הרצועה נשארת 52 והכרטיס
-   נשאר 200 — **מה שהתחלף הוא החלוקה בתוך אותם 52 ולא הסכום**,
-   ולכן הגיליון הלבן ממשיך להתחיל על אותו פיקסל בשלושת הטאבים
-   (§2). ‏4 היו מרווח שנקרא כמגע. */
-.crnw{position:relative;margin:0;--pktop:10px;padding:var(--pktop) 0 8px;flex:0 0 auto}
+/* ‏**‏12 מעל ו-6 מתחת** (`FIX-cards-v1.md` §6; קודם 10/8, ולפני כן
+   ‏14/4). הרצועה נשארת 52 והכרטיס נשאר במקומו — **מה שמתחלף הוא
+   החלוקה בתוך אותם 52 ולא הסכום**, ולכן הגיליון הלבן ממשיך להתחיל
+   על אותו פיקסל בשלושת הטאבים. */
+.crnw{position:relative;margin:0;--pktop:12px;padding:var(--pktop) 0 6px;flex:0 0 auto}
 /* ‏**ואין על הטבעת `touch-action` כלל, כמו בקובץ העיצוב.** היא נשאה
    `pan-y`, כלומר "מותר רק לגלול אנכית" — ואז הדפדפן אינו נועל את
    המחווה לציר האופקי, וכל רכיב אנכי קטן בגרירה מתחיל **גם** לגלול
@@ -4212,18 +4212,37 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 .swx .kcard2{transition:transform .22s ease,opacity .22s ease;will-change:transform}
 .swx img{-webkit-user-drag:none}
 .swx.drag .kcard2{transition:none}
-/* ‏**גובה קבוע 200, ושורת המספרים נעוצה לתחתית** (`FIX-relatives-v2.md`
-   §5, וזה כלל שחל על כל המסכים). כך שורת המספרים יושבת על אותו קו
+/* ‏**גובה קבוע 210, ושורת המספרים נעוצה לתחתית** (`FIX-cards-v1.md`
+   §1, וזה כלל שחל על כל המסכים). כך שורת המספרים יושבת על אותו קו
    בכל מסך ובכל מצב, וגם טקסט שתופס שתי שורות אינו מזיז דבר. שם ארוך
-   שנשבר מקצר את הסימן שלצידו ולא את הכרטיס. */
-.kcard2{border:1px solid var(--leaf-gold-line);border-radius:26px;
-  padding:18px 18px 16px;height:200px;display:flex;flex-direction:column;
+   שנשבר מקצר את הסימן שלצידו ולא את הכרטיס.
+
+   **והריפוד העליון הוא 0, וזה אינו קיצור** (§3): הגוש העליון
+   מרוכז במה שנשאר בין הקצה העליון לפס הזהוב, וריפוד עליון היה
+   נבלע במרכוז ומוריד את הגוש במקום לתת לו אוויר. */
+.kcard2{border:1px solid var(--leaf-gold-line);border-radius:24px;
+  padding:0 20px 24px;height:210px;display:flex;flex-direction:column;
   box-sizing:border-box}
-.kcard2 .kt{margin:0;font-size:13px;color:var(--sun-on-leaf);opacity:.9}
-.kcard2 .krule{height:1px;background:var(--leaf-tile-line);margin:16px 0 14px;flex:none}
-.kcard2 .ktrio{margin-top:0}
-.kcard2 .krule{margin-top:auto}
-.kcard2 .cbig{display:flex;align-items:center;gap:12px;margin-top:4px}
+/* ‏**הכותרת הקטנה יושבת בתוך גוש הטקסט, מעל השם** (§4). היא הייתה
+   ילדה של הכרטיס ויושבת מעל הסימן ומעל השם כאחד; עכשיו שלוש השורות
+   מתחילות על אותו קו והסימן עומד מול שלושתן כיחידה אחת. */
+.kcard2 .kt{margin:0 0 1px;font-size:12px;color:var(--sun-on-leaf);
+  line-height:1.3}
+.kcard2 .krule{height:1px;background:var(--leaf-tile-line);margin:0 0 14px;
+  flex:0 0 auto}
+/* ‏**בלוק התאים בגובה קבוע** (§1), ושניהם `flex:0 0 auto` (§2): כך
+   הם שומרים על גובהם המלא גם כשהטקסט מעליהם נשבר לשתי שורות, ולכן
+   המרחק מהפס לתחתית הכרטיס זהה בכל כרטיס — וזה מה שמניח את הפס על
+   אותו קו בשלושת הטאבים. */
+.kcard2 .ktrio{margin-top:0;height:45px;flex:0 0 auto}
+/* ‏**שני מרווחי `auto` על גוש הטקסט, ולא אחד על הפס** (§2+§3).
+   ‏§2 מבקש `margin-top:auto` על הפס ו-§3 מבקש שני `auto` סביב הגוש,
+   **ושלושה `auto` מחלקים את המקום הפנוי לשלושה** — כלומר הגוש אינו
+   מרוכז. מה שהפס באמת צריך הוא שהמרחק שלו מתחתית הכרטיס יהיה קבוע,
+   וזה מובטח ממילא: 24 של ריפוד, 45 של תאים ו-14 של מרווח. נמדד
+   ‏29 מעל הגוש ו-28 מתחתיו. */
+.kcard2 .cbig{display:flex;align-items:center;gap:12px;
+  margin-top:auto;margin-bottom:auto}
 /* ערימת הפרצופים שבכרטיס: ‏44 בטבעת בצבע הראש, בחפיפה של 14.
    ‏`row-reverse` כי ב-RTL הראשון ברשימה צריך לשבת מעל מי שאחריו. */
 .kcard2 .cbig .stk{flex-direction:row-reverse;align-items:center;--stk-sz:44px;
@@ -4241,10 +4260,21 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    **ומ-`FIX-picker-header.md` §2 זה חל על שלושה ולא על שניים**,
    והמרווח העליון עלה מ-20 ל-52: אלה 52 הפיקסלים ששורת הבורר
    תופסת ב"מה מחכה להם", והם מה שמניח את הגיליון הלבן על אותו
-   פיקסל בשלושת הטאבים. ‏60+52+200+20+36 בשלושתם. */
-#rl-card{margin:52px 0 20px}
-.kcard2 .cfc{width:48px;height:48px;border-radius:50%;overflow:hidden;flex:0 0 auto;
-  display:block;background:var(--face-fill);box-shadow:0 0 0 2px var(--leaf-gold-line)}
+   פיקסל בשלושת הטאבים. **ומאז ש-`FIX-cards-v1` §9 הפך גם את
+   הכרטיס הזה לקרוסלה, המכל הוא `.acar` המשותף ו-`#rl-card`
+   אינו קיים.** */
+/* ‏**‏94 אחוז** (§1), **והטבעת היא שנוגעת בקו ולא הקופסה** (§5):
+   ‏`box-shadow` נצבע **מחוץ** לגבול, ולכן הקצה החיצוני שלה יצא אחרי
+   הקו שבו מסתיימים הפס הזהוב והתאים. המרווח מחזיר אותו פנימה, והוא
+   נגזר מהטבעת ומהקנה מידה ולא נכתב ביד — `--cfc-ring` הוא עוביה. */
+.kcard2 .cfc,.kcard2 .pie{--cfc-ring:2px;--cfc-sc:.94;
+  transform:scale(var(--cfc-sc));
+  margin-inline-start:calc((24px + var(--cfc-ring)) * var(--cfc-sc) - 24px)}
+/* לטבעת העוגה אין טבעת, ולכן הקצה שלה הוא הקופסה עצמה. */
+.kcard2 .pie{--cfc-ring:0px}
+.kcard2 .cfc{width:48px;height:48px;border-radius:50%;
+  overflow:hidden;flex:0 0 auto;display:block;background:var(--face-fill);
+  box-shadow:0 0 0 var(--cfc-ring) var(--leaf-gold-line)}
 .kcard2 .cfc svg,.kcard2 .cfc img{display:block;width:100%;height:100%;
   object-fit:cover;clip-path:circle(50%)}
 /* קופה שלא יועדה אינה אדם, ולכן ריבוע מעוגל ולא עיגול. */
@@ -4255,10 +4285,10 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 .kcard2 .cfc.gh{background:none;border:1.5px dashed var(--leaf-gold-line);
   box-shadow:none;display:grid;place-items:center;color:var(--sun-on-leaf);
   font-size:22px}
-.kcard2 .cnm{margin:0;font-size:31px;font-weight:800;color:var(--on-head);
+.kcard2 .cnm{margin:0;font-size:30px;font-weight:800;color:var(--on-head);
   letter-spacing:-.6px;line-height:1.08;white-space:nowrap;overflow:hidden;
   text-overflow:ellipsis}
-.kcard2 .ckin2{margin:4px 0 0;font-size:12.5px;color:var(--sun-on-leaf);
+.kcard2 .ckin2{margin:3px 0 0;font-size:13px;color:var(--sun-on-leaf);
   line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kcard2.waiting{border-style:dashed}
 /* ── ‏**הקרוסלה של "פעילות"** (`FIX-activity-v2.md` §2ב) ──────────
@@ -4271,7 +4301,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    ה-20 שהקרוסלה מוסיפה מעצמה; אצלנו זה מספר אחד על אותה הצהרה,
    כי **ה-20 האלה הם המרווח הזה ולא שכבה נוספת** — ‏`<div>` ריק
    שכל תפקידו גובה הוא צומת שצריך לסנכרן. */
-.acar{margin:52px -18px 0}
+.acar{margin:52px -18px 20px}
 .arail{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;
   scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 18px;
   -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
@@ -4281,19 +4311,66 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    קיימת בשבילו. זה כבר קרה כאן פעם אחת, ב-`.fucar`. */
 .aslide{flex:0 0 100%;scroll-snap-align:center;-webkit-tap-highlight-color:transparent}
 .aslide .kcard2{margin-top:0}
-.pdots{display:flex;justify-content:center;align-items:center;gap:6px;padding-top:14px}
+/* ── ‏**הקרוסלה של "הקרובים שלי"** (`FIX-cards-v1.md` §9) ────────
+   שלושה כרטיסים באותו רכיב בדיוק של הקרוסלה ב"פעילות", ולכן אין
+   כאן ולו כלל אחד על המסילה, על הנקודות או על הכרטיס. מה שנוסף
+   הוא מה שיש בתוך שני הכרטיסים הראשונים בלבד. */
+/* ‏**כרטיס 1 · המעגל.** שתי עמודות, ציור מימין וטקסט לצידו, והוא
+   הכרטיס היחיד בכל המוצר שאין בו פס ואין בו תאים — **מה שהוא אומר
+   הוא מי, ולא כמה.** */
+.rlrow{display:flex;align-items:center;gap:4px;margin:0}
+/* ‏**וההזזה של ארבעה פיקסלים מטה אינה קישוט.** בציור יש פרצוף אחד
+   למעלה ושניים למטה, ולכן המסה שלו גבוהה ממרכז התיבה; בלעדיה
+   הטקסט שלצידו נראה נמוך ממנו. */
+.rlnet{position:relative;width:150px;height:118px;flex:0 0 auto;
+  transform:translateY(4px) scale(.93)}
+.rlnet>span{position:absolute;left:50%;top:50%;border-radius:50%;
+  overflow:hidden;background:var(--face-fill);display:block}
+.rlnet>span svg,.rlnet>span img{display:block;width:100%;height:100%;
+  object-fit:cover;clip-path:circle(50%)}
+.rlnet .me{width:40px;height:40px;margin:-20px 0 0 -20px;
+  box-shadow:0 0 0 2.5px var(--sun-on-leaf)}
+.rlnet .o{width:30px;height:30px;margin:-15px 0 0 -15px;
+  box-shadow:0 0 0 2px rgba(227,206,159,.42)}
+/* ‏**מי שעדיין אינו נוטע דוהה ואינו נעלם** — הוא בפנקס, וזה מה
+   שהמעגל מראה. */
+.rlnet .o.dim{opacity:.42}
+.rlnet .o.add{background:none;box-shadow:none;
+  border:1.5px dashed var(--sun-on-leaf);color:var(--sun-on-leaf);
+  display:grid;place-items:center;font-size:15px;line-height:1}
+.rlbig{margin:0;font-size:27px;font-weight:800;letter-spacing:-.5px;
+  color:var(--on-head);line-height:1.12}
+.rlsub{margin:4px 0 0;font-size:13px;color:var(--sun-on-leaf);line-height:1.3}
+/* ‏**כרטיס 3 · טבעת העוגה, במקום שבו יושב הסימן בכל כרטיס.**
+   **שני החלקים הם כסף שכבר קיים**, ולכן שניהם בגווני הקרם והלבן:
+   צבע החול שמור לצפי בכל מקום אחר באפליקציה. */
+.pie{width:48px;height:48px;border-radius:50%;position:relative;
+  flex:0 0 auto;
+  background:conic-gradient(from -90deg,var(--face-fill) 0 var(--pie),
+             rgba(255,255,255,.17) var(--pie) 100%)}
+.pie::after{content:"";position:absolute;inset:12px;border-radius:50%;
+  background:var(--leaf-head)}
+/* ‏**שורת הנקודות יושבת בתוך ה-20 שממילא יש מתחת לכרטיס** (§7),
+   ואינה מוסיפה גובה: ‏-20 של מרווח, ‏14 של ריפוד ו-6 של נקודה הם 0
+   בזרימה. כך היא נראית 14 מתחת לכרטיס **והלבן אינו זז** — בשלושת
+   הטאבים, ובלי קשר לכמה נקודות יש. **וזה גם מה שסוגר חוב שקט:**
+   ‏`display:none` על שורה ריקה היה מוריד 20 פיקסלים בטאב שיש בו
+   שקף אחד בלבד, כלומר הגיליון שלו היה מתחיל 20 גבוה יותר מהשכן. */
+.pdots{display:flex;justify-content:center;align-items:center;gap:6px;
+  margin-top:-20px;padding-top:14px;flex:0 0 auto}
 .pdots i{display:block;width:6px;height:6px;border-radius:50%;
   background:rgba(255,255,255,.35);transition:width .2s}
 .pdots i.on{width:18px;border-radius:99px;background:var(--sun-on-leaf)}
-/* כרטיס אחד אינו קרוסלה, ולכן אין לו נקודות ואין לו אוויר מתחתן. */
+/* כרטיס אחד אינו קרוסלה, ולכן אין לו נקודות. */
 .pdots:empty{display:none}
-/* ‏**הסמל נעוץ לשורה העליונה** (§2), ולא ממורכז ביחס לשתי השורות —
-   אחרת הוא נראה כאילו הוא שייך לשורה התחתונה. */
-.kcard2 .cfc.top{align-self:flex-start}
+/* ‏**‏`.cfc.top` נמחק** (`FIX-cards-v1.md` §4). הוא נעץ את הסמל
+   לשורה העליונה כשהכותרת הקטנה ישבה **מעליו**, ואז מרכוז היה
+   מושך אותו אל השורה התחתונה; מרגע שהכותרת בתוך הגוש, הסמל עומד
+   מול שלוש השורות יחד וממורכז מולן. */
 .ktrio{display:flex;margin-top:2px}
 .ktrio>div{flex:1;min-width:0;text-align:center;padding:0 4px}
 .ktrio>div+div{border-inline-start:1px solid var(--leaf-tile-line)}
-.ktrio .kk{margin:0;font-size:13px;color:rgba(255,255,255,.62);white-space:nowrap;
+.ktrio .kk{margin:0;font-size:11.5px;color:rgba(255,255,255,.62);white-space:nowrap;
   display:flex;justify-content:center}
 .ktrio .kv{margin:5px 0 0;font-size:clamp(12.5px,4vw,16.5px);font-weight:700;
   color:var(--on-head);white-space:nowrap;display:flex;justify-content:center}
@@ -4309,16 +4386,14 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    לתא — נמדד 94 מתוך 98 ב-390 ב-16.5, ו-103 ב-18. */
 .ktrio .kv.sand{color:var(--sun-on-leaf)}
 .ktrio .kv.nil{color:rgba(255,255,255,.72)}
-/* שני תאים במקום שלושה: ילד של אחרים שאינו משתף. */
-.ktrio.two .kk{font-size:14px}
-.ktrio.two .kv{font-size:20px}
-/* ── הנקודות, צמודות לכרטיסייה ויורדות איתה ──────────────────── */
-.pdots{display:flex;justify-content:center;align-items:center;gap:6px;
-  padding-top:14px;flex:0 0 auto}
-.pdots i{display:block;width:6px;height:6px;border-radius:50%;
-  background:rgba(255,255,255,.35)}
-.pdots i.on{width:18px;border-radius:99px;background:var(--sun-on-leaf)}
-.pdots:empty{display:none}
+/* ‏**‏`.ktrio.two` איבד את הגדלים שלו** (`FIX-cards-v1.md` §1).
+   ‏`FIX-activity-v2` §2 נתן לשקף בן שני תאים 14 ו-20, **ו-§1 נוקב
+   בטבלה אחת בלי חריג** — וזה גם מה שהמדידה מחייבת: בלוק התאים הוא
+   ‏45 קבוע, ו-14 ועוד 5 ועוד 20 הם 50, כלומר תא שנחתך. */
+/* ‏**וההצהרה השנייה של `.pdots` נמחקה.** היא הכריזה שוב את אותם
+   ‏`padding-top` ו-`gap` ‏33 שורות אחרי הראשונה, ובלי `margin-top` —
+   כלומר מי שיזיז את אחת מהן לא יראה את השנייה. ‏`flex:0 0 auto`
+   שהיה רק בה עבר לראשונה. */
 /* ‏**‏`overflow-x:clip` על הגיליון, ולא `hidden`.** ‏`FIX-waiting-v2`
    מזהיר מראש שאלמנט ברוחב מלא בתוך גיליון נגלל יוצר פס גלילה
    אופקי, **ו-`hidden` על ציר אחד הופך את הציר השני מ-`visible`
@@ -5122,7 +5197,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ee0680f';
+window.NETA_BUILD = 'e3a8bef';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -5676,10 +5751,13 @@ window.NETA_CONFIG = {
          שם** — הוא נאמר פעם אחת, כאן. -->
     <div class="swx" id="fu-swx">
       <div class="kcard2" id="fu-k">
-        <p class="kt" id="fk-for">מה מחכה ל</p>
         <div class="cbig">
           <span class="cfc" id="fk-av" aria-hidden="true"></span>
           <div style="min-width:0">
+            <!-- ‏**הכותרת הקטנה בתוך הגוש, מעל השם** (`FIX-cards-v1.md`
+                 §4): שלוש השורות מתחילות על אותו קו, והסימן עומד מול
+                 שלושתן כיחידה אחת. -->
+            <p class="kt" id="fk-for">מה מחכה ל</p>
             <p class="cnm" id="fk-nm">·</p>
             <!-- ‏**הקרבה והרגע באותה שורה, מופרדים בפסיק** (§3),
                  ולא שתי שורות. השורה נבדקה עם הנוסחים הארוכים
@@ -5700,6 +5778,13 @@ window.NETA_CONFIG = {
         </div>
       </div>
     </div>
+    <!-- ‏**שורת נקודות, אחת לכל יקר** (`FIX-cards-v1.md` §7). היא
+         ירדה מכאן ב-`FIX-picker-header` §1 בנימוק ששורת הפרצופים
+         היא גם הבורר וגם המחוון, **וזה התהפך:** הבורר אומר מי
+         נבחר, והנקודות אומרות כמה יש ואיפה אנחנו ביניהם — ובטאב
+         השכן הן כבר שם. הן יושבות בתוך ה-20 שממילא יש מתחת
+         לכרטיס, ולכן הלבן אינו זז. -->
+    <div class="pdots" id="fu-dots" aria-hidden="true"></div>
   </div><!-- /fut-head -->
 
   <!-- ── הגיליון הלבן ──────────────────────────────────────────────
@@ -6185,10 +6270,10 @@ window.NETA_CONFIG = {
          אין לו גובה קבוע של 224 — מה שמחזיק את השלד הוא שהוא אותו
          רכיב בדיוק ולא רכיב שני שמסכים איתו. -->
     <div class="kcard2">
-      <p class="kt">הכסף מיועד ל</p>
       <div class="cbig">
         <span class="msq" id="d-sq" aria-hidden="true"></span>
         <div style="min-width:0">
+          <p class="kt">הכסף מיועד ל</p>
           <p class="cnm" id="d-occ">·</p>
           <!-- של מי הרגע ומתי הוא נפתח, מופרדים בפסיק. **המועד הוא
                הקשר ולא מספר**, ולכן הוא בטקסט ולא בתא. -->
@@ -6911,17 +6996,12 @@ window.NETA_CONFIG = {
          הכותרת במסך הבית, וכאן הנושא הוא מי נוטע איתך.
          **ושני תאים בלבד, בלי צפי:** צפי משותף לכמה ילדים בקצבים
          שונים הוא מספר מעורפל. -->
-    <!-- ‏**‏52 מעל ו-20 מתחת** (`FIX-picker-header.md` §2): אותם 52
-         שהבורר תופס ב"מה מחכה להם", ואותם 20 שהנקודות תופסות
-         ב"פעילות". שלושת הגיליונות מתחילים על אותו פיקסל. -->
-    <div class="kcard2" id="rl-card">
-      <p class="kt">נוטעים איתך</p>
-      <div class="cbig"><span class="stk on-leaf" id="rl-stk"></span>
-        <div><p class="cnm" id="rl-num">0 קרובים</p>
-          <p class="ckin2" id="rl-sub">·</p></div></div>
-      <div class="krule"></div>
-      <div class="ktrio two" id="rl-foot"></div>
-    </div>
+    <!-- ‏**קרוסלה של שלושה כרטיסים** (`FIX-cards-v1.md` §9), באותו
+         מנגנון ובאותו עיצוב של הקרוסלה ב"פעילות": המעגל, הנטיעה
+         האחרונה, והחלק שלהם. ‏52 מעל ו-20 מתחת כמו בשני הטאבים
+         השכנים, ולכן שלושת הגיליונות מתחילים על אותו פיקסל. -->
+    <div class="acar"><div class="arail" id="rl-rail"></div></div>
+    <div class="pdots" id="rl-dots"></div>
   </div>
 
   <div class="sheet-main">
@@ -8171,10 +8251,8 @@ function bShortWhen(o){
 const COUNT_WORD=['','','שני','שלושה','ארבעה','חמישה','שישה',
                   'שבעה','שמונה','תשעה','עשרה'];
 function countWord(n){return COUNT_WORD[n]||String(n)}
-/* אותה רשימה בנקבה, ל"ועוד אחת בדרך" שבכרטיס. */
-const COUNT_WORD_F=['','אחת','שתיים','שלוש','ארבע','חמש','שש',
-                    'שבע','שמונה','תשע','עשר'];
-function countWordF(n){return COUNT_WORD_F[n]||String(n)}
+/* ‏`COUNT_WORD_F` ו-`countWordF` נמחקו עם "ועוד אחת בדרך"
+   (`FIX-cards-v1.md` §9). */
 let cType='בר/בת מצווה',cIcon='bar_mitzvah',dateTouched=false;
 /* a fund without a named beneficiary is a different instrument, and says so */
 let designated=true;
@@ -8842,9 +8920,9 @@ function actTrio(cells){
 }
 function actSlide(kt,glyph,big,sub,cells){
   return '<div class="aslide"><div class="kcard2">'+
-    '<p class="kt">'+attrText(kt)+'</p>'+
     '<div class="cbig">'+glyph+
-      '<div><p class="cnm">'+attrText(big)+'</p>'+
+      '<div style="min-width:0"><p class="kt">'+attrText(kt)+'</p>'+
+      '<p class="cnm">'+attrText(big)+'</p>'+
       '<p class="ckin2">'+attrText(sub)+'</p></div></div>'+
     '<div class="krule"></div>'+actTrio(cells)+'</div></div>';
 }
@@ -8868,7 +8946,7 @@ function actSlides(){
        חלון שמתחיל אחרי הציור כולו, כלומר פיסה של 4 על 9 מפינתו,
        מוגדלת. **‏`viewBox` אינו גודל, הוא מערכת הצירים של הציור**,
        וזה בדיוק מה שאלון ראה: סמל קטן ולא ממורכז בתוך הריבוע. */
-    '<span class="cfc sq top"><svg viewBox="0 0 14 15" aria-hidden="true">'+
+    '<span class="cfc sq"><svg viewBox="0 0 14 15" aria-hidden="true">'+
       '<use href="#sprout"/></svg></span>',
     shekel(f.total||0),
     /* ‏**ושלוש אמירות ולא אחת, מאז שהמצב הריק הוא אותו מסך.**
@@ -8934,13 +9012,14 @@ function acPhotos(){
     if(a&&a.indexOf('av-')!==0&&!photoUrl(a))out.push(a)}
   return out;
 }
-let acSlide=0;
-function paintActCard(){
-  const fc=document.getElementById('ac-face');
-  if(fc)fc.innerHTML=faceHTML(myAvatarKey(),'av-parent');
-  const rail=document.getElementById('ac-rail'),dots=document.getElementById('ac-dots');
+/* ── ‏**קרוסלה אחת לשני הטאבים** (`FIX-cards-v1.md` §9) ──────────
+   "פעילות" ו"הקרובים שלי" מציגים שתי קרוסלות באותו מנגנון ובאותו
+   עיצוב, ולכן הציור והסנכרון הם פונקציה אחת שמקבלת זוג מזהים —
+   **שני בונים שצריך לסנכרן הם בדיוק מה שהסבב הזה מוריד.** */
+const carAt={};
+function carPaint(railId,dotsId,sl){
+  const rail=document.getElementById(railId),dots=document.getElementById(dotsId);
   if(!rail)return;
-  const sl=actSlides();
   /* ‏**חתימה, ולא ציור בכל קריאה.** ‏`paintActCard` נקראת גם
      מ-`syncActEmpty` וגם מ-`paintInvestments`, ומחיקת ילדים ממכל
      שגולל מאפסת את `scrollLeft` — כלומר הקרוסלה הייתה קופצת לשקף
@@ -8952,20 +9031,28 @@ function paintActCard(){
     rail.innerHTML=sl.map(function(x){return x.html}).join('');
     if(dots)dots.innerHTML=sl.length>1?sl.map(function(x,n){
       return '<i'+(n===0?' class="on"':'')+'></i>'}).join(''):'';
-    acSlide=0;
-    if(!rail.dataset.bound){rail.dataset.bound='1';rail.addEventListener('scroll',acSync)}
+    carAt[railId]=0;
+    if(!rail.dataset.bound){
+      rail.dataset.bound='1';
+      rail.addEventListener('scroll',function(){carSync(railId,dotsId)});
+    }
   }
+}
+function paintActCard(){
+  const fc=document.getElementById('ac-face');
+  if(fc)fc.innerHTML=faceHTML(myAvatarKey(),'av-parent');
+  carPaint('ac-rail','ac-dots',actSlides());
   /* התמונות של מי שנטע החודש ושל הילד שבשקף האחרון, בקריאה אחת. */
   signPhotos(acPhotos());
 }
 /* הנקודה עוקבת אחרי מי שתופס הכי הרבה מהמסילה **ברגע ההכרעה**, ולא
    אחרי אירוע שאומר שמשהו קרה: תיבת הגבול זהה בשני הדפדפנים והסימן
    של `scrollLeft` אינו. אותה הכרעה של `fuInView`. */
-let acT=null;
-function acSync(){
-  if(acT)clearTimeout(acT);
-  acT=setTimeout(function(){
-    const rail=document.getElementById('ac-rail'),dots=document.getElementById('ac-dots');
+const carT={};
+function carSync(railId,dotsId){
+  if(carT[railId])clearTimeout(carT[railId]);
+  carT[railId]=setTimeout(function(){
+    const rail=document.getElementById(railId),dots=document.getElementById(dotsId);
     if(!rail||!dots||!dots.children.length)return;
     const r=rail.getBoundingClientRect();
     let best=0,area=-1;
@@ -8974,7 +9061,7 @@ function acSync(){
       const w=Math.min(b.right,r.right)-Math.max(b.left,r.left);
       if(w>area){area=w;best=n}
     });
-    acSlide=best;
+    carAt[railId]=best;
     [...dots.children].forEach(function(d,n){d.classList.toggle('on',n===best)});
   },90);
 }
@@ -14274,83 +14361,126 @@ const SOLO_13Y=2350000;
 function relPlanters(){
   return (relInviteKey?[]:relInviters()).concat(relatives.filter(relJoined));
 }
-function paintRelCard(){
-  const ppl=relPlanters();
-  const joined=ppl.length;
-  const foot=document.getElementById('rl-foot'),stk=document.getElementById('rl-stk');
-  const rf=document.getElementById('rel-face');
-  if(rf)rf.innerHTML=faceHTML(myAvatarKey(),'av-parent');
-  /* ‏**ארבעת המצבים של §4, וכולם אותו כרטיס.** מי שהזמין ואיש עוד
-     לא נטע אינו "עוד אין קרובים" — יש קרוב, והוא הוזמן; מה שאין
-     הוא כסף, וזה מה ששני התאים אומרים. **ו"אתה לבד" כשאיני נוטע
-     עם איש אבל כן נוטע לאחרים.** */
-  const invPpl=relatives.filter(function(r){return !relJoined(r)&&r.status==='invited'});
-  const inv=invPpl.length;
+/* ── ‏**שלושת כרטיסי "הקרובים שלי"** (`FIX-cards-v1.md` §9) ──────
+   הכרטיס היחיד הפך לקרוסלה, באותו מנגנון ובאותו עיצוב של הקרוסלה
+   ב"פעילות" — ולכן `actSlide` ו-`actTrio` משרתים גם אותה, ואין
+   כאן בונה שני שצריך לסנכרן. */
+
+/* ‏**חמש המשבצות שסביב המרכז** (§9): רדיוס 44, בזוויות ‎-90, -18,
+   ‏54, ‏126 ו-198 מעלות. ‏`translate` פיזי ולא לוגי, כי זו צורה
+   סימטרית וסדר הקריאה אינו נוגע בה. */
+const REL_RING=[[0,-44],[41.8,-13.6],[25.9,35.6],[-25.9,35.6],[-41.8,-13.6]];
+function relNetHTML(){
+  const ppl=relPeople();
+  /* ‏**חמש משבצות לכל היותר, והאחרונה הפנויה היא ההוספה.** מי
+     שעדיין אינו נוטע דוהה ואינו נעלם: הוא בפנקס, וזה מה שהמעגל
+     מראה. */
+  const show=ppl.slice(0,ppl.length>=REL_RING.length?REL_RING.length:REL_RING.length-1);
+  let out='<span class="me">'+faceHTML(myAvatarKey(),'av-parent')+'</span>';
+  REL_RING.forEach(function(pos,i){
+    const t=' style="transform:translate('+pos[0]+'px,'+pos[1]+'px)"';
+    const r=show[i];
+    if(r)out+='<span class="o'+(relJoined(r)?'':' dim')+'"'+t+'>'+
+      faceHTML(r.av,'av-someone')+'</span>';
+    else if(i===show.length)out+='<span class="o add"'+t+' aria-hidden="true">+</span>';
+  });
+  return '<div class="rlnet" aria-hidden="true">'+out+'</div>';
+}
+/* ‏**הנטיעה האחרונה של קרוב**, מהפיד עצמו ולא ממקור שני: אותן
+   שורות שהפיד מציג, בלי שלי. */
+function relLastRow(){
+  return (feedRows||[]).filter(function(e){
+    return e.kind==='contribution'&&!e.isMe&&e.amount!=null&&e.at;
+  }).sort(function(a,b){return new Date(b.at)-new Date(a.at)})[0]||null;
+}
+/* מה שקרובים נטעו בחלון זמן: החודש, ומתחילת השנה. */
+function relSince(iso){
+  return (feedRows||[]).reduce(function(a,e){
+    if(e.kind!=='contribution'||e.isMe||e.amount==null||!e.at)return a;
+    return String(e.at).slice(0,10)>=iso?a+Number(e.amount||0):a;
+  },0);
+}
+function relSlides(){
+  const out=[];
+  const ppl=relPeople(),n=ppl.length;
+  const joined=relPlanters().length;
   const forOthers=kidSectionCount();
-  /* ‏**המספר הוא מספר השורות ברשימה, כולל הממתינים** (§6). הוא
-     סָפַר את מי שכבר נטע, ולכן הכרטיס הכריז "קרוב אחד" מעל רשימה
-     שיש בה ארבעה — או, אצל אלון, מעל רשימה ריקה. */
-  const n=relPeople().length;
-  txt('rl-num',n?(n===1?'קרוב אחד':n+' קרובים')
-    :forOthers?'אתה לבד':'עוד אין קרובים');
-  /* ‏**ערימת פרצופים במקום פרצוף יחיד** (§2): הטאב הזה הוא על
-     קבוצה, ולכן הסימן שלו הוא קבוצה. שלושה, כמו בשאר הטאבים —
-     מעבר לזה הערימה מתחילה לכסות את המספר שלצידה. **ובמצב ריק
-     שני עיגולים מקווקוים**, כי "אין ערך עדיין" הוא מקווקו בכל
-     המוצר. */
-  const show=relPeople();
-  if(stk)stk.innerHTML=show.length
-    ? show.slice(0,3).map(function(x){
-        return '<span>'+faceHTML(x.av,'av-someone')+'</span>'}).join('')
-    : '<span class="gh"></span><span class="gh"></span>';
-  if(stk)stk.classList.toggle('ghost',!show.length);
-  /* ‏**למי הם נוטעים, ולא "כל קרוב מהכיס שלו".** ‏§2 נוקב בשורה
-     אחת שאומרת לכמה ילדים; **ו"ועוד אחת בדרך" אינה שם**, כי אלון
-     ביקש במפורש שהשורה הזאת תרד, וזו בקשה שגוברת על העיצוב. */
-  const kids=relKidCount();
-  /* ‏**שורה אחת בשני חלקים** (§2): הזמנה שממתינה ואחריה למי הם
-     נוטעים, ו**המספרים במילים ולא בספרות** — אלון ראה "לעתיד של
-     3 ילדים", וספרה בתוך משפט הקשר היא בדיוק מה ש-§5 אוסר.
-     **והחלק הראשון מופיע רק כשיש הזמנה ממתינה**, וזה מחזיר את
-     "ועוד אחת בדרך" שירדה מכאן בסבב קודם לבקשת אלון: מה שהוא
-     ביקש להוריד אז היה שורה שאומרת את זה **לבדה**, והיא חוזרת
-     כחצי משפט שנגמר בלמי. */
-  const pend=inv?('ועוד '+countWordF(inv)+' בדרך'):'';
-  const to=kids?('ל'+(kids===1?'ילד אחד':countWord(kids)+' ילדים')):'';
-  txt('rl-sub',joined
-    ? ([pend,to].filter(Boolean).join(', ')||'לעתיד של מי שיקר לכם')
-    : inv?(inv===1?'הוזמן ועוד לא נטע':'הוזמנו ועוד לא נטעו')
-    : 'כל קרוב שמצטרף נוטע מהכיס שלו');
-  /* ‏**"נטעתם יחד" ו"הם נטעו" נגזרים מאותו מקור שממנו נגזרת
-     הרשימה** (§2). הם חושבו על `familyMine` בלבד בזמן שהשורות
-     סופרות את `participants` של **כל** הנטיעות, ולכן קרוב שנטע
-     לאחיין שלי הציג סכום בשורה ולא נספר בתא שמעליה. עכשיו שניהם
-     על כל הנטיעות שבמודל: `accrued` בסך הכול, ו`accrued-mine`
-     הוא החלק שלהם. */
+
+  /* ‏**‏1 · המעגל.** הוא אומר מי, ולא כמה, ולכן אין בו פס ואין בו
+     תאים — הכרטיס היחיד כזה במוצר. */
+  out.push({k:'net',html:'<div class="aslide"><div class="kcard2">'+
+    '<div class="cbig rlrow">'+relNetHTML()+
+      '<div style="min-width:0"><p class="rlbig">'+
+      attrText(n?(n===1?'קרוב אחד':countWord(n)+' קרובים')
+                :forOthers?'אתם לבד':'עוד אין קרובים')+'</p>'+
+      '<p class="rlsub">'+attrText(n?'נוטעים איתכם':'כאן יופיעו מי שנוטע איתכם')+
+      '</p></div></div></div></div>'});
+
   const rows=(lastModel&&lastModel.plantings)||[];
   const tot=rows.reduce(function(a,p){return a+Number(p.accrued||0)},0);
   const mine=rows.reduce(function(a,p){return a+Number(p.mine||0)},0);
   const theirs=Math.max(0,tot-mine);
-  if(foot)foot.innerHTML=
-    relCell('נטעתם יחד',tot)+relCell('הם נטעו',theirs);
+
+  /* ‏**‏2 · הנטיעה האחרונה.** היא נבנית רק כשבאמת יש אחת: כרטיס
+     שאומר "0 ₪" על אירוע שלא קרה אינו מדווח אלא ממציא. */
+  const last=relLastRow();
+  /* ‏**ורק כשיש ממה**: כרטיס "הנטיעה האחרונה" קורא מהפיד וכרטיס
+     "החלק שלהם" קורא מהמודל, ושניהם אומרים את אותו דבר — כמה
+     הקרובים נטעו. בלי התנאי הזה הם יכולים לסתור זה את זה על אותו
+     מסך, ‏50 ₪ מעל 0 ₪. */
+  if(last&&theirs>0){
+    const now=new Date();
+    const kid=feedKid(last);
+    out.push({k:'last',html:actSlide('הנטיעה האחרונה',
+      '<span class="cfc">'+faceHTML(last.avatar,'av-someone')+'</span>',
+      shekel(last.amount||0),
+      /* ‏**ובלי לוכסן**: כשאין מגדר השורה נוקבת בשם ובמועד ותו לא,
+         אותה הכרעה של `feedSay`. */
+      (last.actorSex==='f'?(last.actor+' נטעה'):
+       last.actorSex==='m'?(last.actor+' נטע'):(last.actor+' · נטיעה'))+
+        (kid?(' '+withPrep('ל',kid)):'')+', '+feedWhen(last.at),
+      [['החודש',shekel(relSince(now.getFullYear()+'-'+
+          String(now.getMonth()+1).padStart(2,'0')+'-01'))],
+       ['מתחילת השנה',shekel(relSince(now.getFullYear()+'-01-01'))]])});
+  }
+
+  /* ‏**‏3 · החלק שלהם.** האחוז הוא החלק של הקרובים מתוך הסך הכול,
+     והוא נבנה רק כשיש ממה לחשב אותו. */
+  if(tot>0){
+    const pct=Math.round(theirs*100/tot);
+    out.push({k:'share',html:actSlide('החלק שלהם',
+      '<span class="pie" style="--pie:'+pct+'%"></span>',
+      pct+'%','ממה שנצבר הגיע מהקרובים',
+      [['הם נטעו',shekel(theirs),Number(theirs)?'':' nil'],
+       ['נטעתם יחד',shekel(tot),Number(tot)?'':' nil']])});
+  } else {
+    out.push({k:'share',html:actSlide('החלק שלהם','<span class="pie" style="--pie:0%"></span>',
+      '0%',joined?'עוד לא נצבר כאן כלום':'כל קרוב שמצטרף נוטע מהכיס שלו',
+      [['הם נטעו','0 ₪',' nil'],['נטעתם יחד','0 ₪',' nil']])});
+  }
+  return out;
 }
-/* תא בשורת המספרים: `0 ₪` עמום ולא "·", כמו בכל הכרטיסים בסבב הזה. */
-function relCell(label,agorot){
-  const z=!Number(agorot);
-  return '<div><p class="kk">'+attrText(label)+'</p>'+
-    '<p class="kv'+(z?' nil':'')+'">'+shekel(agorot||0)+'</p></div>';
+/* התמונות של מי שבמעגל ושל מי שנטע אחרון, בקריאה אחת. */
+function relPhotos(){
+  const out=[];
+  relPeople().forEach(function(x){
+    if(x.av&&x.av.indexOf('av-')!==0&&!photoUrl(x.av))out.push(x.av)});
+  const l=relLastRow();
+  if(l&&l.avatar&&l.avatar.indexOf('av-')!==0&&!photoUrl(l.avatar))out.push(l.avatar);
+  const me=myAvatarKey();
+  if(me&&me.indexOf('av-')!==0&&!photoUrl(me))out.push(me);
+  return out;
 }
-/* כמה ילדים הקרובים נוטעים להם: הנהנים של הרגעים שיש בהם מישהו
-   מלבדי. הוא מה שמחליף את "לשלושה ילדים" שבעיצוב. */
-function relKidCount(){
-  const seen={};
-  ((lastModel&&lastModel.plantings)||[]).forEach(function(p){
-    if(!p.familyMine)return;
-    const k=kidOf(p);
-    if(k)seen[k]=1;
-  });
-  return Object.keys(seen).length;
+function paintRelCard(){
+  const rf=document.getElementById('rel-face');
+  if(rf)rf.innerHTML=faceHTML(myAvatarKey(),'av-parent');
+  carPaint('rl-rail','rl-dots',relSlides());
+  signPhotos(relPhotos());
 }
+/* ‏**‏`relCell` ו-`relKidCount` נמחקו** יחד עם הכרטיס שהן שירתו
+   (`FIX-cards-v1.md` §9): שורת התאים נבנית מעכשיו ב-`actTrio`,
+   ושתי השורות שהן הרכיבו — "ועוד אחת בדרך" ו"לשני ילדים" — אינן
+   על המסך. **מה שירד מהמסך יורד גם מהקוד.** */
 /* ‏**כמה הקרוב הזה נטע** (`FIX-relatives-v2.md` §3). ‏`participants`
    נושאת `amount` מאז 0076, והוא `null` בדיוק כשאסור לי לראות אותו —
    כלומר העובדה עצמה ולא דגל שצריך לגזור. שורה שאין בה ולו סכום אחד
@@ -20487,11 +20617,18 @@ function paintFuture(items,sel,blank){
     c.classList.toggle('nil',!(v>0));
   }
 
-  /* ‏**ושורת הנקודות ירדה** (`FIX-picker-header.md` §1): שורת
-     הפרצופים שמעל הכרטיס היא גם הבורר וגם המחוון, ושתי הצורות
-     אמרו את אותה עובדה במרחק 200 פיקסלים. **הנקודות ב"פעילות"
-     נשארו**, כי שם אין בורר והקרוסלה היא ארבעה שקפים של אותו
-     חודש. */
+  /* ‏**ושורת הנקודות חזרה** (`FIX-cards-v1.md` §7), אחת לכל יקר.
+     היא ירדה ב-`FIX-picker-header` §1 בנימוק ששורת הפרצופים היא
+     גם הבורר וגם המחוון; מה שמחזיק את ההיפוך הוא שהן אומרות
+     דברים שונים — הבורר אומר **מי** נבחר, והנקודות אומרות **כמה
+     יש ואיפה אנחנו ביניהם** — ושבטאב השכן הן כבר שם.
+     **והנקודה הפעילה מתעדכנת משני מקורות**, הבורר וההחלקה, כי
+     שניהם עוברים דרך `paintFuture`. */
+  const dots=document.getElementById('fu-dots');
+  if(dots)dots.innerHTML=(list.length>1)
+    ? list.map(function(x,i){return '<i'+(i===idx?' class="on"':'')+'></i>'}).join('')
+    : '';
+
 
   /* ── הגיליון ── */
   const full=document.getElementById('home-full'),
