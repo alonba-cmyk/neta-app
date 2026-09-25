@@ -5238,7 +5238,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '4f7aecc';
+window.NETA_BUILD = 'e9385e5';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7956,8 +7956,18 @@ window.NETA_CONFIG = {
     <div id="iv-new" style="display:none">
       <h2>מה הקרבה שלכם?</h2>
       <div class="kgrid" id="iv-kin"></div>
+      <!-- ‏**בלי `autocomplete="off"`, ואלון ראה למה.** הוא הקליד
+           "רנה" וקיבל "הנר": התווים נדחפו לתחילת המחרוזת, אחד
+           אחד — נראה גם בעיגול האות, שהציג ה' ולא ר'. **זה היה
+           השדה העברי היחיד באפליקציה שנשא `off`**, וארבעת האחרים
+           (`c-name`, `c-custom`, `ap-name`, `ap-kidname`) אינם
+           נושאים אותו כלל ועובדים אצלו — ולכן גם כאן אין תכונה
+           ולא ערך אחר. ‏`off` מכבה ל-Gboard את אזור
+           החיבור, ובעברית זה מה שמחזיר את נקודת ההכנסה ל-0 אחרי
+           כל תו. **בדפדפן שולחני זה אינו מופיע** — נמדד גם עם
+           `Input.imeSetComposition`, והערך יצא "רנה". -->
       <input type="text" class="ivname" id="iv-nmin" placeholder="השם"
-             oninput="ivNameIn()" autocomplete="off">
+             oninput="ivNameIn()">
     </div>
     <!-- שלב המסר -->
     <div id="iv-msg" style="display:none">
@@ -21559,7 +21569,10 @@ function ivPaintNew(){
                                {cols:4,noOther:true});
   const in_=document.getElementById('iv-nmin');
   if(in_){
-    in_.value=ivS.nm||'';
+    /* ‏**ולא כותבים לשדה שהאצבע בתוכו.** כתיבה חוזרת של אותו ערך
+       מאפסת את מיקום הסמן באמצע הקלדה, וזו אותה שורה שכבר יושבת
+       על תיבת המסר ועל `amtShow`. */
+    if(document.activeElement!==in_&&in_.value!==(ivS.nm||''))in_.value=ivS.nm||'';
     in_.placeholder=ivS.kin?('איך קוראים ל'+KIN[ivS.kin].chip+'?'):'השם';
   }
 }
