@@ -3009,6 +3009,22 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #wiz-card .tx .lit{display:inline;white-space:normal;padding:0 11px;
   margin-inline-start:0;margin-inline-end:-22px;border-radius:12px}
 #wiz-occ{line-height:1.45}
+/* ‏**ובשורת הרגע המסגרת היא מלבן אחד** (`FIX-moment-line-v1.md` §3).
+   ‏`display:inline` עם `box-decoration-break:clone` נותן **תגית לכל
+   שורה**, וזו הצורה הנכונה כשהשורה נחתכת באמצע משפט; כאן הטקסט הוא
+   שם ותאריך, ושתי תגיות נקראות כשני ערכים. ‏`inline-block` עוטף את
+   שתי השורות כקופסה אחת.
+   **ו-§2 נפתר מעצמו, ולכן לא נלקח כלשונו.** הוא מבקש להעביר מרווח
+   שלילי של 5 מהמסגרת אל השורה, כדי ששתי תגיות לא יימשכו זו לזו —
+   ומרגע שהמסגרת אחת אין שתי תגיות, ואין גם מה לקזז: הריפוד האנכי
+   כאן הוא 0 מאז `FIX-create-v4` §1, כי תיבת התוכן של הקופסה כבר
+   נושאת כ-5 פיקסלים של אוויר מהמטריקה. **גובה הקופסה שווה בדיוק
+   לגובה שורות הטקסט**, כלומר המסגרת צובעת ואינה מוסיפה ולו פיקסל
+   אחד — לא דלוקה ולא כבויה.
+   **ו-`max-width` חוזר איתו:** ‏`inline-block` הוא shrink-to-fit,
+   ורוחב הפנוי שלו נגזר מהמכל פחות המרווחים — בלי ההצהרה הוא מתכווץ
+   ‏22 פיקסלים מוקדם מדי ושובר שורה שנכנסת. */
+#wiz-card #wiz-occ .lit{display:inline-block;max-width:calc(100% + 22px)}
 /* ── §1+§2 · הקו, והרגל שיושבת תמיד באותה קופסה ─────────────────
    הקו הוא `<div>` בזרימה ולא `border-top` של הרגל, ולכן המרחק
    מהשורה האחרונה אליו קבוע (‏14) ואינו נגזר ממה שנשאר בכרטיס:
@@ -3114,20 +3130,26 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    מקלדת, נגישות וגרירה — והציור הוא `::-webkit-slider-runnable-track`
    ו-`::-webkit-slider-thumb` עליו, ולא `<div>` שני שצריך לסנכרן. */
 .screen.wiz .rngw{margin-top:clamp(7px,1.25vh,11px)}
-/* ‏`direction:ltr` על הקלט עצמו, אחרת המינימום יושב מימין בעוד
-   שהתוויות שמתחתיו אומרות את ההפך — ספרות נקראות משמאל לימין,
-   וזו אותה הכרעה שכבר יושבת על משבצות הקוד ועל המייל. */
+/* ‏**והסליידר מימין לשמאל, וזו הכרעה שהתהפכה** (בקשה של אלון).
+   הוא נשא `direction:ltr` בנימוק ש"ספרות נקראות משמאל לימין",
+   **וזה נימוק על מספר ולא על פקד**: מה שהסליידר מודד הוא כמה,
+   והכיוון שבו הוא גדל הוא כיוון הקריאה של המסך. המינימום יושב
+   מעכשיו מימין והידית נוסעת שמאלה, כמו כל מה שמתמלא במסך הזה.
+   **והתוויות נגררות איתו** — ‏`.rngl` היה `ltr` בדיוק כדי להסכים
+   איתו, ומרגע שהוא התהפך הן מתהפכות באותה שורה.
+   **והמילוי הוא `to left`**, כי `to right` הוא כיוון פיזי שאינו
+   יודע על `direction`: בלעדיו הידית בקצה אחד והצבע בקצה השני. */
 .screen.wiz .rngw input[type=range]{-webkit-appearance:none;appearance:none;
-  width:100%;height:22px;background:none;margin:0;display:block;direction:ltr}
+  width:100%;height:22px;background:none;margin:0;display:block}
 /* ‏**המילוי הוא גרדיאנט על המסילה ולא `<div>` שני שצריך לסנכרן.**
    ‏`--p` נכתב ב-`amtShow`, שהיא ממילא המקום היחיד שיודע גם את הערך
    וגם את הטווח. */
 .screen.wiz .rngw input[type=range]::-webkit-slider-runnable-track{
   height:8px;border-radius:99px;
-  background:linear-gradient(to right,var(--leaf) 0 var(--p,0%),var(--line) var(--p,0%) 100%)}
+  background:linear-gradient(to left,var(--leaf) 0 var(--p,0%),var(--line) var(--p,0%) 100%)}
 .screen.wiz .rngw input[type=range]::-moz-range-track{
   height:8px;border-radius:99px;
-  background:linear-gradient(to right,var(--leaf) 0 var(--p,0%),var(--line) var(--p,0%) 100%)}
+  background:linear-gradient(to left,var(--leaf) 0 var(--p,0%),var(--line) var(--p,0%) 100%)}
 .screen.wiz .rngw input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;
   appearance:none;width:22px;height:22px;border-radius:50%;background:var(--s1);
   border:3px solid var(--leaf);margin-top:-7px;box-shadow:0 2px 6px rgba(11,27,20,.18)}
@@ -3135,7 +3157,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   border-radius:50%;background:var(--s1);border:3px solid var(--leaf);
   box-shadow:0 2px 6px rgba(11,27,20,.18)}
 .screen.wiz .rngl{display:flex;justify-content:space-between;
-  font-size:11px;color:var(--tx-3);margin-top:4px;direction:ltr}
+  font-size:11px;color:var(--tx-3);margin-top:4px}
 /* ‏**שורת השנים תמיד בשורה אחת, וחמישה שבבים ברוחב שווה** (§6,
    ‏§13.5). ‏`.chips` הגלובלי הוא `flex-wrap:wrap` עם רוחב תוכן. */
 .screen.wiz #c-terms{display:flex;flex-wrap:nowrap;gap:8px}
@@ -4095,11 +4117,15 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    ‏52 בדיוק — וזה המספר שהטאבים השכנים מקבלים כמרווח ריק (§2).
    **והמנוע לא נגע:** שלושת הקבועים (`FU_GAP`, `FU_SM`, `FU_BG`)
    הם מה שהתחלף, ולא שורת חישוב אחת. */
-/* ‏**‏12 מעל ו-6 מתחת** (`FIX-cards-v1.md` §6; קודם 10/8, ולפני כן
-   ‏14/4). הרצועה נשארת 52 והכרטיס נשאר במקומו — **מה שמתחלף הוא
-   החלוקה בתוך אותם 52 ולא הסכום**, ולכן הגיליון הלבן ממשיך להתחיל
-   על אותו פיקסל בשלושת הטאבים. */
-.crnw{position:relative;margin:0;--pktop:12px;padding:var(--pktop) 0 6px;flex:0 0 auto}
+/* ‏**‏8 מעל ו-10 מתחת** (קודם 12/6, ולפני כן 10/8 ו-14/4). אלון ראה
+   במכשיר שהבורר "כמעט נוגע בכרטיסיה", **ומה שמפריד בינו לכרטיס הוא
+   הריפוד התחתון בלבד** — `.swx` אינו נושא מרווח עליון. הרצועה נשארת
+   ‏52 והכרטיס נשאר במקומו: **מה שמתחלף הוא החלוקה בתוך אותם 52 ולא
+   הסכום**, ולכן הגיליון הלבן ממשיך להתחיל על אותו פיקסל בשלושת
+   הטאבים. **ו-`--pktop` הוא המקום היחיד שמכריע**, כי הוא גם מה
+   שממקם את משבצת ה-＋ — מספר שנגזר ביד משני דברים נשבר ביום שאחד
+   מהם זז, וזה כבר קרה כאן פעם אחת. */
+.crnw{position:relative;margin:0;--pktop:8px;padding:var(--pktop) 0 10px;flex:0 0 auto}
 /* ‏**ואין על הטבעת `touch-action` כלל, כמו בקובץ העיצוב.** היא נשאה
    `pan-y`, כלומר "מותר רק לגלול אנכית" — ואז הדפדפן אינו נועל את
    המחווה לציר האופקי, וכל רכיב אנכי קטן בגרירה מתחיל **גם** לגלול
@@ -5212,7 +5238,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '67a3197';
+window.NETA_BUILD = '4f7aecc';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -10638,10 +10664,18 @@ function wizCard(cur,total){
     :(cFreshPanel()?'מה השם?':'עבור מי?')),!nm&&desig);
   /* הרגע והמועד הם שורה אחת, כמו בכרטיס המזכרת של מסך הרגע. */
   const t=cType==='custom'?((( document.getElementById('c-custom')||{}).value)||'').trim():cType;
-  const occ=(hasOcc&&t)?plantingName(t,nm,true):'';
-  /* ‏**החודש מקוצר כאן, לבקשת אלון.** "בת המצווה של אביב · ספטמבר
-     2036" נשברה לשתי שורות ודחפה את הכרטיס. */
-  const when=(hasOcc&&cDate&&cDate.value)?monthYear(cDate.value,true):'';
+  /* ‏**והשורה אינה נוקבת בשם הילד** (`FIX-moment-line-v1.md` §1).
+     הוא יושב בשורה שמעליה בגופן של 19 עד 32, ולכן הוא נאמר פעמיים
+     באותו כרטיס במרחק שורה אחת — וזה גם מה שהאריך את המשפט עד
+     שנשבר לשתיים. **ואין כאן טבלה שנייה:** `plantingName` בלי שם
+     מחזירה את הצורה המיודעת של `OCCASION_NOUN`, כלומר בדיוק את מה
+     שיישמר במסד פחות הזנב. */
+  const occ=(hasOcc&&t)?plantingName(t,'',true):'';
+  /* ‏**והחודש חוזר למלואו** (§1), כי הקיצור פינה לו מקום. הוא קוצר
+     כאן בסבב קודם לבקשת אלון בדיוק מפני שהשורה נשברה, **ומה שהפיל
+     אותה היה שם הילד ולא שם החודש** — ו"ספטמבר" הוא הצורה שבכל
+     שאר הטקסטים באפליקציה. */
+  const when=(hasOcc&&cDate&&cDate.value)?monthYear(cDate.value):'';
   /* ‏**ורגע שכבר קיים מביא איתו את המועד שלו** (§10). */
   wizSet('wiz-occ',occ?(occ+(when?(' · '+when):'')):(desig?'לאיזה רגע?':''),
          !occ&&desig);
@@ -14633,10 +14667,14 @@ function ivMyRows(){
   return ((lastModel&&lastModel.plantings)||[]).filter(function(p){
     return p&&!p.joined});
 }
+/* ‏**ומסך החזרה נגזר מהמסך שעליו לחצו ואינו מספר כתוב ביד.**
+   ‏`#garden-new` שב"ההשקעות שלי" קורא לאותה פונקציה, ו-15 קשיח
+   היה מחזיר אותו לטאב אחר; **מספר מסך כתוב ביד נשבר בשקט**, וזה
+   כבר מתועד כאן. ‏`curScreen` נקרא לפני ש-`go` מזיז אותו. */
 function ivFromRelatives(){
   const own=ivMyRows(),near=nearestOf(own);
   const key=(near&&near.p&&near.p.key)||(own[0]&&own[0].key)||'';
-  if(key){openInviteFlow(key,15);return}
+  if(key){openInviteFlow(key,curScreen);return}
   openAddPerson('with');
 }
 function relAddRow(kind,title,sub){
@@ -19754,8 +19792,13 @@ function paintInvestments(){
     const alone=hmGroup==='own'&&tot>0&&tot<=mine;
     add.style.display=alone?'':'none';
     if(alone){
+      /* ‏**והיא פותחת את פלואו ההזמנה ולא את הטאב** (בקשה של אלון):
+         "כפתור מוביל לדבר עצמו, ולא למסך שבו בוחרים אותו" —
+         ‏`openPeople()` הנחית על "הקרובים שלי", שם צריך למצוא את
+         "להוסיף קרוב" בסוף הרשימה וללחוץ שוב. זו אותה הכרעה
+         שכבר סגרה את אותו מסלול שלוש פעמים. */
       add.setAttribute('aria-label','להזמין קרוב לנטוע איתכם');
-      add.setAttribute('onclick','openPeople()');
+      add.setAttribute('onclick','ivFromRelatives()');
       add.querySelector('.t').textContent='להזמין קרוב לנטוע איתכם';
       add.querySelector('.s').textContent='סבא, סבתא, דוד, חבר קרוב';
     }
