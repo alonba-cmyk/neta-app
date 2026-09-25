@@ -2430,7 +2430,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ביד מהחפיפה ויצא קטן מדי. **המחיר:** כל מה שמתחת לגיליון
    יורד שישה פיקסלים. */
 /* ‏**והריפוד הצדדי הוא 14 ולא 18, כלומר הכרטיס רחב ב-8.** אלון ראה
-   במכשיר ש"הטיול אחרי הצבא של אביב · ספט׳ 2036" נשבר לשתי שורות
+   במכשיר ש"הטיול הגדול של אביב · ספט׳ 2036" נשבר לשתי שורות
    בתוך ההדלקה ושהתגית נחתכת. **והקצה נשאר קרוב למה שבעיצוב:** שם
    הכרטיס הוא `margin:0 18px` והפאנל הלבן `padding:0 22px`, כלומר
    הכרטיס חורג ממנו ב-4 לכל צד; אצלנו זה היה 2 ועכשיו 6.
@@ -2508,10 +2508,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ואת "להוסיף קרוב". שם `.jnp .usub` כבר דורס את `margin-top`
    בספציפיות גבוהה יותר, ולכן הריפוד היה נכנס והפיצוי לא — כלומר
    הגיליון היה זז פיקסל בשלב השלישי. ‏`join6.js` תפס את זה. */
-#wiz-occ{padding-block:3px;margin-top:2px;margin-bottom:-3px}
+/* ‏**והפיצוי שישב כאן ירד** (`FIX-create-v4.md` §1): הוא נכתב כשהמסגרת
+   הייתה חייבת מקום משלה, ומרגע שהיא `inline` היא אינה תופסת דבר —
+   ‏3 הפיקסלים האלה היו עודף קבוע שהשורה נשאה בלי שאיש רואה, והם
+   הפרש בין קצה ה-`<p>` לקצה הגוש שמעליו. */
 .wizc .tbhero>span,.wizc .bot .v>span,.wizc .wizto .v>span{display:inline-block}
-/* ‏**שני תאי הכסף יחד**, ולכן המסגרת על השורה ולא על תא אחד. */
-.wizc .bot.lit{padding:10px;margin-inline:-10px;border-radius:14px}
+/* ‏**שני תאי הכסף יחד**, ולכן המסגרת על השורה ולא על תא אחד;
+   באשף הנטיעה זו `.litfoot` שקיימת תמיד (`FIX-create-v4.md` §2),
+   וכאן נשאר מה שמשרת את שאר הכרטיסים של אותו ראש. */
+.wizc .bot.lit:not(.litfoot){padding:10px;margin-inline:-10px;border-radius:14px}
 /* **הבזק חול קצר על הערך עצמו** כשנבחר, ופעימה עדינה על מסגרת
    הכרטיס. ‏`.45s`, ועל הערך בלבד. */
 @keyframes wizpop{0%{background:var(--sun-on-leaf);color:var(--leaf-head)}
@@ -2788,9 +2793,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   padding:clamp(11px,2vh,16px) 16px clamp(11px,2vh,16px)}
 .device.gtop #wiz-card .tbhero{font-size:clamp(19px,2.9vh,32px)}
 .device.gtop #wiz-card .ph{width:clamp(40px,7vh,56px);height:clamp(40px,7vh,56px)}
-.device.gtop #wiz-card .bot{padding-top:clamp(7px,1.4vh,12px)}
-.device.gtop #wiz-card .wizto{margin-top:clamp(6px,1.2vh,10px);
-  padding-top:clamp(6px,1.2vh,10px)}
+/* ‏**הקו הוא מה שמתכווץ במסך נמוך, ולא הריפוד של הרגל.** ‏14 הם
+   מה שהמסמך נוקב בו ב-390x844, ומתחת לזה הכרטיס חייב לוותר על
+   אוויר כדי להישאר במסך אחד. */
+.device.gtop #wiz-card .wizrule{margin-top:clamp(8px,1.66vh,14px)}
 .screen.wiz{padding-top:clamp(14px,2.8vh,22px)}
 .screen.wiz>h2{font-size:clamp(17px,2.6vh,20px)}
 .screen.wiz>h2+.sub{margin-top:clamp(2px,.5vh,4px);font-size:clamp(12px,1.8vh,13.5px)}
@@ -2892,7 +2898,7 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   flex:1 0 auto}
 .screen.wiz .wcta{margin-top:auto;position:sticky;bottom:0;z-index:3;
   background:var(--s1);
-  padding:clamp(9px,1.8vh,15px) 0 calc(clamp(6px,1.2vh,12px) + env(safe-area-inset-bottom))}
+  padding:clamp(8px,1.5vh,13px) 0 calc(clamp(5px,1vh,9px) + env(safe-area-inset-bottom))}
 .screen.wiz .wcta>.btn{width:100%;margin-top:0}
 
 /* ── §2 · מסגרת החול צריכה אוויר משלה ואסור שתיחתך ──────────────
@@ -2904,22 +2910,65 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    ומה שמחזיק אותה הוא הריפוד.
    **והמרווחים מקוזזים, ולכן הקצה התחתון של הכרטיס אינו זז**
    כשההדלקה עוברת אליה: זו בדיוק בדיקת הקבלה של §12 בסבב הקודם. */
-#wiz-occ{display:block;overflow:visible;-webkit-line-clamp:none;
-  padding-block:7px 3px;margin-top:-2px;margin-bottom:-10px}
-#wiz-name{padding-block:4px;margin-top:-2px;margin-bottom:-4px}
-/* ‏**והריפוד מקוזז בקצה השמאלי בלבד**, כפי שכבר היה: המסגרת
-   מוסיפה 22 פיקסלים של ריפוד, ובלעדי הקיזוז "הטיול אחרי הצבא של
+/* ‏**והפיצוי האנכי ירד לגמרי** (`FIX-create-v4.md` §1). הוא ישב על
+   שתי השורות שנושאות את המסגרת, בערכים א-סימטריים שנגזרו ביד מכל
+   שורה בנפרד, וזה החזיק רק כל עוד שתיהן ידועות מראש. */
+/* ‏**ושתי השורות מקבלות את האוויר שהמסגרת צריכה, תמיד.** הריפוד
+   שלה נמדד מתיבת התוכן של הקופסה ה-inline, שהיא נגזרת מגודל הגופן
+   ולא מגובה השורה — ולכן ב-`.tbhero`, שהוא `line-height:1.05`,
+   היא חורגת 6.5 פיקסלים מעל השורה ונוחתת על "נטיעה חדשה" שמעליה.
+   אלון היה רואה את זה בצילום הראשון. ‏7 מכל צד הם בדיוק מה שהמסגרת
+   תופסת, והם **קבועים ולא נוספים בהדלקה** — כלומר הכרטיס אינו זז. */
+#wiz-name{margin-top:7px}
+#wiz-occ{display:block;overflow:visible;-webkit-line-clamp:none;margin-top:7px}
+/* ‏**והריפוד האופקי מקוזז בקצה השמאלי בלבד**, כפי שכבר היה: המסגרת
+   מוסיפה 22 פיקסלים של ריפוד, ובלעדי הקיזוז "הטיול הגדול של
    אביב · ספט׳ 2036" נשבר לשתי שורות ברגע שהוא נדלק — נמדד, וזה
    בדיוק מה ש-`wizcard.js` שומר עליו. הקצה הימני יושב על הקו של
    התווית שמעליה, ולכן אין קפיצה בשני הכיוונים. */
-#wiz-card .lit{display:inline-block;max-width:calc(100% + 22px);white-space:normal;
-  line-height:1.45;padding:4px 11px;margin-inline-start:0;
-  margin-inline-end:-22px;border-radius:12px}
-/* ‏**ובשלב "כמה" המסגרת עוטפת את כל רגל הכרטיס כקופסה** (§2), עם
-   ריפוד פנימי ובלי להיצמד לקו המפריד — ולכן הקו יורד איתה. */
-.wizc #wiz-money.bot.lit{display:flex;border-radius:14px;padding:11px 13px;
-  margin:12px 0 0;border-top:0;box-decoration-break:slice;
-  -webkit-box-decoration-break:slice}
+/* ‏**ובלי `line-height` משלה.** היא נכתבה 1.45 בסבב הקודם בשביל
+   שורת הרגע, ו-`.tbhero` הוא 1.05: אותה הצהרה הגביהה את שורת השם
+   ב-12.8 פיקסלים בדיוק כשהיא נדלקה עליה, כלומר הכרטיס גדל בשלב
+   הראשון וקטן בשני. **השורה שנושאת תגית קובעת את גובה השורה שלה
+   תמיד**, דלוקה או לא, ולכן אין מה להוריש.
+
+   **והיא `inline` ולא `inline-block`, וזה מה שהופך את §1 למדויק.**
+   ‏`inline-block` תורם את **תיבת המרווח** שלו לגובה השורה, ולכן
+   ‏`margin-block:-5px` מול `padding-block:5px` אינו מתאפס: הבסיס
+   שלו נמדד מקצה אחר, ונמדדו 3 פיקסלים של עודף. **בקופסה `inline`
+   הריפוד והמרווח האנכיים אינם נספרים לגובה השורה כלל**, וזה בדיוק
+   מה שהמסמך מבקש: המסגרת צובעת ואינה תופסת מקום.
+   **ומה ש-`inline-block` נוסף בשבילו נפתר מעצמו:** הוא הובא כדי
+   ש-`max-width` ימנע שבירת שורה, ובקופסה `inline` אין `max-width`
+   ואין מה למנוע — הריפוד האופקי מקוזז במרווח ורוחב השורה בפועל
+   אינו משתנה. **ו-`box-decoration-break:clone` נכתב ל-inline
+   מלכתחילה.** */
+/* ‏**וממוקד ל-`.tx`, כלומר לשתי שורות הטקסט בלבד.** ‏`#wiz-card .lit`
+   הוא מזהה ומחלקה, ולכן הוא גובר על `.card-main .bot{display:flex}`
+   שהוא שתי מחלקות: רגל הכרטיס הפכה ל-`display:inline` בדיוק ברגע
+   שנדלקה, שני הטורים נערמו זה על זה, והכרטיס גדל ב-44 פיקסלים
+   בשלב "כמה". נמדד. */
+#wiz-card .tx .lit{display:inline;white-space:normal;padding:5px 11px;
+  margin-inline-start:0;margin-inline-end:-22px;border-radius:12px}
+#wiz-occ{line-height:1.45}
+/* ── §1+§2 · הקו, והרגל שיושבת תמיד באותה קופסה ─────────────────
+   הקו הוא `<div>` בזרימה ולא `border-top` של הרגל, ולכן המרחק
+   מהשורה האחרונה אליו קבוע (‏14) ואינו נגזר ממה שנשאר בכרטיס:
+   ‏`margin-top:auto` היה נותן לו את כל העודף, כלומר מספר אחר בכל
+   שלב. **והרגל היא קופסה שקיימת תמיד**, שיוצאת 13 אל תוך ריפוד
+   הכרטיס ומחזירה אותם כריפוד פנימי, והחול נדלק עליה בשלב "כמה"
+   בלבד — עד כה הקופסה **נוצרה** שם, והכרטיס גדל ב-22 פיקסלים
+   בדיוק ברגע שהיא נדלקה. */
+#wiz-card .wizrule{height:1px;background:var(--leaf-tile-line);margin:14px 0 6px}
+/* ‏**והריפוד מגיע מ-`.litfoot` ולא מכאן.** ‏`#wiz-card #wiz-money.bot`
+   הוא שני מזהים, ולכן `padding-top:0` שהיה כאן גבר על הקופסה
+   וריקן לה את הריפוד העליון: הרגל יצאה 8 פיקסלים נמוכה מדי והחול
+   נשען על השורה. */
+#wiz-card #wiz-money.bot{margin-top:0;border-top:0}
+#wiz-card .litfoot{border-radius:14px;padding:8px 13px;margin-inline:-13px;
+  background:transparent;box-shadow:none}
+#wiz-card .litfoot.lit{background:var(--lit-bg);
+  box-shadow:0 0 0 1.5px var(--sun-on-leaf)}
 
 /* ── §3 · "למי נוטעים" הוא רשת שתי עמודות ───────────────────────
    ‏**אריח ולא שורה**: פרצוף בעיגול, השם, ומתחתיו הקרבה באפור.
@@ -2989,10 +3038,10 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 #c-pills.occgrid .exi{position:static;display:block;background:none;
   padding:0;margin-top:2px;font-size:11px;font-weight:400;
   color:var(--tx-3);border-radius:0}
-#c-pills.occgrid button.has{background:var(--s2)}
-#c-pills.occgrid button.has .em{opacity:.62}
-#c-pills.occgrid button.has.on{background:var(--leaf-bg)}
-#c-pills.occgrid button.has.on .em{opacity:1}
+/* ‏**ואריח של רגע שכבר קיים נשאר לבן כמו כל השאר** (§4): רקע צבוע
+   נותן לרגע שכבר נפתח נוכחות חזקה יותר מלרגעים שאפשר לבחור, כלומר
+   בדיוק הפוך ממה שצריך. מה שמסמן אותו הוא המילים "כבר קיים"
+   בלבד, כשורה שנייה קטנה בתוך האריח. */
 
 /* ── §6 · "כמה": שבבים, סליידר, ושורת השנים ─────────────────────
    ‏**שני שבבים ברוחב שווה עם מרווח של 10** (§6, §13.4), ולא שני
@@ -3111,7 +3160,15 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 /* ריפוד ראש הגיליון: `clamp(11px,2vh,18px)` שבעיצוב, ולא 22. */
 .screen.wiz{padding-top:clamp(12px,2.2vh,18px)}
 .screen.wiz #c-up{padding-block:clamp(8px,1.5vh,12px)}
-.screen.wiz #c-avfield{margin-top:clamp(8px,1.6vh,14px)}
+/* ‏**והפאנל מחזיר את מה שהכרטיס לקח.** הכרטיס גדל ב-33 פיקסלים
+   ב-`FIX-create-v4` (קו בזרימה, רגל שהיא קופסה, ו-7 של אוויר לכל
+   שורת טקסט), ופאנל "מישהו חדש" הוא היחיד מהשבעה שעבר את הקיפול
+   ב-390x844. שלושת המרווחים האלה, יחד עם הריפוד של `.wcta`, הם
+   מה שהחזיר אותם, ו-§11 של הסבב הקודם ממשיך להתקיים. */
+.screen.wiz #c-avfield{margin-top:clamp(6px,1.1vh,10px);
+  margin-bottom:clamp(5px,.95vh,8px)}
+.screen.wiz #c-namefield{margin-bottom:clamp(6px,1.1vh,9px)}
+.screen.wiz #c-kidback{margin-bottom:clamp(6px,.95vh,8px)}
 .screen.wiz #wiz-trk{padding-block:clamp(8px,1.4vh,11px)}
 .screen.wiz #c-namefield{margin-top:clamp(8px,1.5vh,12px)}
 .screen.wiz #c-up{margin-top:clamp(7px,1.3vh,11px)}
@@ -3122,8 +3179,6 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    עתה קיבל את שורת השנים. בהפקדה לרגע קיים אין ראש ואין כרטיס,
    ושם היא נשארת. */
 .screen.wiz #c-datehint{display:none}
-#wiz-torow{display:block}
-#wiz-torow .v{font-size:13.5px;font-weight:700}
 [data-name="תשלום"].screen.wiz .opt p{line-height:1.4}
 [data-name="תשלום"].screen.wiz #pay-saved{gap:7px}
 /* ── הזמנת קרוב · הפלואו (`FIX-invite-v1.md`) ─────────────────────
@@ -4944,7 +4999,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ca848a9';
+window.NETA_BUILD = '97b7c3c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -5329,20 +5384,18 @@ window.NETA_CONFIG = {
         <p class="usub" id="wiz-occ"><span></span></p>
       </div>
     </div>
-    <!-- שורה רביעית, נפתחת בשלב "מי יקבל את הכסף" (§4). בלעדיה
-         השלב הרביעי היה היחיד בלי בבואה בכרטיס, ותחושת המילוי
-         נשברת בדיוק לפני הסוף. בשלב האישור היא יורדת, כי הפירוט
-         שמתחת כבר אומר אותה. -->
-    <div class="bot" id="wiz-money">
+    <!-- ‏**הקו הוא אלמנט רגיל בזרימה** (`FIX-create-v4.md` §1), ולא
+         ה-`border-top` של הרגל: מרגע שהרגל היא קופסה שיוצאת אל
+         ריפוד הכרטיס (§2), קו שיושב עליה היה יוצא רחב ממנה ב-26.
+         ‏14 מהשורה האחרונה אליו, ו-6 ממנו אל הקופסה. -->
+    <div class="wizrule" aria-hidden="true"></div>
+    <!-- ‏**הקופסה קיימת תמיד והחול רק נדלק עליה** (§2). עד כה היא
+         נוצרה בשלב "כמה" בלבד, ולכן הכרטיס גדל באותו רגע ב-22
+         פיקסלים. -->
+    <div class="bot litfoot" id="wiz-money">
       <div><p class="l">כמה</p><p class="v" id="wiz-amt"><span>0 ₪</span></p></div>
       <div style="text-align:start"><p class="l" id="wiz-projl">בקצב הזה ייצבר</p>
         <p class="v f" id="wiz-proj"><span>0 ₪</span></p></div>
-    </div>
-    <!-- ‏**שורה אחת ולא תווית וערך בשני קצוות** (`FIX-create-v3.md`
-         §7): "המתנה תגיע ל <הערך>", והמסגרת עוטפת את כולה. בשני
-         קצוות המסגרת נדחקה אל הקצה השמאלי של הכרטיס ונגעה בו. -->
-    <div class="wizto" id="wiz-torow" style="display:none">
-      <p class="v" id="wiz-to"><span></span></p>
     </div>
   </div>
 
@@ -5658,7 +5711,7 @@ window.NETA_CONFIG = {
     <div class="occgrid" id="c-pills">
       <button class="on" data-t="בר/בת מצווה"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-mitzvah"/></svg></span><span class="lb">הבר מצווה</span></button>
       <button data-t="לימודים"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-studies"/></svg></span><span class="lb">הלימודים</span></button>
-      <button data-t="טיול אחרי צבא"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-trip"/></svg></span><span class="lb">הטיול אחרי הצבא</span></button>
+      <button data-t="טיול אחרי צבא"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-trip"/></svg></span><span class="lb">הטיול הגדול</span></button>
       <button data-t="רכב ראשון"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-car"/></svg></span><span class="lb">הרכב הראשון</span></button>
       <button data-t="דירה"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-home"/></svg></span><span class="lb">הדירה</span></button>
       <button data-t="חתונה"><span class="em"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-occ-wedding"/></svg></span><span class="lb">החתונה</span></button>
@@ -10311,16 +10364,11 @@ function wizLitKey(cur,total){
   if(cur===stepNo('who'))return 'who';
   if(designated&&cur===stepNo('occ'))return 'occ';
   if(cur===stepNo('amount'))return 'amt';
-  if(designated&&!beneKnown()&&cur===stepNo('bene'))return 'to';
+  /* ‏**ובשלב "מי יקבל את הכסף" הכרטיס עומד דומם** (`FIX-create-v4.md`
+     §5), וזה השלב היחיד בפלואו שבו אין בו הדלקה כלל: שלוש שורות
+     הבחירה במסך עצמן ברורות ונושאות הסבר לכל אחת, ומה שהן עונות
+     נאמר במסך הסיכום בשורת "משתחרר". */
   return '';
-}
-/* מה המקבל, בשורה הרביעית ובשפה של §5. */
-function wizToLabel(){
-  const nm=((document.getElementById('c-name')||{}).value||'').trim();
-  if(whoMode==='self')return nm?(nm+' '+bs('עצמו','עצמה')):bs('הוא עצמו','היא עצמה');
-  if(whoMode==='parent')return nm?('ההורה של '+nm):'ההורה';
-  if(whoMode==='other')return 'המורשה שתבחרו';
-  return 'אתם, '+bs('עבורו','עבורה');
 }
 let wizLitPrev='';
 function wizCard(cur,total){
@@ -10335,7 +10383,6 @@ function wizCard(cur,total){
   const hasWho=cur>=stepNo('who');
   const hasOcc=cur>=stepNo('occ')&&designated;
   const hasAmt=cur>=stepNo('amount');
-  const hasTo=designated&&!beneKnown()&&cur>=stepNo('bene')&&!last;
   const desig=designated;
   const nm=(desig&&hasWho)?(((document.getElementById('c-name')||{}).value)||'').trim():'';
   txt('wiz-eb',last?'זה מה שייפתח':'נטיעה חדשה');
@@ -10371,15 +10418,10 @@ function wizCard(cur,total){
      לרגע קיים: אחרת הקפיצה בין המסכים נראית כקסם. */
   const base=wizExistingAccrued();
   wizSet('wiz-proj',v?aboutShekel(Math.round(fvCalc(v,mode==='keep'?0:rate))*100+base):shekel(0),!v);
-  /* השורה הרביעית, ומה שהיא אומרת. */
-  const row=document.getElementById('wiz-torow');
-  if(row)row.style.display=hasTo?'':'none';
-  if(hasTo)wizSet('wiz-to','המתנה תגיע ל '+wizToLabel(),false);
-
   /* ההדלקה, וההבזק כשערך מתחלף. */
   const key=wizLitKey(cur,total);
-  const map={who:'wiz-name',occ:'wiz-occ',amt:'wiz-money',to:'wiz-to'};
-  ['wiz-name','wiz-occ','wiz-to'].forEach(function(id){
+  const map={who:'wiz-name',occ:'wiz-occ',amt:'wiz-money'};
+  ['wiz-name','wiz-occ'].forEach(function(id){
     const e=document.getElementById(id);
     if(e)(e.firstElementChild||e).classList.remove('lit','pop');
   });
@@ -10881,11 +10923,16 @@ function paySummaryBody(){
   txt('py-bene',nm);
   txt('py-relk','משתחרר');
   /* ‏**"עבורו/עבורה" לפי הילד** (`FIX-create-v3.md` §10), ובלי
-     לוכסן. */
-  txt('py-rel',whoMode==='me'?('במועד המיוחל, לידיך '+bs('עבורו','עבורה'))
-    :whoMode==='parent'?'במועד המיוחל, לידי ההורה'
-    :whoMode==='other'?'במועד המיוחל, לידי המורשה'
-    :('במועד המיוחל, '+bs('לידיו','לידיה')));
+     לוכסן. **והשורה נוקבת במועד ולא ב"במועד המיוחל"**
+     (`FIX-create-v4.md` §5): זו השורה שקלטה את מה שירד מהכרטיס
+     הירוק, ולכן היא אומרת מתי ולמי. בלי תאריך היא חוזרת לניסוח
+     הישן, כי שורה שנוקבת בזמן שאינה יודעת היא בדיוק מה שהמוצר
+     אוסר על עצמו. */
+  const when=(cDate&&cDate.value)?('ב'+monthYear(cDate.value)):'במועד המיוחל';
+  txt('py-rel',when+', '+(whoMode==='me'?('אליך, '+bs('עבורו','עבורה'))
+    :whoMode==='parent'?'אל ההורה'
+    :whoMode==='other'?'אל המורשה'
+    :bs('אליו','אליה')));
 }
 function toggleSafe(){
   const el=document.getElementById('c-safe');
@@ -13312,8 +13359,8 @@ function momOccNoun(p,kid){
    **ואין כאן טבלה שנייה.** מה ששמור על הנטיעה הוא הצורה המיודעת
    (`OCCASION_NOUN`), ולכן מורידים ממנה ה"א ולא בונים שם מחדש מהאנום
    — טבלה שנייה הייתה נפרדת מהשם שבמסד ביום שמישהו עורך רגע.
-   **ומכל מילה ולא רק מהראשונה**, כי "הרכב הראשון" ו"הטיול אחרי
-   הצבא" נושאים אותה פעמיים.
+   **ומכל מילה ולא רק מהראשונה**, כי "הרכב הראשון" ו"הטיול הגדול"
+   נושאים אותה פעמיים.
    **ורק על שבעת הרגעים שבטבלה:** רגע בשם חופשי נשמר כפי שהוקלד,
    כלומר כבר בלי ה"א, ומה ש-`theNoun` מוסיפה לו הוא תצוגה בלבד.
    **ו-`open_fund` מוחרג**, כי ה-ה"א ב"קופת הפתעות" היא חלק מהמילה
@@ -18050,7 +18097,7 @@ const OCCASION_NOUN={
   'דירה':        function(){return 'הדירה'},
   'חתונה':       function(){return 'החתונה'},
   'רכב ראשון':   function(){return 'הרכב הראשון'},
-  'טיול אחרי צבא':function(){return 'הטיול אחרי הצבא'},
+  'טיול אחרי צבא':function(){return 'הטיול הגדול'},
   'קופת הפתעות': function(){return 'קופת הפתעות'}
 };
 function plantingName(type,who,designated){
