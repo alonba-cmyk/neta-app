@@ -4813,9 +4813,15 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 [data-name="פרטי נטיעה"] .kcard2{height:340px}
 [data-name="פרטי נטיעה"] .kcard2 .ktrio{height:62px}
 /* השורה הזעירה מתחת לכל תא. אותה שקיפות של התווית שמעל המספר, כי זו
-   אותה שכבה שקטה ולא שלישית. */
-.ktrio .kz{margin:2px 0 0;font-size:10px;color:rgba(255,255,255,.62);
-  white-space:nowrap;display:flex;justify-content:center;min-height:13px;
+   אותה שכבה שקטה ולא שלישית.
+   **והמינימום הוא 14 ולא 12** (`FIX-moment-screen-v1-1` §3): המסמך
+   נוקב ברצפה, ומה שהיא באמת צריכה לעשות הוא שהשורה הריקה תצא
+   **בדיוק** בגובה השורה שיש בה טקסט. ‏14 הם תיבת השורה של 10px
+   בגופן הזה, וזה נמדד; ‏13 השאירו פיקסל אחד של הפרש בין התא הריק
+   לשכניו — **ותא flex נמתח ממילא, ולכן ההפרש נראה רק במדידת השורה
+   עצמה.** */
+.ktrio .kz{margin:2px 0 0;font-size:clamp(9px,2.6vw,10px);color:rgba(255,255,255,.62);
+  white-space:nowrap;display:flex;justify-content:center;min-height:14px;
   overflow:hidden;text-overflow:ellipsis}
 /* ‏**הגרף: שני שטחים, קו לבן דק ביניהם, ונקודה בקצה הימני** (§3).
    הזמן רץ מימין לשמאל, כמו הקריאה: הקצה הימני הוא היום והשמאלי הוא
@@ -5374,7 +5380,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ce7aca9';
+window.NETA_BUILD = '38c2cb8';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -6483,10 +6489,12 @@ window.NETA_CONFIG = {
            הציור עצמו נכתב ב-`momChart`, אחרי `go(5)`. -->
       <div class="mchart" id="d-graph"></div>
       <div class="krule"></div>
-      <!-- ‏**שלושת התאים** (§2): יש היום · התא האמצעי בארבעת מצביו ·
-           בדרך ל, ומתחת לכל אחד שורה זעירה. **השורה הזעירה שומרת
-           על מקומה גם כשאין לה מה לומר**, אחרת הכרטיס זז בין מצבים
-           וזו בדיוק בדיקת הקבלה האחת עשרה. -->
+      <!-- ‏**שלושת התאים** (`FIX-moment-screen-v1-1` §2): יש היום ·
+           בכל חודש · בקצב הזה ייצבר, ומתחת לכל אחד שורה זעירה.
+           **השורה הזעירה שומרת על מקומה גם כשאין לה מה לומר**
+           (§3), אחרת הכרטיס זז בין מצבים.
+           **ושלושתם נקראים כמשפט אחד** (§4): "יש היום 450 ₪ · בכל
+           חודש 450 ₪ · בקצב הזה ייצבר כ-106,300 ₪ בספטמבר 2041". -->
       <div class="ktrio">
         <div><p class="kk">יש היום</p>
              <p class="kv" id="d-total">·</p>
@@ -6494,9 +6502,9 @@ window.NETA_CONFIG = {
         <div><p class="kk" id="d-midk">בכל חודש</p>
              <p class="kv" id="d-midv">·</p>
              <p class="kz" id="d-midz"></p></div>
-        <div><p class="kk">בדרך ל</p>
+        <div><p class="kk" id="d-futk">בקצב הזה ייצבר</p>
              <p class="kv sand" id="d-futv">·</p>
-             <p class="kz">צפי</p></div>
+             <p class="kz" id="d-futz"></p></div>
       </div>
     </div>
   </div>
@@ -13782,29 +13790,41 @@ function paintDetail(key,p){
   txt('d-sub',[kid?('של '+kid):'',p.date].filter(Boolean).join(', '));
   const M=momModel(p);
   const mineAg=personalOf(p);
-  /* ‏**שלושת התאים** (§2). הימני הוא סכום היתרות של כל הנוטעים,
-     ומתחתיו כמה מזה שלי; השמאלי הוא הצפי בצבע החול. */
-  txt('d-total',shekel(M.today));
-  txt('d-totz','מזה שלך '+shekel(mineAg));
-  txt('d-futv',M.proj>0?aboutShekel(M.proj):shekel(0));
-  /* ‏**והתא האמצעי משתנה לפי המצב** (§2). הכלל של החודש הראשון אינו
-     קישוט: בחודש הראשון הסכום החודשי שווה במקרה לסכום שנצבר, ושני
-     מספרים זהים זה ליד זה עם תוויות שונות נקראים כתקלה. "נטעתם עד
-     היום" הופך את שני התאים לאותה יחידה — מלאי מול מלאי — וההפרש
-     ביניהם הוא בדיוק התשואה. */
+  /* ‏**שלושת התאים** (`FIX-moment-screen-v1-1` §2). הימני הוא סכום
+     היתרות של כל הנוטעים, האמצעי הוא הקצב, והשמאלי הוא הצפי בצבע
+     החול. */
   const nPl=M.rows.length;
-  const first=momFirstMonth(p);
+  txt('d-total',shekel(M.today));
+  /* ‏**והשורה הזעירה מתחתיו משתנה לפי מספר הנוטעים** (§2). בכמה
+     נוטעים היא אומרת כמה מזה שלי; **בנוטע אחד "מזה שלך" הוא
+     כפילות, כי כל הסכום שלו**, ובמקומו החלק שהתווסף מעצמו — שהוא
+     גם מה שמלמד בדרך אגב מה הירוק ומה החול בגרף.
+     **ובלי נוטע אף אחד מהשניים אינו נכון**, ולכן השורה ריקה ושומרת
+     על גובהה (§3) — זו בדיוק המשבצת שהמינימום נכתב בשבילה. */
+  txt('d-totz',nPl>1?('מזה שלך '+shekel(mineAg))
+              :nPl?('מזה נוסף מעצמו '+shekel(momGrown(M))):'');
+  txt('d-futv',M.proj>0?aboutShekel(M.proj):shekel(0));
+  /* ‏**ומתחת לצפי המועד של הרגע, בשם החודש המלא** (§2). ‏`p.date`
+     הוא כבר "ספטמבר 2036" מ-`liveDetail`, ולכן אין כאן טבלה שנייה
+     ואין קיצור: מה שהתא אומר הוא מתי, ו"בספט׳" הוא קיצור של מילה
+     אחת בשורה שיש בה מקום. **והשורה נשארת גם ברגע בלי נטיעות**,
+     כי המועד קיים גם כשעוד לא נטעו בו. */
+  txt('d-futz',p.date?('ב'+p.date):'');
+  /* ‏**והתא האמצעי הוא תמיד הקצב** (§1), כולל בחודש הראשון. הכלל
+     שהחליף אותו שם ב"נטעתם עד היום" ירד: מרגע שהתא השלישי אומר
+     "בקצב הזה ייצבר", הקצב עצמו הוא מה שהוא נשען עליו, ולכן הוא
+     נדרש על המסך בכל חודש. **בחודש הראשון הוא אכן שווה לתא הראשון,
+     וזה תקין** — התא השלישי נותן לכך הקשר.
+     **החריג היחיד הוא רגע שאין בו קצב**: כולו חד פעמיות, או שאין
+     בו ולו נטיעה אחת. */
   if(!nPl){
     txt('d-midk','נוטעים'); txt('d-midv',shekel(0)); txt('d-midz','עוד אין נטיעות');
   }else if(!(M.monthly>0)){
     txt('d-midk','נטיעות חד פעמיות'); txt('d-midv',shekel(M.today));
     txt('d-midz','אין סכום חודשי');
-  }else if(first){
-    txt('d-midk','נטעתם עד היום'); txt('d-midv',shekel(M.today));
-    txt('d-midz',nPl>1?'כולם יחד':'');
   }else{
     txt('d-midk','בכל חודש'); txt('d-midv',shekel(M.monthly));
-    txt('d-midz',nPl>1?'כולם יחד':'');
+    txt('d-midz',nPl>1?'כולם יחד':'הנטיעה שלך');
   }
   const midv=document.getElementById('d-midv');
   if(midv)midv.classList.toggle('nil',!nPl);
@@ -14024,6 +14044,20 @@ function momPlanterPlanted(q,n){
   const c=q.stopped?0:(Number(q.monthly)||0);
   return (Number(q.balance)||0)+c*Math.max(0,n);
 }
+/* ‏**"מזה נוסף מעצמו"** (`FIX-moment-screen-v1-1` §2): היתרה פחות מה
+   שנטעו בפועל, **ולכל הפחות אפס** — המסמך נוקב בזה במפורש, ולא
+   במקרה.
+   **וזה אפס בהגדרה היום, וזה נאמר:** ‏`accrued_agorot` בשלוש ה-RPC
+   הוא `sum(contributions.amount_agorot)` ותו לא, ואין במסד ולו
+   עמודת שווי נוכחי אחת — כלומר היתרה **היא** סכום ההפקדות, וההפרש
+   ביניהן אפס. זו אותה החלטה רשומה שהורידה את הצמיחה ממסך הבית,
+   מ"פעילות" ומהמקטע הראשון של הגיליון (`docs/open-decisions.md`
+   §26), והפעם היא מוצגת ולא מוסתרת — כי השורה מתארת מה **יהיה**
+   שם, ואפס בהתחלה הוא התשובה הנכונה.
+   **‏`momDeposited` היא השורה היחידה שמשתנה** ביום שהעמודה תיכנס
+   ל-RPC. */
+function momDeposited(M){return M.today}
+function momGrown(M){return Math.max(0,M.today-momDeposited(M))}
 /* הנוטעים כפי שהמסך רואה אותם. ‏`w[8]` הוא `null` בדיוק כשהסכום
    חסוי ממני, וזו העובדה עצמה ולא דגל שצריך לגזור. */
 function momRows(p){
@@ -14143,16 +14177,6 @@ function momChart(p){
     '<div class="mgax"><span>היום</span><span>'+attrText(p.date||'')+'</span></div>'+
     '<div class="mgleg"><span><i class="g"></i>מה שנוטעים</span>'+
       '<span><i class="s"></i>מה שייווסף מעצמו</span></div>';
-}
-/* החודש הראשון של הרגע. ‏§2: בחודש הראשון הסכום החודשי שווה במקרה
-   לסכום שנצבר, ולכן התא האמצעי אומר "נטעתם עד היום" ולא "בכל חודש". */
-function momFirstMonth(p){
-  const d=p&&p.openedOn;
-  if(!d)return false;
-  const t=new Date(String(d).slice(0,10)+'T00:00:00');
-  if(isNaN(t))return false;
-  const n=new Date();
-  return (n.getFullYear()-t.getFullYear())*12+(n.getMonth()-t.getMonth())<=0;
 }
 /* שם המסלול בלי האחוז. ‏`TRACK_LABELS` נושא את שניהם ("פיקדון נעול ·
    כ-3.5% בשנה"), ו-§4 מבקש "כולם ב<שם המסלול>" בלי לחזור על האחוז
@@ -15225,12 +15249,54 @@ function ivMyRows(){
 /* ‏**ומסך החזרה נגזר מהמסך שעליו לחצו ואינו מספר כתוב ביד.**
    ‏`#garden-new` שב"ההשקעות שלי" קורא לאותה פונקציה, ו-15 קשיח
    היה מחזיר אותו לטאב אחר; **מספר מסך כתוב ביד נשבר בשקט**, וזה
-   כבר מתועד כאן. ‏`curScreen` נקרא לפני ש-`go` מזיז אותו. */
+   כבר מתועד כאן. ‏`curScreen` נקרא לפני ש-`go` מזיז אותו.
+
+   **וכניסה שאינה נוקבת בילד שואלת לאיזה רגע.** עד כה היא בחרה את
+   הרגע הקרוב ביותר בשקט, ואלון לחץ ב"ההשקעות שלי" על "להזמין
+   קרוב לנטוע איתכם" ונחת על הזמנה לרגע של נטע — **רגע שהוא לא
+   ביקש.** שלוש הכניסות האחרות נוקבות בילד בכותרת שלהן ("להזמין
+   עוד קרוב לנטוע לנועה", סמל השיתוף שבמסך הרגע, ומסך הסיום של
+   האשף), ולכן שם הנעילה היא מה שהלחיצה כבר אמרה; **כאן הכפתור
+   אומר "איתכם" ותו לא.**
+   **וברגע אחד אין מה לשאול**, ובלי ולו רגע אחד שאני פתחתי נשארים
+   באשף ההוספה — `invitations_send` דורשת `app.is_initiator`. */
 function ivFromRelatives(){
-  const own=ivMyRows(),near=nearestOf(own);
-  const key=(near&&near.p&&near.p.key)||(own[0]&&own[0].key)||'';
-  if(key){openInviteFlow(key,curScreen);return}
-  openAddPerson('with');
+  const own=ivMyRows();
+  if(!own.length){openAddPerson('with');return}
+  if(own.length===1){openInviteFlow(own[0].key,curScreen);return}
+  pickMomentToInvite(curScreen);
+}
+/* ‏**הגיליון שבוחר את הרגע.** אותו `sheetPick` של "מה יקרה לכסף",
+   כלומר האפשרויות עצמן הן הפעולה ואין "אישור": אין מה לאשר מעבר
+   ללחיצה. **הקרוב ביותר ראשון**, כי הוא הרגע שהכי דחוף להזמין
+   אליו — וזה גם מה שהנעילה השקטה בחרה עד כה, אלא שעכשיו היא
+   הצעה ולא הכרעה.
+   **והמפתח עובר ב-`ivPickMoment` ולא ב-`onclick` שנבנה ממנו:**
+   מפתח נטיעה הוא מחרוזת מהשרת, והשחלה שלה לתוך תכונה דורשת
+   בריחה שאין לה סיבה. */
+let ivMomentKeys=[];
+function pickMomentToInvite(back){
+  const rows=ivMyRows().slice().sort(function(a,b){
+    const da=a.targetYear?new Date(a.targetYear,Number(a.targetMonth||0),1):null;
+    const db=b.targetYear?new Date(b.targetYear,Number(b.targetMonth||0),1):null;
+    if(da&&db)return da-db;
+    return da?-1:(db?1:0);
+  });
+  ivMomentKeys=rows.map(function(p){return p.key});
+  const html=rows.map(function(p,i){
+    const when=bShortWhen(p);
+    return '<button class="opt trkpick" onclick="ivPickMoment('+i+','+
+      (back==null?'null':Number(back))+')">'+
+      '<div class="row" style="justify-content:space-between">'+
+      '<b>'+attrText(p.name||'')+'</b>'+
+      (when?'<span class="rate">'+attrText(when)+'</span>':'')+'</div></button>';
+  }).join('');
+  sheetPick('לאיזה רגע להזמין?','הקרוב יראה את הרגע שתבחרו, ורק אותו.',html);
+}
+function ivPickMoment(i,back){
+  const key=ivMomentKeys[i];
+  sheetClose();
+  if(key)openInviteFlow(key,back);
 }
 function relAddRow(kind,title,sub){
   return listAddHTML(kind==='with'?'ivFromRelatives()'
