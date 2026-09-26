@@ -2713,6 +2713,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    הכרטיס. הריפוד מתפשט לכיוון הרווח שבאמצע השורה, שהוא ריק
    ממילא. */
 .card-main.wizc.ivc .wizto .lit{margin-inline:0}
+/* ‏**והכותרת הקטנה צריכה אוויר משלה מרגע שהיא נדלקת.** היא הפכה
+   לחריץ שהשלב הראשון ממלא, ו-`.lit` היא טבעת `box-shadow` שנצבעת
+   **מחוץ** לגבול: נמדד שהיא מותירה 0.5 פיקסלים לגיבור שמתחתיה,
+   מול 3.5 שיש לטבעת של הגיבור עצמו. **ו-`em` ולא פיקסלים**, אותה
+   הכרעה של `FIX-create-v4` §1: האוויר שמגן על תגית פרופורציונלי
+   לגופן שלה. **והוא קבוע ואינו נוסף בהדלקה**, ולכן הכרטיס אינו
+   זז בין השלבים. */
+.card-main.wizc.ivc .eb{margin-bottom:calc(.18em + 2px)}
 .card-main.wizc.ivc .ph.empty{display:grid;place-items:center;
   color:var(--sun-on-leaf);font-size:23px;line-height:1;font-weight:400}
 /* ‏**‏`clip-path` ולא `border-radius` עם `overflow`** (`FIX-create-v2.md`
@@ -3310,6 +3318,17 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
   background:var(--s2);display:block}
 .ivr .f svg,.ivr .f img{display:block;width:100%;height:100%;object-fit:cover;
   clip-path:circle(50%)}
+/* ‏**עיגול הוא אדם וריבוע מעוגל הוא רגע**, ולכן שורת הרגע אינה
+   נושאת את אותה משבצת של שורת האדם — אותה הכרעה של `.prow .fc.sq`
+   ושל הריבוע בכרטיס הילד. **והצבע מוצהר במפורש:** האייקון מצויר
+   ב-`currentColor` בשלוש דרגות, ו-`.ivr` הוא `<button>` שיורש
+   ‏`color:buttontext` מהדפדפן ולא את הירוק — כלומר הוא יצא **שחור**
+   על המשבצת הבהירה. זו אותה מלכודת בדיוק של `.crn .cface`, והיא
+   נראתה בצילום ולא במדידה.
+   **והחיתוך העגול יורד**, כי הוא נכתב לתמונה של אדם. */
+.ivr .f.sq{border-radius:14px;background:var(--leaf-bg);color:var(--leaf);
+  display:grid;place-items:center}
+.ivr .f.sq svg{width:22px;height:22px;clip-path:none;object-fit:contain}
 .ivr .tx{flex:1;min-width:0}
 .ivr .t{display:block;font-size:15.5px;font-weight:700;color:var(--tx);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -3374,6 +3393,15 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 .ivshare button span{font-size:12.5px;font-weight:700}
 .ivnote{margin-top:clamp(7px,1.4vh,11px);font-size:11.5px;color:var(--tx-3);
   text-align:center}
+/* ‏**והרמז שמתחת לשדה הכתובת הוא רכיב משלו ולא `.ivnote`.**
+   הוא מיושר להתחלה ולא למרכז, כי הוא רמז של שדה ולא הערה על
+   מסך; ‏`.ivnote` ממורכזת מתחת לתיבת הקישור, שם אין שדה
+   להתיישר אליו. **וזו אינה קוסמטיקה:** `.ivz .ivnote` היה
+   תופס מעכשיו את שניהם, וה-`querySelector` מחזיר את הראשון
+   ב-DOM — כלומר בדיקת "שורת השבועיים" קראה את הרמז הזה. שם
+   שכבר תפוס הוא בדיוק המלכודת שמתועדת כאן. */
+.ivcnote{margin-top:clamp(5px,1vh,8px);font-size:11.5px;color:var(--tx-3);
+  text-align:start}
 /* ‏**מסך הסיום: פרצוף 96 עם וי ירוק בפינה.** הראש הירוק מצטמצם
    לסרגל בלבד (§3), ולכן הגיליון הוא כל המסך ואין בו כרטיס. */
 .ivdone{display:flex;flex-direction:column;align-items:center;text-align:center;
@@ -3410,6 +3438,14 @@ textarea.ivmsg{resize:none;color:var(--tx)}
   .ivz .list-add{margin:8px 0 6px;padding:9px 12px}
   .ivz .list-add .adp{width:28px;height:28px;font-size:17px}
   .ivz .ivcta{padding-top:9px}
+  /* ‏**ושדה הכתובת הוסיף 79 פיקסלים לפאנל הקרבה** (‏46 ועוד 10
+     של מרווח, ועוד 23 של שורת הרמז), וב-360x640 זה גלש ב-5:
+     ‏`invite.js` תפס את זה. רשת הקרבה שם היא 169 מול 162 ב-320,
+     כלומר היא כבר מכווצת עד הסוף וכל מה שנשאר הם המרווחים
+     שבין השדות. **וזה 5 פיקסלים בגודל אחד מארבעה** — נמדד 0
+     ב-320x640, ב-390x844 וב-430x932. */
+  .ivz .ivname{margin-top:7px}
+  .ivz .ivcnote{margin-top:4px}
 }
 .wel{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 4px 0}
 /* סימן המותג במסך הפתיחה. 800 ו-letter-spacing שלילי כדי ששלוש
@@ -5380,7 +5416,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '38c2cb8';
+window.NETA_BUILD = 'e44bf0c';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -5871,7 +5907,11 @@ window.NETA_CONFIG = {
     <div class="utop">
       <span class="ph" id="iv-av" aria-hidden="true"></span>
       <div class="tx">
-        <p class="eb" id="iv-eb">·</p>
+        <!-- ‏**עם span פנימי, כי הרגע הוא תשובה ולא כותרת קבועה.**
+             מרגע שהכניסה יכולה שלא לנקוב בו, השורה הזאת היא מה
+             שהשלב הראשון ממלא — ולכן היא נדלקת כמו כל שאר
+             השורות; ‏`wizSet` כותב אל ה-span ולא אל ה-`<p>`. -->
+        <p class="eb" id="iv-eb"><span></span></p>
         <p class="tbhero" id="iv-nm"><span></span></p>
         <p class="usub" id="iv-rel"><span></span></p>
       </div>
@@ -8142,6 +8182,19 @@ window.NETA_CONFIG = {
      שבמסך הסיום של יצירת נטיעה. -->
 <section class="screen ivz" data-name="הזמנת קרוב">
   <div class="ivbody">
+    <!-- ‏**שלב הרגע, וזו בקשה של אלון: "במהלך ההוספה של קרוב
+         אוכל לבחור את האירוע".** עד כה הוא נבחר בגיליון **לפני**
+         שהפלואו נפתח, ולכן הוא לא הופיע בכרטיס הירוק ולא בסרגל
+         השלבים — כלומר התשובה הראשונה הייתה היחידה שלא מילאה את
+         הכרטיס. **הוא מוצג רק כשהכניסה אינה נוקבת ברגע**: שלוש
+         הכניסות שכן ("להזמין עוד קרוב לנטוע לנועה", השיתוף שבמסך
+         הרגע, ומסך הסיום של האשף) נעולות על הרגע שבכותרת שלהן,
+         ושם שאלה נוספת היא שאלה שכבר נענתה. -->
+    <div id="iv-when" style="display:none">
+      <h2>לאיזה רגע להזמין?</h2>
+      <div class="ivlist" id="iv-wlist"></div>
+      <div id="iv-waddbox"></div>
+    </div>
     <!-- שלב 1 · מי -->
     <div id="iv-who">
       <h2>מי מהקרובים שלך?</h2>
@@ -8164,6 +8217,23 @@ window.NETA_CONFIG = {
            `Input.imeSetComposition`, והערך יצא "רנה". -->
       <input type="text" class="ivname" id="iv-nmin" placeholder="השם"
              oninput="ivNameIn()" onbeforeinput="ivNameAt(event)">
+      <!-- ‏**והכתובת, אחרי שאלון הוסיף קרובה ולא היה לו איפה להזין
+           אותה.** ‏`FIX-invite-v1` §5 עיצב את המסלול הזה בלי שדה
+           כתובת ונימק את "להכין קישור" ב"אין לאן לשלוח" — **וזה
+           נימוק מעגלי**, כי אין לאן בדיוק מפני שלא שאלנו. בלי
+           השדה `contact` נשמר ריק, `sendInvite` יוצאת מיד
+           ב"חסרים פרטי קשר", **ואין בכל המוצר מקום להזין אותה
+           אחר כך** — גיליון העריכה הוא שם, קרבה ותמונה בלבד.
+           נמדד במסד: שלושת הקרובים שנוצרו כאן, `contact` ריק
+           בשלושתם, ואף שורת `invitations`.
+           **והוא רשות ולא חובה**, ולכן מסלול הקישור נשאר בחירה
+           אמיתית ולא תוצאה כפויה: `ivCanSend` הוא מה שמחליף את
+           הכפתור בין "לשלוח את ההזמנה" ל"להכין קישור". -->
+      <input type="text" class="ivname" id="iv-cnin" inputmode="email"
+             autocomplete="email" autocapitalize="off" autocorrect="off"
+             spellcheck="false" placeholder="טלפון או אימייל · לא חובה"
+             oninput="ivContactIn()">
+      <p class="ivcnote" id="iv-cnote">בלי כתובת נכין קישור להעברה ביד.</p>
     </div>
     <!-- שלב המסר -->
     <div id="iv-msg" style="display:none">
@@ -15251,52 +15321,23 @@ function ivMyRows(){
    היה מחזיר אותו לטאב אחר; **מספר מסך כתוב ביד נשבר בשקט**, וזה
    כבר מתועד כאן. ‏`curScreen` נקרא לפני ש-`go` מזיז אותו.
 
-   **וכניסה שאינה נוקבת בילד שואלת לאיזה רגע.** עד כה היא בחרה את
-   הרגע הקרוב ביותר בשקט, ואלון לחץ ב"ההשקעות שלי" על "להזמין
-   קרוב לנטוע איתכם" ונחת על הזמנה לרגע של נטע — **רגע שהוא לא
-   ביקש.** שלוש הכניסות האחרות נוקבות בילד בכותרת שלהן ("להזמין
-   עוד קרוב לנטוע לנועה", סמל השיתוף שבמסך הרגע, ומסך הסיום של
-   האשף), ולכן שם הנעילה היא מה שהלחיצה כבר אמרה; **כאן הכפתור
-   אומר "איתכם" ותו לא.**
+   **וכניסה שאינה נוקבת בילד שואלת לאיזה רגע, ובתוך הפלואו.** עד
+   כה היא בחרה את הרגע הקרוב ביותר בשקט, ואלון לחץ ב"ההשקעות
+   שלי" על "להזמין קרוב לנטוע איתכם" ונחת על הזמנה לרגע של נטע —
+   **רגע שהוא לא ביקש.** שלוש הכניסות האחרות נוקבות בילד בכותרת
+   שלהן ("להזמין עוד קרוב לנטוע לנועה", סמל השיתוף שבמסך הרגע,
+   ומסך הסיום של האשף), ולכן שם הנעילה היא מה שהלחיצה כבר אמרה;
+   **כאן הכפתור אומר "איתכם" ותו לא.**
    **וברגע אחד אין מה לשאול**, ובלי ולו רגע אחד שאני פתחתי נשארים
-   באשף ההוספה — `invitations_send` דורשת `app.is_initiator`. */
+   באשף ההוספה — `invitations_send` דורשת `app.is_initiator`, כלומר
+   השרת היה דוחה את השאר. שני הענפים האלה יושבים ב-`openInviteFlow`
+   עצמה, כי היא הקוראת מכל ארבע הכניסות. */
 function ivFromRelatives(){
-  const own=ivMyRows();
-  if(!own.length){openAddPerson('with');return}
-  if(own.length===1){openInviteFlow(own[0].key,curScreen);return}
-  pickMomentToInvite(curScreen);
-}
-/* ‏**הגיליון שבוחר את הרגע.** אותו `sheetPick` של "מה יקרה לכסף",
-   כלומר האפשרויות עצמן הן הפעולה ואין "אישור": אין מה לאשר מעבר
-   ללחיצה. **הקרוב ביותר ראשון**, כי הוא הרגע שהכי דחוף להזמין
-   אליו — וזה גם מה שהנעילה השקטה בחרה עד כה, אלא שעכשיו היא
-   הצעה ולא הכרעה.
-   **והמפתח עובר ב-`ivPickMoment` ולא ב-`onclick` שנבנה ממנו:**
-   מפתח נטיעה הוא מחרוזת מהשרת, והשחלה שלה לתוך תכונה דורשת
-   בריחה שאין לה סיבה. */
-let ivMomentKeys=[];
-function pickMomentToInvite(back){
-  const rows=ivMyRows().slice().sort(function(a,b){
-    const da=a.targetYear?new Date(a.targetYear,Number(a.targetMonth||0),1):null;
-    const db=b.targetYear?new Date(b.targetYear,Number(b.targetMonth||0),1):null;
-    if(da&&db)return da-db;
-    return da?-1:(db?1:0);
-  });
-  ivMomentKeys=rows.map(function(p){return p.key});
-  const html=rows.map(function(p,i){
-    const when=bShortWhen(p);
-    return '<button class="opt trkpick" onclick="ivPickMoment('+i+','+
-      (back==null?'null':Number(back))+')">'+
-      '<div class="row" style="justify-content:space-between">'+
-      '<b>'+attrText(p.name||'')+'</b>'+
-      (when?'<span class="rate">'+attrText(when)+'</span>':'')+'</div></button>';
-  }).join('');
-  sheetPick('לאיזה רגע להזמין?','הקרוב יראה את הרגע שתבחרו, ורק אותו.',html);
-}
-function ivPickMoment(i,back){
-  const key=ivMomentKeys[i];
-  sheetClose();
-  if(key)openInviteFlow(key,back);
+  /* ‏**ותמיד שואלים, גם ברגע אחד.** נרשם כאן ש"ברגע אחד אין מה
+     לשאול", **וזה התהפך ברגע שיש בשלב גם "לפתוח רגע חדש"**: מי
+     שיש לו רגע אחד ורוצה להזמין לרגע אחר לא היה מגיע לשם כלל.
+     **המחיר:** לחיצה אחת למי שיש לו רגע אחד בדיוק. */
+  openInviteFlow('',curScreen);
 }
 function relAddRow(kind,title,sub){
   return listAddHTML(kind==='with'?'ivFromRelatives()'
@@ -21957,18 +21998,25 @@ function ivRow(key){
 }
 function ivMk(key){
   const p=ivRow(key)||{};
-  return {key:key,kid:kidOf(p)||p.kid||'',kidSex:(p.sex||''),
-          who:null,i:-1,nm:'',kin:null,msg:0,txt:'',url:'',sent:false,
-          step:'who',busy:false,back:null};
+  return {key:key||'',kid:kidOf(p)||p.kid||'',kidSex:(p.sex||''),
+          who:null,i:-1,nm:'',kin:null,ct:'',msg:0,txt:'',url:'',sent:false,
+          step:'who',ask:false,busy:false,back:null};
 }
 /* ‏**בכל שלוש נקודות הכניסה הילד ידוע ונעול** (§1), ולכן הפלואו
    מקבל מפתח רגע ולא מחפש אותו. מי שאין לו רגע שהוא פתח אינו יכול
    להזמין בכלל: `invitations_send` דורשת `app.is_initiator`. */
 function openInviteFlow(key,back){
-  if(!ivRow(key)){openPeople();return}
-  ivS=ivMk(key);
+  /* ‏**`key` ריק פירושו "הכניסה אינה נוקבת ברגע", והפלואו שואל.**
+     בלי ולו רגע אחד שאני פתחתי אין מה לשאול ואין למי לשלוח, ואז
+     אשף ההוספה הוא מה שנשאר. */
+  const ask=!key;
+  if(ask){if(!ivMyRows().length){openAddPerson('with');return}}
+  else if(!ivRow(key)){openPeople();return}
+  ivS=ivMk(key||'');
+  ivS.ask=ask;
+  if(ask)ivS.step='when';
   ivS.back=(back==null?null:back);
-  cur=key;
+  if(key)cur=key;
   ivLive=true;apLive=false;joinLive=false;creating=false;
   go(INV_SCREEN());
   ivShow();
@@ -21978,15 +22026,39 @@ function openInviteFlow(key,back){
    מסר). מסך הקישור ומסך הסיום אינם משבצות — הם אחרי שהמשימה
    הושלמה (§6). */
 function ivIsNew(){return !!ivS&&ivS.who==='new'}
-function ivSteps(){return ivIsNew()?['who','new','msg']:['who','msg']}
+/* ‏**ושלב הרגע נכנס בראש כשהוא נשאל.** ‏`ivS.ask` נקבע פעם אחת
+   בפתיחה ואינו נגזר מ-`ivS.key`, אחרת הפס היה מתקצר ברגע שנבחר
+   רגע — כלומר משבצת שנעלמת אחרי שענו עליה. */
+function ivSteps(){
+  const base=ivIsNew()?['who','new','msg']:['who','msg'];
+  return (ivS&&ivS.ask)?['when'].concat(base):base;
+}
 /* ‏**מה שמבדיל בין "לשלוח" ל"להכין קישור" אינו המסלול אלא אם יש
    לאן לשלוח.** ‏§5 מנמק את הקישור ב"אין לאן לשלוח", וזה נכון גם
    לקרוב שכבר בפנקס ואין לו כתובת: `sendInvite` היה עונה לו
    "חסרים פרטי קשר" ומשאיר אותו על המסך בלי שום המשך. */
 function ivCanSend(){
-  if(!ivS||ivIsNew()||ivS.i<0)return false;
+  if(!ivS)return false;
+  /* ‏**ומישהו חדש יכול לשלוח מרגע שהוא נשאל לכתובת.** עד כה הענף
+     הזה החזיר `false` תמיד, כלומר מסלול הקישור לא היה בחירה אלא
+     המצב היחיד — ואלון ראה בדיוק את זה. */
+  /* ‏**וזה "יש טקסט" ולא "הכתובת תקינה", בכוונה.** תקינות שנבדקת
+     בכל תו מחליפה את כיתוב הכפתור באמצע ההקלדה, ברגע שנראה
+     שרירותי; כאן הוא מתחלף פעם אחת, בתו הראשון. **הבדיקה עצמה
+     בלחיצה**, עם טוסט, בדיוק כמו `ap-2`. */
+  if(ivIsNew())return !!ivCt();
+  if(ivS.i<0)return false;
   const r=relatives[ivS.i];
   return !!(r&&r.contact);
+}
+function ivCt(){return ivS?String(ivS.ct||'').trim():''}
+function ivContactIn(){
+  if(!ivS)return;
+  ivS.ct=(document.getElementById('iv-cnin')||{}).value||'';
+  /* הכפתור והשורה בלבד: הכרטיס אינו נושא את הכתובת, וציור מלא
+     בכל תו היה בונה מחדש את סרגל השלבים ואת שורת הראש. */
+  txt('iv-cnote',ivCnote());
+  ivCta();
 }
 function ivRel(){
   if(!ivS)return null;
@@ -22049,7 +22121,7 @@ function ivCard(){
   const box=document.getElementById('iv-card');
   if(!box||box.style.display==='none')return;
   const nm=ivName();
-  txt('iv-eb','מזמינים לנטוע ל'+(ivS.kid||''));
+  wizSet('iv-eb',ivS.kid?('מזמינים לנטוע ל'+ivS.kid):'לאיזה רגע?',!ivS.kid);
   /* ‏**השאלה שבשבב היא של השלב הנוכחי ולא של הפלואו.** לפני
      הבחירה זה "את מי להזמין?", ואחרי "להוסיף מישהו שאינו ברשימה"
      השאלה כבר אינה מי אלא מה שמו — וזה גם מה שקובץ העיצוב מציג
@@ -22072,8 +22144,9 @@ function ivCard(){
     if(av.className!==cls)av.className=cls;
     if(av.innerHTML!==(face||'+'))av.innerHTML=face||'+';
   }
-  const key=ivS.step==='msg'?'msg':((ivS.step==='who'||ivS.step==='new')?'nm':'');
-  [['nm','iv-nm'],['msg','iv-msgk']].forEach(function(pair){
+  const key=ivS.step==='when'?'eb'
+    :(ivS.step==='msg'?'msg':((ivS.step==='who'||ivS.step==='new')?'nm':''));
+  [['eb','iv-eb'],['nm','iv-nm'],['msg','iv-msgk']].forEach(function(pair){
     const e=document.getElementById(pair[1]);
     if(e)(e.firstElementChild||e).classList.toggle('lit',key===pair[0]);
   });
@@ -22089,7 +22162,9 @@ function ivHead(){
   box.classList.toggle('ivend',end);
   box.classList.toggle('ivnb',end||ivS.step==='link');
   txt('wiz-t','להזמין קרוב');
-  txt('wiz-step',end?'':('לנטוע ל'+(ivS.kid||'')));
+  /* ‏**ובלי רגע נבחר השורה אומרת את הפעולה ולא "לנטוע ל" ריק**,
+     כי היא נצבעת גם בשלב שבו הרגע עוד נשאל. */
+  txt('wiz-step',end?'':(ivS.kid?('לנטוע ל'+ivS.kid):'הזמנה לנטוע יחד'));
   const seq=ivSteps(),i=seq.indexOf(ivS.step);
   const bar=document.getElementById('wiz-bar');
   if(bar&&i>=0){
@@ -22105,7 +22180,10 @@ function ivCta(){
   if(!b||!ivS)return;
   const s=ivS.step;
   let label='',on=true;
-  if(s==='who'){
+  if(s==='when'){
+    on=!!ivS.key;
+    label=on?'להמשיך':'לבחור רגע';
+  }else if(s==='who'){
     on=ivS.who!=null;
     label=on?('להזמין את '+(ivIsNew()?'מישהו חדש':ivName())):'לבחור את מי להזמין';
   }else if(s==='new'){
@@ -22122,13 +22200,15 @@ function ivCta(){
   b.classList.toggle('off',!on||!!ivS.busy);
 }
 /* ── הפאנלים ────────────────────────────────────────────────── */
-const IV_PANELS={who:'iv-who','new':'iv-new',msg:'iv-msg',link:'iv-link',done:'iv-done'};
+const IV_PANELS={when:'iv-when',who:'iv-who','new':'iv-new',msg:'iv-msg',
+                 link:'iv-link',done:'iv-done'};
 function ivShow(){
   if(!ivS)return;
   Object.keys(IV_PANELS).forEach(function(k){
     const e=document.getElementById(IV_PANELS[k]);
     if(e)e.style.display=(k===ivS.step)?'':'none';
   });
+  if(ivS.step==='when')ivPaintWhen();
   if(ivS.step==='who')ivPaintList();
   if(ivS.step==='new')ivPaintNew();
   if(ivS.step==='msg')ivPaintMsg();
@@ -22140,6 +22220,75 @@ function ivShow(){
   if(bd)bd.scrollTop=0;
 }
 function ivGo(step){if(!ivS)return;ivS.step=step;ivShow()}
+/* ‏**רשימת הרגעים, ורק אלה שאני פתחתי.** ‏`invitations_send`
+   דורשת `app.is_initiator`, ולכן הזמנה לרגע שצורפתי אליו הייתה
+   נדחית בשרת. הסדר הוא לפי המועד, כלומר הקרוב ביותר ראשון —
+   מה שהיה עד כה הכרעה שקטה הוא מעכשיו ההצעה שבראש הרשימה. */
+function ivWhenRows(){
+  return ivMyRows().slice().sort(function(a,b){
+    const da=a.targetYear?new Date(a.targetYear,Number(a.targetMonth||0),1):null;
+    const db=b.targetYear?new Date(b.targetYear,Number(b.targetMonth||0),1):null;
+    if(da&&db)return da-db;
+    return da?-1:(db?1:0);
+  });
+}
+function ivPaintWhen(){
+  const box=document.getElementById('iv-wlist');
+  if(!box)return;
+  box.innerHTML=ivWhenRows().map(function(p,i){
+    const on=ivS.key===p.key,when=bShortWhen(p);
+    return '<button type="button" class="ivr'+(on?' on':'')+'" '+
+      /* ‏**אינדקס ולא המפתח עצמו.** ‏`JSON.stringify` פולט מרכאות
+         כפולות, והתכונה עצמה תחומה בהן — כלומר ה-`onclick` נשבר
+         והשורה לא עשתה דבר, בלי שום שגיאה. זו אותה הכרעה של
+         `ivPick`, שמקבלת אינדקס לתוך `relatives`: מפתח נטיעה הוא
+         מחרוזת מהשרת, והשחלה שלה לתוך תכונה דורשת בריחה שאין לה
+         סיבה. */
+      'onclick="ivPickWhen('+i+')">'+
+      '<span class="f sq">'+occIcon(p.occasion,20,p.name)+'</span>'+
+      '<span class="tx"><span class="t">'+attrText(p.name||'')+'</span>'+
+      (when?('<span class="s">'+attrText(when)+'</span>'):'')+'</span>'+
+      '<span class="bx" aria-hidden="true">\u2713</span></button>';
+  }).join('');
+  /* ‏**ואפשר להזמין גם לרגע שעוד לא קיים** (בקשה של אלון). הרשימה
+     היא הרגעים שכבר פתחתי, ומי שרוצה להזמין קרוב לרגע חדש היה
+     צריך לצאת, לפתוח אותו, ולהתחיל מחדש. **והיא אינה שלב נוסף
+     בפלואו הזה אלא מעבר לאשף**, כי מסך הסיום שלו כבר נגמר
+     ב"להזמין קרובים לנטוע איתך" — כלומר הלולאה נסגרת במה שכבר
+     קיים, ואין כאן מכונת מצבים שצריך לזכור לחזור ממנה.
+     **וברגע הזה עוד לא נבחר דבר**, כי זה השלב הראשון, ולכן
+     היציאה אינה מאבדת שום תשובה. */
+  const add=document.getElementById('iv-waddbox');
+  if(add)add.innerHTML=listAddHTML('ivNewMoment()','לפתוח רגע חדש',
+    'ואז להזמין אליו','iv-wadd');
+}
+function ivNewMoment(){
+  ivLive=false;ivS=null;
+  const box=document.getElementById('wizhead');
+  if(box)box.classList.remove('ivend','ivnb');
+  startCreate();
+}
+/* ‏**ובחירת רגע בונה את המצב מחדש ואינה כותבת `key` בלבד**, כי
+   ‏`kid` ו-`kidSex` נגזרים מהשורה ומזינים את הכותרת, את הכרטיס
+   ואת המסר. מה שנשמר הוא מה שכבר נענה. */
+function ivPickWhen(i){
+  if(!ivS)return;
+  const row=ivWhenRows()[i];
+  if(!row)return;
+  const key=row.key,p=ivRow(key);
+  if(!p)return;
+  ivS.key=key;
+  ivS.kid=kidOf(p)||p.kid||'';
+  ivS.kidSex=p.sex||'';
+  cur=key;
+  /* מי שכבר נבחר עלול שלא להיות מועמד ברגע החדש (הוא כבר נוטע בו,
+     או כבר הוזמן אליו), ולכן הבחירה נופלת ולא נשמרת בשקט. */
+  if(ivS.who!=='new'&&ivS.i>=0&&
+     !ivCandidates().some(function(o){return o.i===ivS.i})){
+    ivS.who=null;ivS.i=-1;
+  }
+  ivPaintWhen();ivHead();ivCta();
+}
 /* ‏**מי מוצג ברשימה: כל הקרובים שעדיין אינם נוטעים לילד הזה**
    (§4). ‏§10.1 קובע שמי שכבר נוטע פשוט אינו מופיע, ומי שכבר
    הוזמן לרגע הזה מצטרף אליו: הזמנה שנייה לאותו רגע אינה עושה
@@ -22211,6 +22360,19 @@ function ivPaintNew(){
     ivNmPrev=String(in_.value||'');
     in_.placeholder=ivS.kin?('איך קוראים ל'+KIN[ivS.kin].chip+'?'):'השם';
   }
+  const cn=document.getElementById('iv-cnin');
+  if(cn&&document.activeElement!==cn&&cn.value!==(ivS.ct||''))cn.value=ivS.ct||'';
+  txt('iv-cnote',ivCnote());
+}
+/* ‏**שלושה מצבים ולא שניים**, בדיוק כמו מסך הסיום של "להוסיף
+   קרוב": בוואטסאפ השרת אינו שולח דבר ויש רק קישור להעביר, ולכן
+   שורה שמבטיחה שליחה על מספר טלפון היא ההבטחה הגרועה מכולן. */
+function ivCnote(){
+  const c=ivCt();
+  if(!c)return 'בלי כתובת נכין קישור פתוח להעברה ביד.';
+  return chanOf(c)==='mail'
+    ? 'ההזמנה תישלח לכתובת הזאת.'
+    : 'בוואטסאפ אין שליחה אוטומטית, ונכין קישור אישי להעברה.';
 }
 function ivPickKin(el,k){
   if(!ivS)return;
@@ -22369,6 +22531,7 @@ function ivPaintDone(){
 /* ── ניווט ──────────────────────────────────────────────────── */
 function ivBack(){
   if(!ivS)return ivExit();
+  if(ivS.step==='who'&&ivS.ask)return ivGo('when');
   if(ivS.step==='new')return ivGo('who');
   if(ivS.step==='msg')return ivGo(ivIsNew()?'new':'who');
   ivExit();
@@ -22387,6 +22550,7 @@ function ivNext(){
   const b=document.getElementById('iv-cta');
   if(b&&b.classList.contains('off'))return;
   const s=ivS.step;
+  if(s==='when')return ivGo('who');
   if(s==='who')return ivGo(ivIsNew()?'new':'msg');
   if(s==='new')return ivGo('msg');
   if(s==='msg')return ivCanSend()?ivSend():ivPrepare();
@@ -22398,7 +22562,13 @@ function ivNext(){
    מהשרת לשלוח מייל — ועותק שני שלה כאן היה נפרד ממנה בשינוי
    הראשון. */
 function ivSend(){
-  const r=relatives[ivS.i];
+  /* ‏**והכתובת נבדקת כאן ולא בכל תו**, ראו `ivCanSend`. */
+  if(ivIsNew()){
+    const c=ivCt();
+    if(!contactOk(c)){toast('צריך טלפון או כתובת אימייל תקינה');return}
+    if(isMyAddress(c)){toast('זו הכתובת שלך. הזמנה נשלחת למישהו אחר.');return}
+  }
+  const r=ivEnsureRel();
   if(!r)return;
   r.note=ivMsgText();
   pickedPlant=ivS.key;
@@ -22415,6 +22585,31 @@ function ivSend(){
     ivGo('done');
   });
 }
+/* ‏**שורת הקרוב נכתבת במקום אחד, לשני המסלולים.** עד כה היא
+   נבנתה בתוך `ivPrepare` בלבד, ולכן מסלול השליחה לא יכול היה
+   לשרת מישהו חדש כלל: `ivSend` קראה `relatives[ivS.i]` ולחדש אין
+   עדיין אינדקס. **והכתובת נשמרת איתה**, כי היא מה שמאפשר "שלח
+   שוב" מאוחר יותר ואת המייל עצמו. */
+function ivEnsureRel(){
+  if(!ivIsNew())return relatives[ivS.i]||null;
+  const nm0=String(ivS.nm||'').trim(),c0=ivCt();
+  /* ‏**ושורה שכבר נוצרה מתרעננת ואינה משוכפלת.** ‏`sendInvite`
+     יכולה להיכשל ולהחזיר את המשתמש למסך, והוא יכול לחזור אחורה
+     ולתקן את השם או את הכתובת — ואז שורה שנשמרה במטמון הייתה
+     נושאת את הערך הישן. */
+  const had=ivS.i>=0?relatives[ivS.i]:null;
+  const r=had||{};
+  r.name=nm0;r.rel=ivS.kin;r.av=kinAv(ivS.kin);r.contact=c0;
+  r.g=kinSex(ivS.kin)||r.g||'m';r.chan=chanOf(c0)||'wa';
+  if(had)return r;
+  r.note='';r.status='invited';r.plant=ivS.key;r.invitedTo=[];
+  relatives.push(r);
+  ivS.i=relatives.length-1;
+  if(liveAccount())netaServer.addRelative({name:nm0,relation:ivS.kin,avatar:r.av,
+      contact:c0,channel:r.chan==='wa'?'whatsapp':'email'})
+    .then(function(row){if(row&&row.id)r.id=row.id},function(){});
+  return r;
+}
 /* ‏**קישור פתוח ולא הזמנה אישית, וזו הכרעה של המסד.**
    ‏`invitations.contact` הוא `not null` — הוא מה שמאמת את מי
    שנכנס — והמסלול הזה אינו שואל כתובת בכלל (§5). ‏0025 כבר קבע
@@ -22426,19 +22621,13 @@ function ivPrepare(){
   const key=ivS.key,note=ivMsgText();
   ivS.busy=true;ivCta();
   openForRelatives(key);
-  if(ivIsNew()){
-    const nm=String(ivS.nm||'').trim();
-    const r={name:nm,rel:ivS.kin,av:kinAv(ivS.kin),contact:'',note:note,
-             status:'invited',plant:key,invitedTo:[key]};
-    relatives.push(r);
-    ivS.i=relatives.length-1;
-    if(liveAccount())netaServer.addRelative({name:nm,relation:ivS.kin,avatar:r.av})
-      .then(function(row){if(row&&row.id)r.id=row.id},function(){});
-  }else{
-    const r=relatives[ivS.i];
-    if(r){r.note=note;r.status='invited';r.plant=key;
-          r.invitedTo=(r.invitedTo||[]).concat([key])}
-  }
+  const r=ivEnsureRel();
+  if(r){r.note=note;r.status='invited';r.plant=key;
+        /* ‏**מסלול הקישור אינו יוצר שורת `invitations`**, ולכן הוא
+           זה שרושם את הרגע בעצמו; במסלול השליחה `sendInvite` היא
+           שרושמת, ורישום כפול כאן היה מוציא את הקרוב מהרשימה
+           המוצעת בהזמנה הבאה בלי שנשלח דבר. */
+        r.invitedTo=(r.invitedTo||[]).concat([key])}
   buildRelatives();
   const fin=function(url){
     if(!ivS)return;
