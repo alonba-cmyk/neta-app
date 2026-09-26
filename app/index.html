@@ -5238,7 +5238,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '281fa57';
+window.NETA_BUILD = 'f98e726';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7034,12 +7034,20 @@ window.NETA_CONFIG = {
       <!-- ‏**עיגול הפלוס המקווקו הוחלף בכפתור עם שם** (`FIX-picker-header.md`
            §3). הוא היה הפעולה היחידה בארבעת הטאבים שאינה נוקבת במה
            היא עושה, **ומקווקו אמר "אין כאן ערך עדיין"** — אמירה על
-           משבצת ריקה, לא על פעולה. **ו-`ivFromRelatives` ולא
-           `openAddPerson`:** הכפתור אומר "להזמין", וזו הפונקציה
-           שמובילה לדבר עצמו; היא נופלת לאשף ההוספה כשאין ולו רגע
-           אחד שמותר לי להזמין אליו. -->
-      <button class="act" onclick="ivFromRelatives()">
-        <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg>להזמין קרוב</button>
+           משבצת ריקה, לא על פעולה.
+           **והוא פותח את "את מי תרצה להוסיף" ולא את פלואו ההזמנה,
+           בקשה של אלון.** ‏`FIX-picker-header` §3 חיווט אותו
+           ל-`ivFromRelatives` בנימוק ש"הכפתור אומר להזמין, וזו
+           הפונקציה שמובילה לדבר עצמו". **מה שמחזיק את ההיפוך:**
+           המסך הזה מחזיק שתי רשימות — מי נוטע איתי ומי אני נוטע
+           עבורו — והכפתור שבראשו הוא הפעולה של המסך כולו, לא של
+           אחת מהן; השאלה בת שתי האפשרויות היא בדיוק מה שמפריד
+           ביניהן. **והכיתוב הלך אחרי היעד**, כי "להזמין" על מסך
+           שכותרתו "להוסיף קרוב" ושאחת משתי אפשרויותיו היא ילד הוא
+           הבטחה צרה מדי; השורות בסוף שתי הרשימות אומרות את אותו
+           דבר ומובילות לאותו מקום. -->
+      <button class="act" onclick="openAddPerson('with')">
+        <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-plus"/></svg>להוסיף קרוב</button>
     </div>
 
     <!-- ‏**הכרטיס הוא `.kcard2`, אותו רכיב של שאר הטאבים** (§2),
@@ -7978,7 +7986,7 @@ window.NETA_CONFIG = {
            כל תו. **בדפדפן שולחני זה אינו מופיע** — נמדד גם עם
            `Input.imeSetComposition`, והערך יצא "רנה". -->
       <input type="text" class="ivname" id="iv-nmin" placeholder="השם"
-             oninput="ivNameIn()" onbeforeinput="ivNameAt()">
+             oninput="ivNameIn()" onbeforeinput="ivNameAt(event)">
     </div>
     <!-- שלב המסר -->
     <div id="iv-msg" style="display:none">
@@ -21638,22 +21646,44 @@ function ivPickKin(el,k){
    **והתו הראשון מטופל בנפרד:** בשדה ריק אינדקס 0 הוא המקום
    הנכון, ומה שאינו נכון הוא שהסמן נשאר שם — ולכן הוא נדחף
    לסוף, וזה גם מה שמסדר את התו השני. */
-let ivNmPrev='',ivNmAt=0;
-function ivNameAt(){
+let ivNmPrev='',ivNmAt=0,ivNmType='';
+function ivNameAt(e){
   const el=document.getElementById('iv-nmin');
-  if(el)ivNmAt=el.selectionStart==null?String(el.value||'').length:el.selectionStart;
+  if(!el)return;
+  ivNmAt=el.selectionStart==null?String(el.value||'').length:el.selectionStart;
+  ivNmType=(e&&e.inputType)||'';
 }
+/* ‏**ומה שמפעיל את התיקון הוא מיקום הסמן אחרי האירוע, ולא לפניו.**
+   הגרסה הראשונה נשענה על `beforeinput`: אם הסמן היה במקום אחר והתו
+   נחת בהתחלה — תקן. **וזה לא הספיק**, כי בדפדפן שנשבר הסמן **נשאר**
+   על 0, ולכן `beforeinput` דיווח 0 כבר מהתו השני והתנאי לא נכנס
+   לפעולה. אלון בדק אחרי רענון חזק וזה עדיין היה הפוך.
+   **מה שמבדיל בוודאות בין השניים הוא איפה הסמן אחרי ההכנסה:**
+   דפדפן תקין שמכניס תו באינדקס 0 משאיר את הסמן על 1, ודפדפן
+   שנשבר משאיר אותו על 0 — וזה בדיוק מה שנראה בצילום, הסמן בקצה
+   הימני של שדה RTL. כלומר התיקון אינו יכול לגעת בעריכה מכוונת
+   בתחילת המחרוזת, כי שם הסמן לעולם אינו 0. */
 function ivNameIn(){
   if(!ivS)return;
   const el=document.getElementById('iv-nmin');
   if(el){
     const v=String(el.value||''),prev=ivNmPrev;
-    if(ivNmAt>0&&v.length===prev.length+1&&v.slice(1)===prev){
-      const fix=prev.slice(0,ivNmAt)+v.charAt(0)+prev.slice(ivNmAt);
+    const at=el.selectionStart==null?v.length:el.selectionStart;
+    /* ‏**ורצף ולא תו בודד**, כי מקלדת שמחברת מילה שלמה מוסרת
+       אותה באירוע אחד — ואז החתימה זהה, רק ארוכה יותר. */
+    const add=v.length-prev.length;
+    if(at===0&&add>0&&v.slice(add)===prev){
+      /* ‏`ivNmAt` הוא המקום שבו המשתמש באמת עמד, כשהוא ידוע. */
+      const k=(ivNmAt>0&&ivNmAt<=prev.length)?ivNmAt:prev.length;
+      const fix=prev.slice(0,k)+v.slice(0,add)+prev.slice(k);
       el.value=fix;
-      try{el.setSelectionRange(ivNmAt+1,ivNmAt+1)}catch(e){}
-    }else if(v.length===1&&el.selectionStart===0){
-      try{el.setSelectionRange(1,1)}catch(e){}
+      try{el.setSelectionRange(k+add,k+add)}catch(e){}
+    }else if(at===0&&v.length>0&&/^insert/.test(ivNmType||'insertText')){
+      /* הכנסה שהשאירה את הסמן על 0 בלי שהיא הכנסה בתחילת המחרוזת:
+         הסמן נדחף לסוף, כדי שההקלדה הבאה תדע מאיפה להמשיך.
+         **ומחיקה מוחרגת**, כי `Delete` על התו הראשון משאיר את הסמן
+         על 0 בצדק. */
+      try{el.setSelectionRange(v.length,v.length)}catch(e){}
     }
     ivNmPrev=String(el.value||'');
     ivS.nm=ivNmPrev;
