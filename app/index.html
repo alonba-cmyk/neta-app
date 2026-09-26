@@ -5238,7 +5238,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'd256c12';
+window.NETA_BUILD = '281fa57';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7978,7 +7978,7 @@ window.NETA_CONFIG = {
            כל תו. **בדפדפן שולחני זה אינו מופיע** — נמדד גם עם
            `Input.imeSetComposition`, והערך יצא "רנה". -->
       <input type="text" class="ivname" id="iv-nmin" placeholder="השם"
-             oninput="ivNameIn()">
+             oninput="ivNameIn()" onbeforeinput="ivNameAt()">
     </div>
     <!-- שלב המסר -->
     <div id="iv-msg" style="display:none">
@@ -11349,10 +11349,17 @@ document.querySelectorAll('.opt.dest').forEach(el=>el.onclick=()=>{
 /* ---- editing the planting name propagates across the app ---- */
 let plantName='הבר מצווה של דניאל';
 function childOf(t){const p=t.split(' של ');return (p.length>1?p[p.length-1]:t).trim()||'הילד';}
-function txt(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+/* ‏**וכותבים רק כשהערך באמת התחלף.** הצבה של אותה מחרוזת מחליפה
+   את צומת הטקסט מחדש, כלומר מוטציה ב-DOM שאיש לא ביקש — וכשהיא
+   קורית בתוך מאזין `input`, על אלמנט שיושב באותו מכל גלילה עם
+   השדה שמקלידים בו, היא משנה פריסה תחת האצבע. זו אותה שורה שכבר
+   יושבת על `wizSet`, על תיבת המסר ועל `amtShow`. */
+function txt(id,v){const el=document.getElementById(id);
+  if(el&&el.textContent!==v)el.textContent=v;}
 /* אותו דבר, ל-svg. ‏txt כותב textContent, ולכן אייקון שנכתב דרכו
    מופיע כקוד המקור שלו. */
-function htm(id,v){const el=document.getElementById(id);if(el)el.innerHTML=v;}
+function htm(id,v){const el=document.getElementById(id);
+  if(el&&el.innerHTML!==v)el.innerHTML=v;}
 function applyPlantName(raw){
   plantName=(raw||'').trim()||'הנטיעה';
   const kid=childOf(plantName);
@@ -21460,8 +21467,9 @@ function ivCard(){
        בערכה הבהירה. בלי לכבות אותו עיגול האות יצא לבן במקום
        ירוק בהיר. זו אותה מלכודת של "ערוגה בתוך ערוגה", בשכבה
        חמישית. */
-    av.className='ph'+(face?(ivIsNew()?' ini':''):' empty');
-    av.innerHTML=face||'+';
+    const cls='ph'+(face?(ivIsNew()?' ini':''):' empty');
+    if(av.className!==cls)av.className=cls;
+    if(av.innerHTML!==(face||'+'))av.innerHTML=face||'+';
   }
   const key=ivS.step==='msg'?'msg':((ivS.step==='who'||ivS.step==='new')?'nm':'');
   [['nm','iv-nm'],['msg','iv-msgk']].forEach(function(pair){
@@ -21483,8 +21491,11 @@ function ivHead(){
   txt('wiz-step',end?'':('לנטוע ל'+(ivS.kid||'')));
   const seq=ivSteps(),i=seq.indexOf(ivS.step);
   const bar=document.getElementById('wiz-bar');
-  if(bar&&i>=0)bar.innerHTML=seq.map(function(_,k){
-    return '<i class="'+(k<=i?'on':'')+'"></i>'}).join('');
+  if(bar&&i>=0){
+    const h=seq.map(function(_,k){
+      return '<i class="'+(k<=i?'on':'')+'"></i>'}).join('');
+    if(bar.innerHTML!==h)bar.innerHTML=h;
+  }
   ivCard();
 }
 /* ── הכפתור ─────────────────────────────────────────────────── */
@@ -21506,7 +21517,7 @@ function ivCta(){
   }else{
     label='חזרה ל'+(ivS.kid||'');
   }
-  b.textContent=label;
+  if(b.textContent!==label)b.textContent=label;
   b.classList.toggle('off',!on||!!ivS.busy);
 }
 /* ── הפאנלים ────────────────────────────────────────────────── */
@@ -21594,6 +21605,9 @@ function ivPaintNew(){
        מאפסת את מיקום הסמן באמצע הקלדה, וזו אותה שורה שכבר יושבת
        על תיבת המסר ועל `amtShow`. */
     if(document.activeElement!==in_&&in_.value!==(ivS.nm||''))in_.value=ivS.nm||'';
+    /* ‏`ivNmPrev` הוא מה שתיקון נקודת ההכנסה משווה אליו, ולכן הוא
+       מסונכרן בכל ציור ולא רק בהקלדה. */
+    ivNmPrev=String(in_.value||'');
     in_.placeholder=ivS.kin?('איך קוראים ל'+KIN[ivS.kin].chip+'?'):'השם';
   }
 }
@@ -21607,9 +21621,43 @@ function ivPickKin(el,k){
   if(in_)in_.placeholder='איך קוראים ל'+KIN[k].chip+'?';
   ivHead();ivCta();
 }
+/* ‏**ותיקון נקודת ההכנסה, אחרי שאלון ראה "אלון" יוצא "ןולא".**
+   הצילום הראה את הסמן **בקצה הימני** של השדה, כלומר באינדקס 0
+   בשדה RTL, ואת המחרוזת הפוכה — התו נדחף לתחילת המחרוזת והסמן
+   נשאר שם. זה אינו תצוגה הפוכה: עיגול האות שבכרטיס מציג
+   ‏`charAt(0)`, והוא הציג ן'.
+
+   **בדפדפן שולחני זה אינו קורה**, גם בהקלדה רגילה וגם
+   ב-`Input.imeSetComposition` שמדמה את Gboard, ולכן מה שיש כאן
+   הוא תיקון של הסימפטום ולא של השורש — **והוא גדור כך שהוא
+   no-op בדפדפן שמתנהג כשורה**: הוא נכנס לפעולה בדיוק כשתו יחיד
+   נוסף **בתחילת** המחרוזת בזמן שהסמן היה במקום אחר, ומחזיר
+   אותו למקום שבו הוא היה אמור להיכנס. ‏`beforeinput` הוא מה
+   שיודע איפה הסמן היה, כי אחרי האירוע כבר מאוחר.
+
+   **והתו הראשון מטופל בנפרד:** בשדה ריק אינדקס 0 הוא המקום
+   הנכון, ומה שאינו נכון הוא שהסמן נשאר שם — ולכן הוא נדחף
+   לסוף, וזה גם מה שמסדר את התו השני. */
+let ivNmPrev='',ivNmAt=0;
+function ivNameAt(){
+  const el=document.getElementById('iv-nmin');
+  if(el)ivNmAt=el.selectionStart==null?String(el.value||'').length:el.selectionStart;
+}
 function ivNameIn(){
   if(!ivS)return;
-  ivS.nm=(document.getElementById('iv-nmin')||{}).value||'';
+  const el=document.getElementById('iv-nmin');
+  if(el){
+    const v=String(el.value||''),prev=ivNmPrev;
+    if(ivNmAt>0&&v.length===prev.length+1&&v.slice(1)===prev){
+      const fix=prev.slice(0,ivNmAt)+v.charAt(0)+prev.slice(ivNmAt);
+      el.value=fix;
+      try{el.setSelectionRange(ivNmAt+1,ivNmAt+1)}catch(e){}
+    }else if(v.length===1&&el.selectionStart===0){
+      try{el.setSelectionRange(1,1)}catch(e){}
+    }
+    ivNmPrev=String(el.value||'');
+    ivS.nm=ivNmPrev;
+  }
   ivHead();ivCta();
 }
 /* ── שלב המסר ───────────────────────────────────────────────── */
