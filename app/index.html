@@ -2791,6 +2791,14 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
    שספר העיצוב פוסל. ‏`.two` בתוך גיליון אשף מציג את הראשי בלבד. */
 .screen.wiz .two{display:block}
 .screen.wiz .two>.btn.ghost,.screen.wiz .backlink{display:none}
+/* ‏**ובשלב המכתב הכפתור השני חוזר, כי הוא אינו "חזרה"**
+   (`FIX-letter-v1.md` §3). "לדלג" ממשיך **קדימה** לשלב הסיכום בלי
+   מכתב, והחץ שבראש מוביל **אחורה** לתשלום — שתי פעולות שונות,
+   ולכן הכלל שמעל אינו חל כאן. שני כפתורים באותה שורה, כמו
+   בפלואו ההזמנה. */
+[data-name="מכתב"].screen.wiz .two{display:flex;gap:10px}
+[data-name="מכתב"].screen.wiz .two>.btn{flex:1;width:auto;min-width:0}
+[data-name="מכתב"].screen.wiz .two>.btn.ghost{display:block;flex:0 0 42%}
 /* ‏**שני חריצים הפוכים על אותו מסך.** מסך הסכום משרת גם הפקדה לרגע
    קיים, ושם אין ראש ירוק ואין כרטיס — ולכן מה שיורד באשף חייב
    לעלות שם, ולא להימחק. */
@@ -3369,7 +3377,22 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .ivz .ivname{width:100%;margin-top:clamp(7px,1.5vh,10px)}
 /* ‏**שורת המשנה של השלב** (`FIX-invite-v2.md` §3). היא נגזרת
    מ-`ivSteps` ואינה נכתבת ביד, ראו `ivStepLine`. */
-.ivsub{margin:0 0 clamp(10px,2.2vh,16px);font-size:12.5px;color:var(--tx-3)}
+.ivsub,.msg-sub{margin:0 0 clamp(8px,1.5vh,16px);font-size:12.5px;color:var(--tx-3)}
+/* ── פס הגלילה בגיליונות (`FIX-letter-v1.md` §4) ────────────────
+   ‏**המסמך נוקב ב-`.sheet-body`, ואין באפליקציה מחלקה בשם הזה** —
+   זה שמו של הרכיב בקובץ העיצוב. מה שגולל אצלנו הוא ששת המכלים
+   שמנויים כאן, ורובם כבר הסתירו את הפס; מה שחסר היה **מסכי האשף,
+   גוף ההזמנה, ו-`::-webkit-scrollbar` על הבמה ועל `<textarea>`**.
+   ‏`scrollbar-width` הוא הצורה התקנית ו-`::-webkit-scrollbar` הוא
+   מה שסאפארי ואנדרואיד קוראים, ולכן שניהם. **וארבעת המכלים
+   שכבר נשאו את שתי ההצהרות אינם נוגעים כאן**, כי כל אחד מהם
+   מוצהר ליד ההגדרה של עצמו (`.wrap`, `.stage`, `.subbd`,
+   `.sheet`); סלקטור שכתוב פעמיים הוא עוד מקום לסנכרן.
+   **והגלילה עצמה נשארת פעילה**, כי אף אחת מההצהרות אינה נוגעת
+   ב-`overflow`. */
+.screen.wiz,.ivz .ivbody,textarea{scrollbar-width:none;-ms-overflow-style:none}
+.screen.wiz::-webkit-scrollbar,.ivz .ivbody::-webkit-scrollbar,
+textarea::-webkit-scrollbar{width:0;height:0;display:none}
 .ivlbl{margin:clamp(12px,2.4vh,18px) 0 clamp(6px,1.2vh,9px);
   font-size:12.5px;font-weight:700;color:var(--tx-2)}
 /* ‏**שלב 1ב: צ'יפים עגולים של הילדים, ורשת של שתי עמודות
@@ -3407,53 +3430,100 @@ input[type=range]{width:100%;accent-color:var(--leaf);height:20px;background:tra
 .ivz .occgrid .em svg{display:block;width:20px;height:20px}
 .ivz .occgrid .lb{font-size:12.5px;font-weight:700;min-width:0;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-/* ‏**שלושת המשפטים המוכנים** (§6): כפתורי בחירה ברוחב מלא, ומה
-   שנבחר צבוע כמו כל בחירה אחרת במוצר. */
-.ivpre{display:flex;flex-direction:column;gap:7px}
-.ivopt{width:100%;background:var(--s1);border:1px solid var(--line-2);
-  border-radius:14px;font-family:inherit;font-size:13.5px;line-height:1.55;
-  color:var(--tx-2);padding:clamp(9px,1.8vh,13px) 13px;cursor:pointer;
-  text-align:start}
-.ivopt.on{border-color:var(--leaf);background:var(--leaf-bg);color:var(--tx);
-  font-weight:600}
-.ivopt.mine{font-weight:700;color:var(--leaf);text-align:center}
-.ivopt.mine.on{color:var(--leaf)}
-/* ‏**התצוגה המקדימה** (§6): בועת הודעה עם שורת הפתיחה, המשפט
-   שנבחר, וכרטיס הקישור — בדיוק מה שיישלח. */
-.ivbub{background:var(--s2);border:1px solid var(--line);border-radius:18px;
-  padding:13px 14px}
-.ivbub p{margin:0;font-size:13.5px;line-height:1.6;color:var(--tx)}
-.ivbub .l2{margin-top:7px;color:var(--tx-2)}
-.ivlink{display:flex;align-items:center;gap:10px;margin-top:11px;
-  background:var(--s1);border:1px solid var(--line);border-radius:13px;
-  padding:9px 10px}
-.ivlink .sq{width:34px;height:34px;border-radius:11px;flex:none;
-  background:var(--leaf);color:var(--on-leaf);display:grid;place-items:center}
-.ivlink .tx{min-width:0}
-.ivlink b{display:block;font-size:12.5px;font-weight:700;color:var(--tx);
+/* ── גוש הכתיבה · מבנה אחד שמשמש בשני המקומות ──────────────────
+   ‏`FIX-letter-v1.md` §1. שלב "מה לכתוב" בהזמנה ושלב המכתב באשף
+   הנטיעה בנויים מאותו גוש בדיוק — שדה, שתי אפשרויות, ותצוגה
+   מקדימה — ולכן הוא נכתב פעם אחת: `msgBlockHTML` הוא המקום
+   היחיד שמרכיב את המרקאפ, והכללים כאן אינם ממוקדים לאף מסך.
+   **מה שמתחלף בין השניים הוא התוכן ורגל הבועה**, ושניהם
+   ארגומנטים.
+
+   **השדה לבן ולא חול** (§1): שני גושי חול זה מעל זה יצרו עומס,
+   ובלבן נוצרת היררכיה — לבן הוא מה שכותבים בו, חול הוא התוצאה.
+   **‏`--s1` ולא `#fff`**, כי צבע קשיח הוא בדיוק מה שספר המותג
+   עוצר עליו, ובערכה הכהה "לבן" הוא טקסט בהיר על משטח בהיר.
+   **ו-16px ולא 15 שבעיצוב**: זה שדה שמקלידים בו, וסאפארי בנייד
+   מזמזם לתוך כל שדה שקטן מ-16 — אותה סטייה בדיוק שכבר נלקחה
+   על תיבת המסר, ו-`otpzoom.js` הוא שאוכף אותה. */
+.msg-field{width:100%;box-sizing:border-box;resize:none;display:block;
+  min-height:clamp(48px,calc(9vh * var(--mkf)),86px);
+  background:var(--s1);border:1.5px solid var(--line);border-radius:13px;
+  padding:clamp(7px,calc(1.7vh * var(--mk)),13px) 14px;
+  font-family:inherit;font-size:16px;
+  line-height:1.6;color:var(--tx);text-align:start}
+.msg-field:focus{outline:none;border-color:var(--leaf)}
+.msg-altl{margin:clamp(5px,calc(1.3vh * var(--mk)),12px) 0
+  clamp(3px,calc(.8vh * var(--mk)),7px);
+  font-size:12.5px;font-weight:700;color:var(--tx-2)}
+/* ‏**שתי אפשרויות, כל אחת בשורה אחת** (§1). משפט ארוך נחתך בשלוש
+   נקודות ואינו נשבר לשתי שורות — אחרת הגוש גדל לפי אורך המשפט
+   ומה שמתחתיו זז. */
+.msg-alts{display:flex;flex-direction:column;
+  gap:clamp(4px,calc(1vh * var(--mk)),7px)}
+.msg-alt{display:block;width:100%;text-align:start;font-size:13px;
+  line-height:1.35;
+  background:var(--s1);border:1.5px solid var(--line);border-radius:11px;
+  padding:clamp(5px,calc(1.1vh * var(--mk)),9px) 11px;
+  font-family:inherit;color:var(--tx-2);cursor:pointer;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ivlink i{display:block;font-style:normal;font-size:11px;color:var(--tx-3);
-  direction:ltr;unicode-bidi:isolate;text-align:start}
-/* ‏**הערה על ערוגה עם אייקון עין, ולא טקסט אדום** (§6). */
-.ivseen{display:flex;align-items:flex-start;gap:8px;
-  margin:clamp(8px,1.6vh,12px) 0 0;background:var(--leaf-bg);
-  border-radius:13px;padding:9px 11px;font-size:11.5px;line-height:1.5;
-  color:var(--leaf-ink)}
-.ivseen svg{width:15px;height:15px;flex:none;margin-top:1px;color:var(--leaf)}
+.msg-alt.on{border-color:var(--leaf);background:var(--leaf-bg);
+  color:var(--tx);font-weight:600}
+/* ‏**התצוגה המקדימה: כרטיס חול ובתוכו בועה לבנה** (§1). שלוש
+   השכבות אינן קישוט — החול הוא ההקשר (מסך ההודעות, יום הרגע),
+   הלבן הוא ההודעה עצמה, והרגל היא מה שמצורף אליה. */
+.msg-lbl{margin:clamp(6px,calc(1.4vh * var(--mk)),13px) 0
+  clamp(3px,calc(.8vh * var(--mk)),7px);
+  font-size:12.5px;font-weight:700;color:var(--tx-2)}
+.msg-prev{background:var(--s2);border:1px solid var(--line);
+  border-radius:18px;padding:clamp(6px,calc(1.2vh * var(--mk)),11px)}
+.msg-bub{background:var(--s1);border-radius:14px;
+  padding:clamp(7px,calc(1.4vh * var(--mk)),12px) 12px}
+.msg-bub p{margin:0;font-size:13.5px;line-height:1.5;color:var(--tx)}
+.msg-bub .l2{margin-top:6px;color:var(--tx-2);white-space:pre-line}
+.msg-foot{display:flex;align-items:center;gap:10px;
+  margin-top:clamp(6px,calc(1.2vh * var(--mk)),11px);
+  background:var(--s2);border-radius:13px;
+  padding:clamp(5px,calc(1.1vh * var(--mk)),9px) 10px}
+.msg-foot .sq{width:clamp(26px,calc(4vh * var(--mk)),34px);
+  height:clamp(26px,calc(4vh * var(--mk)),34px);
+  border-radius:11px;flex:none;
+  background:var(--leaf);color:var(--on-leaf);display:grid;place-items:center}
+.msg-foot .sq svg{display:block}
+.msg-foot .tx{min-width:0}
+.msg-foot b{display:block;font-size:12.5px;font-weight:700;color:var(--tx);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg-foot i{display:block;font-style:normal;font-size:11px;color:var(--tx-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* הכתובת לבדה נקראת משמאל לימין, גם במסמך RTL. */
+.msg-foot i.ltr{direction:ltr;unicode-bidi:isolate;text-align:start}
+/* ‏**הערה על ערוגה עם אייקון עין** (§3), ולא טקסט אדום: אדום אינו
+   בפלטה והוא נקרא כשגיאה, ומה שהשורה אומרת הוא עובדה על המכתב. */
+.msg-note{display:flex;align-items:flex-start;gap:8px;
+  margin:clamp(6px,calc(1.3vh * var(--mk)),12px) 0 0;
+  background:var(--leaf-bg);border-radius:13px;
+  padding:clamp(6px,calc(1.2vh * var(--mk)),9px) 11px;
+  font-size:11.5px;line-height:1.5;color:var(--leaf-ink)}
+.msg-note svg{width:15px;height:15px;flex:none;margin-top:1px;color:var(--leaf)}
+/* ‏**‏`--mk` הוא מקדם הצפיפות של הגוש, והוא מספר אחד ולא שכבה
+   שנייה של הצהרות.** ‏`clamp` הוא ליניארי, ולכן מקדם שמספיק במסך
+   של 740 מכווץ גם מסך של 900 שאין לו שום בעיה; וצריך **שני**
+   ספים ולא אחד, כי שני המסכים נושאים מסביב לגוש דברים שונים —
+   מסך המכתב נושא הערה וכרטיס ירוק גבוה ב-45 פיקסלים, ולכן הוא
+   מתהדק מוקדם יותר. מספר אחד לכל מסך במקום עותק שני של שתים
+   עשרה הצהרות. */
+:root{--mk:1;--mkf:1}
+@media (max-height:800px){:root{--mk:.8;--mkf:.82}}
+/* ‏**ולשדה מקדם משלו, גבוה מזה של האוויר.** מה שמתכווץ קודם הוא
+   המרווחים ולא הדבר שהמסך קיים בשבילו: שדה של שתי שורות במסך
+   שכל תפקידו לכתוב בו הוא בדיוק ההפך מהכוונה. */
+[data-name="מכתב"]{--mk:.58;--mkf:.92}
+@media (max-height:800px){[data-name="מכתב"]{--mk:.44;--mkf:.72}}
+.ivz #iv-msg>h2,[data-name="מכתב"]>h2{margin-bottom:clamp(5px,calc(1vh * var(--mk)),10px)}
+@media (max-height:800px){.ivsub,.msg-sub{margin-bottom:clamp(6px,1.1vh,10px)}}
+
 /* ‏**שדה הכתובת: מיושר לימין, וכל ערך נקרא בכיוון שלו** (§5).
    בלי `plaintext` מספר טלפון נשבר בתוך שדה RTL. */
 .ivz .fld{direction:rtl;text-align:right;unicode-bidi:plaintext}
-/* ‏**תיבת המסר.** ערוגה קרם לטקסט שהכנו, ושדה אמיתי ל"לכתוב
-   בעצמי" — אותו גובה בדיוק, אחרת המסך קופץ במעבר בין השבבים.
-   ‏16px ולא 14.5 שבעיצוב: זה שדה שמקלידים בו, וסאפארי מזמזם
-   לתוך כל שדה שקטן מ-16. שני המצבים באותה מידה, כי זה אותו
-   רכיב. */
-.ivmsg{margin-top:clamp(9px,1.9vh,16px);width:100%;box-sizing:border-box;
-  min-height:clamp(84px,15vh,118px);background:var(--leaf-bg);
-  border:1px solid var(--leaf-line);border-radius:16px;
-  padding:clamp(11px,2vh,15px) 14px;font-family:inherit;font-size:16px;
-  line-height:1.6;color:var(--tx);text-align:start;display:block}
-textarea.ivmsg{resize:none;color:var(--tx)}
 /* ‏**מסך הקישור.** התיבה מקווקוות ובכיוון LTR, כי כתובת נקראת
    משמאל לימין גם במסמך RTL — אותה הכרעה של משבצות הקוד ושל שורת
    הכתובת בגיליון ההזמנה. */
@@ -5537,7 +5607,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '3632322';
+window.NETA_BUILD = 'e824690';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7815,7 +7885,7 @@ window.NETA_CONFIG = {
 
   <p class="fine gap" id="pay-fine">הכסף עובר ישירות לחשבון הנעול על שם דניאל, אצל הגוף הפיננסי המנהל. נטע אינה מחזיקה בכסף בשום שלב.</p>
 
-  <div class="two wcta"><button class="btn" id="py-cta" onclick="finishDeposit()">אשר את הנטיעה</button><button class="btn ghost" onclick="go(3)">חזרה</button></div>
+  <div class="two wcta"><button class="btn" id="py-cta" onclick="finishDeposit()">אשר את הנטיעה</button><button class="btn ghost" onclick="backFromReview()">חזרה</button></div>
 </section>
 
 <!-- 25 PARTNER INVITE (the receiving side — what a co-owner sees when they open the link) -->
@@ -8376,33 +8446,18 @@ window.NETA_CONFIG = {
              placeholder="מספר טלפון או אימייל" oninput="ivContactIn()">
       <p class="ivcnote" id="iv-cnote"></p>
     </div>
-    <!-- ‏**שלב המסר: שלושה משפטים מוכנים, ואז שדה חופשי**
-         (`FIX-invite-v2.md` §6). שדה ריק מול אדם אמיתי הוא הדבר
-         שעוצר, ושלוש התחלות כתובות הן מה שמחליף אותו. -->
+    <!-- ‏**שלב "מה לכתוב", והוא גוש הכתיבה המשותף**
+         (`FIX-letter-v1.md` §2). שלושת כרטיסי הבחירה שהיו כאן
+         ירדו, ובמקומם שדה עם משפט ברירת מחדל ושתי אפשרויות
+         מתחתיו — אותו גוש בדיוק של שלב המכתב באשף הנטיעה,
+         ולכן המרקאפ נבנה מ-`msgBlockHTML` ואינו כתוב כאן.
+         **וההערה על החשיפה ירדה** (§2): התצוגה המקדימה כבר
+         מראה בדיוק מה נשלח, ושורת המשנה מזכירה שמישהו יקרא
+         את זה. -->
     <div id="iv-msg" style="display:none">
       <h2 id="iv-msgq">·</h2>
       <p class="ivsub" id="iv-msgs"></p>
-      <div class="ivpre" id="iv-pick"></div>
-      <textarea class="ivmsg ivta" id="iv-msgin" style="display:none"
-                maxlength="240" oninput="ivOwnIn()"></textarea>
-      <!-- ‏**התצוגה המקדימה, ומה שהיא מראה הוא מה שבאמת יישלח**
-           (§6): שורת הפתיחה הקבועה, המשפט שנבחר, וכרטיס הקישור.
-           היא מתעדכנת בזמן אמת גם תוך כדי הקלדה בשדה החופשי. -->
-      <p class="ivlbl" id="iv-prel">·</p>
-      <div class="ivbub">
-        <p class="l1" id="iv-bub1">·</p>
-        <p class="l2" id="iv-bub2"></p>
-        <div class="ivlink">
-          <span class="sq" aria-hidden="true"><svg width="17" height="20"
-            viewBox="10 6 40 57"><use href="#sprout-art"/></svg></span>
-          <span class="tx"><b id="iv-bubm">·</b><i>myneta.co.il</i></span>
-        </div>
-      </div>
-      <!-- ‏**והערה על ערוגה עם אייקון עין, ולא טקסט אדום** (§6).
-           אדום אינו בפלטה והוא נקרא כשגיאה; מה שהשורה אומרת הוא
-           עובדה על הקישור ולא אזהרה. -->
-      <p class="ivseen"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-eye"/></svg>
-        <span>המשפט גלוי לכל מי שפותח את הקישור, גם אם הוא הועבר הלאה.</span></p>
+      <div id="iv-msgbox"></div>
     </div>
     <!-- מסך הקישור -->
     <div id="iv-link" style="display:none">
@@ -8445,6 +8500,27 @@ window.NETA_CONFIG = {
     <button class="btn ghost" id="iv-cta2" onclick="ivBack()">לבטל</button>
     <button class="btn" id="iv-cta" onclick="ivNext()">·</button>
   </div>
+</section>
+
+<!-- ‏── שלב המכתב באשף הנטיעה ────────────────────────────────
+     ‏`FIX-letter-v1.md` §3. אותו גוש כתיבה בדיוק של שלב "מה
+     לכתוב" בהזמנה, ולכן המרקאפ נבנה מ-`msgBlockHTML` ואינו כתוב
+     כאן — מה שמתחלף הוא ארבעה ערכים.
+
+     **והמסך נוסף בסוף ה-stage, וההפניה אליו לפי שם.** מסכים
+     ממוספרים לפי סדר ה-DOM, ומסך באמצע היה מזיז כל `go(N)`
+     שאחריו ואת `NOCHROME`, `REVIEW`, `WIZ_SCREENS`
+     ו-`JOIN_SCREENS` איתו — מלכודת שכבר הפילה שתי בדיקות. -->
+<section class="screen" data-name="מכתב">
+  <h2 id="lt-q">·</h2>
+  <p class="msg-sub" id="lt-s"></p>
+  <div id="lt-box"></div>
+  <!-- ‏**הערה אחת בלבד במסך הזה** (§3, בדיקה 8): מה שאפשר לעשות
+       עם המכתב עד היום של הרגע, וביום הזה הוא נפתח. -->
+  <p class="msg-note"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-eye"/></svg>
+    <span>אפשר לערוך עד היום של הרגע. ביום הזה הוא נפתח.</span></p>
+  <!-- ‏**"לדלג" ממשיך לשלב הסיכום בלי מכתב** (§3, בדיקה 10). -->
+  <div class="two wcta"><button class="btn" onclick="letterNext()">להמשיך</button><button class="btn ghost" onclick="letterSkip()">לדלג</button></div>
 </section>
 
 </div><!-- /stage -->
@@ -8650,6 +8726,7 @@ function go(i){
     txt('amt-cta',creating?'להמשיך':joinLive?'להמשיך':'השקע עכשיו');}
   else if(i===ONBO.identity)flowBar(stepNo('identity'),'פתיחת חשבון');
   else if(i===3)flowBar(stepNo('pay'),'תשלום');
+  else if(i===LETTER_SCREEN()){flowBar(stepNo('letter'),'מכתב');letterPaint()}
   else if(i===REVIEW)flowBar(stepNo('review'),'סיכום ואישור');
   else if(![1,REVIEW,ONBO.welcome,ONBO.login,ONBO.how].includes(i)){
     /* leaving the flow ends it — otherwise a later deposit still lands on the signup screens */
@@ -10869,17 +10946,26 @@ function isSelfName(nm){
    ואין רגע. לשאול אותו מיד אחר כך לאיזו חתונה זה לסתור את מה שהוא
    הרגע אמר. הרגע נקבע ל"קופת הפתעות", שהוא האריח שממילא מתאר את זה
    בדיוק, וזה גם מה שההדגמה מחזיקה מאז ומעולם. */
-function flowSteps(){return (onbo?6:5)+(designated?(beneKnown()?0:1):-1)}
+/* ‏**שלב המכתב הוא חמישי, מיד לפני הסיכום** (`FIX-letter-v1.md`
+   §3), והזרימה גדלה מחמישה שלבים לשישה. **והוא יורד כשאין נהנה**,
+   מאותו נימוק בדיוק שמוריד את "לאיזה רגע": המכתב נכתב אל הילד,
+   ולקופה שלא יועדה אין אל מי לכתוב — כותרת "לכתוב ל<שם> כמה
+   מילים?" עם שם ריק היא מסך שבור. זו סטייה מודעת מהמסמך, שאינו
+   נוגע במסלול הזה, והיא רשומה. */
+function hasLetter(){return designated}
+function flowSteps(){return (onbo?6:5)+(designated?(beneKnown()?0:1):-1)+(hasLetter()?1:0)}
 function stepNo(key){
   const d=(designated&&!beneKnown())?1:0;
   const o=designated?0:-1;
+  const L=hasLetter()?1:0;
   if(key==='who')return 1;
   if(key==='occ')return 2;
   if(key==='amount')return 3+o;
   if(key==='bene')return 4+o;
   if(key==='identity')return 4+d+o;
   if(key==='pay')return 4+d+o+(onbo?1:0);
-  return 5+d+o+(onbo?1:0); // review
+  if(key==='letter')return 5+d+o+(onbo?1:0);
+  return 5+d+o+(onbo?1:0)+L; // review
 }
 /* ‏**הראש של האשף, והוא מקום אחד ולא שישה.** ‏`flowBar` נקראה
    ממילא מכל שלב, ולכן היא מה שמצייר עכשיו גם את הכרטיס שמתמלא,
@@ -11091,6 +11177,13 @@ function wizSheet(at){
    ההשקעה משרת גם הפקדה לרגע קיים, ולכן הקלאס תלוי ב-`creating`
    ולא במספר לבדו. */
 const WIZ_SCREENS=[1,2,3,23];
+/* ‏**שלב המכתב נוסף בסוף ה-stage ונרשם כאן בזמן ריצה** — אותה
+   צורה של `SEC_SCREEN` ושל `INV_SCREEN`, כי `WIZ_SCREENS`
+   ו-`NOCHROME` הם מספרים קשיחים ומסך באמצע היה מזיז את כולם. */
+const LETTER_SCREEN=function(){
+  return screens.findIndex(function(x){return x.dataset.name==='מכתב'});
+};
+(function(){const n=LETTER_SCREEN();if(n>=0&&WIZ_SCREENS.indexOf(n)<0)WIZ_SCREENS.push(n)})();
 /* ‏**מה שהכרטיס יודע בכל רגע, ולא יותר.** כל שדה שעוד לא נענה
    נשאר "·" או שאלה, וזה מה שהופך אותו למד התקדמות ולא לסיכום
    שמופיע בסוף. */
@@ -11239,6 +11332,8 @@ function wizBack(){
   }
   if(curScreen===2){backFromAmount();return}
   if(curScreen===3){backFromPay();return}
+  if(curScreen===LETTER_SCREEN()){go(3);return}
+  if(curScreen===REVIEW){backFromReview();return}
   navBack();
 }
 /* ‏**"ביטול" יוצא מהאשף ואינו יוצר דבר.** עד כה לא הייתה במסכים
@@ -11251,6 +11346,10 @@ function cancelCreate(){
 }
 function startCreate(){
   creating=true;dateTouched=false;beneSex='m';sexTouched=false;modeTouched=false;
+  /* ‏**המכתב נפתח `null` ולא `''`**: `null` הוא "עוד לא נגעו"
+     ומחרוזת ריקה היא תשובה, וזה מה שמאפשר לזרוע את משפט ברירת
+     המחדל פעם אחת ולכבד גם מחיקה וגם "לדלג" (§3). */
+  cLetter=null;cLetterAuto=null;
   /* כל רגע נולד פרטי מאז ששלב הפתיחות ירד מהאשף. במפורש, ולא בהסתמכות
      על הערך שנשאר מנטיעה קודמת — investIn טוענת אותו מהרגע שמפקידים בו. */
   shareMode='private';
@@ -13137,11 +13236,110 @@ function reviewCta(){
   return 'לנטוע '+shekel(v*100)+(nm?(' ל'+nm):'');
 }
 function toReview(){
+  /* ‏**ובאשף שלב המכתב יושב בין התשלום לסיכום** (`FIX-letter-v1.md`
+     §3). מסך התשלום משרת גם הפקדה לרגע קיים וגם את מסלול המוזמנת,
+     ולכן התנאי הוא `creating` ולא המספר לבדו. */
+  if(creating&&hasLetter()){go(LETTER_SCREEN());return}
+  reviewShow();
+}
+function reviewShow(){
   pendingPay=null;
   paySummary();
   txt('py-method',methodLabel());
   txt('py-cta',reviewCta());
   go(REVIEW);
+}
+/* ‏**החזרה מהסיכום נוחתת על השלב שבאמת היה לפניו.** היא הייתה
+   `go(3)` כתוב בתכונה, ובאשף זה מדלג על שלב המכתב — כלומר על
+   מה שזה עתה נכתב. */
+function backFromReview(){
+  if(creating&&hasLetter()){go(LETTER_SCREEN());return}
+  go(3);
+}
+/* ══ שלב המכתב (`FIX-letter-v1.md` §3) ═════════════════════════
+   אותו גוש כתיבה של שלב "מה לכתוב" בהזמנה, ולכן אין כאן מרקאפ
+   ואין כלל CSS משלו — מה שנכתב כאן הוא ארבעת הערכים שמתחלפים.
+
+   **והמכתב נשמר באמת** (§3, ובדיקה 10 בהיפוכה): הוא נכתב כאן
+   לפני שהנטיעה קיימת, ולכן השמירה קורית ב-`finishDeposit` אחרי
+   שהמזהה חזר — `letterCommit`. טופס שמראה כפתור שמירה ואין
+   מאחוריו קריאה לשרת הוא בדיוק "מסך שנראה עובד ואינו שומר",
+   וזה כבר קרה כאן פעם אחת עם `seal()`. */
+let cLetter=null,cLetterAuto=null;
+function cKidName(){
+  return (((document.getElementById('c-name')||{}).value)||'').trim();
+}
+/* ‏**המשפטים המוכנים מוטים לפי הנמען, שהוא הילד** (§5), **ובלי
+   מגדר ידוע צורה שאינה נוקבת בו כלל** — "הגעת" ו"נולדת" זהות
+   בכתיב בשתי הצורות, ולכן לוכסן אינו נדרש כאן ואינו נכנס. */
+function letterAlts(){
+  const g=beneSex;
+  return [
+    g==='f'?'אם את קוראת את זה, כנראה שכבר גדלת.'
+      :(g==='m'?'אם אתה קורא את זה, כנראה שכבר גדלת.'
+              :'אם הגעת עד לכאן, כנראה שכבר גדלת.'),
+    'רצינו שיהיה לך ממה להתחיל, בלי לחץ.'
+  ];
+}
+function letterOccName(){
+  const t=cType==='custom'
+    ?((((document.getElementById('c-custom')||{}).value)||'').trim())
+    :cType;
+  return t?plantingName(t,'',true):'';
+}
+function letterPaint(){
+  const nm=cKidName();
+  txt('lt-q','לכתוב ל'+nm+' כמה מילים?');
+  /* ‏**ושורת המשנה מוטה לפי הילד ובלי לוכסן** (§5). המסמך כותב
+     "יחכו לו" כי הילד בדוגמה שלו הוא בן; **בלי מגדר ידוע היא
+     מוותרת על הכינוי** ואומרת "יחכו שם", בדיוק כמו כל מקום אחר
+     במוצר שבו הקניין יורד כשאין ממה לגזור אותו. */
+  const to=beneSex==='f'?' לה':(beneSex==='m'?' לו':' שם');
+  txt('lt-s','ביום שהכסף ייפתח ל'+nm+', יחכו'+to+' גם כמה מילים ממך.');
+  msgBlockMount('lt','lt-box');
+  const when=(cDate&&cDate.value)?monthYear(cDate.value):'';
+  const today=monthYear(new Date().toISOString().slice(0,10));
+  const occ=letterOccName();
+  msgPaint('lt',{
+    def:'התחלנו לך משהו קטן ביום שנולדת.',
+    alts:letterAlts(),
+    hint:'מה תרצה לכתוב ל'+nm+'?',
+    get:function(){return cLetter},
+    set:function(v){cLetter=v},
+    auto:function(){return cLetterAuto},
+    setAuto:function(v){cLetterAuto=v},
+    lbl:'ככה זה ייראה ל'+nm+(when?(' ב'+when):''),
+    line:'ל'+nm+',',
+    sq:'<svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true">'+
+       '<use href="#ic-letter"/></svg>',
+    foot:'נחתם ב'+today,
+    foot2:occ?('ייפתח '+bNoun(occ)):''
+  });
+}
+function letterNext(){reviewShow()}
+/* ‏**"לדלג" ממשיך לסיכום בלי מכתב** (§3). הוא מוחק את מה שנזרע,
+   ולכן מי שחזר אחורה מהסיכום מוצא שדה ריק — הדילוג נשמר, כי
+   מחרוזת ריקה היא תשובה ולא "עוד לא נגעו". */
+function letterSkip(){cLetter='';reviewShow()}
+/* ‏**השמירה, אחרי שהנטיעה קיימת.** בהדגמה ובחשבון שאינו חי היא
+   נכנסת ל-`myLetters`, שהוא אותו מקור שמסך הרגע קורא ממנו,
+   ולכן שורת המכתב שם מופיעה בשני המסלולים.
+   **וכישלון נאמר ואינו נבלע:** הנטיעה כבר נשמרה, ולכן הוא אינו
+   מפיל את הרצף — אבל מכתב שלא נשמר ואיש אינו יודע עליו הוא
+   בדיוק ההבטחה הגרועה מכולן. */
+function letterCommit(key){
+  const body=String(cLetter||'').trim();
+  cLetter=null;cLetterAuto=null;
+  if(!key||!body)return Promise.resolve();
+  const p=plantAt(key);
+  const had=myLetterOf(key);
+  if(!liveAccount()||!p||!p.live||!netaServer){
+    myLetters[key]={body:body,signed_at:(had&&had.signed_at)||new Date().toISOString()};
+    return Promise.resolve();
+  }
+  return netaServer.saveLetter(key,body,!(had&&had.signed_at))
+    .then(function(row){myLetters[key]=row||{body:body}})
+    .catch(function(){toast('הנטיעה נשמרה. המכתב לא — אפשר לכתוב אותו שוב ממסך הרגע.')});
 }
 /* אוסף את מה שהמסע צבר לצורה אחת, שגם המסד וגם ההדגמה מקבלים.
    סכומים באגורות, כמו במסד — העיגול לשקלים קורה רק בתצוגה. */
@@ -13254,7 +13452,9 @@ function finishDeposit(){
          עם רשימה שצריך לחפש בה את מה שהרגע נטעת. */
       if(isNewPlant&&newId)cur=newId;
       if(isEmpty)setEmpty(false);
-      return buildHomeSummary();
+      /* ‏**המכתב נשמר כאן ולא בשלב שכתב אותו** (§3), כי עד הרגע
+         הזה אין נטיעה שאפשר לתלות אותו בה. */
+      return letterCommit(cur).then(function(){return buildHomeSummary()});
     })
     .then(function(){return isNewPlant?null:refreshDetail(cur)})
     .then(function(){
@@ -14105,8 +14305,15 @@ function paintDetail(key,p){
     trk.style.display=nPl?'':'none';
   }
   if(howh)howh.style.display=nPl?'':'none';
-  /* ‏**שורת המכתב** (§4), ורק כשיש מכתב. */
-  const lt=Number(p.letters||0);
+  /* ‏**שורת המכתב** (§4), ורק כשיש מכתב.
+     **והמכתב שלי נספר גם לפני שהשרת ספר אותו** (`FIX-letter-v1.md`
+     §3): הוא נכתב בשלב המכתב שבאשף, ו-`p.letters` מגיע מ-
+     ‏`planting_detail` — כלומר בהדגמה הוא 0 לנצח, ובחשבון חי הוא
+     מגיע רק ברענון הבא. ‏`Math.max` ולא חיבור, אחרת הוא נספר
+     פעמיים מרגע שהרענון חוזר. */
+  const mineLt=myLetterOf(key);
+  const lt=Math.max(Number(p.letters||0),
+    (mineLt&&String(mineLt.body||'').trim())?1:0);
   const lrow=document.getElementById('d-lrow');
   if(lrow){
     lrow.style.display=lt>0?'':'none';
@@ -14231,10 +14438,16 @@ function theNoun(noun,occ){
   return noun.split(' ').map(defWord).join(' ');
 }
 /* "הלימודים" → "ללימודים". שם עצם מיודע מאבד את ה' כשמוסיפים ל'. */
-function lNoun(noun){
+/* ‏**אות שימוש בולעת את ה"א הידיעה, ומקום אחד מכריע.** "הלימודים"
+   הופך ל"ללימודים" ול"בלימודים", ולא ל"להלימודים". ‏`lNoun` הייתה
+   הצורה היחידה עד שנדרשה גם "ב" בכרטיס שברגל המכתב, ושתי פונקציות
+   כמעט זהות הן עוד מקום לסנכרן. */
+function preNoun(pre,noun){
   if(!noun)return '';
-  return noun.charAt(0)==='ה'?('ל'+noun.slice(1)):('ל'+noun);
+  return noun.charAt(0)==='ה'?(pre+noun.slice(1)):(pre+noun);
 }
+function lNoun(noun){return preNoun('ל',noun)}
+function bNoun(noun){return preNoun('ב',noun)}
 /* הקניין, ורק כשהמגדר ידוע. */
 function possOf(sex){return sex==='f'?' שלה':(sex==='m'?' שלו':'')}
 function momOccPhrase(p,kid){
@@ -21846,6 +22059,123 @@ function inviteFor(key){
 
    **ומסך אחד עם חמישה פאנלים ולא חמישה מסכים**, כי כל `go(N)`
    בקובץ נשען על המספר. */
+/* ══ גוש הכתיבה · מבנה אחד שמשמש בשני המקומות ══════════════════
+   ‏`FIX-letter-v1.md` §1. שלב "מה לכתוב" בהזמנה (§2) ושלב המכתב
+   באשף הנטיעה (§3) בנויים מאותו גוש בדיוק: שדה עם משפט ברירת
+   מחדל, שתי אפשרויות מוכנות, ותצוגה מקדימה שמתעדכנת בזמן אמת.
+   **ולכן הוא נכתב פעם אחת** — שני עותקים של מרקאפ הם שני מקומות
+   לסנכרן, וזו בדיוק הכפילות שהמוצר כבר מתעד על `fuCardFields`
+   ועל הראש המשותף לארבעה אשפים.
+
+   מה שמתחלף בין השניים הוא ארבעה ערכים בלבד: התווית של התצוגה,
+   השורה הקבועה בבועה, רגל הבועה, והטקסטים. הכול נמסר ב-`spec`. */
+const MSG_BLOCKS={};
+/* ‏**המרקאפ נבנה פעם אחת לכל מכל, ולא בכל ציור.** ‏`innerHTML`
+   שנכתב מחדש הורג את המיקוד ואת מיקום הסמן באמצע הקלדה — אותה
+   מלכודת בדיוק של `fuMarkOn`, ולכן הציור החוזר נוגע בטקסט ובסימון
+   בלבד. */
+function msgBlockHTML(pfx){
+  /* ‏**‏`rows="1"` ו-`min-height` הוא מה שקובע את הגובה.**
+     ‏`<textarea>` בלי `rows` הוא שתי שורות, וגובה השורות גובר על
+     ‏`min-height` — כלומר הגוש גדל לפי גודל הגופן ולא לפי גובה
+     המסך, וזה בדיוק מה שהוציא את התצוגה המקדימה מהמסך. */
+  return '<textarea class="msg-field" id="'+pfx+'-field" rows="1" maxlength="240" '+
+    'oninput="msgFieldIn(\''+pfx+'\')"></textarea>'+
+    '<p class="msg-altl">אפשר גם</p>'+
+    '<div class="msg-alts" id="'+pfx+'-alts"></div>'+
+    '<p class="msg-lbl" id="'+pfx+'-lbl">·</p>'+
+    '<div class="msg-prev"><div class="msg-bub">'+
+      '<p class="l1" id="'+pfx+'-l1">·</p>'+
+      '<p class="l2" id="'+pfx+'-l2"></p>'+
+      '<div class="msg-foot"><span class="sq" aria-hidden="true" id="'+pfx+'-sq"></span>'+
+      '<span class="tx"><b id="'+pfx+'-fb">·</b><i id="'+pfx+'-fi"></i></span></div>'+
+    '</div></div>';
+}
+function msgBlockMount(pfx,boxId){
+  const box=document.getElementById(boxId);
+  if(!box||box.dataset.msg==='1')return;
+  box.innerHTML=msgBlockHTML(pfx);
+  box.dataset.msg='1';
+}
+/* ‏`spec` נקרא בכל ציור ולא נשמר, כי כל ערך בו נגזר ממצב הפלואו:
+   שם הנמען, מגדר הילד והרגע שנבחר משתנים בין שלב לשלב. */
+function msgPaint(pfx,spec){
+  MSG_BLOCKS[pfx]=spec;
+  const f=document.getElementById(pfx+'-field');
+  if(!f)return;
+  if(f.placeholder!==(spec.hint||''))f.placeholder=spec.hint||'';
+  /* ‏**השדה מגיע עם משפט ברירת המחדל בתוכו, ואפשר למחוק אותו**
+     (§1, בדיקה 2). הזריעה היא פעם אחת: `get()` מחזיר `null` כל
+     עוד איש לא נגע, ומחרוזת ריקה היא תשובה — מי שמחק אותו נשאר
+     בלי מסר. **ומשפט שלא נגעו בו הולך אחרי הנמען**, כי הוא נוקב
+     בשמו: `auto` נושא את מה שנזרע, וכל עוד הטקסט שווה לו הוא
+     נזרע מחדש. */
+  const cur=spec.get();
+  const def=spec.def||'';
+  if(cur==null||(spec.auto!=null&&cur===spec.auto())){
+    if(spec.setAuto)spec.setAuto(def);
+    spec.set(def);
+  }
+  const v=spec.get()||'';
+  if(f.value!==v)f.value=v;
+  msgPaintAlts(pfx);
+  msgPaintPrev(pfx);
+}
+/* ‏**כשהטקסט בשדה זהה לאחת האפשרויות היא מסומנת, וברגע שמקלידים
+   משהו אחר הסימון יורד מעצמו** (§1, בדיקות 4 ו-5). אין כאן דגל
+   שני שצריך לסנכרן: הסימון נגזר מהשוואת מחרוזות, ולכן הוא אינו
+   יכול לסתור את מה שבשדה. */
+function msgPaintAlts(pfx){
+  const spec=MSG_BLOCKS[pfx],box=document.getElementById(pfx+'-alts');
+  if(!spec||!box)return;
+  const cur=String(spec.get()||'').trim();
+  const alts=spec.alts||[];
+  const html=alts.map(function(t,n){
+    return '<button type="button" class="msg-alt'+(t.trim()===cur?' on':'')+'"'+
+      ' onclick="msgPick(\''+pfx+'\','+n+')">'+attrText(t)+'</button>';
+  }).join('');
+  if(box.innerHTML!==html)box.innerHTML=html;
+}
+/* ‏**הקשה על אפשרות מחליפה את תוכן השדה** (§1, בדיקה 4), ואינה
+   מוסיפה לו: זו תשובה אחרת לאותה שאלה ולא תוספת עליה. */
+function msgPick(pfx,n){
+  const spec=MSG_BLOCKS[pfx];
+  if(!spec)return;
+  const t=(spec.alts||[])[n];
+  if(t==null)return;
+  spec.set(t);
+  const f=document.getElementById(pfx+'-field');
+  if(f)f.value=t;
+  msgPaintAlts(pfx);msgPaintPrev(pfx);
+  if(spec.onChange)spec.onChange();
+}
+/* ‏**התצוגה המקדימה מתעדכנת בזמן אמת** (§1, בדיקה 6), והיא לבדה:
+   ציור מלא היה בונה מחדש את השדה שהאצבע בתוכו. */
+function msgFieldIn(pfx){
+  const spec=MSG_BLOCKS[pfx],f=document.getElementById(pfx+'-field');
+  if(!spec||!f)return;
+  spec.set(f.value);
+  msgPaintAlts(pfx);msgPaintPrev(pfx);
+  if(spec.onChange)spec.onChange();
+}
+function msgPaintPrev(pfx){
+  const spec=MSG_BLOCKS[pfx];
+  if(!spec)return;
+  txt(pfx+'-lbl',spec.lbl||'');
+  txt(pfx+'-l1',spec.line||'');
+  const t=String(spec.get()||'').trim();
+  const l2=document.getElementById(pfx+'-l2');
+  if(l2){l2.textContent=t;l2.style.display=t?'':'none'}
+  const sq=document.getElementById(pfx+'-sq');
+  if(sq&&sq.innerHTML!==(spec.sq||''))sq.innerHTML=spec.sq||'';
+  txt(pfx+'-fb',spec.foot||'');
+  const fi=document.getElementById(pfx+'-fi');
+  if(fi){
+    fi.textContent=spec.foot2||'';
+    fi.className=spec.footLtr?'ltr':'';
+    fi.style.display=spec.foot2?'':'none';
+  }
+}
 const INV_SCREEN=function(){
   return screens.findIndex(function(x){return x.dataset.name==='הזמנת קרוב'});
 };
@@ -21889,7 +22219,12 @@ function ivRow(key){
 function ivMk(key){
   const p=ivRow(key)||{};
   return {key:key||'',kid:kidOf(p)||p.kid||'',kidSex:(p.sex||''),
-          who:null,i:-1,nm:'',kin:null,ct:'',msg:null,txt:'',url:'',sent:false,
+          /* ‏**‏`txt` נפתח `null` ולא `''`**: `null` הוא "עוד לא
+             נגעו" ומחרוזת ריקה היא תשובה, וזה מה שמאפשר לזרוע את
+             משפט ברירת המחדל פעם אחת ולכבד מחיקה שלו (§1).
+             ‏`txtAuto` נושא את מה שנזרע, כדי שמשפט שלא נגעו בו
+             ילך אחרי הנמען כשהוא מתחלף. */
+          who:null,i:-1,nm:'',kin:null,ct:'',txt:null,txtAuto:null,url:'',sent:false,
           step:'who',ask:false,nomo:false,avSaved:'',busy:false,back:null,
           named:false,nmoKid:null,nmoOcc:''};
 }
@@ -22066,21 +22401,6 @@ function ivReady(){
     possOf(ivS.kidSex)+', '+
     ivG('ואשמח שתצטרף אלי.','ואשמח שתצטרפי אלי.','ואשמח שנעשה את זה יחד.');
 }
-/* ‏**‏`msg` הוא אינדקס בשלושת המוכנים, `own` הוא השדה החופשי,
-   ו-`null` הוא בלי מסר.** ‏§6 נותן שלוש אפשרויות ואז "לכתוב משהו
-   משלי", והשורה שמעל הכפתור כבר אומרת "אפשר גם בלי". */
-function ivMsgText(){
-  if(!ivS)return '';
-  if(ivS.msg==='own')return String(ivS.txt||'').trim();
-  if(ivS.msg==null)return '';
-  return ivReadyList()[ivS.msg]||'';
-}
-function ivMsgLabel(){
-  if(!ivS)return '';
-  if(ivS.msg==='own')return 'המסר שלך';
-  if(ivS.msg==null)return 'בלי מסר';
-  return 'המסר שהכנו';
-}
 /* ── הכרטיס הירוק (§3) ──────────────────────────────────────────
    ההדלקה עוברת מהשם אל שורת המסר שברגל, ובשני מסכי הסיום אין
    הדלקה בכלל. ‏`wizSet` הוא אותו כותב של אשף הנטיעה: לתוך ה-span
@@ -22114,7 +22434,7 @@ function ivCard(){
   const mlv=onCt?'לאן לשלוח':'המסר שיקבלו';
   if(ml&&ml.textContent!==mlv)ml.textContent=mlv;
   wizSet('iv-msgk',onCt?(ivCt()||'בלי כתובת'):ivMsgLabel(),
-         !!(onCt&&!ivCt()));
+         onCt?!ivCt():!ivMsgText());
   const av=document.getElementById('iv-av');
   if(av){
     const face=ivAvHTML();
@@ -22671,36 +22991,20 @@ function ivNameIn(){
   ivPaintUp();
   ivHead();ivCta();
 }
-/* ── שלב המסר ───────────────────────────────────────────────── */
+/* ── שלב "מה לכתוב" · גוש הכתיבה המשותף (§2) ────────────────── */
+/* ‏**ברירת המחדל היא המשפט הראשון מתוך השלושה שכבר היו כאן, ושתי
+   האפשרויות הן השניים שאחריו.** ‏`FIX-letter-v1.md` §2 נוקב בהם
+   מילה במילה, ולכן אין כאן טבלה שנייה: `ivReadyList` נשארה כפי
+   שהיא, והמסמך רק קובע מי מהשלושה יושב בשדה ומי מתחתיו. */
+function ivMsgDefault(){return ivReadyList()[0]||''}
+function ivMsgAlts(){return ivReadyList().slice(1)}
 function ivPaintMsg(){
   const nm=ivName();
   txt('iv-msgq','מה לכתוב ל'+nm+'?');
-  txt('iv-msgs',ivStepLine()+' · אפשר גם בלי');
-  const pick=document.getElementById('iv-pick');
-  const own=ivS.msg==='own';
-  if(pick)pick.innerHTML=ivReadyList().map(function(m,n){
-    return '<button type="button" class="ivopt'+(ivS.msg===n?' on':'')+'"'+
-      ' onclick="ivMsgMode('+n+')">'+attrText(m)+'</button>';
-  }).join('')+
-    '<button type="button" class="ivopt mine'+(own?' on':'')+'"'+
-    ' onclick="ivMsgMode(\'own\')">לכתוב משהו משלי</button>';
-  const ta=document.getElementById('iv-msgin');
-  if(ta){
-    ta.style.display=own?'':'none';
-    ta.placeholder='מה תרצה לכתוב ל'+nm+'?';
-    /* ‏**השדה מתחיל ריק ומה שהוקלד בו שורד** (§9): הוא נכתב רק
-       כשהערך שבמסך שונה ממה ששמור, אחרת כתיבה חוזרת מאפסת את
-       מיקום הסמן באמצע הקלדה. */
-    if(ta.value!==(ivS.txt||''))ta.value=ivS.txt||'';
-  }
-  ivPre();
-}
-/* ‏**התצוגה המקדימה, ומה שהיא מראה הוא מה שבאמת יישלח** (§6).
-   שורת הפתיחה נגזרת מהשם שלי, מהילד ומהרגע — ואין כאן טבלה
-   שנייה: `momOccBare` היא אותה פונקציה שמסך הרגע קורא לה. */
-function ivPre(){
-  const nm=ivName();
-  txt('iv-prel','ככה זה ייראה אצל '+nm);
+  /* ‏**שורת המשנה מחליפה את "שלב שלישי מתוך שלושה · אפשר גם
+     בלי"** (§2), כי פס ההתקדמות כבר אומר באיזה שלב אנחנו. */
+  txt('iv-msgs','כמה מילים משלך, וזה כבר לא נראה כמו הודעה אוטומטית.');
+  msgBlockMount('iv','iv-msgbox');
   const p=ivRow(ivS.key)||{};
   const me=myName()||localName||'';
   const kid=ivS.kid||'';
@@ -22716,29 +23020,34 @@ function ivPre(){
        (kid?(' ל'+kid):'')+(occ?(', '+occ):'')+'.')
     : ('נטיעה חדשה'+(me?(' מ'+me):'')+(kid?(' ל'+kid):'')+
        (occ?(', '+occ):'')+'.');
-  txt('iv-bub1',line);
-  const b2=document.getElementById('iv-bub2');
-  if(b2){
-    const t=ivMsgText();
-    b2.textContent=t;
-    b2.style.display=t?'':'none';
-  }
-  txt('iv-bubm',p.name||'הרגע');
+  msgPaint('iv',{
+    def:ivMsgDefault(),
+    alts:ivMsgAlts(),
+    hint:'מה תרצה לכתוב ל'+nm+'?',
+    get:function(){return ivS?ivS.txt:null},
+    set:function(v){if(ivS)ivS.txt=v},
+    auto:function(){return ivS?ivS.txtAuto:null},
+    setAuto:function(v){if(ivS)ivS.txtAuto=v},
+    lbl:'ככה זה ייראה אצל '+nm,
+    line:line,
+    sq:'<svg width="17" height="20" viewBox="10 6 40 57" aria-hidden="true">'+
+       '<use href="#sprout-art"/></svg>',
+    foot:p.name||'הרגע',
+    foot2:'myneta.co.il',
+    footLtr:true,
+    onChange:function(){ivCard()}
+  });
 }
-function ivMsgMode(m){
-  if(!ivS)return;
-  /* לחיצה שנייה על מה שכבר נבחר מכבה אותו: "בלי מסר" הוא מצב
-     תקף, וזה מה שהשורה שמעל הכפתור מבטיחה. */
-  ivS.msg=(ivS.msg===m)?null:m;
-  ivPaintMsg();ivHead();
-  if(ivS.msg==='own'){const t=document.getElementById('iv-msgin');if(t)t.focus()}
+/* ‏**מה שנשלח הוא מה שבשדה, ואין דגל שני.** ‏`msg` היה אינדקס
+   בשלושת המוכנים ו-`own` היה השדה, כלומר שני מקורות לאותה
+   עובדה; מעכשיו הטקסט הוא המקור היחיד, והאפשרויות מסומנות לפי
+   השוואה אליו. */
+function ivMsgText(){
+  if(!ivS)return '';
+  return String(ivS.txt||'').trim();
 }
-function ivOwnIn(){
-  if(!ivS)return;
-  ivS.txt=(document.getElementById('iv-msgin')||{}).value||'';
-  /* ‏**והתצוגה המקדימה מתעדכנת תוך כדי הקלדה** (§9.9), והיא לבדה:
-     ציור מלא היה בונה מחדש את שלושת הכפתורים ואת השדה עצמו. */
-  ivPre();
+function ivMsgLabel(){
+  return ivMsgText()?'המסר שלך':'בלי מסר';
 }
 /* ── מסך הקישור (§5.4) ─────────────────────────────────────── */
 function ivPaintLink(){
