@@ -123,6 +123,12 @@ setTimeout(function(){
      **ושלושת צבעי הטקסט עליו זהים בשתי הערכות**, כי בשתיהן הראש
      כהה. זה החריג היחיד בפלטה שאינו מתהפך. */
   --leaf-head:#1D2E21;
+  /* ‏**הירוק של הגרף בכרטיס הרגע** (`FIX-moment-screen-v1` §3).
+     ‏`--leaf-head` הוא המשטח היחיד בפלטה שאינו מתהפך, ולכן שטח
+     שיושב עליו יכול להיות אותו ערך בשתי הערכות — וזה מה שמאפשר
+     גרף אחד ולא שניים. ‏3.1 מול הראש בכהה ו-1.6 בבהירה; **זה שטח
+     ולא טקסט**, וסף המשטח הוא 1.15. */
+  --chart-leaf:#2E6B50;
   /* הכותרת ומשטח הנבחר על הראש. --on-leaf אינו מתאים להם: הוא
      הטקסט שעל הכפתור הירוק, ולכן הוא מתהפך בין הערכות (לבן בבהירה,
      כמעט-שחור בכהה), בעוד שהראש הוא ירוק עמוק בשתיהן. */
@@ -218,6 +224,7 @@ setTimeout(function(){
 
   /* הראש הירוק. כאן הוא בדיוק --leaf, כי בבהירה הירוק כבר כהה. */
   --leaf-head:#1F4D3A;
+  --chart-leaf:#2E6B50;
   --on-head:#FFFFFF;      /* 9.7 על הראש */
   --on-leaf-2:#DCEADF;    /* 7.7 על הראש */
   --mist:#9FBCAB;         /* 4.7 על הראש */
@@ -4555,6 +4562,11 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    ‏`docs/open-decisions.md` §1. */
 .sheet-main .cta-main .tbtwo{display:flex;gap:10px}
 .sheet-main .cta-main .tbtwo .btn{flex:1;width:auto}
+/* ‏**ובמסך הרגע שניהם זה מתחת לזה** (`FIX-moment-screen-v1` §4):
+   ראשי מלא, ומתחתיו מקווקו. מקווקו ולא מתאר, כי זו הוספה ולא
+   פעולה שנייה שקולה — אותה צורה של כל שורת הוספה במוצר. */
+#d-acts .btn+.btn{margin-top:8px}
+#d-acts .btn.ghost{border-style:dashed}
 
 /* ── הפרופיל: אותו שלד, וזהות במקום נתון ────────────────────────
    ‏`CHANGES.md` §9. הראש הוא `.tabg` רגיל, ולכן הוא מקבל את הריפוד
@@ -4785,6 +4797,61 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    אותו רכיב, ולא שני רכיבים שמסכימים.** מה שממוקד למסך הזה הוא
    המרווח בלבד — 20 מהשורה העליונה (§2), ולא 8 כמו במסילה של הטאב. */
 [data-name="פרטי נטיעה"] .kcard2{margin-top:20px}
+/* ── הגרף בתוך הכרטיס, ושלושת התאים ─────────────────────────────
+   ‏`FIX-moment-screen-v1.md` §2 ו-§3. **הכרטיס כאן גבוה מזה של שאר
+   הטאבים, וזו הפעם הראשונה שהוא נפרד מהם.** ‏`.kcard2` הוא רכיב אחד
+   בארבעה מסכים ו-`FIX-moment-v2` §5 קבע במפורש שמסך הרגע נושא אותו
+   ולא רכיב שני שמסכים איתו; מה שמפריד כאן הוא שהמסמך מכניס לתוכו
+   גרף ושורה זעירה מתחת לכל תא, ושניהם אינם קיימים בשלושת האחרים.
+   **מה שכן נשמר הוא שכל השאר אותו רכיב** — הטיפוגרפיה, הרדיוס, הקו
+   והריפוד — ולכן אין כאן ולו כלל טיפוגרפי חדש.
+
+   **והגובה קבוע, וזו בדיקת קבלה** (§7.11): הכרטיס יוצא באותו גובה
+   בכל שמונת המצבים, כולל ברגע שאין בו נטיעה — ולכן גם המסגרת
+   שמחליפה את הגרף היא בדיוק בגובה שלו, וגם השורה הזעירה שאין לה מה
+   לומר שומרת על מקומה. */
+[data-name="פרטי נטיעה"] .kcard2{height:340px}
+[data-name="פרטי נטיעה"] .kcard2 .ktrio{height:62px}
+/* השורה הזעירה מתחת לכל תא. אותה שקיפות של התווית שמעל המספר, כי זו
+   אותה שכבה שקטה ולא שלישית. */
+.ktrio .kz{margin:2px 0 0;font-size:10px;color:rgba(255,255,255,.62);
+  white-space:nowrap;display:flex;justify-content:center;min-height:13px;
+  overflow:hidden;text-overflow:ellipsis}
+/* ‏**הגרף: שני שטחים, קו לבן דק ביניהם, ונקודה בקצה הימני** (§3).
+   הזמן רץ מימין לשמאל, כמו הקריאה: הקצה הימני הוא היום והשמאלי הוא
+   מועד הרגע. הצבעים ממשיכים את הכלל של כל המוצר — ירוק הוא כסף
+   קיים, חול הוא צפי — ושניהם טוקנים ולא ערכים קשיחים.
+
+   **והציור נמדד ואינו נמתח.** ‏`preserveAspectRatio="none"` היה
+   הופך את הנקודה לאליפסה ואת עובי הקו לשונה בכל רוחב מכשיר, ולכן
+   ‏`momChart` קוראת את הרוחב בפועל ומציירת בפיקסלים — אחרי `go(5)`,
+   כי אלמנט במסך שאינו `.on` מחזיר 0 מכל מדידה. */
+.mchart{margin:12px 0 0;flex:0 0 auto}
+.mchart svg{display:block;width:100%;height:84px}
+.mchart .a-d{fill:var(--chart-leaf)}
+.mchart .a-g{fill:var(--sun-on-leaf)}
+.mchart .a-l{fill:none;stroke:var(--on-head);stroke-width:1.1;opacity:.35}
+.mchart .a-p{fill:var(--on-head)}
+.mgax{display:flex;justify-content:space-between;margin-top:5px;
+  font-size:11px;color:var(--mist);line-height:1.2}
+.mgleg{display:flex;gap:16px;margin-top:5px;font-size:11px;color:var(--mist);
+  line-height:1.2}
+.mgleg i{display:inline-block;width:9px;height:9px;border-radius:3px;
+  margin-inline-end:5px}
+.mgleg i.g{background:var(--chart-leaf)}
+.mgleg i.s{background:var(--sun-on-leaf)}
+/* ‏**מצב הגרף כשעוד לא נטעו** (§3): מסגרת מקווקוות בצבע החול, בדיוק
+   בגובה הגרף, כדי שהכרטיס לא יזוז. המסמך נוקב ב-34% ו-`--leaf-gold-line`
+   הוא 45% — **טוקן שקיים עדיף על ערך קשיח שמדויק**, וזו אותה מסגרת
+   מקווקוות שכבר יושבת על כל משבצת ריקה בכרטיס הזה. */
+/* ‏**והמסגרת בגובה כל גוש הגרף ולא רק ה-svg**: 84 של הציור ועוד
+   תוויות הזמן והמקרא. מסגרת בגובה 84 הייתה משאירה 36 פיקסלים
+   ריקים מתחתיה — שטח ששמור לשתי שורות שאינן קיימות במצב הזה,
+   ונקרא כתקלה. */
+.mgempty{height:120px;border:1.5px dashed var(--leaf-gold-line);border-radius:16px;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:0 18px;font-size:12.5px;color:var(--mist);line-height:1.45;
+  box-sizing:border-box}
 /* ‏**ריבוע במקום פרצוף, והפרצוף על הפינה החיצונית שלו.** עיגול הוא
    אדם וריבוע הוא רגע, והכלל נשמר; מה שהריבוע אינו יכול לומר הוא
    **למי**, ולכן הפרצוף יושב עליו. **חיצונית ולא פנימית** — בפינה
@@ -4906,8 +4973,70 @@ textarea.ivmsg{resize:none;color:var(--tx)}
    הגיליון עדיין מגיע לתחתית הבמה ואין רצועת רקע מתחתיו —
    **ו-`flex:0 0 auto` כדי שהמסך לא יתכווץ מתחת לתוכנו** בבמה
    שהיא עמודת flex. אותו זוג בדיוק שיושב על הפרופיל, ומאותה סיבה. */
+/* ‏**וזה מתהפך שוב, ל`FIX-moment-screen-v1` §7.12:** "הגיליון הלבן
+   גולל בתוך עצמו, והכרטיס הירוק נשאר במקומו". ‏`FIX-scroll.md` הוריד
+   את הגלילה הפנימית מחמישה מסכים, ומה שמחזיר אותה **כאן בלבד** הוא
+   שהכרטיס נושא מעכשיו את הגרף: מסך שגולל אותו מהעין מבטל את §3.
+   והגיליון עצמו התארך (שתי שורות, רשימת נוטעים, טבלת חישוב ושני
+   כפתורים), ולכן דווקא כאן יש מה לגלול בתוכו והפעולות נשארות
+   דביקות בתחתיתו. **ארבעת הטאבים לא נגעו**, והם עדיין גוללים כולם.
+   `docs/open-decisions.md` §45. */
 [data-name="פרטי נטיעה"].screen.on{display:flex;flex-direction:column;
-  flex:0 0 auto;min-height:100%}
+  flex:1 1 auto;min-height:0}
+[data-name="פרטי נטיעה"] .sheet-main.scroll{overflow-y:auto;min-height:0;
+  overscroll-behavior-y:contain}
+/* ‏**והפעולות אינן דביקות כאן**, בניגוד לכלל הכללי של `.scroll`:
+   ‏110 פיקסלים של כפתורים שנעוצים בתחתית גיליון בן 332 מכסים את
+   רשימת הנוטעים במכשיר בן 844, כלומר את מה שהמסך קיים בשבילו.
+   הן יושבות בזרימה אחרי הטבלה, כפי ש-§4 מסדר אותן. */
+[data-name="פרטי נטיעה"] .sheet-main.scroll>.cta-main{position:static}
+[data-name="פרטי נטיעה"] .sheet-main.scroll{padding-bottom:18px}
+/* ── רשימת הנוטעים (§4) ─────────────────────────────────────────
+   היתרה של היום למעלה בירוק, ומתחתיה בצבע החול לאן היא בדרך. זה
+   אותו `.amt` של כל שורת גיליון במוצר, ולכן הסכומים נשארים על קו
+   ימני אחד; מה שנוסף הוא שורה שנייה בתוכו.
+   **ומי שהפסיק מוצג באפור ולא בירוק** — ירוק הוא כסף שממשיך להיכנס,
+   ואצלו מה שנצבר ממשיך לגדול אבל שום דבר חדש אינו נכנס. */
+/* ‏**‏102 ולא 72, וזה נמדד.** ‏`.tabrow .amt` הוא `min-width:72`,
+   וזה מה שמחזיק את כל הסכומים במוצר על קו ימני אחד (`FIX-tabs-v2`
+   §8). השורה השנייה ("בדרך ל כ־20,600 ₪") רחבה ממנו, ולכן היא
+   הרחיבה את הבלוק — **וכל שורה נחתה על קו אחר**: נמדד 118 מול
+   ‏112 ו-112. ‏102 הוא רוחב הצירוף הארוך ביותר שהמוצר יכול לבנות
+   ("בדרך ל כ־1,280,000 ₪"), כלומר הקו אחד בכל סכום. */
+#d-who .amt{min-width:102px}
+#d-who .amt .n{color:var(--leaf)}
+#d-who .amt .n.off{color:var(--tx-3)}
+#d-who .amt .p{display:block;font-size:11px;color:var(--sun-soft);
+  margin-top:2px;text-align:right;white-space:nowrap}
+/* ‏**ומי שהסתיר את הסכום אינו מציג גם את הצפי שלו**, כי הצפי נגזר
+   מהיתרה ומהקצב ואפשר לחשב ממנו אחורה. */
+#d-who .amt .hid{display:flex;align-items:center;justify-content:flex-end;
+  gap:5px;font-size:12px;color:var(--tx-3);white-space:nowrap}
+#d-who .amt .hid svg{flex:none}
+/* ── "להציג את החישוב" (§4) ─────────────────────────────────────
+   הטבלה היא הגרסה הטקסטואלית של הגרף (§3, נגישות), ולכן היא נושאת
+   את אותם מספרים בדיוק — ושורת "יחד" שלה היא המספר שבכרטיס הירוק
+   ולא סכום של מה שנראה: מי שהסתיר נספר בה כמו בכל מקום אחר. */
+/* ‏**‏`flex:0 0 auto`, וזו המלכודת שכבר מתועדת כאן.** ‏`.sheet-main`
+   הוא עמודת flex, ו-`overflow:hidden` מאפס את הגודל המינימלי של
+   פריט בתוכה — כלומר הטבלה התכווצה ל-2 פיקסלים של מסגרת בזמן
+   שהיו בה שבע שורות. **נמדד ולא נראה בעין**, כי מה שנשאר על המסך
+   הוא קו דק שנראה כמו מפריד. */
+.mcalc{margin:2px 0 0;border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;flex:0 0 auto}
+.mcalc table{width:100%;border-collapse:collapse;font-size:12px}
+/* ‏`--tx-2` ולא `--tx-3`: בכהה `--tx-3` על `--s2` הוא 4.07:1, אותו
+   זוג בדיוק של `.btn.off` — ושם הוא מותר כי זה פקד מושבת שהתקן פוטר.
+   **כותרת עמודה אינה פקד מושבת.** והטבלה סגורה בטעינה, ולכן
+   ‏`contrast.js` לא היה מוצא אותה. */
+.mcalc th{font-weight:600;color:var(--tx-2);font-size:11px;text-align:right;
+  padding:8px 10px;background:var(--s2);white-space:nowrap}
+.mcalc td{padding:8px 10px;color:var(--tx);border-top:1px solid var(--line);
+  text-align:right;vertical-align:top}
+.mcalc th:last-child,.mcalc td:last-child{text-align:left}
+.mcalc tr.tot td{font-weight:700;background:var(--s2)}
+.mcalc tr.br td{color:var(--tx-2);font-size:11.5px}
+.mcalcb{margin:12px 0 0}
 [data-name="פרטי נטיעה"] .sheetup{padding-bottom:18px}
 [data-name="פרטי נטיעה"] .leafcard.momk{border-color:var(--leaf-gold-line);
   padding:20px;margin-top:12px}
@@ -5238,7 +5367,7 @@ textarea.ivmsg{resize:none;color:var(--tx)}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f98e726';
+window.NETA_BUILD = 'a073776';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -5427,6 +5556,16 @@ window.NETA_CONFIG = {
   <g id="ic-doc" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/>
     <path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/>
+  </g>
+  <!-- ‏**עין חצויה, למי שהסתיר את הסכום שלו** (`FIX-moment-screen-v1`
+       §4). ‏`ic-shield` אומר "מוגן מפני מישהו" ו-`ic-lock` אומר "סגור
+       עד מועד"; מה שהשורה הזאת אומרת הוא "אתה לא רואה", וזה עין. אותו
+       קו של 1.8 ואותו `currentColor` של כל הסט. -->
+  <g id="ic-eyeoff" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 4 L20 20"/>
+    <path d="M9.9 5.2A9.3 9.3 0 0 1 12 5c4.6 0 8 3.4 9.4 6.2a1.7 1.7 0 0 1 0 1.6 14 14 0 0 1-2.6 3.5"/>
+    <path d="M16.3 16.9A9.3 9.3 0 0 1 12 18c-4.6 0-8-3.4-9.4-6.2a1.7 1.7 0 0 1 0-1.6A14 14 0 0 1 6 6.4"/>
+    <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>
   </g>
   <g id="ic-shield" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 3 L19.4 6 V11.9 C19.4 16.1 16.2 19.2 12 20.7 C7.8 19.2 4.6 16.1 4.6 11.9 V6 Z"/>
@@ -6332,15 +6471,25 @@ window.NETA_CONFIG = {
           <p class="ckin2" id="d-sub">·</p>
         </div>
       </div>
+      <!-- ‏**הגרף, בין כותרת הרגע לקו הזהב** (`FIX-moment-screen-v1`
+           §3). הזמן רץ מימין לשמאל, ומתחתיו תוויות הזמן והמקרא.
+           הציור עצמו נכתב ב-`momChart`, אחרי `go(5)`. -->
+      <div class="mchart" id="d-graph"></div>
       <div class="krule"></div>
+      <!-- ‏**שלושת התאים** (§2): יש היום · התא האמצעי בארבעת מצביו ·
+           בדרך ל, ומתחת לכל אחד שורה זעירה. **השורה הזעירה שומרת
+           על מקומה גם כשאין לה מה לומר**, אחרת הכרטיס זז בין מצבים
+           וזו בדיוק בדיקת הקבלה האחת עשרה. -->
       <div class="ktrio">
-        <div><p class="kk">נצבר עד היום</p>
-             <p class="kv" id="d-total">·</p></div>
-        <!-- בנוטע יחיד שני התאים מציגים את אותו מספר, וזה נכון: זה
-             מה שהם אומרים. -->
-        <div><p class="kk">השקעת</p><p class="kv" id="d-mine">·</p></div>
-        <div id="d-futbox"><p class="kk">בדרך ל</p>
-             <p class="kv sand" id="d-futv">·</p></div>
+        <div><p class="kk">יש היום</p>
+             <p class="kv" id="d-total">·</p>
+             <p class="kz" id="d-totz"></p></div>
+        <div><p class="kk" id="d-midk">בכל חודש</p>
+             <p class="kv" id="d-midv">·</p>
+             <p class="kz" id="d-midz"></p></div>
+        <div><p class="kk">בדרך ל</p>
+             <p class="kv sand" id="d-futv">·</p>
+             <p class="kz">צפי</p></div>
       </div>
     </div>
   </div>
@@ -6361,18 +6510,31 @@ window.NETA_CONFIG = {
       <span class="gr"><span class="t" id="d-trkt">·</span><span class="s" id="d-trks">·</span></span>
       <span class="tbchev"><svg width="7" height="12" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg></span>
     </button>
+    <!-- ‏**שורת המכתב** (§4). היא הכניסה היחידה לכתיבת מכתב מאז
+         ש-✉ ירד מהשורה העליונה, וזה נרשם אז כחוב ("אלון ביקש כרגע
+         להוריד את הכניסה, לא את היכולת"). המסמך מחזיר אותה. -->
+    <button class="tabrow" id="d-lrow" style="display:none" onclick="openLetterSheet()">
+      <span class="sq"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-letter"/></svg></span>
+      <span class="gr"><span class="t" id="d-lrowt">·</span><span class="s">ייפתח יחד עם הנטיעה</span></span>
+      <span class="tbchev"><svg width="7" height="12" viewBox="0 0 7 12" aria-hidden="true"><use href="#chev"/></svg></span>
+    </button>
     <p class="tablbl sec2" id="d-cbh"><span id="d-cbh2">מי נטע לרגע הזה</span></p>
     <div id="d-who"></div>
-    <!-- שורת ההזמנה בסוף הרשימה, מקווקוות וברוחב מלא — אותה
-         ‏`listAddHTML` של שתי הרשימות ב"מה מחכה להם". -->
-    <div id="d-addinv"></div>
-    <!-- הפעולות דביקות בתחתית הגיליון: הגיליון עצמו נגלל, והן
-         נשארות גלויות גם במסך בן 700. זה מה שמחליף את הכלל שבו
-         הכרטיס היה מתכווץ. -->
-    <!-- ההערה מעל הפעולה ולא מתחתיה: הפעולה דביקה בתחתית, וכל מה
-         שמתחתיה נקרא כמרחף מתחת לכפתור. -->
-    <p class="fine" id="d-actnote" style="margin:10px 0 0;display:none"></p>
+    <!-- ‏**וכשעוד לא נטעו לרגע, משפט במקום הרשימה** (§4). -->
+    <p class="fine" id="d-nobody" style="display:none;margin:2px 0 0">עוד לא נטעו לרגע הזה. הנטיעה הראשונה פותחת אותו.</p>
+    <!-- ‏**"להציג את החישוב"** (§4): הגרסה הטקסטואלית של הגרף, ושורת
+         "יחד" שלה היא המספר שבכרטיס הירוק בדיוק — מי שהסתיר נספר
+         בה כמו בכל מקום אחר. -->
+    <button class="link mcalcb" id="d-calcb" style="display:none" onclick="momCalcToggle()">להציג את החישוב</button>
+    <div class="mcalc" id="d-calc" hidden></div>
+    <!-- ‏**שתי הפעולות, ואחריהן שורת ההסתייגות** (§4). הן אינן
+         דביקות במסך הזה: הגיליון גולל בתוכו (§7.12), וכפתור דביק
+         היה מכסה את רשימת הנוטעים — **הדבר שהמסך הזה קיים בשבילו**
+         — בכל מכשיר שגובהו 844 ומטה. נמדד. ולכן גם ההערה חוזרת
+         להיות מתחת, כפי שהמסמך מסדר אותן: מה שהפיל אותה למעלה היה
+         בדיוק הדביקות. -->
     <div class="cta-main" id="d-acts"></div>
+    <p class="fine" id="d-actnote" style="margin:10px 0 0;display:none"></p>
   </div>
 </section>
 
@@ -12984,22 +13146,32 @@ function shareFromAha(){
 const plants={
   danielBar:{occ:'bar_mitzvah',name:'הבר מצווה של דניאל',date:'אוגוסט 2032',yr:2032,planted:2019,
     now:15600,end:35300,yl:6,tNow:53.8,monthly:150,occasion:'bar_mitzvah',sex:'m',kid:'דניאל',rate:0.06,approver:'self',shared:true,mine:true,
-    who:[['av-parent','אתה','9,100 ₪','m'],['av-granny','סבתא רחל','4,300 ₪','f'],['av-uncle','דוד יוסי','2,200 ₪','m']],
+    /* ‏**שורות `who` בצורה המלאה של השרת** (13 עמודות), כדי שההדגמה
+       תצייר את מה שחשבון חי מצייר: קצב לכל נוטע, מסלול לכל נוטע, ומי
+       שהפסיק. שורה בת ארבע עמודות נופלת לברירות מחדל, וזה בדיוק
+       הנתיב־שונה־בשקט שכבר מתועד כאן שש פעמים. */
+    who:[['av-parent','אתה','9,100 ₪','m',true,null,9000,true,910000,null,'2019-08-01',0.06,false],
+         ['av-granny','סבתא רחל','4,300 ₪','f',false,null,4000,false,430000,'סבתא','2021-03-01',0.06,false],
+         ['av-uncle','דוד יוסי','2,200 ₪','m',false,null,2000,false,220000,'דוד','2022-05-01',0.035,false]],
+    letters:3,
     lCount:'ולא רק כסף, 3 מכתבים חתומים: מסבתא, מדוד יוסי וממך',lSub:'המכתבים ייפתחו באוגוסט 2032, יחד עם דניאל.',
     line:'בזכות 150 ₪ בחודש ממך, מסבתא ומדוד יוסי, דניאל מתקרב ליום הגדול שלו'},
   noaStudy:{occ:'studies',name:'הלימודים של נועה',date:'ספטמבר 2038',yr:2038,planted:2024,
     now:1500,end:15700,yl:12,tNow:14.3,monthly:60,occasion:'studies',sex:'f',kid:'נועה',rate:0.06,approver:'guardian',guardName:'מיכל',shared:false,mine:true,co:'מיכל',
-    who:[['av-parent','אתה','1,500 ₪','m']],
+    who:[['av-parent','אתה','1,500 ₪','m',true,null,6000,true,150000,null,'2024-09-01',0.06,false]],
+    letters:1,
     lCount:'ולא רק כסף, מכתב אחד חתום ממך',lSub:'המכתב ייפתח בספטמבר 2038, יחד עם נועה.',
     line:'בזכות 60 ₪ בחודש שאתה נוטע, נועה מתקרבת ללימודים שלה'},
   danielArmy:{icon:'other',name:'הגיוס של דניאל',date:'מרץ 2030',yr:2030,planted:2022,
     now:2700,end:6100,yl:4,tNow:50,monthly:50,occasion:'other',sex:'m',kid:'דניאל',rate:0.035,approver:'later',shared:true,mine:false,
-    who:[['av-uncle','דוד יוסי','2,700 ₪','m']],
+    who:[['av-uncle','דוד יוסי','2,700 ₪','m',true,null,5000,false,270000,'דוד','2022-03-01',0.035,false]],
+    letters:1,
     lCount:'ולא רק כסף, מכתב אחד חתום מדוד יוסי',lSub:'המכתב ייפתח במרץ 2030, יחד עם דניאל.',
     line:'בזכות 50 ₪ בחודש שדוד יוסי נוטע, דניאל יגיע מוכן לגיוס'},
   openFund:{icon:'open_fund',name:'קופת הפתעות',date:'יוני 2035',yr:2035,planted:2025,
     now:400,end:4900,yl:9,tNow:11.1,monthly:30,occasion:'open_fund',kid:'מי שאחליט',rate:0.02,shared:false,mine:true,designated:false,
-    who:[['av-parent','אתה','400 ₪','m']],
+    who:[['av-parent','אתה','400 ₪','m',true,null,3000,true,40000,null,'2025-06-01',0.02,false]],
+    letters:0,
     lCount:'ולא רק כסף, עוד לא נכתב מכתב',lSub:'אפשר לצרף מכתב ברגע שתייעד את הקופה.',
     line:'בזכות 30 ₪ בחודש שאתה נוטע, יש כאן משהו שמחכה לרגע הנכון'},
   /* ‏**רגע אחד לילד שאינו המשפחה שלי**, כדי ששתי הקבוצות של מסך
@@ -13009,12 +13181,14 @@ const plants={
   eitanBar:{occ:'bar_mitzvah',name:'הבר מצווה של איתן',date:'מאי 2034',yr:2034,planted:2023,
     now:612,end:5200,yl:8,tNow:11.8,monthly:30,occasion:'bar_mitzvah',sex:'m',kid:'איתן',
     rel:'nephew',fam:false,rate:0.06,approver:'later',shared:false,mine:true,
-    who:[['av-parent','אתה','612 ₪','m']],
+    who:[['av-parent','אתה','612 ₪','m',true,null,3000,true,61200,null,'2023-05-01',0.06,false]],
+    letters:0,
     lCount:'ולא רק כסף, עוד לא נכתב מכתב',lSub:'אפשר לצרף מכתב בכל רגע.',
     line:'בזכות 30 ₪ בחודש שאתה נוטע, איתן מתקרב ליום הגדול שלו'},
   noaHome:{occ:'apartment',name:'הדירה של נועה',date:'יוני 2045',yr:2045,planted:2021,
     now:7000,end:64100,yl:19,tNow:20.8,monthly:100,occasion:'apartment',sex:'f',kid:'נועה',rate:0.08,shared:true,mine:false,
-    who:[['av-granny','סבתא רחל','7,000 ₪','f']],
+    who:[['av-granny','סבתא רחל','7,000 ₪','f',true,null,10000,false,700000,'סבתא','2021-06-01',0.08,false]],
+    letters:1,
     lCount:'ולא רק כסף, מכתב אחד חתום מסבתא רחל',lSub:'המכתב ייפתח ביוני 2045, יחד עם נועה.',
     line:'בזכות 100 ₪ בחודש שסבתא רחל נוטעת, נועה תתחיל עם דירה משלה'}
 };
@@ -13150,7 +13324,11 @@ function liveDetail(r){
             w.relation||null, w.since||null,
             /* 0066: הקצב שלו. הגרף האישי כבר צויר מהמספרים שלו, ורק
                שורת ההסתייגות עוד נשענה על הקצב של הנטיעה. */
-            w.rate==null?null:Number(w.rate)];
+            w.rate==null?null:Number(w.rate),
+            /* 0080: הפסיק את ההוראה החודשית. בלי הדגל הזה מי שהפסיק
+               ומי שנטע פעם אחת מחזירים את אותו `monthly = 0` בדיוק,
+               ולמסך אין דרך להבדיל ביניהם. */
+            !!w.stopped];
   });
   const others=who.filter(function(w){return w[1]!=='אתה'}).map(function(w){return w[1]});
   const n=Number(r.signed_letters||0);
@@ -13176,6 +13354,9 @@ function liveDetail(r){
     initiator:r.initiator_name||'',
     co:r.co_owner_name||undefined,
     who:who, monthly:monthly,
+    /* מספר המכתבים שמחכים לרגע. ‏`lCount` הוא משפט ולא מספר, ושורת
+       המכתב שבגיליון (§4) צריכה לנקוב בו במילה. */
+    letters:n,
     line:liveLine(monthly,others,desig?r.beneficiary_name:'',desig,r.occasion,r.beneficiary_sex),
     lCount:n?('ולא רק כסף, '+(n===1?'מכתב אחד חתום':n+' מכתבים חתומים')+
               (r.letter_authors&&r.letter_authors.length?', מ'+listNames(r.letter_authors):'')):'',
@@ -13592,80 +13773,99 @@ function paintDetail(key,p){
   /* של מי הרגע ומתי הוא נפתח, מופרדים בפסיק. **המועד הוא הקשר ולא
      מספר**, ולכן הוא כאן ולא בתא. */
   txt('d-sub',[kid?('של '+kid):'',p.date].filter(Boolean).join(', '));
-  const tot=Math.round(Number(p.now||0)*100), mineAg=personalOf(p);
-  txt('d-total',shekel(tot));
-  /* ‏**בנוטע יחיד שני התאים מציגים את אותו מספר** (§2), וזה נכון:
-     זה מה שהם אומרים. */
-  txt('d-mine',shekel(mineAg));
-  const proj=Math.round(Number(p.end||0)*100);
-  const hasFut=proj>tot;
-  const futbox=document.getElementById('d-futbox');
-  if(futbox)futbox.style.display=hasFut?'':'none';
-  if(hasFut)txt('d-futv',aboutShekel(proj));
-
-  /* ── הגיליון ─────────────────────────────────────────────────
-     השורה השקטה שפותחת את גיליון התחזית: בנוטע יחיד הקצב והמסלול
-     שלי, וברגע משותף ספירת נוטעים, כי אין לשניהם נושא אחד. */
-  const n=momPlanters(p);
-  const tl=plantTrackLabel(p);
-  const mon=p.monthly!=null?Math.round(p.monthly*100):0;
-  const trk=document.getElementById('d-trk');
-  if(trk){
-    if(!alone){
-      txt('d-trkt',n>1?(n+' נוטעים'):'נוטע אחד');
-      txt('d-trks','כל אחד במסלול שבחר');
-    }else{
-      txt('d-trkt',mon>0?(shekel(mon)+' בכל חודש'):'ההשקעה הזאת');
-      txt('d-trks',tl?('מסלול '+tl):'איך המספר הזה מחושב');
-    }
-    /* בלי צפי אין מה להראות בגיליון, והשורה יורדת איתו — ואיתה
-       המקטע כולו, כי היא כל מה שיש בו. */
-    trk.style.display=hasFut?'':'none';
+  const M=momModel(p);
+  const mineAg=personalOf(p);
+  /* ‏**שלושת התאים** (§2). הימני הוא סכום היתרות של כל הנוטעים,
+     ומתחתיו כמה מזה שלי; השמאלי הוא הצפי בצבע החול. */
+  txt('d-total',shekel(M.today));
+  txt('d-totz','מזה שלך '+shekel(mineAg));
+  txt('d-futv',M.proj>0?aboutShekel(M.proj):shekel(0));
+  /* ‏**והתא האמצעי משתנה לפי המצב** (§2). הכלל של החודש הראשון אינו
+     קישוט: בחודש הראשון הסכום החודשי שווה במקרה לסכום שנצבר, ושני
+     מספרים זהים זה ליד זה עם תוויות שונות נקראים כתקלה. "נטעתם עד
+     היום" הופך את שני התאים לאותה יחידה — מלאי מול מלאי — וההפרש
+     ביניהם הוא בדיוק התשואה. */
+  const nPl=M.rows.length;
+  const first=momFirstMonth(p);
+  if(!nPl){
+    txt('d-midk','נוטעים'); txt('d-midv',shekel(0)); txt('d-midz','עוד אין נטיעות');
+  }else if(!(M.monthly>0)){
+    txt('d-midk','נטיעות חד פעמיות'); txt('d-midv',shekel(M.today));
+    txt('d-midz','אין סכום חודשי');
+  }else if(first){
+    txt('d-midk','נטעתם עד היום'); txt('d-midv',shekel(M.today));
+    txt('d-midz',nPl>1?'כולם יחד':'');
+  }else{
+    txt('d-midk','בכל חודש'); txt('d-midv',shekel(M.monthly));
+    txt('d-midz',nPl>1?'כולם יחד':'');
   }
-  const howh=document.getElementById('d-howh');
-  if(howh)howh.style.display=hasFut?'':'none';
+  const midv=document.getElementById('d-midv');
+  if(midv)midv.classList.toggle('nil',!nPl);
+  const futv=document.getElementById('d-futv');
+  if(futv)futv.classList.toggle('nil',!(M.proj>0));
 
-  /* ── "מי נטע לרגע הזה" (§3.2) ─────────────────────────────────
-     **שורה לכל נוטע, תמיד** — כולל כשאני לבד, ואז זו שורה אחת
-     שנוקבת בי. ‏`#d-solo` ("רק אתה נוטע כאן") ירד: הוא היה שורת
-     הזמנה שמתחזה לשורת נוטע, וההזמנה יושבת עכשיו בשורה המקווקוות
-     שבסוף הרשימה, כמו בשתי הרשימות של "מה מחכה להם". */
+  /* ── הגיליון (§4) ────────────────────────────────────────────
+     הכול פתוח, בלי הקשה. השורה הראשונה נוקבת במסלול או בספירת
+     הנוטעים, והניסוח נגזר משלושת המצבים שבטבלה. */
+  const tl=plantTrackLabel(p);
+  const trk=document.getElementById('d-trk');
+  const howh=document.getElementById('d-howh');
+  const same=momSameTrack(p,M);
+  if(trk){
+    if(nPl<=1){
+      txt('d-trkt','המסלול שלך');
+      /* ‏"<שם המסלול>, כ-X% בשנה" (§4), ולא ה-` · ` של `TRACK_LABELS`:
+         זו אותה מחרוזת בדיוק ששורת הנוטע מתחתיה נושאת. */
+      txt('d-trks',momTrackPhrase(M.rows[0]||{},p)||'איך המספר הזה מחושב');
+    }else{
+      txt('d-trkt',countWord(nPl)+' נוטעים');
+      txt('d-trks',same
+        ? ('כולם ב'+(same===true?(tl||'אותו מסלול'):same)+', והצפי מחושב לפי המסלול הזה')
+        : 'כל אחד במסלול שבחר, והצפי מחושב לכל אחד בנפרד');
+    }
+    trk.style.display=nPl?'':'none';
+  }
+  if(howh)howh.style.display=nPl?'':'none';
+  /* ‏**שורת המכתב** (§4), ורק כשיש מכתב. */
+  const lt=Number(p.letters||0);
+  const lrow=document.getElementById('d-lrow');
+  if(lrow){
+    lrow.style.display=lt>0?'':'none';
+    if(lt>0)txt('d-lrowt',lt===1?'מכתב אחד מחכה':(countWord(lt)+' מכתבים מחכים'));
+  }
+
+  /* ── "מי נטע לרגע הזה" (§4) ───────────────────────────────────
+     **שורה לכל נוטע, תמיד** — כולל כשאני לבד. ‏`#d-solo` ("רק אתה
+     נוטע כאן") ירד ב-`FIX-moment-v2`: הוא היה שורת הזמנה שמתחזה
+     לשורת נוטע. */
   const box=document.getElementById('d-who');
-  box.innerHTML=p.who.map(function(w,i){
-    /* המסלול והקצב שלו, כמו בעיצוב ("390 ₪ בחודש · מאוזן, כ־6%").
-       בהדגמה אין `rate` ואין `monthly` פר-אדם, ולכן הנפילה האחורית
-       היא מה שהיה כאן עד כה: הקרבה ומאז מתי. */
-    const sub=personTrackLine(w)||personSub(w,false);
-    const tap=w[8]!=null;
+  box.innerHTML=M.rows.map(function(r){
+    const tap=!r.hidden;
     return '<'+(tap?'button':'div')+' class="tabrow"'+
-      (tap?' onclick="openPerson('+i+')"':'')+'>'+
-    '<span class="fc">'+faceHTML(w[0],'av-parent')+'</span>'+
-    /* ‏**‏"אתה" מוטה, ולא קבוע בזכר.** ‏`liveDetail` כותבת `'אתה'`
-       ל-`w[1]` והיא גם הסימן הפנימי שזה אני (`personSub`,
-       `personalOf`), ולכן ההטיה היא בציור ולא בנתון. */
+      (tap?' onclick="openPerson('+r.i+')"':'')+'>'+
+    '<span class="fc">'+faceHTML(r.av,'av-parent')+'</span>'+
     '<span class="gr"><span class="t">'+
-      attrText((w[7]||w[1]==='אתה')?meLabel():w[1])+'</span>'+
-      (sub?'<span class="s">'+sub+'</span>':'')+'</span>'+
-    /* ‏**‏`amtHTML` ולא המחרוזת שבשורה** (§5 של `FIX-waiting-v2`,
-       §8 של `FIX-tabs-v2`): התווית מעל הסכום היא מה שמיישר את כל
-       הסכומים במסך על קו ימני אחד. ‏`w[8]` הוא `null` בדיוק כשהסכום
-       חסוי ממני, וזו העובדה עצמה ולא דגל שצריך לגזור. */
-    (tap?amtHTML('נטע',w[8]):'<span class="tbpill wait">משתתף</span>')+
+      attrText(r.isMe?meLabel():r.name)+'</span>'+
+      '<span class="s">'+momPlanterSub(r,p)+'</span></span>'+
+    momPlanterAmt(r,M)+
     '<span class="tbchev"'+(tap?'':' style="visibility:hidden"')+
       '><svg width="7" height="12" viewBox="0 0 7 12">'+
       '<use href="#chev"/></svg></span>'+
     '</'+(tap?'button':'div')+'>';
   }).join('')+(p.mine&&p.shared?invitedHereRows(p):'');
-  /* ‏**שורת ההזמנה בסוף הרשימה**, ורק למי שרשאי: `invitations_send`
-     דורשת `app.is_initiator`, כלומר השרת היה דוחה את הלחיצה. */
-  const addbox=document.getElementById('d-addinv');
-  if(addbox){
-    addbox.innerHTML=canInvite
-      ? listAddHTML('inviteFromMoment()','להזמין קרוב לנטוע כאן',
-                    'סבא, סבתא, דוד, חבר קרוב','d-inv') : '';
-  }
-  buildActions(p);
+  const nob=document.getElementById('d-nobody');
+  if(nob)nob.style.display=nPl?'none':'';
+  /* ‏**הטבלה יורדת יחד עם הרשימה** (§4): אין מה לפרק כשאין מה
+     לחשב. */
+  const cb=document.getElementById('d-calcb');
+  if(cb)cb.style.display=nPl?'':'none';
+  momCalcClose();
+  momCalcFill(p,M);
+  buildActions(p,M);
   go(5);
+  /* ‏**הגרף מצויר אחרי `go(5)`** (§3): הוא נמדד מרוחב הצומת בפועל,
+     ואלמנט בתוך מסך שאינו `.on` מחזיר 0 מכל מדידה. */
+  momChart(p);
 }
 /* "ללימודים שלה", "לבר המצווה שלו". נגזר מהשם ששמור על הנטיעה ולא
    מטבלה שנייה: ‏`plantingName` כבר פתר שם את ההטיה של "בר/בת", והשם
@@ -13777,6 +13977,306 @@ function momAlone(p){
   const w=(p&&p.who)||[];
   return w.length===1&&!!(w[0][7]||w[0][1]==='אתה');
 }
+
+/* ══ מסך הרגע · החישוב לפי נוטע ═══════════════════════════════════
+   ‏`FIX-moment-screen-v1.md` §1. **הצפי מחושב לכל נוטע בנפרד, לפי
+   המסלול שהוא בחר, והצפי של הרגע הוא הסכום שלהם.** נוסחה אחת על
+   הסכום הכולל נכונה רק כשלכולם אותו קצב, ובמסך שבו כל נוטע בוחר
+   מסלול משלו היא נותנת מספר שגוי.
+
+   **וזה כבר מה שהשרת עושה** (`app.projection_for` מ-0066), ולכן
+   `projection_agorot` הוא כבר סכום הצפיים האישיים ואין כאן חישוב
+   שני שיכול לסתור אותו. מה שהלקוח מוסיף הוא **הנקודות שבדרך** —
+   הגרף — שאין להן מקבילה בשרת. */
+
+/* מספר החודשים מהיום עד מועד הרגע. נגזר מהתאריך עצמו ולא מ-`yl`,
+   שהוא הפרש שנים ומעגל חודשים שלמים. */
+function momMonths(p){
+  const d=p&&p.targetDate;
+  if(d){
+    const t=new Date(String(d).slice(0,10)+'T00:00:00');
+    if(!isNaN(t)){
+      const n=new Date();
+      return Math.max(0,(t.getFullYear()-n.getFullYear())*12+(t.getMonth()-n.getMonth()));
+    }
+  }
+  return Math.max(0,Math.round(Number((p&&p.yl)||0)*12));
+}
+/* הצפי של נוטע אחד אחרי n חודשים, ו"מה שהוא נוטע" עד אז. שתי
+   הנוסחאות של §1, מילה במילה: `stopped` מאפס את התרומה החודשית
+   ומשאיר את מה שנצבר ממשיך לגדול. */
+function momPlanterProj(q,n){
+  const r=(Number(q.rate)||0)/12, b=Number(q.balance)||0;
+  const c=q.stopped?0:(Number(q.monthly)||0);
+  if(!(n>0))return b;
+  if(r===0)return b+c*n;
+  const g=Math.pow(1+r,n);
+  return b*g+c*((g-1)/r);
+}
+function momPlanterPlanted(q,n){
+  const c=q.stopped?0:(Number(q.monthly)||0);
+  return (Number(q.balance)||0)+c*Math.max(0,n);
+}
+/* הנוטעים כפי שהמסך רואה אותם. ‏`w[8]` הוא `null` בדיוק כשהסכום
+   חסוי ממני, וזו העובדה עצמה ולא דגל שצריך לגזור. */
+function momRows(p){
+  return ((p&&p.who)||[]).map(function(w,i){
+    const hidden=w[8]==null;
+    return {i:i,w:w,av:w[0],name:w[1],sex:w[3]||null,opened:!!w[4],
+      isMe:!!(w[7]||w[1]==='אתה'),relation:w[9]||null,since:w[10]||null,
+      hidden:hidden,
+      balance:hidden?null:Number(w[8]),
+      monthly:w[6]==null?null:Number(w[6]),
+      rate:w[11]==null?null:Number(w[11]),
+      proj:w[5]==null?null:Number(w[5]),
+      stopped:!!w[12]};
+  });
+}
+/* המודל שהגרף והתאים נשענים עליו.
+
+   **הסך הכולל מגיע מהשרת ואינו מסוכם בלקוח**, כי מי שהסתיר את
+   הסכום שלו נספר בו ואינו נראה כאן (§4). ‏`accrued_agorot`
+   ו-`projection_agorot` כוללים את כולם, ולכן שורת "יחד" שבטבלה
+   שווה למספר שבכרטיס בדיוק — וזו בדיקת הקבלה העשירית.
+
+   **ומה שאי אפשר לראות מקבל נוטע שיורי אחד.** הגרף צריך סדרה
+   ולא שני קצוות, ולכן ההפרש בין הידוע לכולל נכנס כנוטע סינתטי
+   שהקצב שלו נפתר (`solveRate`) כך שהקצה שלו מדויק. **וכשגם זה
+   אינו מספיק** — למשל אצל מוזמנת, ש-`monthly_agorot` אצלה הוא
+   שלה בלבד ולכן אין ממה לבנות שארית — המודל כולו מתחלף בנוטע
+   אחד מעורבב. בשני המקרים הקצה מסכים עם המספר שבכרטיס, וזה מה
+   שהגרף מבטיח. */
+function momModel(p){
+  const months=momMonths(p);
+  const rows=momRows(p);
+  const today=Math.round(Number((p&&p.now)||0)*100);
+  const proj=Math.max(today,Math.round(Number((p&&p.end)||0)*100));
+  const seen=rows.filter(function(r){return !r.hidden});
+  const seenM=seen.reduce(function(a,r){return a+(r.stopped?0:(r.monthly||0))},0);
+  /* ‏`monthly_agorot` הוא "של כולם לבעלים, של הקורא לתורם", ולכן
+     הוא רצפה ולא אמת: מה שידוע מהשורות אינו יכול להיות פחות ממנו. */
+  const monthly=Math.max(seenM,Math.round(Number((p&&p.monthly)||0)*100));
+  const list=seen.map(function(r){
+    return {balance:r.balance||0,monthly:r.monthly||0,rate:r.rate||0,
+            stopped:!!r.stopped};
+  });
+  const restB=Math.max(0,today-seen.reduce(function(a,r){return a+(r.balance||0)},0));
+  const restM=Math.max(0,monthly-seenM);
+  const knownP=list.reduce(function(a,q){return a+momPlanterProj(q,months)},0);
+  const restP=Math.max(restB+restM*months,proj-knownP);
+  if(restB>0||restM>0)
+    list.push({balance:restB,monthly:restM,stopped:false,rest:true,
+      rate:solveRate(function(x){return fvFrom(restB,restM,months,x)},restP)});
+  const end=list.reduce(function(a,q){return a+momPlanterProj(q,months)},0);
+  if(Math.abs(end-proj)>Math.max(100,proj/1000)){
+    list.length=0;
+    list.push({balance:today,monthly:monthly,stopped:false,blend:true,
+      rate:solveRate(function(x){return fvFrom(today,monthly,months,x)},proj)});
+  }
+  return {months:months,rows:rows,list:list,today:today,monthly:monthly,
+          proj:proj,
+          planted:list.reduce(function(a,q){return a+momPlanterPlanted(q,months)},0)};
+}
+/* נקודה אחת לכל שלושה חודשים (§3). זול לחשב בכל פתיחה, וחלק מספיק
+   לעקומה. הערך לעולם אינו נמוך ממה שנוטעים, כי טריז שלילי הוא
+   ציור של צמיחה שלילית שלא קרתה. */
+function momPoint(m,n){
+  let v=0,d=0;
+  m.list.forEach(function(q){v+=momPlanterProj(q,n);d+=momPlanterPlanted(q,n)});
+  return {n:n,v:v,d:Math.min(d,v)};
+}
+function momSeries(m,step){
+  const st=Math.max(1,step||3),pts=[];
+  for(let n=0;n<=m.months;n+=st)pts.push(momPoint(m,n));
+  if(!pts.length||pts[pts.length-1].n!==m.months)pts.push(momPoint(m,m.months));
+  if(pts.length<2)pts.push(pts[0]);
+  return pts;
+}
+/* ── הגרף עצמו (§3) ──────────────────────────────────────────────
+   **הזמן רץ מימין לשמאל.** הקצה הימני הוא היום, השמאלי הוא מועד
+   הרגע, ומתחת לגרף שתי תוויות שאומרות בדיוק את זה.
+
+   **והוא נמדד ואינו נמתח.** ‏`preserveAspectRatio="none"` היה מותח
+   את הנקודה לאליפסה ואת עובי הקו לערך אחר בכל רוחב מכשיר; לכן
+   הרוחב נקרא מה-DOM. זה מחייב שהמסך יהיה `.on`, כלומר קריאה
+   **אחרי** `go(5)` — אלמנט בתוך מסך מוסתר מחזיר 0 מכל מדידה,
+   וזו המלכודת שכבר מתועדת כאן. */
+function momChart(p){
+  const box=document.getElementById('d-graph');
+  if(!box)return;
+  const m=momModel(p);
+  if(!(m.proj>0)||!(m.months>0)){
+    /* עוד לא נטעו לרגע: מסגרת במקום גרף, בדיוק באותו גובה. */
+    box.innerHTML='<div class="mgempty">כשתיטעו כאן, יופיע גרף שמראה '+
+      'איך הכסף גדל עד '+attrText(p.date||'')+'.</div>';
+    return;
+  }
+  const W=Math.max(120,Math.round(box.clientWidth||300)),H=84,TOP=7,BOT=2,R=3.4;
+  const pts=momSeries(m,3);
+  const max=Math.max.apply(null,pts.map(function(q){return q.v}))||1;
+  const x=function(n){return W-(m.months?n/m.months:0)*W};
+  const y=function(v){return TOP+(1-v/max)*(H-TOP-BOT)};
+  const num=function(v){return Math.round(v*10)/10};
+  const top=pts.map(function(q){return num(x(q.n))+' '+num(y(q.v))});
+  const mid=pts.map(function(q){return num(x(q.n))+' '+num(y(q.d))});
+  const base=H-BOT;
+  /* השטח הירוק: מה שנוטעים, מהבסיס ועד קו ההפקדות. */
+  const dArea='M '+mid.join(' L ')+' L '+num(x(m.months))+' '+base+
+              ' L '+W+' '+base+' Z';
+  /* שטח החול: מה שייווסף מעצמו, בין שני הקווים. */
+  const gArea='M '+top.join(' L ')+' L '+mid.slice().reverse().join(' L ')+' Z';
+  box.innerHTML=
+    '<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" '+
+    'aria-label="'+attrText('הצפי עד '+(p.date||''))+'">'+
+      '<path class="a-g" d="'+gArea+'"/>'+
+      '<path class="a-d" d="'+dArea+'"/>'+
+      '<path class="a-l" d="M '+mid.join(' L ')+'"/>'+
+      '<circle class="a-p" cx="'+num(W-R)+'" cy="'+num(y(pts[0].v))+'" r="'+R+'"/>'+
+    '</svg>'+
+    '<div class="mgax"><span>היום</span><span>'+attrText(p.date||'')+'</span></div>'+
+    '<div class="mgleg"><span><i class="g"></i>מה שנוטעים</span>'+
+      '<span><i class="s"></i>מה שייווסף מעצמו</span></div>';
+}
+/* החודש הראשון של הרגע. ‏§2: בחודש הראשון הסכום החודשי שווה במקרה
+   לסכום שנצבר, ולכן התא האמצעי אומר "נטעתם עד היום" ולא "בכל חודש". */
+function momFirstMonth(p){
+  const d=p&&p.openedOn;
+  if(!d)return false;
+  const t=new Date(String(d).slice(0,10)+'T00:00:00');
+  if(isNaN(t))return false;
+  const n=new Date();
+  return (n.getFullYear()-t.getFullYear())*12+(n.getMonth()-t.getMonth())<=0;
+}
+/* שם המסלול בלי האחוז. ‏`TRACK_LABELS` נושא את שניהם ("פיקדון נעול ·
+   כ-3.5% בשנה"), ו-§4 מבקש "כולם ב<שם המסלול>" בלי לחזור על האחוז
+   שנאמר ממילא בשורה של כל נוטע. **ואין כאן טבלה שנייה.** */
+function trackName(rate){
+  const r=Number(rate);
+  if(rate==null||!isFinite(r))return '';
+  if(r===0)return 'מסלול שומר על הסכום';
+  const l=TRACK_LABELS[r];
+  return l?l.split(' · ')[0]:'';
+}
+/* "<מסלול>, כ-X% בשנה" לשורה של נוטע אחד (§4). הקצב שלו, ובהיעדרו
+   הקצב של הרגע — בדיוק מה ש-`app.rate_for_user` עושה בשרת. */
+function momTrackPhrase(r,p){
+  const raw=(r&&r.rate!=null)?Number(r.rate)
+           :((p&&p.rate!=null)?Number(p.rate):null);
+  if(raw==null||!isFinite(raw))return '';
+  if(raw===0)return 'יישמר כמו שהוא (ללא ריבית)';
+  const l=TRACK_LABELS[raw];
+  return l?l.replace(' · ',', '):('כ-'+(+(raw*100).toFixed(2))+'% בשנה');
+}
+/* האם כל הנוטעים באותו מסלול (§4). מי שאין לו קצב משלו יושב על
+   ברירת המחדל של הרגע, ולכן הוא נספר כמו כולם. מחזירה את שם
+   המסלול כשהוא ידוע, `true` כשכולם זהים ואין שם, ו-`false` כשהם
+   שונים. */
+function momSameTrack(p,M){
+  const base=(p&&p.rate!=null)?Number(p.rate):null;
+  const rs=M.rows.map(function(r){return r.rate!=null?Number(r.rate):base});
+  if(!rs.length)return true;
+  for(let i=1;i<rs.length;i++)if(rs[i]!==rs[0])return false;
+  return rs[0]==null?true:(trackName(rs[0])||true);
+}
+/* הצפי של נוטע אחד. ‏`w[5]` מגיע מ-0045 ונכפף לאותו תנאי חשיפה כמו
+   הסכום; **בהדגמה אין צפי פר-אדם**, ולכן הוא נגזר מיחס הצמיחה של
+   הרגע כולו — אותה נפילה אחורה של `openForecast`, ומאותו נימוק:
+   חצי טבלה גרועה מהמחשה עקבית, וסכום השורות נשאר שווה למספר
+   שבכרטיס. */
+function momProjOf(r,M){
+  if(r.proj!=null)return Number(r.proj);
+  if(r.hidden)return null;
+  const ratio=M.today>0?(M.proj/M.today):1;
+  return Math.round((r.balance||0)*ratio);
+}
+/* ארבע שורות המשנה של §4. **בלי לוכסן**: בלי מגדר ידוע הפועל הופך
+   לשם עצם, אותה הכרעה של `verb()` במיילים ושל השורות בפיד. */
+function momPlanterSub(r,p){
+  const tr=momTrackPhrase(r,p);
+  if(r.hidden)return tr;
+  const bits=[];
+  if(r.stopped){
+    bits.push(r.isMe?'הפסקת לנטוע'
+      :(r.sex==='f'?'הפסיקה לנטוע':(r.sex==='m'?'הפסיק לנטוע':'הנטיעה החודשית הופסקה')));
+    bits.push('מה שנצבר ממשיך לגדול');
+  }else if(r.monthly>0){
+    bits.push(shekel(r.monthly)+' בכל חודש');
+  }else{
+    bits.push('נטיעה אחת');
+    bits.push(shekel(r.balance||0));
+  }
+  if(tr)bits.push(tr);
+  return bits.join(' · ');
+}
+/* היתרה של היום, ומתחתיה לאן היא בדרך (§4). **ומי שהסתיר את הסכום
+   אינו מציג גם את הצפי שלו**, כי אפשר לחשב ממנו אחורה. */
+function momPlanterAmt(r,M){
+  if(r.hidden)
+    return '<span class="amt"><span class="hid">'+
+      '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">'+
+      '<use href="#ic-eyeoff"/></svg>הסכום מוסתר</span></span>';
+  const pr=momProjOf(r,M);
+  return '<span class="amt"><span class="n'+(r.stopped?' off':'')+'">'+
+    shekel(r.balance||0)+'</span>'+
+    (pr!=null?('<span class="p">בדרך ל '+aboutShekel(pr)+'</span>'):'')+
+    '</span>';
+}
+/* ── "להציג את החישוב" (§4) ──────────────────────────────────────
+   **שורת "יחד" היא המספר שבכרטיס הירוק ולא סכום של מה שנראה**, כי
+   מי שהסתיר את הסכום נספר בו — וזו בדיוק בדיקת הקבלה העשירית. */
+function momCalcFill(p,M){
+  const box=document.getElementById('d-calc'); if(!box)return;
+  if(!M.rows.length){box.innerHTML='';return}
+  const rows=M.rows.map(function(r){
+    const what=r.hidden?'מוסתר'
+      :(r.stopped?'הופסק'
+      :(r.monthly>0?(shekel(r.monthly)+' בחודש'):'נטיעה אחת'));
+    const tr=r.hidden?'מוסתר':(trackName(r.rate!=null?r.rate:(p&&p.rate))||'·');
+    const pr=momProjOf(r,M);
+    return '<tr><td>'+attrText(r.isMe?meLabel():r.name)+'</td><td>'+what+
+      '</td><td>'+tr+'</td><td>'+(pr==null?'מוסתר':aboutShekel(pr))+'</td></tr>';
+  }).join('');
+  const dep=Math.min(M.planted,M.proj), grow=Math.max(0,M.proj-dep);
+  box.innerHTML='<table><thead><tr><th>נוטע</th><th>מה נוטע</th>'+
+    '<th>מסלול</th><th>בדרך ל</th></tr></thead><tbody>'+rows+
+    '<tr class="tot"><td colspan="3">יחד</td><td>'+aboutShekel(M.proj)+'</td></tr>'+
+    '<tr class="br"><td colspan="3">מזה נטיעות</td><td>'+shekel(dep)+'</td></tr>'+
+    '<tr class="br"><td colspan="3">מזה נוסף מעצמו</td><td>'+aboutShekel(grow)+'</td></tr>'+
+    '</tbody></table>';
+}
+function momCalcClose(){
+  const b=document.getElementById('d-calc'),t=document.getElementById('d-calcb');
+  if(b)b.hidden=true;
+  if(t)t.textContent='להציג את החישוב';
+}
+function momCalcToggle(){
+  const b=document.getElementById('d-calc'),t=document.getElementById('d-calcb');
+  if(!b)return;
+  b.hidden=!b.hidden;
+  if(t)t.textContent=b.hidden?'להציג את החישוב':'לסגור את החישוב';
+}
+/* ── שורת ההסתייגות (§4) ─────────────────────────────────────────
+   חמישה משפטים, וכל אחד מהם נאמר רק כשהוא נכון. **וכשעוד לא נטעו
+   היא ריקה**, כי אין על מה להסתייג. */
+function momFine(p,M){
+  if(!M.rows.length)return '';
+  const out=[];
+  const same=momSameTrack(p,M);
+  if(M.rows.length>1)out.push(same?'כל הנוטעים באותו מסלול.'
+                                  :'כל נוטע מחושב לפי המסלול שבחר.');
+  if(M.rows.some(function(r){return r.hidden}))
+    out.push('סכום שמוסתר ממשיך להיספר בסך הכולל.');
+  if(M.rows.some(function(r){return r.stopped}))
+    out.push('נטיעה שהופסקה נספרת עד היום שבו הופסקה, וממשיכה לגדול.');
+  /* המסלול המובטח הוא ריבית קבועה מהגוף המנהל, וכל השאר הוא שוק.
+     הגבול הוא 3.5%, שהוא הפיקדון הנעול. */
+  const rates=M.rows.map(function(r){
+    return r.rate!=null?Number(r.rate):((p&&p.rate!=null)?Number(p.rate):0)});
+  out.push(rates.some(function(x){return x>0.035})
+    ? 'במסלולי שוק ההון הצפי אינו מובטח והערך עשוי גם לרדת.'
+    : 'בפיקדון נעול הקרן והריבית מובטחות על ידי הגוף המנהל.');
+  return out.join(' ');
+}
 /* השנים של הרגע: מהשנה שנפתחה עד שנת היעד. `tNow` הוא האחוז שעבר
    מהמסלול כולו, וזה מה שממלא את המשבצת הנוכחית. */
 function momYears(p){
@@ -13810,7 +14310,9 @@ function inviteFromMoment(){
 function openForecast(){
   const p=plantAt(cur); if(!p)return;
   const tot=Math.round(Number(p.now||0)*100), proj=Math.round(Number(p.end||0)*100);
-  if(!(proj>tot))return;
+  /* ‏**בלי צפי הגיליון עדיין נפתח**, כי השורה שפותחת אותו נושאת חץ
+     (`FIX-moment-screen-v1` §4) ולחיצה שאינה עושה דבר גרועה מגיליון
+     שמראה את המסלול בלבד. */
   let body;
   if(!momAlone(p)){
     /* ברגע משותף אין תחזית אחת לצייר, ולכן שורה לכל נוטע. הפס
@@ -21065,6 +21567,13 @@ window.addEventListener('resize',function(){
   fuRz=setTimeout(function(){
     const r=document.getElementById('fu-crn');
     if(r&&r.dataset.ok==='1')fuLayout(+r.dataset.c||0,false,0);
+    /* ‏**ואותו דבר לגרף שבמסך הרגע**, ומאותה סיבה בדיוק: הוא נמדד
+       מרוחב הצומת בפועל ומצויר בפיקסלים (§3), ולכן סיבוב מכשיר
+       היה משאיר ציור ברוחב הקודם. */
+    const sc=document.querySelector('.screen.on');
+    if(sc&&sc.dataset.name==='פרטי נטיעה'){
+      const p=plantAt(cur); if(p)momChart(p);
+    }
   },120);
 });
 /* הבחירה שורדת מעבר בין טאבים. עד כה הכניסה מהסרגל התחתון ניקתה את
@@ -21228,7 +21737,7 @@ function notDesignated(p){return p.live?!p.designated:p.designated===false}
    **והשורה השקטה שמתחת ירדה משלושה מצבים לאחד.** מה שהיא אמרה על
    פרטיות ועל מי פתח נאמר ממילא בכרטיס ובראש; מה שנשאר הוא המקרה
    היחיד שבו היא אומרת דבר שאינו נראה — שיש עוד בעלים. */
-function buildActions(p){
+function buildActions(p,M){
   const acts=document.getElementById('d-acts'),note=document.getElementById('d-actnote');
   if(!acts)return;
   if(notDesignated(p)){
@@ -21239,13 +21748,24 @@ function buildActions(p){
       'קרובים לא יכולים לנטוע לתוכה עד שתייעד אותה.';
     return;
   }
-  /* ‏**פעולה אחת בלבד.** "להזמין עוד" ירד מכאן ב-`FIX-moment-v2`:
-     ההזמנה היא השורה המקווקוות שבסוף רשימת הנוטעים, וכפתור שני
-     לאותה פעולה על אותו מסך הוא בדיוק מה שהספר פוסל. */
-  acts.innerHTML='<button class="btn" onclick="investIn(cur)">להשקיע עוד</button>';
-  note.innerHTML=p.co?('פרטית, רק אתה ו'+p.co+' רואים אותה'):'';
-  note.style.display=p.co?'block':'none';
+  /* ‏**שני כפתורים** (`FIX-moment-screen-v1.md` §4): ראשי מלא
+     שאומר מה הוא עושה, ומתחתיו מקווקו להזמנה. **וזה מחזיר את
+     "להזמין" לתחתית**, אחרי ש-`FIX-moment-v2` העביר אותו לשורה
+     המקווקוות שבסוף רשימת הנוטעים — זו העברה ולא כפילות, כי
+     השורה ההיא ירדה איתו. וההזמנה נשארת רק למי שרשאי:
+     ‏`invitations_send` דורשת `app.is_initiator`. */
+  const m=M||momModel(p);
+  const canInvite=!!p.mine&&!notDesignated(p);
+  acts.innerHTML=
+    '<button class="btn" onclick="investIn(cur)">'+
+      (m.rows.length?'לנטוע עוד':'לנטוע כאן')+'</button>'+
+    (canInvite?'<button class="btn ghost" onclick="inviteFromMoment()">'+
+      'להזמין עוד מישהו לנטוע</button>':'');
+  const fine=momFine(p,m);
+  note.innerHTML=fine;
+  note.style.display=fine?'block':'none';
 }
+
 /* "מי נוטע כאן" הוא מי שקשור לרגע הזה, ותו לא: מי שכבר שותף (השורות
    מעל), ומי שהוזמן דווקא אליו וממתין לתשובה. הצעות מפנקס הקרובים ירדו
    מכאן. קרוב שלא הזמנתי לרגע הזה אינו נוטע בו, ושורה שלו בתוך הרשימה
