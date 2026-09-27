@@ -222,13 +222,18 @@ setTimeout(function(){
   --ghost:.5;--ghost-sat:.68;
   --ghost-2:.6;--ghost-sat-2:.9;
 
-  /* הראש הירוק. כאן הוא בדיוק --leaf, כי בבהירה הירוק כבר כהה. */
-  --leaf-head:#1F4D3A;
+  /* הראש הירוק, ‏`FIX-green-v2`. הוא היה בדיוק --leaf, ומאז הוא
+     כהה ממנו בדרגה אחת — **וזו כל הנקודה של הטוקן הנפרד**: הוא
+     צובע משטחים גדולים, ו---leaf צובע כפתורים, אייקונים וטקסט על
+     לבן. שינוי כאן אינו נוגע בהם, ולכן אין מה לבדוק מחדש בכל מסך.
+     **וזה גם מה שמפריד ביניהם סוף סוף:** כפתור ירוק על הראש היה
+     ‏1.00 מולו, כלומר אותו צבע בדיוק, והוא 1.28 מעכשיו. */
+  --leaf-head:#173B2D;
   --chart-leaf:#2E6B50;
-  --on-head:#FFFFFF;      /* 9.7 על הראש */
-  --on-leaf-2:#DCEADF;    /* 7.7 על הראש */
-  --mist:#9FBCAB;         /* 4.7 על הראש */
-  --sun-on-leaf:#E3CE9F;  /* 6.2 על הראש */
+  --on-head:#FFFFFF;      /* 12.4 על הראש */
+  --on-leaf-2:#DCEADF;    /* 9.9 על הראש */
+  --mist:#9FBCAB;         /* 6.0 על הראש */
+  --sun-on-leaf:#E3CE9F;  /* 8.0 על הראש */
   --leaf-tile:rgba(255,255,255,.08);
   --leaf-add:#2F5A48;
   --leaf-tile-line:rgba(227,206,159,.28);
@@ -5607,7 +5612,7 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'e824690';
+window.NETA_BUILD = '7b28a37';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -8768,6 +8773,8 @@ function go(i){
     (!!screens[i].querySelector(':scope > .leafhead, :scope > .tabg, :scope > #splash, :scope > .how-story, :scope > .ahag')
      ||screens[i].classList.contains('apdone')))
     ||!!(wh&&wh.style.display!=='none'));
+  /* שורת המצב הולכת אחרי אותה שאלה בדיוק, ראו `paintThemeColor`. */
+  paintThemeColor();
   [...nav.children].forEach((b,n)=>b.classList.toggle('on',n===i));
   /* ‏**הטאב המסומן הוא הטאב שממנו נכנסו**, ‏`FIX-moment` §5.
      מסך הרגע ושאר המסכים שאינם יעד בסרגל סימנו תמיד את הראשון,
@@ -18059,6 +18066,30 @@ function paintTheme(){
   document.querySelectorAll('#th-pick button').forEach(function(b,i){
     b.classList.toggle('on',(i===0)!==dark)});
   txt('pf-theme',(dark?'כהה':'בהיר')+' · נשמר במכשיר הזה');
+  paintThemeColor();
+}
+/* ‏**שורת המצב של הדפדפן ברצף אחד עם ראש המסך**, ‏`FIX-green-v2` §4.
+   לא היה במוצר `theme-color` כלל ואין מניפסט, ולכן זה אינו החלפת
+   ערך אלא מנגנון חדש — ונאמר.
+
+   **והוא נגזר מהמסך שעל המסך ולא ממספר אחד**, כי ירוק קבוע היה
+   צובע את שורת המצב גם מעל מסך לבן. ‏`gtop` הוא בדיוק "המסך הזה
+   נפתח במשטח ירוק שיוצא אל שלושת הקצוות", כלומר השאלה שכבר נענתה
+   פעם אחת ב-`go()`; אין כאן רשימה שנייה שצריך לסנכרן.
+
+   **והצבע נקרא מהטוקן ואינו כתוב כאן**, ולכן הוא מתהפך עם הערכה
+   לבדו — כולל בהחלפה ידנית, שסקריפט ב-`<head>` אינו יכול לדעת
+   עליה. עותק שני של הצבע הוא בדיוק מה שספר המותג עוצר עליו. */
+function paintThemeColor(){
+  const dv=document.querySelector('.device');
+  if(!dv)return;
+  const cs=getComputedStyle(document.documentElement),
+        c=(dv.classList.contains('gtop')?cs.getPropertyValue('--leaf-head')
+                                        :cs.getPropertyValue('--bg')).trim();
+  if(!c)return;
+  let m=document.querySelector('meta[name="theme-color"]');
+  if(!m){m=document.createElement('meta');m.name='theme-color';document.head.appendChild(m)}
+  if(m.content!==c)m.content=c;
 }
 function editMyIdentity(){
   const nowName=liveAccount()?((netaServer.profile&&netaServer.profile.name)||'')
