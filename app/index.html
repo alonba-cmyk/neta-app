@@ -5612,7 +5612,7 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '7b28a37';
+window.NETA_BUILD = 'f3e7a2a';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7389,8 +7389,9 @@ window.NETA_CONFIG = {
         <span class="s">ילד, נכד, אחיין, או כל קרוב</span></span>
     </button>
     <!-- ‏**"ההשקעות האחרונות שלי"** (`FIX-home-v2.md` §2ב): הכותרת
-         היא הרגע ולא סוג ההפקדה, האייקון הוא אייקון הרגע בריבוע
-         מעוגל ולא פרצוף, ושורת המשנה היא תאריך מקוצר וכמה זמן עבר.
+         היא הרגע ולא סוג ההפקדה, והאייקון הוא אייקון הרגע בריבוע
+         מעוגל ולא פרצוף. **ואין שורת משנה** (`FIX-home-sheet-v1`):
+         היא נשאה את אותו תאריך בשתי שפות, וראו ההערה ב-JS.
          **אין "לכל הפעילות" בסוף** — הפיד המלא הוא טאב משלו. -->
     <div id="mi-recwrap" style="display:none">
       <p class="tablbl sec2"><span>ההשקעות האחרונות שלי</span></p>
@@ -20373,13 +20374,9 @@ function hmNames(names){
   if(n.length===3)return b(n[0])+', '+b(n[1])+' ו'+b(n[2]);
   return b(n[0])+', '+b(n[1])+' ועוד '+hebCount(n.length-2);
 }
-/* "12 בספט׳". התאריך המלא ("ספטמבר 2026") אומר שנה שהשורה השנייה
-   כבר מוסרת בצורה אחרת, ומקצר אותה לשתי שורות במכשיר צר. */
-function dayMonthShort(iso){
-  const d=new Date(iso);
-  if(isNaN(d))return '';
-  return d.getDate()+' ב'+monthsShort[d.getMonth()];
-}
+/* ‏`dayMonthShort` ירדה יחד עם שורת המשנה של "ההשקעות האחרונות
+   שלי" (`FIX-home-sheet-v1`), שהייתה הקוראת היחידה שלה.
+   **מה שירד מהמסך יורד גם מהקוד.** */
 /* ‏**בלוק של תווית וסכום, וכל הבלוקים במסך על קו ימני אחד.**
    ‏`nil` הוא `0 ₪` עמום ולא "·": במסך הזה כל מספר הוא מונה של
    כסף, ואפס הוא נקודת הפתיחה שלו. */
@@ -20598,17 +20595,27 @@ function paintInvestments(){
 
   /* ── "ההשקעות האחרונות שלי" ────────────────────────────────────
      הכותרת היא הרגע ולא סוג ההפקדה, והאייקון הוא אייקון הרגע
-     בריבוע מעוגל ולא פרצוף: הנושא של השורה הוא לאן הכסף הלך. */
+     בריבוע מעוגל ולא פרצוף: הנושא של השורה הוא לאן הכסף הלך.
+
+     **ושורת המשנה ירדה**, ‏`FIX-home-sheet-v1`. היא נשאה
+     "‏27 בספט׳ · לפני שבוע", כלומר את אותו תאריך בשתי שפות —
+     מוחלט ויחסי — ושתיהן אמרו את אותו דבר. הכותרת שמעל המקטע
+     כבר אומרת "האחרונות", והסדר מלמעלה למטה הוא כרונולוגי;
+     התאריך המלא נשאר בטאב "פעילות" ובמסך הרגע, ששם הוא נחוץ.
+
+     **ותופעת הלוואי היא מה שמסמן את הגבול בין שני המקטעים:**
+     שורות "בעתיד של מי השקעת" הן שתי שורות, ואלה שורה אחת.
+     **והיישור האנכי אינו דורש כלל חדש** — `.tabrow` הוא
+     ‏`align-items:center` מלכתחילה, ולכן שורה בת שורה אחת
+     מתמרכזת מול האייקון ומול הסכום מעצמה. */
   const rec=hmRecent(rows);
   const wrap=document.getElementById('mi-recwrap');
   if(wrap)wrap.style.display=rec.length?'':'none';
   const rbox=document.getElementById('mi-recent');
   if(rbox)rbox.innerHTML=rec.map(function(e){
-    const when=[dayMonthShort(e.at),agoText(e.at)].filter(Boolean).join(' · ');
     return '<button class="tabrow"'+(e.key?(' onclick="openDetail(\'' + attrText(e.key) + '\')"'):'')+'>'+
       '<span class="sq">'+occIcon(e.occ,20,e.name)+'</span>'+
-      '<span class="gr"><span class="t">'+attrText(feedMomentName(e))+'</span>'+
-      '<span class="s">'+attrText(when)+'</span></span>'+
+      '<span class="gr"><span class="t">'+attrText(feedMomentName(e))+'</span></span>'+
       amtHTML('נטעת',e.amount||0)+
       '<span class="tbchev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>'+
     '</button>';
@@ -21287,16 +21294,33 @@ function fuIsMe(nm,x){
 /* ‏**ברגע שאינו משתף הסכום הוא שלי בלבד** (§5): `accrued` הוא של
    כולם, והצגתו כאן הייתה חושפת בחיסור את מה שהתא שבכרטיס כבר
    מסתיר. התווית עוברת איתו. */
+/* ‏**שורת המשנה היא משפט אחד עם תאריך אחד**, `FIX-waiting-sheet-v1`.
+   היא נשאה "ספטמבר 2036 · עוד 10 שנים", כלומר את אותו תאריך בשתי
+   שפות; נשאר המדויק, כי הוא היעד עצמו, והוא נאמר כמשפט ולא כשני
+   נתונים שמופרדים בנקודה. **החודש מלא תמיד** ("ספטמבר" ולא
+   "ספט׳"), **ו"נפתח" בזכר כי נושא המשפט הוא הרגע.**
+
+   **וזה שונה ממה שנעשה באותו סבב במסך הבית**, ששם השורה נמחקה
+   כולה: שם היא תיעדה פעולה שכבר קרתה, וכאן היא אומרת מתי הרגע
+   נפתח — וזו הסיבה שהמסך הזה קיים.
+
+   **ו"נפתח בידי X" ירד, וזו הכרעה שלי מול המסמך.** הוא אינו מזכיר
+   אותו, ובדיקת הקבלה שלו דורשת "משפט אחד עם תאריך אחד" — והצירוף
+   היה יוצא "נפתח בספטמבר 2036 · נפתח בידי סבתא רחל", כלומר **אותה
+   מילה בשתי משמעויות באותה שורה**: הרגע שייפתח, והאדם שפתח אותו.
+   ‏`p.bySex` ריק אצל רוב האנשים, ולכן גם הטיה לא הייתה פותרת.
+   **המחיר שנאמר:** מוזמנת שיש לילד שלה כמה רגעים אינה רואה כאן מי
+   פתח כל אחד מהם; זה נאמר במקטע "מי נטע ל<שם>" שמתחת ובמסך הרגע.
+   ‏`docs/open-decisions.md` §67. */
 function fuMomentRow(p,dash){
-  const yrs=p.targetYear?Math.max(0,p.targetYear-new Date().getFullYear()):0;
-  const when=(targetLine(p)||'').replace(/^עד /,'')+
-             (!dash&&p.targetYear?(' · עוד '+yrs+yrWord(yrs)):'');
-  const by=(!dash&&p.joined&&p.by)?(' · נפתח בידי '+p.by):'';
+  const when=p.targetYear
+    ? ('נפתח ב'+(months[Number(p.targetMonth)]?months[Number(p.targetMonth)]+' ':'')+p.targetYear)
+    : '';
   const row='<button class="tabrow" onclick="openDetail(\'' + attrText(p.key) + '\')">'+
     '<span class="sq sm">'+occIcon(p.occasion,20,p.name)+'</span>'+
     '<span class="gr"><span class="t">'+attrText(momentNoun(p))+
       (dash?'<span class="rtag">מחכה לנטיעה</span>':'')+'</span>'+
-      '<span class="s">'+attrText(when+by)+'</span></span>'+
+      (when?('<span class="s">'+attrText(when)+'</span>'):'')+'</span>'+
     (fuRowShares(p)?amtHTML('נצבר',Number(p.accrued||0))
                    :amtHTML('נטעת',Number(p.mine==null?p.accrued:p.mine)))+
     '<span class="tbchev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>'+
