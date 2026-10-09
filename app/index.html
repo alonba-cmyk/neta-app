@@ -4286,8 +4286,15 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
 .tabrow .num{width:44px;height:44px;border-radius:50%;background:var(--leaf-bg);
   color:var(--leaf);font-weight:800;display:grid;place-items:center;flex:none}
 .tabrow .gr{flex:1;min-width:0}
-.tabrow .t{display:block;font-size:15.5px;font-weight:700;color:var(--tx)}
-.tabrow .s{display:block;font-size:12.5px;color:var(--tx-3);margin-top:1px}
+/* ‏**והכותרת והשורה שמתחתיה נקראות כיחידה אחת, ולכן העופרת מהודקת.**
+   ‏`line-height:normal` ב-Heebo הוא כ-1.16, והוא שומר מעל האותיות את
+   מקום ה-ascender הלטיני — שטח שבעברית נשאר ריק תמיד. נמדד שהרווח
+   בין הדיו של השתיים הוא 8 פיקסלים בשורה רגילה, ו-4 כשלכותרת יש
+   אות יורדת. ‏**ו-`.s` מהודק פחות מ-`.t`**, כי הוא זה שיכול לגלוש
+   לשתי שורות ואז העופרת היא מה שמפריד ביניהן. */
+.tabrow .t{display:block;font-size:15.5px;font-weight:700;color:var(--tx);
+  line-height:1.05}
+.tabrow .s{display:block;font-size:12.5px;color:var(--tx-3);line-height:1.15}
 .tabrow .v{font-size:16px;font-weight:700;color:var(--leaf);white-space:nowrap;flex:none}
 .tabrow .v.f{color:var(--sun-big)}
 .tabrow .tbpill{height:32px;border-radius:99px;border:1.5px solid var(--leaf);
@@ -5626,7 +5633,7 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'ef5a2b9';
+window.NETA_BUILD = '756d2b8';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -20838,17 +20845,6 @@ function kidGroups(rows){
   });
   return {groups:order.map(function(k){return map[k]}),loose:loose};
 }
-/* כמה שנים עד הרגע הקרוב ביותר בקבוצה. הקבוצה מחזיקה כמה רגעים,
-   וזה שקורה ראשון הוא היחיד שאפשר לומר עליו משהו קונקרטי. */
-/* כמה שנים נשארו עד הרגע הקרוב בקבוצה. nearestOf מחזיר תאריך ולא
-   מספר, ו-0 חוזר כשאין תאריך בכלל: אז המשפט נופל לניסוח בלי מספרים
-   במקום להבטיח "במשך 0 שנים". */
-function fuYears(rows){
-  const n=nearestOf(rows);
-  if(!n||!n.d)return 0;
-  const y=(n.d-new Date())/(365.25*24*3600*1000);
-  return y>0?Math.max(1,Math.round(y)):0;
-}
 function nearestOf(rows){
   let best=null;
   (rows||[]).forEach(function(p){
@@ -21576,34 +21572,15 @@ function paintFuture(items,sel,blank){
     empty.style.display=hasRows?'none':'';
     if(!hasRows)empty.innerHTML=fuEmptyHTML(it);
   }
-  const fine=document.getElementById('fu-fine');
-  if(fine)fine.style.display='none';
   if(!hasRows)return;
 
   const sh=document.getElementById('home-full');
   if(sh){
-    sh.innerHTML=fuSheetHTML(it)+
-      '<p class="fine" id="fu-fine" style="display:none"></p>';
+    sh.innerHTML=fuSheetHTML(it);
     const addBtn=sh.querySelector('#fu-add');
     if(addBtn)addBtn.onclick=fuAddMoment;
     const invBtn=sh.querySelector('#fu-inv');
     if(invBtn)invBtn.onclick=inviteFromFuture;
-    /* הנימוק להזמנה, כשאני הנוטע היחיד. שורה שקטה ולא כותרת. */
-    const alone=mine>=acc;
-    const f2=sh.querySelector('#fu-fine');
-    if(f2&&alone){
-      const mo=(it.rows||[]).reduce(function(a,p){return a+Number(p.myMonthly||0)},0);
-      const yrs=fuYears(it.rows);
-      const fund=!it.kidId&&!!it.label;
-      const toTxt=fund?'לקופה הזאת':('לעתיד של '+firstName(it.name));
-      f2.style.display='';
-      f2.textContent=(mo>0&&proj>mo&&yrs)
-        ? ('קרוב שייטע 50 ₪ בחודש במשך '+yearsWord(yrs)+
-           ', יכול להוסיף '+toTxt+' '+aboutShekel(Math.round(proj*5000/mo)))
-        : (fund?'כל קרוב שמצטרף מגדיל את מה שיחכה בקופה הזאת.'
-               :('כל קרוב שמצטרף מגדיל את מה שיחכה ל'+firstName(it.name)+
-                 ', ואת אותו רגע עצמו.'));
-    }
   }
 }
 
