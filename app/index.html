@@ -4364,7 +4364,7 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
    הטאבים. **ו-`--pktop` הוא המקום היחיד שמכריע**, כי הוא גם מה
    שממקם את משבצת ה-＋ — מספר שנגזר ביד משני דברים נשבר ביום שאחד
    מהם זז, וזה כבר קרה כאן פעם אחת. */
-.crnw{position:relative;margin:0;--pktop:8px;padding:var(--pktop) 0 10px;flex:0 0 auto}
+.crnw{position:relative;margin:0;--pktop:8px;padding:var(--pktop) 0 14px;flex:0 0 auto}
 /* ‏**ואין על הטבעת `touch-action` כלל, כמו בקובץ העיצוב.** היא נשאה
    `pan-y`, כלומר "מותר רק לגלול אנכית" — ואז הדפדפן אינו נועל את
    המחווה לציר האופקי, וכל רכיב אנכי קטן בגרירה מתחיל **גם** לגלול
@@ -4377,7 +4377,7 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
    ‏`box-shadow` בן 2 סביב עיגול של 34 בתוך שורה של 34. חיתוך
    היה משטח אותה משני הקצוות, בדיוק המלכודת של `.tabpick` שכבר
    מתועדת כאן. */
-.crn{position:relative;height:34px;overflow:visible;cursor:grab}
+.crn{position:relative;height:40px;overflow:visible;cursor:grab}
 .crnw.grab .crn{cursor:grabbing}
 /* ‏**בזמן גרירה אין אנימציה, וזו כל ההרגשה של המחווה.** ‏`fuLayout`
    מכבה את ה-`transition` בהצבה ומחזירה אותו בפריים הבא, כלומר בין
@@ -4401,7 +4401,7 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
    הבהיר. ‏`--leaf-head` הוא הצבע היחיד בפלטה שאינו מתהפך, כלומר
    ירוק עמוק בשתי הערכות, וזה מה שמאפשר לו לשבת על משטח בהיר
    בשתיהן (‏13:1 בכהה, ‏9.7:1 בבהירה). נראה בצילום ולא בקוד. */
-.crn .cface{position:absolute;top:50%;left:50%;width:24px;height:24px;
+.crn .cface{position:absolute;top:50%;left:50%;width:28px;height:28px;
   border-radius:50%;overflow:hidden;opacity:.5;padding:0;border:0;
   background:var(--face-fill);color:var(--leaf-head);cursor:pointer;
   /* ‏**האטה של קובץ העיצוב ולא ברירת המחדל.** ‏`.26s` עם `ease`
@@ -4436,10 +4436,10 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
    עיגול של 156 שכיסה חצי מהטבעת. נראה בצילום ולא במדידה. */
 /* ‏**והריפוד יורד באותו יחס.** ‏9 מתוך 40 ו-13 מתוך 56 הם 5 מתוך
    ‏24 ו-8 מתוך 34; ריפוד קבוע היה בולע אייקון של 24. */
-.crn .cface.mo{padding:5px}
-.crn .cface.mo.on{padding:8px}
+.crn .cface.mo{padding:6px}
+.crn .cface.mo.on{padding:9px}
 .crn .cface.mo svg{clip-path:none;border-radius:0}
-.crn .cface.on{width:34px;height:34px;opacity:1;
+.crn .cface.on{width:40px;height:40px;opacity:1;
   box-shadow:0 0 0 2px var(--sun-on-leaf)}
 /* משבצת רפאים: מצב 1, כשאין אף יקר. */
 .crn .cface.gh{background:rgba(255,255,255,.05);opacity:1;cursor:default;
@@ -4450,7 +4450,7 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
    על `.crnw` שיש לו ריפוד א-סימטרי נופל מתחת למרכז השורה, ומספר
    קשיח כאן נשבר ביום שהריפוד זז — **וזה קרה.** ‏`--pktop` ועוד חצי
    ההפרש בין 34 ל-24 הם בדיוק המרכז, בכל ריפוד. */
-.crnw .cadd{position:absolute;top:calc(var(--pktop) + 5px);width:24px;height:24px;
+.crnw .cadd{position:absolute;top:calc(var(--pktop) + 6px);width:28px;height:28px;
   border-radius:50%;display:flex;align-items:center;justify-content:center;
   z-index:4;font-size:14px;line-height:1;font-family:inherit;cursor:pointer;
   border:1.5px dashed var(--leaf-gold-line);color:var(--sun-on-leaf);
@@ -4580,7 +4580,7 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
    ה-20 שהקרוסלה מוסיפה מעצמה; אצלנו זה מספר אחד על אותה הצהרה,
    כי **ה-20 האלה הם המרווח הזה ולא שכבה נוספת** — ‏`<div>` ריק
    שכל תפקידו גובה הוא צומת שצריך לסנכרן. */
-.acar{margin:52px -18px 20px}
+.acar{margin:62px -18px 20px}
 .arail{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;
   scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 18px;
   -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
@@ -5626,7 +5626,7 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '3f6f047';
+window.NETA_BUILD = 'ef5a2b9';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -21024,7 +21024,7 @@ function fuWithBenes(items,all){
    **ו-`FIX-picker-header.md` §1 החליף את שלושת הקבועים בלבד**
    (‏13/40/56 ← 7/24/34). זה כל מה שהמעבר לשורה הקטנה דרש מהמנוע:
    המיקומים נגזרים מהרדיוס האמיתי, ולכן הם מתכווצים איתם לבדם. */
-const FU_GAP=7,FU_SM=24,FU_BG=34;
+const FU_GAP=7,FU_SM=28,FU_BG=40;
 let fuSig='',fuCenter=0,fuGrab=false,fuMoved=false;
 /* ההיסט המעגלי של פריט i ביחס למי שבמרכז. כך גם לראשון וגם לאחרון
    יש שכנים משני הצדדים ואף פעם אין קצה או שטח ריק בתוך הקפסולה.
@@ -21115,7 +21115,14 @@ function fuLayout(c,anim,px){
     const nd=fuOff(i,c,n,B.h),od=+el.dataset.d,xp=P[nd]+(px||0);
     /* כל פרצוף שמגיע למשבצת של ה-＋ או עובר אותה — מוסתר. בלי זה
        נוצר פרצוף שמציץ מעבר לפלוס בקצה המעוגל. */
-    el.style.visibility=(wide&&xp<ax+FU_SM)?'hidden':'';
+    /* ‏**ומי שחורג מהקצה הימני מוסתר גם הוא.** הגוש ממורכז על
+       עצמו, ולכן כשהוא רחב מהרצועה הוא נשפך לשני הצדדים —
+       ובצד הימני לא היה מי שיעצור אותו: נמדד שבשמונה יקרים
+       ב-320 העיגול הקיצוני יוצא 18 פיקסלים מהרצועה ונוגע בקצה
+       המסך. **הנבחר פטור**, כי הוא הגדול והמסומן ושום גרירה
+       אינה אמורה להעלים אותו. */
+    const rr=B.rad(i);
+    el.style.visibility=(wide&&(xp<ax+FU_SM||(i!==sel&&xp+rr>rw/2)))?'hidden':'';
     const place=function(){
       el.style.transform='translate(calc(-50% + '+xp+'px),-50%)';
       el.dataset.d=nd;
@@ -21148,7 +21155,7 @@ function fuRingHTML(items,selIdx){
     return '<button type="button" class="cface'+(i===selIdx?' on':'')+
       (x.av?'':' mo')+
       '" data-i="'+i+'" aria-label="'+attrText(x.name||'')+'">'+
-      (x.av?kidFaceHTML(x.av,34):occIcon(x.occ,18,x.name))+'</button>';
+      (x.av?kidFaceHTML(x.av,40):occIcon(x.occ,18,x.name))+'</button>';
   }).join('');
 }
 /* לחיצה בוחרת; גרירה רק מזיזה פרצופים וננעלת למשבצת הקרובה
