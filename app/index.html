@@ -4553,8 +4553,22 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
 .kcard2 .cnm{margin:0;font-size:30px;font-weight:800;color:var(--on-head);
   letter-spacing:-.6px;line-height:1.08;white-space:nowrap;overflow:hidden;
   text-overflow:ellipsis}
+/* ‏**השורה נשברת לשתיים ואינה נחתכת.** היא הייתה `nowrap` עם שלוש
+   נקודות, ואלון ראה "הנכד שלי, עבור הרכב הראשון והטיול …" — כלומר
+   **הקיצוץ נפל בדיוק על מה שהשורה קיימת בשבילו**, שמות הרגעים.
+   הטור שלה הוא `100%` פחות סימן של 48 ופחות הרווח, כ-232 ב-360,
+   והצירוף הארוך ביותר שהמוצר בונה עובר אותו.
+
+   **ושתיים ולא יותר**, כי הכרטיס הוא גובה קבוע: נמדד 27.2 פיקסלים
+   בין תחתית גוש הטקסט לקו הזהב, ושורה היא 17.5 — כלומר השנייה
+   נכנסת, והגוש ממורכז ב-`margin:auto` ולכן הוא מתרחב לשני הצדדים
+   ואינו דוחף את הקו. שלישית הייתה נוגעת בו.
+
+   **וזה חל על שלושת הכרטיסים**, כי `.kcard2` הוא רכיב אחד: הילד,
+   מסך הרגע ושקפי "פעילות". זו בדיוק הסיבה שהוא משותף. */
 .kcard2 .ckin2{margin:3px 0 0;font-size:13px;color:var(--sun-on-leaf);
-  line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  line-height:1.35;display:-webkit-box;-webkit-box-orient:vertical;
+  -webkit-line-clamp:2;overflow:hidden}
 .kcard2.waiting{border-style:dashed}
 /* ── ‏**הקרוסלה של "פעילות"** (`FIX-activity-v2.md` §2ב) ──────────
    ‏**ארבע זוויות על אותו חודש, ולא ארבעה אירועים.** אירוע בודד כבר
@@ -5612,7 +5626,7 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'bd53f5f';
+window.NETA_BUILD = '3f6f047';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
