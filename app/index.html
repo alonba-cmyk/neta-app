@@ -5612,7 +5612,7 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
 </head>
 <body>
 <script>
-window.NETA_BUILD = 'f3e7a2a';
+window.NETA_BUILD = 'bd53f5f';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
@@ -7390,9 +7390,10 @@ window.NETA_CONFIG = {
     </button>
     <!-- ‏**"ההשקעות האחרונות שלי"** (`FIX-home-v2.md` §2ב): הכותרת
          היא הרגע ולא סוג ההפקדה, והאייקון הוא אייקון הרגע בריבוע
-         מעוגל ולא פרצוף. **ואין שורת משנה** (`FIX-home-sheet-v1`):
-         היא נשאה את אותו תאריך בשתי שפות, וראו ההערה ב-JS.
-         **אין "לכל הפעילות" בסוף** — הפיד המלא הוא טאב משלו. -->
+         מעוגל ולא פרצוף. **והשורה השנייה היא "של <השם>" ולא
+         תאריך** (`FIX-home-sheet-v1` ובקשה של אלון); ראו ההערה
+         ב-JS. **אין "לכל הפעילות" בסוף** — הפיד המלא הוא טאב
+         משלו. -->
     <div id="mi-recwrap" style="display:none">
       <p class="tablbl sec2"><span>ההשקעות האחרונות שלי</span></p>
       <div id="mi-recent"></div>
@@ -20597,25 +20598,34 @@ function paintInvestments(){
      הכותרת היא הרגע ולא סוג ההפקדה, והאייקון הוא אייקון הרגע
      בריבוע מעוגל ולא פרצוף: הנושא של השורה הוא לאן הכסף הלך.
 
-     **ושורת המשנה ירדה**, ‏`FIX-home-sheet-v1`. היא נשאה
+     **ושורת התאריך ירדה**, ‏`FIX-home-sheet-v1`. היא נשאה
      "‏27 בספט׳ · לפני שבוע", כלומר את אותו תאריך בשתי שפות —
      מוחלט ויחסי — ושתיהן אמרו את אותו דבר. הכותרת שמעל המקטע
      כבר אומרת "האחרונות", והסדר מלמעלה למטה הוא כרונולוגי;
      התאריך המלא נשאר בטאב "פעילות" ובמסך הרגע, ששם הוא נחוץ.
 
-     **ותופעת הלוואי היא מה שמסמן את הגבול בין שני המקטעים:**
-     שורות "בעתיד של מי השקעת" הן שתי שורות, ואלה שורה אחת.
-     **והיישור האנכי אינו דורש כלל חדש** — `.tabrow` הוא
-     ‏`align-items:center` מלכתחילה, ולכן שורה בת שורה אחת
-     מתמרכזת מול האייקון ומול הסכום מעצמה. */
+     **ובמקומה השם ירד מהכותרת אל שורה משלו**, בקשה של אלון:
+     ‏"הבר מצווה" ומתחתיו "של אלון". הכותרת נשאה את שניהם
+     ("הבר מצווה של אלון"), והיא הארוכה ביותר במסך — ובשורה
+     שיש בה אייקון, תווית וסכום היא נדחקה. **ומה שמרוויח מזה
+     הוא הסריקה:** העין עוברת על עמודת הרגעים, והשם הוא ההקשר.
+
+     **ואין כאן פיצול שני של השם.** ‏`feedOccNoun` ו-`feedKid`
+     כבר חותכות את " של " בשורות הפיד, ושתיהן גוזרות ממה ששמור
+     על הנטיעה; בקופה שלא יועדה אין זנב, ואז אין שורה שנייה.
+
+     **וזו המראה של המקטע שמעליו:** שם השורה היא אדם ומתחתיו
+     הרגעים שלו, וכאן היא רגע ומתחתיו האדם. */
   const rec=hmRecent(rows);
   const wrap=document.getElementById('mi-recwrap');
   if(wrap)wrap.style.display=rec.length?'':'none';
   const rbox=document.getElementById('mi-recent');
   if(rbox)rbox.innerHTML=rec.map(function(e){
+    const kid=feedKid(e);
     return '<button class="tabrow"'+(e.key?(' onclick="openDetail(\'' + attrText(e.key) + '\')"'):'')+'>'+
       '<span class="sq">'+occIcon(e.occ,20,e.name)+'</span>'+
-      '<span class="gr"><span class="t">'+attrText(feedMomentName(e))+'</span></span>'+
+      '<span class="gr"><span class="t">'+attrText(feedOccNoun(e))+'</span>'+
+      (kid?('<span class="s">'+attrText('של '+kid)+'</span>'):'')+'</span>'+
       amtHTML('נטעת',e.amount||0)+
       '<span class="tbchev"><svg width="7" height="12" viewBox="0 0 7 12"><use href="#chev"/></svg></span>'+
     '</button>';
