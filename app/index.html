@@ -4287,14 +4287,18 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
   color:var(--leaf);font-weight:800;display:grid;place-items:center;flex:none}
 .tabrow .gr{flex:1;min-width:0}
 /* ‏**והכותרת והשורה שמתחתיה נקראות כיחידה אחת, ולכן העופרת מהודקת.**
-   ‏`line-height:normal` ב-Heebo הוא כ-1.16, והוא שומר מעל האותיות את
-   מקום ה-ascender הלטיני — שטח שבעברית נשאר ריק תמיד. נמדד שהרווח
-   בין הדיו של השתיים הוא 8 פיקסלים בשורה רגילה, ו-4 כשלכותרת יש
-   אות יורדת. ‏**ו-`.s` מהודק פחות מ-`.t`**, כי הוא זה שיכול לגלוש
-   לשתי שורות ואז העופרת היא מה שמפריד ביניהן. */
+   ‏`line-height:normal` ב-Heebo שומר מעל האותיות את מקום ה-ascender
+   הלטיני — שטח שבעברית נשאר ריק תמיד — והוא תיבה שלמה לכל גודל:
+   ‏18 פיקסלים ב-15.5 ו-15 ב-12.5. נמדד שהרווח בין הדיו של השתיים
+   היה 8 פיקסלים בשורה רגילה ו-4 כשלכותרת יש אות יורדת, ועכשיו
+   ‏6.55 ו-2.55. ‏**ו-`.s` מהודק פחות מ-`.t`**, כי הוא זה שיכול
+   לגלוש לשתי שורות ואז העופרת היא מה שמפריד ביניהן.
+   **ומה שהוריד את רוב הרווח הוא המרווח ולא העופרת:** פיקסל מתוך
+   ‏1.45. ‏**וסבב ראשון ירד ל-5.82 ו-1.82 ואלון ראה אותו כצמוד
+   מדי**; שם האות היורדת כמעט נגעה בשורה שמתחתיה. */
 .tabrow .t{display:block;font-size:15.5px;font-weight:700;color:var(--tx);
-  line-height:1.05}
-.tabrow .s{display:block;font-size:12.5px;color:var(--tx-3);line-height:1.15}
+  line-height:1.12}
+.tabrow .s{display:block;font-size:12.5px;color:var(--tx-3);line-height:1.18}
 .tabrow .v{font-size:16px;font-weight:700;color:var(--leaf);white-space:nowrap;flex:none}
 .tabrow .v.f{color:var(--sun-big)}
 .tabrow .tbpill{height:32px;border-radius:99px;border:1.5px solid var(--leaf);
@@ -5633,7 +5637,7 @@ textarea::-webkit-scrollbar{width:0;height:0;display:none}
 </head>
 <body>
 <script>
-window.NETA_BUILD = '756d2b8';
+window.NETA_BUILD = 'c1cbbee';
 /* פרויקט הפיתוח של נטע. המפתח הזה מיועד להיות גלוי בדפדפן —
    מה שמגן על הנתונים הוא כללי ההרשאות שבמסד. */
 window.NETA_CONFIG = {
